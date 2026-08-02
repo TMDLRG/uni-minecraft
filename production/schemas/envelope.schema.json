@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/envelope.v1.json",
+  "title": "UNI MCP response envelope",
+  "description": "Every response from the UNI production MCP (production/mcp/server.py) and the future uni-public-mcp (SPEC_uni_public_mcp.md) wraps its result in this envelope. Extracted verbatim from production/mcp/server.py:91-118 metadata() so that inline behaviour is preserved while consumers get a versioned contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "envelope", "result"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["server", "instrument_version", "timestamp", "evidence_class"],
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "The MCP server that answered: uni-production-mcp | uni-public-mcp | uni-control-mcp."
+        },
+        "instrument_version": { "type": "string" },
+        "git_commit": {
+          "type": ["string", "null"],
+          "description": "HEAD SHA of the running server's code. Null if the server was booted from a source tree that is not under git."
+        },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "evidence_class": {
+          "type": "string",
+          "enum": ["A", "B", "C", "Sec", "pending"]
+        },
+        "audit_id": { "type": "string" },
+        "docs": { "type": "string", "description": "Free-form pointer to uni:// resources or docs/UNIVERSE.md sections." },
+        "help": {
+          "type": "object",
+          "description": "Optional short primer / this-tool summary / more pointer. Present on human-usable responses; may be omitted on machine-consumed ones."
+        }
+      }
+    },
+    "result": {
+      "description": "Tool-specific payload. Shape defined by the tool's own contract; the envelope makes no claim about its schema."
+    },
+    "refused": {
+      "type": "boolean",
+      "description": "Present + true when the router refused a mutation with an evidence-attached rejection (per D-C2). result.reason MUST explain why."
+    }
+  }
+}

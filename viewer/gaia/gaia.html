@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gaia — direct signals with provenance</title>
+<style>
+  /* GAIA LAW in the view: every tile is a losslessly-projected direct signal carrying a
+     {locator, captured_at, sha256} provenance triple. This page NEVER summarizes, scores,
+     ranks, narrates, or authors a verdict. It computes no count/percent/rollup. It never
+     hardcodes a host address; it fetches the relative /api/gaia envelope only. */
+  :root{--bg:#0b0f14;--panel:#121821;--edge:#1f2937;--ink:#e5eef7;--dim:#8296ab;--acc:#3fd2ff;
+        --ok:#2ecc71;--warn:#f1b40f;--live:#e5484d;--gold:#f9e2af;--nv:#6b7a8d;--tile:#0e141c}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",system-ui,sans-serif;padding:16px;max-width:1200px;margin:0 auto}
+  h1{font-size:22px;letter-spacing:.04em} h1 .u{color:var(--acc)}
+  .sub{color:var(--dim);font-size:13px;margin:2px 0 12px;max-width:860px}
+  .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .pill{padding:4px 12px;border-radius:999px;border:1px solid var(--edge);font-weight:800;letter-spacing:.06em;font-size:12px;color:var(--dim)}
+  .pill.acc{color:var(--acc);border-color:var(--acc)}
+  .meta{font-family:"Cascadia Code",Consolas,monospace;font-size:11px;color:var(--dim);display:flex;gap:14px;flex-wrap:wrap}
+  .meta b{color:var(--ink);font-weight:600}
+  button.act{background:none;color:var(--acc);border:1px solid var(--edge);border-radius:6px;font-size:12px;padding:4px 12px;cursor:pointer;font-weight:600}
+  button.act:hover{border-color:var(--acc)}
+  .banner{border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;display:none}
+  .banner.err{display:block;border:1px solid var(--live);background:#2a1215;color:#ffd7d9}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:14px}
+  h3{font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:4px}
+  h3 .n{color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px}
+  .pdesc{color:var(--dim);font-size:11px;margin-bottom:10px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
+  .tile{background:var(--tile);border:1px solid var(--edge);border-radius:10px;padding:11px;border-left-width:4px;border-left-color:var(--nv);min-width:0}
+  .tile.up{border-left-color:var(--ok)} .tile.down{border-left-color:var(--live)} .tile.null{border-left-color:var(--nv)}
+  .tile.drift{border-left-color:var(--gold)}
+  .th{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .tid{font-weight:800;font-size:13px;color:var(--ink);word-break:break-all}
+  .kind{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:5px;border:1px solid var(--edge);color:var(--dim)}
+  .ec{font-size:10px;padding:1px 6px;border-radius:5px;border:1px solid var(--edge);color:var(--dim)}
+  .live{font-size:10px;font-weight:800;letter-spacing:.06em;padding:1px 8px;border-radius:5px}
+  .live.up{color:var(--ok);background:#0f2318;border:1px solid var(--ok)}
+  .live.down{color:var(--live);background:#2a1215;border:1px solid var(--live)}
+  .live.null{color:var(--nv);background:#161b22;border:1px solid var(--nv)}
+  .ldetail{font-size:11px;color:var(--dim);font-family:"Cascadia Code",Consolas,monospace}
+  .trunc{font-size:10px;font-weight:700;color:var(--gold);background:#241d0b;border:1px solid var(--gold);border-radius:5px;padding:1px 6px}
+  .enc{font-size:10px;color:var(--warn);border:1px solid var(--warn);border-radius:5px;padding:1px 6px}
+  pre.raw{font-family:"Cascadia Code",Consolas,monospace;font-size:11.5px;color:var(--ink);white-space:pre;background:#0b0f14;border:1px solid var(--edge);border-radius:7px;padding:8px;margin:2px 0 8px;max-height:280px;overflow:auto}
+  pre.raw.empty{color:var(--dim);font-style:italic;white-space:normal}
+  .drow{font-size:11px;color:var(--dim);margin-bottom:6px;font-family:"Cascadia Code",Consolas,monospace}
+  .drow .rel{color:var(--gold);font-weight:700}
+  .drow .eq{font-weight:800} .drow .eq.t{color:var(--ok)} .drow .eq.f{color:var(--warn)}
+  .prov{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:baseline;font-size:11px;border-top:1px solid var(--edge);padding-top:7px}
+  .prov .pk{color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-size:10px}
+  .prov .pv{color:var(--ink);font-family:"Cascadia Code",Consolas,monospace;word-break:break-all;min-width:0}
+  .prov .pv.acc{color:var(--acc)}
+  .provfoot{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+  button.copy,button.vh{background:none;border:1px solid var(--edge);border-radius:6px;font-size:10.5px;padding:2px 9px;cursor:pointer;color:var(--dim);font-weight:600}
+  button.copy:hover,button.vh:hover{border-color:var(--acc);color:var(--acc)}
+  .vhres{font-size:10.5px;font-family:"Cascadia Code",Consolas,monospace;margin-left:4px}
+  .vhres.t{color:var(--ok)} .vhres.f{color:var(--live)} .vhres.e{color:var(--warn)}
+  .flowmap{font-family:"Cascadia Code",Consolas,monospace;font-size:12px;color:var(--ink);background:#0b0f14;border:1px solid var(--edge);border-radius:8px;padding:12px;overflow-x:auto;white-space:nowrap;margin-bottom:10px}
+  .flowmap .node{color:var(--acc);font-weight:700} .flowmap .arr{color:var(--dim);padding:0 8px}
+  .flowmap .lbl{color:var(--nv);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-left:8px}
+  .foot{color:var(--dim);font-size:12px;margin-top:8px}
+  .foot .tag{color:var(--gold)}
+  .empty-seat{color:var(--dim);font-size:12px;font-style:italic}
+  body.single .panel{display:none}
+  body.single .panel.solo{display:block}
+</style>
+</head>
+<body>
+<a href="http://127.0.0.1:8102/" target="_blank" style="color:#7f77dd;text-decoration:none;border-bottom:1px dotted #444;margin-left:10px" title="UNI TRACK - project tracking">TRACK :8102</a>
+<h1><span class="u">Gaia</span> — direct signals, with provenance</h1>
+<p class="sub">One read-only URL. Every tile below is a direct signal projected verbatim from its source,
+carrying a re-runnable locator, a capture time, and a sha256 over the exact bytes shown. Gaia never
+summarizes, scores, ranks, narrates, or authors a verdict — a source's own boolean or gate verdict is
+carried as-is; nothing here is computed by Gaia. Down / not-probed / truncated are shown honestly.</p>
+
+<div class="bar">
+  <span class="pill acc" id="pill-server">uni-gaia</span>
+  <span class="meta" id="env-meta"></span>
+  <span style="flex:1"></span>
+  <label style="font-size:12px;color:var(--dim)"><input type="checkbox" id="auto"> auto-refresh</label>
+  <button class="act" id="refresh">refresh</button>
+</div>
+
+<div class="banner" id="banner"></div>
+
+<div id="root"></div>
+
+<p class="foot">Provenance is the product. Re-run any tile's command and rehash <span class="tag">value.raw</span>
+to prove it yourself. This surface is <b>GET-only</b> — it triggers no outward action and holds no secret.
+Boot-persistence is <b>UNPROVEN</b> (Gaia starts on operator command; supervision is a separate cure).</p>
+
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (x) => String(x==null?"":x).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Panel layout: ordered sections, each bound to source seat(s). No seat is dropped — any seat not
+// named here is surfaced in the flow panel's leftover list, so an unexpected signal is never hidden.
+const PANELS = [
+  { key:"gaia-self", title:"Gaia self + calibration", desc:"Gaia's own git HEAD, live source sha256, listen host/pid/uptime, its served MCP manifest, verify-gate names + carried verdicts, and the verbatim no-summarization lint result — projected with the same discipline as every other seat.", seats:["gaia-self"] },
+  { key:"flow", title:"Five-seat flow / vectors map", desc:"Declared data-flow across the seats (labeled 'declared', from the registry — not observed). Per-seat liveness is shown only as each seat's own honest probe signals, never a rolled-up seat status.", seats:[], flow:true },
+  { key:"repo", title:"Repo & commits", desc:"git HEAD, status, log, push-state — verbatim stdout. A clean tree shows empty output as-is, never a synthesized 'clean' label.", seats:["repo"] },
+  { key:"gates", title:"Gate ledger (science verdicts)", desc:"evidence/gates.ndjson rows + schema + docs/GATES.md ladder, each row a hashed signal carried byte-for-byte. Gaia computes no pass-count, percent, rank, or rollup. A PASS row demonstrates the named BEHAVIOUR, never experience/life.", seats:["gates"] },
+  { key:"science", title:"Science & math (the FE engine)", desc:"Verbatim kernel snippets from lib/sp/brain/* and RED receipt front-matter. Gaia projects the math and NEVER narrates it as felt state, experience, or proof.", seats:["science"] },
+  { key:"infra", title:"Infra / DNS", desc:"viewer/infra_registry.json (the single declared IP map + goLiveGate) + dnsDrift rows. The drift/fresh boolean is the source's own computation, carried verbatim.", seats:["infra"] },
+  { key:"studio", title:"Studio ports (render box)", desc:"Honest tcp/http probes of registry studio ports + config bytes. live.up is true/false ONLY from a real probe; a down port shows DOWN, an un-probed service shows NOT PROBED — never up from a process listing.", seats:["studio"] },
+  { key:"colony", title:"Colony (chip)", desc:"LAN probe of the chip colony when reachable; agent-ingested container tails are labeled truncated. Unprobed/unreachable is NOT PROBED — colony presence is shown UNCONFIRMED, never faked.", seats:["colony"] },
+  { key:"sessions", title:"Chat histories / sessions", desc:"Project transcript listing with a content hash per file. The MCP session index is roadmap and shown NOT PROBED until an agent-ingest snapshot exists.", seats:["sessions"] },
+  { key:"drift", title:"Drift (documented vs measured, first-class)", desc:"Each documented-vs-observed divergence is a paired-locator signal carrying BOTH byte-sets verbatim, a neutral relation label, and a mechanical equal boolean. Gaia adds no severity, no 'bug' verdict, no fix, no diff-%. Drift is surfaced, never reconciled.", seats:["drift"] }
+];
+const NAMED_SEATS = new Set(PANELS.flatMap(p => p.seats));
+
+// ---- signal rendering (verbatim, honest) -----------------------------------------------------------
+function liveClass(sig){
+  if(sig.kind!=="tcp" && sig.kind!=="http") return "null";
+  const up = sig.live && sig.live.up;
+  if(up===true) return "up";
+  if(up===false) return "down";
+  return "null";
+}
+function livePill(sig){
+  if(sig.kind!=="tcp" && sig.kind!=="http") return "";
+  const up = sig.live ? sig.live.up : null;
+  let cls,label;
+  if(up===true){cls="up";label="UP";}
+  else if(up===false){cls="down";label="DOWN";}
+  else {cls="null";label="NOT PROBED";}
+  const detail = sig.live && sig.live.detail ? `<span class="ldetail">${esc(sig.live.detail)}</span>` : "";
+  return `<span class="live ${cls}">${label}</span>${detail}`;
+}
+function truncBadge(p){
+  if(!p || !p.truncated || p.truncated===true) return "";
+  if(p.truncated===false) return "";
+  const of = p.truncated.of || "source";
+  const complete = (p.truncated.complete===false) ? "complete:false" : "";
+  const note = p.truncation_note ? p.truncation_note : "shown tail only";
+  return `<span class="trunc" title="${esc(note)}">TRUNCATED · ${esc(of)} · ${esc(complete)}</span>`;
+}
+function encBadge(v){
+  if(v && v.encoding && v.encoding!=="utf8") return `<span class="enc">${esc(v.encoding)}</span>`;
+  return "";
+}
+// Drift convenience header: parse the paired-locator raw and surface relation + mechanical equal.
+// This is lossless projection of fields already present in value.raw (also shown verbatim below).
+function driftHeader(sig){
+  if(sig.seat!=="drift") return "";
+  let d; try{ d = JSON.parse(sig.value && sig.value.raw); }catch(_){ return ""; }
+  if(!d || typeof d!=="object") return "";
+  const eq = (d.equal===true) ? '<span class="eq t">equal:true</span>'
+           : (d.equal===false) ? '<span class="eq f">equal:false</span>' : "";
+  const rel = d.relation ? `<span class="rel">${esc(d.relation)}</span>` : "";
+  const a = d.a && d.a.locator ? `a: ${esc(d.a.locator)}` : "";
+  const b = d.b && d.b.locator ? `b: ${esc(d.b.locator)}` : "";
+  return `<div class="drow">relation ${rel} &nbsp; ${eq}<br>${a}<br>${b}</div>`;
+}
+function rawBlock(sig){
+  const v = sig.value || {};
+  const raw = v.raw==null ? "" : String(v.raw);
+  if(raw==="") return `<pre class="raw empty">(empty — source produced no bytes; carried as-is)</pre>`;
+  return `<pre class="raw">${esc(raw)}</pre>`;
+}
+function provChip(sig){
+  const p = sig.provenance || {};
+  const sha = p.sha256 || "";
+  const shaShort = sha ? sha.slice(0,16)+"…" : "—";
+  const cmd = p.reverify || p.locator || "";
+  const idAttr = esc(sig.id||"");
+  const copyBtn = cmd ? `<button class="copy" data-cmd="${esc(cmd)}">copy re-run</button>` : "";
+  const vhBtn = sig.id ? `<button class="vh" data-id="${idAttr}">verify hash</button><span class="vhres" data-vh="${idAttr}"></span>` : "";
+  return `<div class="prov">
+      <span class="pk">locator</span><span class="pv acc" title="${esc(p.locator||'')}">${esc(p.locator||'—')}</span>
+      <span class="pk">captured</span><span class="pv">${esc(p.captured_at||'—')}</span>
+      <span class="pk">sha256</span><span class="pv" title="${esc(sha)}">${esc(shaShort)}</span>
+      <span class="pk">bytes</span><span class="pv">${esc(p.byte_len!=null?p.byte_len:'—')}</span>
+      <span class="pk">instrument</span><span class="pv">${esc(p.instrument||'—')}</span>
+    </div>
+    <div class="provfoot">${copyBtn}${vhBtn}</div>`;
+}
+function tile(sig){
+  const p = sig.provenance || {};
+  const cls = sig.seat==="drift" ? "drift" : liveClass(sig);
+  const head = `<div class="th">
+      <span class="tid">${esc(sig.id||'(no id)')}</span>
+      <span class="kind">${esc(sig.kind||'?')}</span>
+      ${sig.evidence_class ? `<span class="ec">class ${esc(sig.evidence_class)}</span>`:""}
+      ${livePill(sig)}
+      ${truncBadge(p)}
+      ${encBadge(sig.value)}
+    </div>`;
+  return `<div class="tile ${cls}">${head}${driftHeader(sig)}${rawBlock(sig)}${provChip(sig)}</div>`;
+}
+function emptySeat(name){
+  return `<div class="empty-seat">No <b>${esc(name)}</b> signals in this envelope. An empty seat is a true signal (nothing captured), not a defect.</div>`;
+}
+
+// ---- flow map (declared topology, static — labeled 'declared', never 'observed') -------------------
+function flowMap(){
+  const nodes = ["colony (chip)","studio capture","render / mix / encode","relay tee"];
+  const inner = nodes.map((n,i)=> `<span class="node">${esc(n)}</span>` + (i<nodes.length-1?'<span class="arr">&#8594;</span>':'')).join("");
+  return `<div class="flowmap">${inner}<span class="lbl">declared (from registry)</span></div>`;
+}
+
+// ---- render ----------------------------------------------------------------------------------------
+function bySeat(signals){
+  const m = {};
+  for(const s of signals){ const k = s.seat || "(unseated)"; (m[k] = m[k]||[]).push(s); }
+  return m;
+}
+function render(env){
+  const meta = env.envelope || {};
+  $("#pill-server").textContent = meta.server || "uni-gaia";
+  $("#env-meta").innerHTML = [
+    meta.git_commit ? `HEAD <b>${esc(String(meta.git_commit).slice(0,12))}</b>` : "",
+    meta.instrument_version ? `instrument <b>${esc(meta.instrument_version)}</b>` : "",
+    meta.timestamp ? `envelope <b>${esc(meta.timestamp)}</b>` : "",
+    meta.evidence_class ? `class <b>${esc(meta.evidence_class)}</b>` : ""
+  ].filter(Boolean).join("");
+
+  const result = env.result || {};
+  const signals = Array.isArray(result.signals) ? result.signals : [];
+  const groups = bySeat(signals);
+
+  const parts = [];
+  for(const panel of PANELS){
+    const inner = [];
+    if(panel.flow){
+      inner.push(flowMap());
+      // Surface any seat NOT bound to a dedicated panel (e.g. relay, or an unexpected seat) here,
+      // so no captured signal is ever silently dropped.
+      const leftovers = Object.getOwnPropertyNames(groups).filter(s => !NAMED_SEATS.has(s));
+      for(const seat of leftovers){
+        inner.push(`<h3 style="margin-top:10px"><span class="n">${esc(seat)}</span></h3>`);
+        inner.push(`<div class="tiles">${groups[seat].map(tile).join("")}</div>`);
+      }
+      if(leftovers.length===0){
+        inner.push(`<div class="empty-seat">Per-seat liveness appears under each seat's own panel below.</div>`);
+      }
+    } else {
+      const sigs = [];
+      for(const seat of panel.seats){ if(groups[seat]) sigs.push(...groups[seat]); }
+      inner.push(sigs.length ? `<div class="tiles">${sigs.map(tile).join("")}</div>` : emptySeat(panel.seats.join(", ")));
+    }
+    parts.push(`<section class="panel" data-panel="${esc(panel.key)}">
+        <h3>${esc(panel.title)}</h3>
+        <div class="pdesc">${esc(panel.desc)}</div>
+        ${inner.join("")}
+      </section>`);
+  }
+  $("#root").innerHTML = parts.join("");
+}
+
+function showError(msg){
+  const b = $("#banner");
+  b.className = "banner err";
+  b.textContent = "NOT VERIFIED — " + msg + ". Gaia shows no fabricated signal; fix the source and refresh.";
+}
+function clearError(){ $("#banner").className = "banner"; $("#banner").textContent = ""; }
+
+async function load(){
+  try{
+    const r = await fetch("/api/gaia", { cache:"no-store" });
+    if(!r.ok) throw new Error("/api/gaia returned HTTP " + r.status);
+    const env = await r.json();
+    clearError();
+    render(env);
+  }catch(e){
+    showError((e && e.message) ? e.message : "could not reach /api/gaia");
+  }
+}
+
+// ---- interactions: copy re-run command; verify a single hash (read-only GET) ------------------------
+function copyText(txt){
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){
+  const ta = document.createElement("textarea");
+  ta.value = txt; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
+  ta.focus(); ta.select(); try{ document.execCommand("copy"); }catch(_){ } document.body.removeChild(ta);
+}
+document.addEventListener("click", async (ev) => {
+  const t = ev.target;
+  if(t.classList && t.classList.contains("copy")){
+    copyText(t.getAttribute("data-cmd")||"");
+    const orig = t.textContent; t.textContent = "copied"; setTimeout(()=>{ t.textContent = orig; }, 1100);
+    return;
+  }
+  if(t.classList && t.classList.contains("vh")){
+    const id = t.getAttribute("data-id")||"";
+    const out = document.querySelector(`.vhres[data-vh="${CSS.escape(id)}"]`);
+    if(out){ out.className = "vhres"; out.textContent = " …"; }
+    try{
+      const r = await fetch("/api/gaia/verify/" + encodeURIComponent(id), { cache:"no-store" });
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      const match = (j && (j.match!==undefined ? j.match : (j.result && j.result.match)));
+      if(out){
+        out.className = "vhres " + (match===true ? "t" : "f");
+        out.textContent = match===true ? " match:true" : " match:false";
+      }
+    }catch(e){
+      if(out){ out.className = "vhres e"; out.textContent = " verify unavailable"; }
+    }
+  }
+});
+
+// ---- pop-out routing: ?seat=<panel-key> renders only that panel ------------------------------------
+(function(){
+  const only = new URLSearchParams(location.search).get("seat");
+  if(!only) return;
+  document.body.classList.add("single");
+  // applied after first render:
+  const apply = () => { const el = document.querySelector(`.panel[data-panel="${CSS.escape(only)}"]`); if(el) el.classList.add("solo"); };
+  const mo = new MutationObserver(apply); mo.observe($("#root"), { childList:true });
+  document.title = "Gaia — " + only;
+})();
+
+// ---- controls --------------------------------------------------------------------------------------
+$("#refresh").addEventListener("click", load);
+let timer = null;
+$("#auto").addEventListener("change", (e) => {
+  if(e.target.checked){ timer = setInterval(load, 5000); }
+  else if(timer){ clearInterval(timer); timer = null; }
+});
+load();
+</script>
+</body>
+</html>

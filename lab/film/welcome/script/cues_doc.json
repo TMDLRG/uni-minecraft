@@ -1,0 +1,1127 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "doc",
+  "assembled_utc": "2026-08-02T02:21:43.700Z",
+  "forensic_capture_utc": "2026-08-02T01:10:13.645Z",
+  "design_rule": [
+    "EXPOSE THE MEASUREMENT, NEVER ASSERT THE CONCLUSION. The operator's instruction, verbatim:",
+    "'only ever shown and presented for others to observe of the signal and calibrate for them selves'.",
+    "Narration names what is on screen and stops. Every PRINTS band is the recorded stdout of a probe;",
+    "every quotation is re-read and re-hashed at render time; every number is a token id."
+  ],
+  "scenes": [
+    {
+      "id": "d_m0+m1_open",
+      "plate": "title",
+      "kicker": "A LABORATORY BUILT TO BE CAUGHT BEING WRONG",
+      "line1": "Welcome to UNI Labs",
+      "line2": "Every frame after this one is a command, and what it printed.",
+      "narration": "This is the long version. What follows is a laboratory shown one frame at a time. Each frame carries a question in plain words, the command that answers it, and the output that command actually printed. Nothing in it asks you to accept a summary. You are being handed the receipts.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m0+m1_the_promise",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 3,
+      "to": 5,
+      "why": "The oldest standing promise in the repository, in its own words, unedited",
+      "narration": "The film opens in the repository's words rather than in ours. Three lines from a file that has sat in the tree a long time, with its path, its line range, and the digest of exactly those bytes underneath. Clone the repository and hash those same lines. They should match.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m0+m1_the_falsifier",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 30,
+      "to": 33,
+      "why": "The same file, further down: the exact edit that would break one of its claims",
+      "narration": "And this is what stands behind that sentence. Every claim in that document ships with the specific change that would break it. On screen is one of them. Alter an update equation in the way it names, and a named gate stops holding. It tells you where to put the crowbar.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m0+m1_limits_counted",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do?",
+      "source": "docs/control-plane/LIMITATIONS.md — one identifier per limitation, read out by the command above",
+      "note": "Derived from one repository of the three. Limitations declared in the flagellar-motor repository are not in this count, and the page says so itself.",
+      "narration": "Here is the same treatment applied to the project's own shortcomings. The command prints every identifier declared as something this system does not do. There are @n.limitations.declared today, and the frame carries the tail of that list. The note beneath says which repository the count covers.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m0+m1_limits_generated",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/control-plane/LIMITATIONS.md",
+      "from": 3,
+      "to": 9,
+      "why": "That page is written by a program, and it says so in its own opening paragraph",
+      "narration": "Now the code behind that list. The page declares that it is generated from annotations sitting in the source, and that a gate regenerates it and refuses any difference. The paragraph under it gives the reason, and the reason is about people rather than about software. Read it and decide.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m0+m1_numbers_measured",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "Where did the numbers in this film come from?",
+      "source": "lab/film/welcome/qc/tokens.cjs — each figure is an expression over a live file, evaluated while the frames were being made",
+      "note": "A number typed into a film has no half-life. It simply becomes wrong at an unannounced moment.",
+      "narration": "Not one figure in this film was typed. Each is an expression run against a real file at the moment the frame was built. The line on screen is that register reporting how many expressions it carries and how many failed to resolve. Run it after you clone, and compare.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m0+m1_numbers_why",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lab/film/welcome/qc/tokens.cjs",
+      "from": 7,
+      "to": 11,
+      "why": "The register's own header, giving the reason it exists",
+      "narration": "And this is why. The file explains itself in its own header. This project's governing banner carried hand-typed figures that went wrong within hours, and one of them within minutes of being written. A banner can be corrected in a day. A film is rendered once and watched for a year.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m0+m1_film_under_its_own_gate",
+      "plate": "measurement",
+      "probe": "film.qc",
+      "asks": "Is this film itself held to a check?",
+      "source": "lab/film/welcome/qc/verify_welcome_film.cjs — and a mutation suite that breaks the film on purpose to see whether the check notices",
+      "note": "The check reads words and receipts. It has no way to tell whether the film is honest in spirit, and it prints that limitation on every run.",
+      "narration": "The film is treated the way it treats everything else. This check forbids a list of words, re-reads every quoted line range and hashes it again, and re-derives each figure from the file it came from. The second count on that line is deliberate sabotage it was required to catch.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m0+m1_mission",
+      "plate": "intent",
+      "lines": [
+        "Worldwide peace through free and open understanding.",
+        "The public pursuit and ownership of",
+        "General Universal Natural Intelligence.",
+        "The end of extract and extortion.",
+        "Making safe all wombs, and Gaia —",
+        "earth, our solar system, and beyond."
+      ],
+      "narration": "That is what this work is for, whole and unsoftened. Nothing has been trimmed off it to make it easier to say out loud. The amber rail and the header are the point: none of that frame was measured, and none of it is offered as a finding. It is where the instruments are pointed.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m0+m1_mission_provenance",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lab/film/welcome/SPINE.json",
+      "from": 1107,
+      "to": 1109,
+      "why": "An adverse finding about the mission you have just been shown, from this film's own truth ledger",
+      "narration": "And here is a finding about that mission. Searched across all three repositories of the estate, those words appear in no file outside this film's own directory. The mission arrived by conversation. This film is its first written home, and the repositories cannot corroborate it. Repairing that is the operator's.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m0+m1_the_commit",
+      "plate": "measurement",
+      "probe": "head.mc",
+      "asks": "What commit were these frames built from?",
+      "source": "git log, in the estate's main repository, at the instant the capture was taken",
+      "note": "A commit names bytes. It does not say those bytes are what a third party would receive; only publishing the source, or an independent custodian, closes that.",
+      "narration": "One more before the tour begins. That is the exact commit these frames were built from. Everything you are about to be shown can be held against it. Clone at that hash, run the commands the frames name, and compare what your machine prints with what mine printed.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m2_title",
+      "plate": "title",
+      "kicker": "THE ESTATE — FIVE BODIES",
+      "line1": "Five bodies, kept apart on purpose.",
+      "line2": "Each one is shown in its own source, then tested.",
+      "narration": "Five bodies. A colony that acts inside a world, a producer that would direct a broadcast, a laboratory that models a bacterial motor, a control plane that records what the others did, and a public record. They are kept apart on purpose. Each one is about to be shown in its own source.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m2_colony_boundary",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/bridge.ex",
+      "from": 7,
+      "to": 14,
+      "why": "Body one, the colony — the two messages that cross between brain and body, and nothing else",
+      "narration": "Body one is a colony acting inside a world. This is its boundary, in the file that enforces it. Senses go in on one line, one action comes back, and the code puts the word ONLY in capitals. The brain never sees raw world state. The body never sees beliefs.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m2_colony_gate",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does that colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the runner's own line number and the block it raises, printed as it is written",
+      "note": "The colony's forage claim is blocked on this file. It has never produced a result.",
+      "narration": "Here is what that body has not done. The gate that would test the colony's foraging claim raises before it reaches the colony. On screen is the line number and the block it raises. It is a named shape with a contract and no result, and the file says that about itself.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m2_producer",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/producer/brain.ex",
+      "from": 5,
+      "to": 7,
+      "why": "Body two, the producer — the header of the module that would choose every shot",
+      "narration": "Body two would direct a broadcast: which shot, which cut, when to hold. Read what it runs on. Expected free energy minimisation, no scripted rules, no reward. The thing that would point the camera runs the same mathematics as the thing it would broadcast. That is the sentence on screen, not a summary of it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m2_producer_door",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Can that producer put itself on air?",
+      "source": "viewer/prove_golive_refuses_me.cjs — an agent taking every path to air in this codebase, and recording what stops it",
+      "note": "Paths tried: @n.golive.paths · allowed right now: @n.golive.allowed_now · claim level: @n.golive.claim_level",
+      "narration": "It cannot. This program takes every path to air in this codebase and records what refuses it. Of those paths, @n.golive.allowed_now are allowed right now, and the reason is the least flattering one available: the door has no key. There are @n.golive.minters presence-token minters anywhere in the tree. The claim level under the frame is the guard's own word.",
+      "tail_silence": 1.6,
+      "prints_tail": 1,
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "d_m2_one_engine",
+      "plate": "measurement",
+      "probe": "engine.zero_deps",
+      "asks": "How many third-party dependencies does the engine those two bodies share carry?",
+      "source": "mix.exs — the dependency declaration itself, printed rather than described",
+      "note": "Hex dependencies declared: @n.engine.hex_deps",
+      "narration": "Both of those bodies run one engine, and this is its dependency list. Nothing between the brackets. It declares @n.engine.hex_deps hex dependencies. That is not offered here as a virtue. It is what makes the no-language-model claim checkable in one command instead of by trust, because there is no library an inference call could hide inside.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "d_m2_lab_scope",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 566,
+      "to": 567,
+      "why": "Body three, the flagellar-motor laboratory — the scope its strongest result writes for itself",
+      "narration": "Body three models a bacterial flagellar motor. This is the boundary its strongest result states in the file that computes it: held-out duration prediction, one frozen cohort, one scoring rule, seconds scale. Escherichia coli behavioural evidence, and nothing else. The scope is on screen instead of a summary of the scope.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m2_lab_ladder",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The same result, in the same function, naming every level it does not reach",
+      "narration": "The same function states what that result does not reach. @n.pladder.unclosed rungs above duration-only are untouched in either direction. Three of them cannot be closed from inside this estate at all: transfer needs another dataset, intervention needs an apparatus, independent replication needs somebody who is not us. No verdict has yet been authored about a real scientific claim.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m2_control_plane",
+      "plate": "measurement",
+      "probe": "ledger.chain",
+      "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+      "source": "evidence/control_plane/ledger.ndjson and anchor.json — each entry naming the hash of the entry before it",
+      "narration": "Body four records what the other four did, including what they got wrong. Every entry names the hash of the entry before it. The command counted @n.cp.entries entries, no broken links, and an anchor whose declared length and head match the chain it anchors. Watch the next frame before you carry that agreement anywhere.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m2_witness",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is there an independent party corroborating that chain?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from the capture itself",
+      "note": "Independent custodians: @n.witness.independent_custodians · qualifying as a witness: @n.witness.qualifying · claim level: @n.witness.claim_level",
+      "narration": "Here is what that agreement is worth. Independent custodians corroborating the record number @n.witness.independent_custodians, and that is the whole finding. The off-box machine accepts the writer's own key, so a second domain the writer can reach is not a second domain. Tamper-evident, and not unforgeable.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m2_public_record",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many registered gates have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, never cached",
+      "note": "Absent from the canonical ledger: @n.gap.absent of @n.gap.registered registered gates",
+      "narration": "Body five is the public record, and this is the hole in it. @n.gap.in_ledger of @n.gap.registered registered gates have a row. Writing those rows is a stop condition, the operator's, and not work an agent may do. So the instrument prints the exact missing line and then stops.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m2_record_schema",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 5,
+      "to": 5,
+      "why": "The rule that record is failing, in the schema that states it",
+      "narration": "That number was measured against this sentence, which is not ours. It is the record's own schema, with the digest of those bytes. Every gate the project claims must be represented there, keyed to a real receipt on disk. The record holds no register of scientific verdicts to count, which is why that figure is declared rather than measured.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m2_separation",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 33,
+      "to": 37,
+      "why": "Why the five stay five — the rule the renderer states about itself",
+      "narration": "This is why the bodies are kept apart, and why nothing here is quietly left out. A node the renderer cannot draw fails the whole picture rather than vanishing from it. A hole is invisible. You cannot notice what was never rendered, and that sentence is the reason this movement showed you the gaps.",
+      "tail_silence": 2
+    },
+    {
+      "id": "d_m3+m4_watch_title",
+      "plate": "title",
+      "kicker": "HOW TO WATCH",
+      "line1": "Two things get called live.",
+      "line2": "One is a file being read again. The other is a broadcast.",
+      "narration": "Two words do a lot of work in this project and they are not the same word. One kind of live means a surface opening a file on disk again the moment you ask it to. The other means something reaching an audience. The next frames separate them, and each one is a command.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m3+m4_watch_disk",
+      "plate": "measurement",
+      "probe": "tree.mc",
+      "asks": "What state was this repository in while these frames were made?",
+      "source": "git status -sb in the estate's main repository, run at the instant of capture",
+      "note": "A working tree is a fact about one machine at one instant. It is not a fact about your clone.",
+      "narration": "This is what reading disk looks like. The command ran while these frames were being cut, and it reports the film's own render code sitting modified, with capture files not yet committed. Nobody tidied the tree before pointing a camera at it. The lines are on screen. Read them.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m3+m4_watch_commit",
+      "plate": "measurement",
+      "probe": "head.mc",
+      "asks": "Which commit were these frames cut from?",
+      "source": "git log -1 — the commit hash, the moment it was written, and its subject line",
+      "note": "A frame with no commit behind it cannot be checked by anyone who was not in the room.",
+      "narration": "And this is the other half of that. A frame is worth something only if you can say which bytes it came from. Here is the commit hash, the moment it was written, and the sentence its author left on it. Clone the repository, check that hash out, and run the same commands.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "d_m3+m4_watch_law",
+      "plate": "measurement",
+      "probe": "gates.runner",
+      "asks": "Do the checks this project runs hold their own law?",
+      "source": "viewer/gate_runner.cjs — the law: exit code zero if and only if the printed verdict is PASS",
+      "note": "@n.gates.registered registered · @n.gates.ci_true run by CI · @n.gates.ci_false listed, never run, never a fabricated pass.",
+      "narration": "Before the surfaces, the instrument that watches the instruments. A check here must exit zero when, and only when, it also printed the word PASS. This command runs them and reports whether that law held. On screen with it: the gates that are listed and never run, counted as unrun rather than as a pass.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_watch_air",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Can this software put itself on the air?",
+      "source": "viewer/prove_golive_refuses_me.cjs — every path to air, attempted, and what stopped each one",
+      "note": "@n.golive.paths paths tried · @n.golive.allowed_now permitted · @n.golive.minters programs in this tree that can mint the token the door asks for.",
+      "narration": "The second sense of live, and this is the adverse one. A program here attempts to broadcast, deliberately, down every path this codebase offers, and writes down what refused it. Nothing gets through. The reason is the least flattering one available: the door has no key, and nothing in this tree makes one.",
+      "tail_silence": 1.6,
+      "prints_tail": 1,
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "d_m3+m4_watch_guard",
+      "plate": "measurement",
+      "probe": "golive.gate",
+      "asks": "Does that guard refuse a stale, forged, unattended or replayed token?",
+      "source": "viewer/verify_golive_refuses_agents.cjs — the guard handed the four things that should fail",
+      "note": "The guard's own word for what it is worth: @n.golive.claim_level — and it is not unforgeable, which it says of itself in every grant it emits.",
+      "narration": "A refusal is worth checking too. This suite hands the guard a stale token, a forged one, one minted with no person present, and one replayed from an earlier session, and requires a refusal each time. The verdict line is on screen. So is the guard's own word for what it is worth.",
+      "tail_silence": 1.5,
+      "prints_lines": [
+        2,
+        3
+      ],
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "d_m3+m4_engine_title",
+      "plate": "title",
+      "kicker": "HOW IT REALLY WORKS",
+      "line1": "There is no reward.",
+      "line2": "Not a small one. Not a hidden one. None.",
+      "narration": "Now the engine underneath all of that. Almost every system that chooses an action is pointed at a number it is meant to push upward. This one is not. What follows is the line in the code that says so, the search behind that line, and the test that fails if a reward-shaped key ever appears in the metrics.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_engine_no_reward_line",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/mc.ex",
+      "from": 9,
+      "to": 9,
+      "why": "The brain's own module documentation, one line, unedited",
+      "narration": "Here is the sentence, in the file, with its line number and the digest of exactly those bytes. It is one line of module documentation at the top of the brain. A comment is not enforcement, and this film is not asking you to take it as any. It is asking you to read it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_engine_no_reward_search",
+      "plate": "measurement",
+      "probe": "engine.no_reward",
+      "asks": "Where does the word reward appear anywhere in the brain?",
+      "source": "lib/sp/brain — the search across every brain module, and the lines it returned, unedited",
+      "note": "A word search finds a word. It cannot find a reward that was implemented under a different name.",
+      "narration": "So here is the search. It reads every module of the brain for the word reward and prints the lines that carry it. What comes back are comments, and the ones on screen say there is none of it. A word search finds a word, though. It cannot find a reward implemented under a different name.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_engine_no_reward_test",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "test/sp/invariants_test.exs",
+      "from": 122,
+      "to": 124,
+      "why": "The test that fails if a reward-shaped key reaches the metrics",
+      "narration": "And this is what makes that line more than a comment. The test runs an episode, takes the evaluation metrics, and refuses if any of @n.engine.reward_backdoor_keys forbidden key names turns up among them. Read what it fences and what it does not. This is the evaluation surface, not every channel a signal could take.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m3+m4_engine_efe",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/plan.ex",
+      "from": 12,
+      "to": 16,
+      "why": "The planner, and the fence the same paragraph draws around it",
+      "narration": "If not a reward, then what. This is the answer, and the fence around the answer, in one paragraph the author wrote together. It rolls beliefs forward and scores expected free energy over futures the agent expects to hold. The same paragraph says what that is not. Both halves stay on screen.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m3+m4_engine_deps",
+      "plate": "measurement",
+      "probe": "engine.zero_deps",
+      "asks": "How many third-party packages does this engine carry?",
+      "source": "mix.exs — the dependency declaration, printed as it is written rather than described",
+      "note": "@n.engine.hex_deps packages is not a virtue by itself. It is what makes the claim checkable in one command instead of by trust.",
+      "narration": "A claim that no foreign computation happens in here is worth little unless somebody can check it in one move. So the frame shows the dependency block of the build file, printed as it is written. There is no library an inference call could be hiding inside.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_engine_scaffold",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the check that would test the colony's claim actually run?",
+      "source": "runs/pureworld_qa_gate.exs — its own source, printed rather than summarised",
+      "note": "The road from this engine to any published scientific result runs through this file, and this file raises.",
+      "narration": "Here is the adverse fact inside this movement. The check that would graduate the colony's foraging claim does not run. It raises, and the frame gives you the line number and the block around it, lifted out of the file rather than described. It has a name, a contract, and no result.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m3+m4_engine_blanket",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/bridge.ex",
+      "from": 3,
+      "to": 5,
+      "why": "The Markov blanket, as it is actually implemented",
+      "narration": "Back to the engine, and to the piece that is easiest to picture. In theoretical biology, the boundary separating a thing from its world is called a Markov blanket. In this codebase it is a pipe between two processes. The module documentation says exactly that, and it is on screen with its digest.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_engine_blanket_protocol",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/bridge.ex",
+      "from": 7,
+      "to": 9,
+      "why": "The protocol, and the independence it is meant to enforce",
+      "narration": "And this is what the pipe carries. Exactly @n.blanket.channels_out kinds of message ever cross it: senses going one way, one chosen action coming back. The line ends in the conditional independence the arrangement is meant to enforce, written as the notation rather than as a paraphrase of it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m3+m4_engine_blanket_asymmetry",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/bridge.ex",
+      "from": 16,
+      "to": 18,
+      "why": "What each side of the boundary is denied",
+      "narration": "And this is the part worth sitting with. Neither side gets the other's inside. The brain is handed senses and never raw world state; the body is handed an action and never a belief. One line in, one line out, in lockstep. That is the whole interface, and it is on screen.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m5_title",
+      "plate": "title",
+      "kicker": "MOVEMENT FIVE — THE TRUTH MACHINE",
+      "line1": "One word decides how a claim is drawn.",
+      "line2": "@n.truth.classes classes, @n.truth.materials materials, @n.truth.verdict_words verdict words, one ledger.",
+      "narration": "A claim in this project carries one word that says what kind of claim it is, and that word decides how it is drawn. This movement shows the vocabulary, the drawing rule, the verdict words, and the ledger they land in. Each one is read out of the file that enforces it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_picture_persuades",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 3,
+      "to": 9,
+      "why": "Why the module that draws the operator's world is a pure function",
+      "narration": "Before the vocabulary, the reason for it. This is the opening of the module documentation of the thing that decides what an operator is shown. The second paragraph names the risk it was built against. The file, the line range, and the digest of those exact bytes are underneath.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_classes",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 40,
+      "to": 40,
+      "why": "The vocabulary a claim may declare, read from the module that enforces it",
+      "narration": "Here is the whole vocabulary, on one line. @n.truth.classes words, and a claim carries exactly one of them. What is on screen is not a summary of that attribute. It is the attribute, at that line number, with the digest of those bytes beside it. Count them yourself.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "d_m5_materials",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 257,
+      "to": 263,
+      "why": "The function that turns a truth class into a material — every clause of it",
+      "narration": "And this is what the word does. One clause per class, each naming a material, and a final clause that catches everything the function could not read and sends it to fog. That last clause is on screen with the rest. It was dropped from a first draft of this film and the re-hash caught it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m5_not_injective",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 238,
+      "to": 242,
+      "why": "The module's own heading — not injective, a material cannot be read backwards",
+      "narration": "@n.truth.classes classes went into @n.truth.materials materials on the frame before. Two of them share a row and a material, so the picture cannot be read backwards to the word behind it. The module says so in its own heading, and the sentence under it names what a surface must not do.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m5_fog_is_checked_first",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 246,
+      "to": 255,
+      "why": "The receipt is checked before the truth class, and absent is not nil",
+      "narration": "The order on this frame is the part that carries the weight. The receipt is tested first, and the class only after. A node with no receipt draws as fog whatever word it declares. Underneath are the three ways a receipt can fail to be there, and why absent and nil are kept apart.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m5_no_caption",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 48,
+      "to": 60,
+      "why": "The claim fence as structure rather than as a word filter",
+      "narration": "This is why there is nowhere on a node to write a sentence. The comment names the obvious implementation, a word filter over a caption, and says what it would get wrong in both directions. What follows is the closed list of keys a node may carry. There is no prose key in it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m5_verdict_words",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 37,
+      "to": 38,
+      "why": "The verdict words a ledger row may carry, and the description shipped beside them",
+      "narration": "A gate's outcome uses a different vocabulary, and this is all of it. @n.truth.verdict_words words, and no percentage anywhere in the schema. A score can be averaged until a failure disappears into it; these cannot be averaged at all. The description defining the two least comfortable of them is the schema's own, not ours.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_one_ledger",
+      "plate": "measurement",
+      "probe": "gates.runner",
+      "asks": "Can a check exit zero without printing the word PASS?",
+      "source": "viewer/gate_runner.cjs — the law it asserts: exit zero if and only if the printed verdict is PASS",
+      "note": "Canonical ledger, last row per name: @n.ledger.pass PASS · @n.ledger.partial PARTIAL · @n.ledger.pending PENDING · @n.ledger.fail FAIL.",
+      "narration": "One command, one law, across every gate the registry holds. A check may exit zero only when it also printed the word PASS. The line on screen is what the runner printed. The note underneath is the ledger's own count, last row per name, and the FAIL is in it at the same size.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m5_must_be_represented",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 5,
+      "to": 5,
+      "why": "What the schema says every gate the project claims MUST do",
+      "narration": "Now the sentence governing that ledger, quoted from the schema itself. Every gate the project claims must be represented there, keyed to a receipt on disk. Measured while this frame was being made: @n.gap.in_ledger of @n.gap.registered registered gates have a row. The rest do not.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m5_bag",
+      "plate": "measurement",
+      "probe": "bag.roundtrip",
+      "asks": "Does an evidence pack survive a round trip, and is a forged one caught?",
+      "source": "viewer/verify_bag.cjs --mutate — each mutation is required to FAIL verification",
+      "note": "Independent custodians: @n.witness.independent_custodians — the pack's claim level is @n.witness.claim_level, and not unforgeable.",
+      "narration": "This packs the evidence, ships it, unpacks it, then forges it on purpose and requires the forgery to be refused. One line came back and it is on screen. The note underneath is what the pack is worth: tamper-evident, and not unforgeable, with the count of independent custodians beside it.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m5_locators",
+      "plate": "measurement",
+      "probe": "concepts.locators",
+      "asks": "Does every concept in the registry point at a line that exists?",
+      "source": "viewer/verify_concepts.cjs --mutate — the registry is broken on purpose and the check is required to notice",
+      "note": "Whether an anchor is the RIGHT anchor is a human's call, and most rows carry no reviewer yet.",
+      "narration": "A receipt is a file and a line. This opens every one in the registry, then breaks the registry on purpose to check that the opening notices. One line came back. The note underneath is what the check says it cannot settle: whether an anchor is the right anchor.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_fog_walkable",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 277,
+      "to": 280,
+      "why": "Fog is walkable, and a verdict may not be authored from inside it",
+      "narration": "The last frame of this movement is the rule about the word that means somebody looked and could not tell. You may stand in it; you may not author a verdict from inside it. About a real scientific claim, this project has authored no verdict at all. The next movement starts here.",
+      "tail_silence": 2
+    },
+    {
+      "id": "d_m6_open",
+      "plate": "title",
+      "kicker": "M6 — THE HONEST STATE",
+      "line1": "What is not true here today.",
+      "line2": "One fact. One command. One frame.",
+      "narration": "This next stretch is not a disclaimer reel at the end of a pitch. It is the part of the film the rest of the film is for. Every fact in it gets its own frame, its own command and its own output, at the same size as everything you have already been shown.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_golive_run",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Can this software put itself on air?",
+      "source": "viewer/prove_golive_refuses_me.cjs — an agent walking every path to air in this codebase and recording what stops it",
+      "note": "Paths the guard recognises: @n.golive.paths — paths it permits right now: @n.golive.allowed_now",
+      "narration": "A program here attempts to broadcast, deliberately, down every route this codebase has, and records what refuses it. The count of routes and the count it is allowed down are both under the frame. The last line the program printed is its own limit, not its own strength.",
+      "tail_silence": 1.4,
+      "prints_tail": 1,
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "d_m6_golive_claim_level",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/golive_guard.cjs",
+      "from": 30,
+      "to": 36,
+      "why": "The guard's claim level, written into the module that enforces it",
+      "narration": "The guard states its own worth in its own file, and the word is @n.golive.claim_level, carried in every refusal and every grant it emits. Read the sentence about an agent already sitting inside the operator's desktop session. That is the case this guard says it does not cover, written by whoever wrote the guard.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_golive_no_key",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/golive_guard.cjs",
+      "from": 38,
+      "to": 43,
+      "why": "Why the door has no key — the module's own heading",
+      "narration": "The token that would open this door is created nowhere in the repository. Minting it belongs to the operator, and until he rules on it the guard refuses every route, including his. A door that turns away everyone is not a strong door. It is an unbuilt one, and it says so.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m6_golive_falsifier",
+      "plate": "measurement",
+      "probe": "golive.gate",
+      "asks": "What would falsify that refusal?",
+      "source": "viewer/verify_golive_refuses_agents.cjs — a stale token, a forged token, a non-interactive session and a replayed token, each required to be refused",
+      "note": "Presence-token minters in this codebase: @n.golive.minters — presence directory on disk: @n.golive.presence_dir_exists",
+      "narration": "A refusal is worth nothing unless something tries to break it. This check forges the token, ages it past its expiry, replays a spent one, and asks from a session with no human in it. Each attempt is required to be turned away. The line it printed is on screen.",
+      "tail_silence": 1.4,
+      "prints_lines": [
+        2,
+        3
+      ],
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "d_m6_gap_run",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many registered gates have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, cached nowhere",
+      "note": "@n.gap.in_ledger of @n.gap.registered registered gates. @n.gap.absent have no row at all.",
+      "narration": "This is the sharpest number in the film, and it is put on screen without a sentence wrapped around it. Of the gates this project registers, that many appear in its canonical evidence record. The rest do not appear in it at all. The instrument recomputes both counts every time it is asked.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m6_gap_schema",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 5,
+      "to": 5,
+      "why": "What that record is required to contain, from the schema's own description",
+      "narration": "The requirement is not something this film brought with it. It sits in the schema that governs every row of that record, in capitals, in the description the schema publishes about itself. Hold it beside the previous frame. The distance between the two is the whole of this scene.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_gap_stop",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/lab/desk.cjs",
+      "from": 739,
+      "to": 741,
+      "why": "Why it has stayed that way — the instrument's own answer",
+      "narration": "This is not a defect waiting for an agent to repair it. Writing rows into that record is a stop condition. The operator signs them and no agent may author one. The desk's whole job is to print the exact missing line and then halt, which is what you are reading.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_gap_selfcorrect",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/lab/desk.cjs",
+      "from": 742,
+      "to": 747,
+      "why": "The comment beside that field, recording what it used to say",
+      "narration": "The field above this comment once held a written sentence instead of a computed one. It stopped being true the day a row landed, and it stayed wrong for a fortnight inside the instrument whose numbers, two lines further up, were right. The comment stays. So does the correction it records.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_witness_run",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is there an independent party corroborating this record?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from the capture rather than recalled",
+      "note": "Independent custodians: @n.witness.independent_custodians — custodians qualifying as a witness: @n.witness.qualifying",
+      "narration": "A record only its author can vouch for is worth less than one a stranger can check. This counts the parties outside this machine that corroborate the evidence here. The box that was meant to be the second domain answers the writer's own key, so no custodian sits anywhere the writer cannot reach.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_witness_limitation",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/control-plane/LIMITATIONS.md",
+      "from": 35,
+      "to": 36,
+      "why": "The declared limitation, and the claim level it carries on the line beneath",
+      "narration": "A second domain the writer can reach is not a second domain. That sentence is not narration. It is the limitation as the repository declares it, with its claim level directly underneath. This film does not upgrade that word anywhere, and neither does the file it came from.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_witness_anchor",
+      "plate": "measurement",
+      "probe": "ledger.chain",
+      "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+      "source": "evidence/control_plane/ledger.ndjson and anchor.json — every link re-hashed, then the tip compared with the anchor",
+      "note": "Independent custodians: @n.witness.independent_custodians — claim level: @n.witness.claim_level",
+      "narration": "The chain verifies and the anchor agrees with it. That frame is placed here, beside the custodian count, on purpose. Anyone holding write access to the store rewrites the ledger and its anchor in one move. Agreement is a real property, and it is not corroboration by anybody else.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_witness_forgery",
+      "plate": "measurement",
+      "probe": "bag.roundtrip",
+      "asks": "Is a forged evidence pack caught?",
+      "source": "viewer/verify_bag.cjs --mutate — the pack is tampered with on purpose and every mutation is required to fail verification",
+      "note": "Claim level: @n.witness.claim_level — never authenticated, never independent",
+      "narration": "The pack survives a round trip and a tampered one is refused. The same run records the case it cannot catch: edit the payload, recompute the manifest and the tag manifest, and the forgery verifies clean. The gate says that itself, at the foot of its own passing output.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_pureworld_run",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the file is read and its first raise located by line number",
+      "note": "The road to air for the colony's forage claim runs through this file.",
+      "narration": "This is the check that would graduate the colony's forage claim. The command opens its runner, finds the first raise, prints the line number it sits on and the block that follows. It does not run the check. There is nothing in there yet to run.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pureworld_scaffold",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "runs/pureworld_qa_gate.exs",
+      "from": 28,
+      "to": 28,
+      "why": "The attribute the runner raises with, before it reaches the colony",
+      "narration": "One line, in the file, in the project's own words. The runner raises this before it touches the colony at all. Nothing about the colony's behaviour has been measured through this gate, and the gate has never returned a verdict of any kind, in any direction.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pureworld_prereg",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "runs/pureworld_qa_gate.exs",
+      "from": 3,
+      "to": 4,
+      "why": "Its pre-registration, and the verdict word on its row in the ledger",
+      "narration": "It is not a vague intention. There is a pre-registration written before any run, a named row in the evidence ledger, and a contract the scaffold locks in for whoever finishes it. What it has never had is a result. The verdict word on that row is on screen, and it reads pending.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pladder_receipt",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The parity ladder, as the strongest result in this programme states it in its own code",
+      "narration": "The strongest result here reaches held-out duration prediction and stops. @n.pladder.unclosed levels above it are named in the same string and marked untouched, in either direction. That clause is doing real work. Untouched is not weak support. It is no evidence at all, for or against.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_pladder_correction",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 568,
+      "to": 572,
+      "why": "The comment above it, recording what the ladder used to say",
+      "narration": "That list was once written off by one. Every level above transfer read a rung higher than the evidence licensed, and independent replication had been left off the list entirely. The correction sits in the file, above the line it corrected, and it names what it corrected rather than quietly replacing it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pladder_external",
+      "plate": "title",
+      "kicker": "WHAT CANNOT BE CLOSED FROM IN HERE",
+      "line1": "Transfer needs another dataset.",
+      "line2": "Intervention needs an apparatus. Replication needs somebody who is not us.",
+      "narration": "Three of those levels cannot be closed from inside this estate at any budget. Transfer needs a second dataset. Intervention needs a physical apparatus and a hand on it. Independent replication needs somebody who is not us, working from the published method. Full parity is not claimed here, and it is false.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m6_limitations_run",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do?",
+      "source": "docs/control-plane/LIMITATIONS.md — every declared limitation, listed by its identifier",
+      "note": "@n.limitations.declared declared, and derived from one repository of the three.",
+      "narration": "Each identifier on screen names a thing this project states it does not do, carried in the document that collects them. The count under the frame is for one repository out of three. The document says that about itself, and records the omission as one of its own limitations.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_limitations_derived",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/control-plane/LIMITATIONS.md",
+      "from": 3,
+      "to": 9,
+      "why": "How that document is made, and why it cannot drift",
+      "narration": "The page is not written. It is generated from annotations sitting on the line each limitation lives on, and a gate regenerates it and refuses any difference. A hand-kept list of limits drifts one way. Nobody deletes a limit that was fixed, and everybody forgets the one just found.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_no_verdict",
+      "plate": "title",
+      "kicker": "THE FIGURE THIS WORK EXISTS TO MOVE",
+      "line1": "No verdict has yet been authored",
+      "line2": "about a real scientific claim.",
+      "narration": "That is the honest position, and it is the last thing this movement says. There is also no register of scientific verdicts anywhere in this estate to count, so this is the one figure in the film that is declared rather than measured. The missing instrument is the harder finding.",
+      "tail_silence": 2
+    },
+    {
+      "id": "d_m7_title",
+      "plate": "title",
+      "kicker": "THE METHOD, WRITTEN DOWN",
+      "line1": "The Cookbook",
+      "line2": "A corpus this film can count, and you cannot yet clone.",
+      "narration": "The method behind this laboratory is written down. Not as a paper, but as an encyclopedia and a cookbook — chapters, recipes and a lexicon, in a repository of their own. The next frames count it, quote it, and then say plainly what stands between that corpus and you.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m7_counted",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "How large is the written corpus, and what counted it?",
+      "source": "lab/film/welcome/qc/tokens.cjs — the corpus figures are directory walks and a lexicon read, evaluated when the frame is built",
+      "note": "Chapters are markdown files counted on disk. Concepts and domains are read out of the lexicon's own file.",
+      "narration": "@n.corpus.chapters chapters. @n.corpus.concepts concepts in the lexicon, across @n.corpus.domains registered domains. Not one of those figures is typed into this film. On screen is the tail of the run that resolved every number you will hear: its first three lines are corpus counts, and its last is how many figures the register resolved without failing.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m7_kitchen_rules",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/01-kitchen-rules.md",
+      "from": 3,
+      "to": 5,
+      "why": "What the first chapter of the cookbook says it is building",
+      "narration": "This is how the corpus opens. Not with a result, but with the kitchen: the governance discipline, the pantry, and the fence vocabulary that binds every recipe. Read this before you cook anything. Under the frame is the file, the line range, and a digest recomputed from those bytes as the frame was made.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m7_ledger_wins",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/99-closing.md",
+      "from": 19,
+      "to": 21,
+      "why": "Rule one of six, from the corpus's closing chapter",
+      "narration": "The corpus keeps a claim ledger separate from the chapters that read it, and it writes down in advance which of the two loses. Where a recipe and the ledger disagree, the ledger wins and the recipe is wrong. That sentence is in the book itself, not in a policy note filed beside it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m7_no_licence",
+      "plate": "measurement",
+      "runs": "git ls-files | grep -ciE \"licen[cs]e|copying\"; grep -m1 \"^## STATUS\" deploy/PUBLISH-DECISION.md",
+      "prints_literal": "0\n## STATUS: STAGED, NOT DEPLOYED. NOTHING IS EXPOSED.",
+      "asks": "Can you take this corpus home today?",
+      "source": "run at the root of the UNI-Encyclopedia-Cookbook repository — a count of tracked licence files, then the corpus's own exposure decision",
+      "note": "No licence file yet. That the repository is not public is stated by the operator, not counted by this frame.",
+      "narration": "The mission clause says free and open. Here is where the corpus stands against it today. Zero files tracked in that repository match a licence or a copying notice, and its own exposure document opens with the words on screen. It is not public, and that part is the operator's statement rather than something this frame counts.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m7_not_public",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "deploy/PUBLISH-DECISION.md",
+      "from": 22,
+      "to": 26,
+      "why": "Why it has not simply been opened — from the corpus's own exposure decision",
+      "narration": "And here is the reason it has not simply been opened. Making it public is one command. Making it private again is also one command, and that second command does not undo the first. What was already fetched stays fetched. The decision is the operator's, and the document says so in its title.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m7_honest_position",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/01-kitchen-rules.md",
+      "from": 20,
+      "to": 26,
+      "why": "The corpus grading itself, printed in its first chapter and never softened",
+      "narration": "This is the corpus grading itself, on its own first page. It names how many developmental rungs it counts as earned, out of how many it lists. It calls the whole thing a simulation, a bounded peek, a toy world, never a person. And it fences its mathematical foundation as unrefereed, with the human review still pending.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m7_calibration",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "encyclopedia/CLAIM-LEDGER.md",
+      "from": 13,
+      "to": 13,
+      "why": "The rule that decides which direction a correction is allowed to move",
+      "narration": "That last frame did not happen by accident. This is the rule that produced it. Wording is calibrated down to the measured value and never up, including under urgency. The sentence at the end is the corpus's own summary of what that costs: the fence gets louder under pressure, not wider.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m7_count_correction",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "lexicon/CONCEPTS.json",
+      "from": 26,
+      "to": 26,
+      "why": "The same rule, applied by the corpus to its own count of itself",
+      "narration": "The lexicon holds @n.corpus.concepts concepts today. On screen is the note recording how it got there: a hand count, a validator that disagreed with it, and then a cut. The wrong figure was not overwritten. It sits in the file, on the same line as the correction, where anyone reading the count reads it too.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m7_knife",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/99-closing.md",
+      "from": 7,
+      "to": 10,
+      "why": "How the corpus ends: provenance, and a standing invitation to knock it down",
+      "narration": "And this is how it ends. The last chapter does two things: it shows where the numbers came from, and it hands you the knife. That is the same move this film makes. On the day the corpus opens, that closing chapter is the one to read first.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m8_01_four_doors",
+      "plate": "title",
+      "kicker": "HOW TO ENGAGE — FOUR DOORS",
+      "line1": "Watch. Question. Falsify. Contribute.",
+      "line2": "They are not worth the same, and this chapter says which is which.",
+      "narration": "Four ways in, and they are not equal. Watching costs nothing. Asking a question lands it somewhere it cannot be quietly removed. Trying to break something is worth more to this project than the other three together, and most of this chapter is about why that is.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "d_m8_02_watch_the_commit",
+      "plate": "measurement",
+      "probe": "head.mc",
+      "asks": "What exactly are you watching, and can you take a copy of it?",
+      "source": "git log in the estate's main repository — the commit every command in this film ran against",
+      "note": "A commit identifier is checkable by anyone who clones. A screenshot is not.",
+      "narration": "The first door. Watching starts by naming the thing watched, so here is the commit, printed by the repository rather than by us. Clone at that line and every frame after this one is yours to rebuild. Nothing on this screen needs an account or a request.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m8_03_question_append_only",
+      "plate": "measurement",
+      "probe": "ledger.chain",
+      "asks": "If you ask a question here, can it be quietly removed later?",
+      "source": "evidence/control_plane/ledger.ndjson — each entry naming the digest of the one before it, walked now",
+      "note": "Comments posted to the project surface are appended to a version-controlled file and never edited.",
+      "narration": "The second door. A question you ask lands in an append-only file under version control, which is worth something only if append-only is enforced rather than promised. On screen is the strictest form of that shape in this estate: a chain walked end to end, and its count of broken links.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m8_04_falsify_the_promise",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 3,
+      "to": 5,
+      "why": "The third door, and the entry condition it rests on — the repository's own words",
+      "narration": "The third door. Here is the standing promise it rests on, quoted from the file that carries it, with its line range and digest beside it. Read that rather than take it from me. A claim nobody can imagine breaking is not science — and that sentence is the project's, not this film's.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m8_05_outsider_coverage",
+      "plate": "measurement",
+      "probe": "public.coverage",
+      "asks": "What can somebody outside this project check today, without asking anyone?",
+      "source": "UNI.Public safety/verify_coverage.cjs — the declared universe of pages and subsystems, and the floors under each",
+      "note": "A floor that can only be lowered deliberately is a floor somebody has to sign for.",
+      "narration": "Start with what is already outside. This reads the published site against a declared list of everything it should carry, then prints the floors under it. Its last lines record a page withdrawn because its bytes were not in the commit it cited. The count fell rather than the fence bending.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m8_06_outsider_provenance",
+      "plate": "measurement",
+      "probe": "public.provenance",
+      "asks": "Do the published bytes match the commit they name?",
+      "source": "UNI.Public safety/verify_provenance.cjs — every published page held against the commit its citation names",
+      "note": "The closing lines are the check naming a gap that no code inside it can close.",
+      "narration": "Then the harder one. This holds each published page against the commit its citation names, and afterwards says what it cannot reach from inside a single clone. Read those last three lines. They are a check declining to claim something, and the next four frames are what that declining leaves open.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m8_07_the_vacancy",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is anybody outside this estate corroborating its record?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from viewer/gaia/witness.json",
+      "note": "Independent custodians: @n.witness.independent_custodians — claim level @n.witness.claim_level, never authenticated, never independent.",
+      "narration": "Here is the adverse one, and it is also the widest opening. The count of independent parties corroborating this record is @n.witness.independent_custodians — the far machine accepts the writer's own key, so a second domain the writer can reach is not a second domain. Standing outside this estate is a thing nobody inside it can do.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m8_08_rows_nobody_may_write",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many of the registered checks have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call",
+      "note": "The schema governing that record says every gate the project claims MUST be represented in it.",
+      "narration": "The second adverse one. Of @n.gap.registered registered checks, @n.gap.in_ledger appears in the permanent evidence record. The schema says every gate this project claims must be represented there. Both are on screen. Authoring the missing rows is signed by the operator, so it is open work no agent and no stranger may take.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m8_09_open_work_that_raises",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the line number and the block it stops on, printed from the file itself",
+      "note": "The road from the colony to any published result runs through this file, and it is not open.",
+      "narration": "The third adverse one, and it is a piece of work with its shape already written and nothing behind it. This reads the runner for the colony's science gate and prints the line where it stops. It raises before it reaches the colony. The pre-registration exists. The result does not.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m8_10_replication_needs_a_stranger",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The strongest result in the motor lab, stating its own ceiling in code — @n.pladder.unclosed rungs untouched",
+      "narration": "The fourth adverse one, and the reason a stranger is worth more here than another engineer. The strongest result this programme holds reaches one rung of a ladder and says so in its own code. @n.pladder.unclosed rungs above it are untouched, and independent replication is not a rung anyone inside can climb.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m8_11_where_to_put_the_crowbar",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 30,
+      "to": 33,
+      "why": "One claim, and the exact edit that would break it — carried beside the claim, not in a footnote",
+      "narration": "So here is the specific part. Every claim in the estate ships with the edit that would break it, and this is one of them, verbatim, with its digest. Perturb an update equation and a named gate's Jensen gap vanishes. Or recompute the same equations yourself and diff them against these.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m8_12_what_no_gate_measures",
+      "plate": "measurement",
+      "probe": "public.a11y",
+      "asks": "What is left for a person once every check on screen has gone green?",
+      "source": "UNI.Public generators/verify_a11y.cjs — contrast computed over a declared pairing table, structure read from the built export",
+      "note": "@n.plan.operator steps in the plan are marked as nobody's to take but the operator's.",
+      "narration": "The fourth door. This computes contrast, reads structure from the built pages, then names what it cannot measure at all: whether the words land gently for a frightened reader. That part stays a person's. And if any command in this film prints something else on your machine, send that back.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m9_open",
+      "plate": "title",
+      "kicker": "THE CLOSE — WHAT YOU WOULD BE JOINING",
+      "line1": "Where the work actually stands.",
+      "line2": "Every frame after this is a command, a file, or its output.",
+      "narration": "This is the last chapter, and it does one thing: it states where the work actually stands. What follows gets the same treatment as everything before it. A question, a command, and the output. Nothing here is a summary of the film you have just watched.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m9_measured",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do, and how much of the plan is finished?",
+      "source": "docs/control-plane/LIMITATIONS.md — generated from annotations beside the code, then diffed by a gate",
+      "note": "@n.plan.done of @n.plan.steps steps carried, @n.plan.blocked blocked, @n.plan.operator the operator's alone. Limits counted for one repository of three.",
+      "narration": "@n.limitations.declared limitations are declared today, and the frame carries the tail of that list. The page holding them is generated from annotations in the source rather than written by hand. The line beneath carries the plan: steps carried, steps blocked, and steps no agent may take. If the page and the annotations disagree, the gate that regenerates it fails.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m9_record",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How much of this project's permanent record has actually been written?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, printed with its own reason for standing",
+      "note": "Independent parties corroborating the evidence chain: @n.witness.independent_custodians — claim level tamper_evident, and the chain is not unforgeable.",
+      "narration": "Of the @n.gap.registered checks this project registers, @n.gap.in_ledger has a row in the permanent record. The schema says every gate it claims must be represented there. The instrument prints the missing line and stops, because writing those rows is a stop condition the operator signs.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m9_ladder",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The parity ladder, in the code of the result it belongs to — @n.pladder.unclosed rungs untouched",
+      "narration": "The strongest result in the flagellar-motor work is a held-out duration prediction, and this is the sentence its own code carries about what it does not reach. @n.pladder.unclosed rungs above it are untouched in either direction. Transfer needs another dataset. Intervention needs an apparatus. Independent replication needs somebody who is not us.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m9_constant",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lab/film/welcome/qc/tokens.cjs",
+      "from": 276,
+      "to": 283,
+      "why": "One figure in this film is a declared constant. This is its entry, unedited.",
+      "narration": "Every number you have seen was an expression evaluated against a real file. One was not. This is that entry in the film's own number source, saying it cannot be measured because there is no register of scientific verdicts to count. The missing instrument is the finding, not the figure.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m9_mission",
+      "plate": "intent",
+      "lines": [
+        "Worldwide peace through free and open understanding.",
+        "The public pursuit and ownership of",
+        "General Universal Natural Intelligence.",
+        "The end of extract and extortion.",
+        "Making safe all wombs, and Gaia —",
+        "earth, our solar system, and beyond."
+      ],
+      "narration": "The mission again, in the same words, on the same amber rail that marks it as intent. Nothing on this frame was measured. It stands here after the state of the work rather than before it, and not one clause of it is smaller than it was in the opening.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m9_worth",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "CLAUDE.md",
+      "from": 796,
+      "to": 798,
+      "why": "The project's own standing declaration, quoted with its line range and digest",
+      "narration": "This is the file that governs everyone working on the project, quoted with its line range and its digest. Read the last sentence. No verdict has yet been authored about a real scientific claim. There is no register of verdicts to count from, so that line is a declaration and not a measurement.",
+      "_lint_note": "The verdict count is said as a WORD here and is deliberately not rendered as the token id n.verdicts.authored. tokens.cjs marks that token operator_owned — 'it must be re-ruled by the operator before any cut renders it' — and verify_welcome_film.cjs enforces it: a cut that renders it while the spine's numbers[] entry carries no operator_ruling FAILS. Measured, not assumed: rendering it took the gate to nineteen of twenty checks. Do not convert this line to a token during assembly without the operator's ruling landing in SPINE.json first.",
+      "tail_silence": 1.9
+    },
+    {
+      "id": "d_m9_invite",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "Can you check every number in this film against the files it came from?",
+      "source": "lab/film/welcome/qc/tokens.cjs — every figure is an expression over a live file, never a typed digit",
+      "narration": "So the last frame is a command rather than a logo. That one re-measures every figure this film rendered, straight from the files it read. Clone the repository and run it. If your output disagrees with what you have just watched, the film is wrong, and that disagreement is worth more to us than the film is.",
+      "tail_silence": 2
+    }
+  ]
+}

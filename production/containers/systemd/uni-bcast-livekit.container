@@ -1,0 +1,41 @@
+# /etc/containers/systemd/uni-bcast-livekit.container
+# UNI Production Platform - unit #4 uni-bcast-livekit (DESIGN/REFERENCE, pending; not deployed).
+#
+# WebRTC SFU for guests (ADR-PROD-004). LiveKit server, self-hosted in one quadlet. The room model
+# maps directly to green-room -> on-air: the guest join app (production/guest/) lands a guest in the
+# green-room room (off air); the host admit_guest moves them to the on-air room; the 'stage' page
+# (served by uni-bcast-overlays :8099) subscribes to the on-air room and lays out talking-head/panel
+# in 2D/CSS; OBS captures the stage page (so OBS stays the ONLY mixer).
+#
+# Runs on the dedicated UNI.OS BROADCAST NODE. podman-system-generator -> uni-bcast-livekit.service.
+#
+# IMAGE: livekit/livekit-server. The moving tag is for the build-time pre-pull. To freeze, replace with
+#   Image=docker.io/livekit/livekit-server@sha256:<digest>
+# TODO(pin): replace the moving tag with @sha256:<digest> once the node's pre-pull resolves it.
+[Unit]
+Description=UNI Broadcast LiveKit (WebRTC SFU - guest green-room + on-air rooms)
+After=podman.socket network-online.target
+Wants=podman.socket
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Container]
+Image=docker.io/livekit/livekit-server:latest
+ContainerName=uni-bcast-livekit
+# Signalling ws/http + ICE/TCP fallback reachable on the LAN for remote guests (front with nginx/TLS
+# for WAN); the rtc-udp media port range is the bulk path. Add matching nft 'trusted' rules (DEPLOY.md).
+PublishPort=7880:7880
+PublishPort=7881:7881
+PublishPort=50000-50200:50000-50200/udp
+# Minimal working config: api keys, ports, dev keys TODO (livekit.yaml).
+Volume=/var/lib/uni/broadcast/livekit.yaml:/etc/livekit.yaml:ro
+# API key/secret may also arrive via env from the node's runtime env (never baked here).
+EnvironmentFile=-/etc/uni/runtime.env
+Exec=--config /etc/livekit.yaml
+
+[Service]
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target default.target

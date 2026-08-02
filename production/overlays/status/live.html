@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI — Program Monitor</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#141b24;--edge:#25313f;--ink:#e8eff7;--dim:#8fa3b8;--live:#ff2d55;--ok:#2ecc71;--warn:#f1b40f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif;padding:16px;max-width:980px;margin:0 auto}
+  h1{font-size:18px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+  .badge{padding:3px 12px;border-radius:20px;font-weight:800;font-size:12px;letter-spacing:.1em}
+  .b-live{background:var(--live);color:#fff;animation:pulse 1.2s infinite alternate}
+  .b-idle{background:#22303f;color:var(--dim)}
+  .b-stale{background:var(--warn);color:#000}
+  @keyframes pulse{from{opacity:.65}to{opacity:1}}
+  .mon{position:relative;background:#000;border:1px solid var(--edge);border-radius:12px;overflow:hidden}
+  .mon img{width:100%;display:block;aspect-ratio:16/9;object-fit:contain}
+  .bar{display:flex;gap:16px;flex-wrap:wrap;padding:10px 12px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;margin-top:10px;font-size:13px;color:var(--dim)}
+  .bar b{color:var(--ink)}
+  .links{margin-top:14px;display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .links a{display:block;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:12px;color:var(--ink);text-decoration:none;font-size:14px}
+  .links a:hover{border-color:#3fd2ff}
+  .links .k{color:var(--dim);font-size:12px;display:block}
+</style>
+</head>
+<body>
+<h1>UNI — PROGRAM <span id="onair" class="badge b-idle">…</span> <span id="scene" style="color:var(--dim);font-size:14px"></span></h1>
+<div class="mon"><img id="frame" alt="program frame"></div>
+<div class="bar">
+  <span>frames <b id="frames">–</b></span>
+  <span>skipped <b id="skipped">–</b></span>
+  <span>updated <b id="ts">–</b></span>
+  <span id="err" style="color:var(--warn)"></span>
+</div>
+<div class="links">
+  <a href="/control"><span class="k">operator console</span>/control</a>
+  <a id="pub" href="#" target="_blank"><span class="k">send a camera (one URL, pick device + slot)</span>:8443</a>
+</div>
+<script>
+const $=(id)=>document.getElementById(id);
+$("pub").href = location.protocol + "//" + location.hostname + ":8443/";
+$("pub").textContent = location.hostname + ":8443";
+let stale = 0;
+async function tick(){
+  try{
+    const r = await fetch("program.json", {cache:"no-store"});
+    const j = await r.json();
+    if (j.error){ $("err").textContent = "mixer: " + j.error; setBadge("stale"); }
+    else {
+      $("err").textContent = "";
+      $("scene").textContent = j.scene || "";
+      $("frames").textContent = j.frames ?? "–";
+      $("skipped").textContent = j.skipped ?? "–";
+      $("ts").textContent = j.ts || "–";
+      const fresh = j.ts && (Date.now() - Date.parse(j.ts) < 10000);
+      setBadge(!fresh ? "stale" : (j.streaming ? "live" : "idle"));
+    }
+  }catch(e){ setBadge("stale"); }
+  // bust the image cache each tick; keep the old frame if the new one 404s
+  const img = new Image();
+  img.onload = () => { $("frame").src = img.src; };
+  img.src = "program.jpg?t=" + Date.now();
+}
+function setBadge(s){
+  const b = $("onair");
+  b.className = "badge b-" + (s==="live"?"live":s==="stale"?"stale":"idle");
+  b.textContent = s==="live" ? "ON AIR" : s==="stale" ? "STALE" : "IDLE";
+}
+setInterval(tick, 2000); tick();
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/concept.v1.json",
+  "title": "UNI concept row",
+  "description": "One row of the append-only concept registry at evidence/concepts.ndjson. A MAP OF THE SYSTEM, not a dictionary: every row must name a `locator` that resolves in code or in a governing document, so the registry describes words this platform actually turns on rather than a vocabulary invented beside it. The specification asked for a Latin-anchored semantic layer with phonetics and reversible translation; this is its minimum honest form. Latin is an ANNOTATION here and is never the primary label on any operator-facing or public surface — a Latin lemma you must learn in order to operate the system is the opposite of the education ladder's purpose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "concept_id", "english_operational_definition", "locator", "confidence"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "concept_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable kebab-case identifier. Never renamed; superseded by a later row instead."
+    },
+    "english_operational_definition": {
+      "type": "string",
+      "minLength": 12,
+      "description": "What you would MEASURE or DO, not what the word evokes. If it cannot be stated operationally, the concept is not ready for this registry."
+    },
+    "locator": {
+      "type": "string",
+      "description": "REQUIRED, and the load-bearing fence: a repo-relative `path` or `path:line` where this concept is defined in code or in a governing document, OR a declared external namespace (e.g. 'uni-lab-mcp:<tool>') listed in the verifier's own header. A concept with no locator is a word someone liked, and the registry refuses it."
+    },
+    "latin_lemma": {
+      "type": ["string", "null"],
+      "description": "The canonical Latin anchor, dictionary form. NULL is legal and is the honest value when no defensible lemma exists. Never the primary label on any surface."
+    },
+    "latin_form": {
+      "type": ["string", "null"],
+      "description": "Grammatical form actually used (case, number), when it differs from the lemma."
+    },
+    "ipa": {
+      "type": ["string", "null"],
+      "description": "International Phonetic Alphabet for the Latin form. NULL is legal and expected. A value here REQUIRES ipa_source: Classical and Ecclesiastical pronunciations genuinely differ, and an unlabelled IPA is false precision."
+    },
+    "ipa_source": {
+      "type": ["string", "null"],
+      "enum": ["classical", "ecclesiastical", null],
+      "description": "Which pronunciation tradition the IPA follows. Required whenever ipa is non-null."
+    },
+    "back_translation": {
+      "type": ["string", "null"],
+      "description": "The Latin rendered back into English WITHOUT sight of english_operational_definition. It must DIFFER from that definition: a byte-identical back-translation is evidence the procedure was skipped rather than evidence the translation is good."
+    },
+    "ambiguity_flags": {
+      "type": "array",
+      "items": { "enum": ["polysemous", "no-classical-attestation", "neologism", "english-calque", "term-of-art"] },
+      "description": "Known ways this mapping can mislead. Recorded, never resolved by fiat."
+    },
+    "confidence": {
+      "enum": ["attested", "constructed", "provisional"],
+      "description": "THREE WORDS, NO NUMBER — the same discipline the release verdict uses. `attested` requires a corpus citation in `source`; without one the ceiling is `constructed`. `provisional` means the locator is external or unpinned."
+    },
+    "source": {
+      "type": ["string", "null"],
+      "description": "Corpus citation supporting an `attested` confidence. Required for that value."
+    },
+    "reviewer": {
+      "type": ["string", "null"],
+      "description": "Who checked this row. NULL until a human has. A reviewer name is a CLAIM, not a measurement."
+    },
+    "notes": { "type": ["string", "null"] },
+    "superseded_by": {
+      "type": ["string", "null"],
+      "description": "concept_id of a later row that replaces this one. Rows are never edited or deleted."
+    }
+  }
+}

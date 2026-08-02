@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UNI Broadcast — Music station bug</title>
+  <style>
+    /* Corner station bug for the music service. Small, always-on when a track is
+       playing. Reads spool.nowPlaying + spool.bug via state.json. */
+    body { background: transparent; overflow: hidden; margin: 0; font-family: system-ui, sans-serif; color: #e6edf3; }
+    .bug {
+      position: fixed; bottom: 28px; right: 40px;
+      display: flex; gap: 10px; align-items: center;
+      background: rgba(11,15,20,.72);
+      backdrop-filter: blur(6px) saturate(120%);
+      -webkit-backdrop-filter: blur(6px) saturate(120%);
+      border: 1px solid rgba(63,210,255,.35);
+      border-radius: 10px; padding: 8px 12px 8px 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.35);
+      opacity: 0; transition: opacity 400ms ease;
+    }
+    .bug.on { opacity: 1; }
+    .bug .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff2d55; box-shadow: 0 0 12px #ff2d55; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%{opacity:1} 50%{opacity:.35} 100%{opacity:1} }
+    .bug .lbl { font-size: 11px; letter-spacing: .18em; color: #94a3b8; text-transform: uppercase; }
+    .bug .track { font-size: 13px; font-weight: 700; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bug .stat { font-size: 11px; color: #94a3b8; }
+    /* When spool.bug is set + enabled, its own station bug renders alongside. */
+    .stationbug {
+      position: fixed; padding: 6px 10px; border-radius: 6px;
+      background: rgba(11,15,20,.72); font-size: 13px; font-weight: 800;
+      letter-spacing: .12em; text-transform: uppercase;
+      border: 1px solid; box-shadow: 0 6px 20px rgba(0,0,0,.35);
+      opacity: 0; transition: opacity 400ms ease;
+    }
+    .stationbug.on { opacity: 1; }
+    .stationbug.tl { top: 28px; left: 40px; }
+    .stationbug.tr { top: 28px; right: 40px; }
+    .stationbug.bl { bottom: 28px; left: 40px; }
+    .stationbug.br { bottom: 80px; right: 40px; }
+  </style>
+</head>
+<body>
+  <div id="bug" class="bug">
+    <div class="dot"></div>
+    <div>
+      <div class="lbl">NOW PLAYING</div>
+      <div class="track" id="track">—</div>
+      <div class="stat" id="stat">— listeners</div>
+    </div>
+  </div>
+  <div id="stationbug" class="stationbug br">STATION BUG</div>
+  <script>
+  const STATE = "/state.json";
+  const POLL_MS = 5000;
+  const $ = (id) => document.getElementById(id);
+  async function loop() {
+    try {
+      const r = await fetch(STATE, { cache: "no-store" });
+      if (r.ok) {
+        const s = await r.json();
+        const n = s.nowPlaying || {};
+        if (n.title && !n.err) {
+          // STALE-PLAYHEAD HONESTY (2026-07-18): if the cc marked the service report untrustworthy
+          // (positionSec ran past durationSec + 30s, service /api/nowplaying not advancing), the
+          // n.title we have is the frozen first-track name — do NOT air it. Render the station
+          // identity instead. Same fix as nowplaying.html.
+          if (n.stalePlayhead) {
+            $("track").textContent = "🎵 UNI Radio";
+            $("stat").textContent = `${n.listeners || 0} listener${n.listeners === 1 ? "" : "s"} · station stream live`;
+          } else {
+            $("track").textContent = `${n.title} — ${n.artist || ""}`;
+            $("stat").textContent = `${n.listeners || 0} listener${n.listeners === 1 ? "" : "s"} · v${n.contractVersion || "?"}`;
+          }
+          $("bug").classList.add("on");
+        } else {
+          $("bug").classList.remove("on");
+        }
+        const b = s.bug || {};
+        const el = $("stationbug");
+        if (b.enabled && b.text) {
+          el.textContent = b.text;
+          el.className = "stationbug " + (b.corner || "br") + " on";
+          if (b.color) { el.style.color = b.color; el.style.borderColor = b.color; }
+          el.style.opacity = (typeof b.opacity === "number") ? String(b.opacity) : "0.85";
+        } else {
+          el.classList.remove("on");
+        }
+      }
+    } catch (_) {}
+    setTimeout(loop, POLL_MS);
+  }
+  loop();
+  </script>
+</body>
+</html>

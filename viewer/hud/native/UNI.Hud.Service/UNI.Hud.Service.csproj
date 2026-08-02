@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-UNI.Hud.Service-d71e4ccd-c779-4cc3-91a3-df908ef5a09d</UserSecretsId>
+    <RootNamespace>UNI.Hud.Service</RootNamespace>
+    <AssemblyName>UNI.Hud.Service</AssemblyName>
+    <Version>0.2.0</Version>
+    <AssemblyTitle>UNI HUD Service</AssemblyTitle>
+    <Company>solutionwright</Company>
+    <Product>UNI HUD</Product>
+    <Description>UNI HUD backend service — real Windows service (ServiceBase via Microsoft.Extensions.Hosting.WindowsServices). Read-only JSON API + audience receiver + user-mode sight receiver.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The honesty seams (SnapshotBuilder.BuildAir/BuildEgress/ParseDriftRaw, PollWorker.Rate) are
+         `internal` on purpose — they are composition details, not API. Exposing them to the test
+         assembly lets SnapshotHonestyTests pin the "never fabricate a measurement" properties
+         without widening the surface to `public` just to make it testable. -->
+    <InternalsVisibleTo Include="UNI.Hud.Service.Tests" />
+  </ItemGroup>
+
+</Project>

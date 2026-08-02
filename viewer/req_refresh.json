@@ -1,0 +1,7 @@
+{
+  "requestType": "PressInputPropertiesButton",
+  "requestData": {
+    "inputName": "UNI Stream",
+    "propertyName": "refreshnocache"
+  }
+}

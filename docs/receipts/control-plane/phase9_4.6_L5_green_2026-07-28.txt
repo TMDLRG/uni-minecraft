@@ -1,0 +1,43 @@
+PHASE 9 STEP 4.6 BUILD L5 - THE DESK, AND THE RUN UNDER WAY
+captured 2026-07-28  ·  HEAD 92c70aa
+
+THIS BUILD WAS 14/14 AND WRONG. An adversarial audit raised 25 findings; 22 survived refutation,
+6 of them high. Three of them were invisible BECAUSE OF this gate's own checks. The gate below is
+the rebuilt one: 20 checks, and where the claim is about BEHAVIOUR it now measures behaviour ---
+it boots a server, issues hostile requests, runs processes, and hashes files before and after.
+
+  ok  M2: the desk's bytes ARE SP.ControlPlane.GateRow.encode/1's bytes - 7 rows, byte-identical — and 5 of them came out of preRegistration() and afterRun() rather than being written here, so the comparison moves when the desk moves. Includes keys supplied in reversed order, a quote, a backslash and a tab.
+  ok  M2: the desk's validator AGREES WITH THE WRITER on accept and refuse - 9 rows — one legal, eight the Elixir refuses (an impossible date, a numeric notes, a numeric supersedes entry, a non-kebab name, a wrong schema_version, an invented verdict, a missing class, an extra key) and the desk refuses all eight too. The page renders this output as "schema-valid", so a port that accepts what the writer refuses would tell him a row is writable when it is not.
+  ok  NO VERDICT WITHOUT A RUN — including a hand-typed exit code - refused with nothing, with an empty observation, with a verdict handed over directly, WITH A HAND-TYPED {exit_code: 0}, and with a forged token. The first version accepted the fourth of those and its check was still called NO VERDICT WITHOUT A RUN — it proved 'no verdict without a number named exit_code', a weaker claim wearing a stronger name.
+  ok  the verdict follows the exit code, both ways - 0→PASS · 1→FAIL · 2→FAIL · 137→FAIL · -1→FAIL. The runner's law, not a new one.
+  ok  a gate that is not at HEAD is REFUSED, not FAILED - 1 registered gate(s) are not in HEAD and every one comes back NOT_AT_HEAD: lab-l5. A question that could not be asked must never wear the same word as an answer of no.
+  ok  the BEFORE row says PENDING, which is the schema's own word for it - "registered but not run" — quoted from production/schemas/gate_row.schema.json. Everything except the outcome, which is exactly as much as can honestly be known beforehand.
+  ok  the AFTER row carries blockers too, and says it is not writable - the row a real run produces is NOT writable, and it says why: receipt_path is empty, and the schema requires it. 11 of the 12 pending rows point receipt_path at their own pre-registr… The careful half of the desk used to be the half nobody reaches by pressing R.
+  ok  the row that CANNOT be written says why, in full - gaia's gate_row is "gaia-*" — a glob, which the schema's kebab-case rule refuses, so the registry entry names a FAMILY of rows and the ledger has no shape for that.
+  ok  the pending-row convention is MEASURED, and its exceptions are named - 11 of the 12 pending rows point receipt_path at their own pre-registration document; 1 do not (hud-renders-stale-as-stale). Recomputed here from the ledger, independently. It was written as a universal ("every one of the 12") in three places including the operator-facing blocker text, and it was never true — a stale universal rendered to a reader is worse than a stale comment.
+  ok  NEGATIVE CONTROL: given a real receipt, the row comes out WRITABLE - {"schema_version":1,"name":"lab-l4-three-kinds-of-closed","receipt_path":"docs/receipts/control-plane/phase9_4.6_L4_green_2026-07-28.txt","verdict":"PASS","evidence_class":"C","last_updated":"2026-07-28"} — so the refusals above are refusals about THOSE rows, not a desk that says no to everything. A guard that refuses unconditionally checks nothing.
+  ok  the gate id is a LOOKUP KEY, never a command - a path traversal, a shell string, __proto__ and constructor all come back NOT_IN_REGISTRY — the id is only ever used to find an entry, and the argv is built from that entry. A run endpoint that interpolated its input would be a remote shell wearing a floor plan.
+  ok  THE RUN ROUTE REFUSES A CROSS-SITE REQUEST - measured against a booted server, not read off the source. A CORS-simple POST with a hostile Origin → 403 · application/json with no x-uni-cc → 403 · x-uni-cc with the wrong content-type → 403 · the proper shape → 200 and NOT_IN_REGISTRY · POST to any other path → 405 · DELETE → 405. This repository already mandated the header (command_center.cjs:1579, ADR-PROD-015) and L5 shipped without it; the previous check counted routes and never callers.
+  ok  the run happens in a throwaway worktree at HEAD, with no shell and a timeout - argv is [node, <registry file>] and nothing else; shell:false; cwd is a fresh checkout that is removed afterwards; the child is killed after 180000ms, because a hung child would hold a worktree open indefinitely and the first version had no bound at all.
+  ok  a real run, end to end, from the committed bytes - lab-l0 ran at 92c70aad in a clean checkout, exit 0 in 549ms, and the after-row came out PASS. Not a simulation of a run — a process.
+  ok  NOTHING HERE WRITES THE GATE LEDGER (S4) - no write call exists in desk.cjs, and evidence/gates.ndjson hashes to 964ea25cfe8666ca… after several real runs — the same as before them. The desk shows the exact line and stops.
+  ok  the runs did not touch the working tree, and left no worktree behind - git status --porcelain is byte-identical before and after every run in this gate, and the worktree count is unchanged (0 pre-existing besides the main tree). MEASURED, not asserted from source text — the previous version proved three regexes matched and called that "it cannot touch the working tree".
+  ok  THE GAP IS RECOMPUTED HERE AND AGREES - 25 registered · 0 in the canonical ledger · 25 absent, derived independently from gate_registry.json and gates.ndjson. NOT ONE OF THEM IS. The runner's list and the canonical ledger are disjoint, and nothing has ever checked. The runner asserts its registry is COMPLETE — against the filesystem, which is a different question from whether the record knows these gates exist. Closing it means authoring rows in evidence/gates.ndjson, which is S4 — the operator's, not an agent's.
+  ok  no gate count is written into prose - the headline is rendered from theGap() on every request, and nothing in either file states a count in words or digits — INCLUDING the comments explaining why. This check convicted its own correction's explanation on the first run, which is use-versus-mention for the tenth time here; the anecdote gave up its digits rather than the rule giving up its teeth.
+  ok  the S10 seal bites — proved by injection, because nothing on this floor can reach it - with lab-l0-empty-room injected as pending, lab-l0 comes back SEALED_BY_S10. On the real ledger no registered gate_row is a pending row's name, so the branch is unreachable today and the payload says so rather than leaving a guard nobody has watched work.
+  ok  the page says the gap out loud - a viewer is never left wondering whether the desks failed to load
+
+GATE: PASS - lab-l5, 20/20 checks
+  25 registered gates · 0 in the canonical ledger.
+  Walk it: node viewer/lab/lab_server.cjs  ->  http://127.0.0.1:8103/lab/l5
+
+--- L0, amended: its read-only clause became false at L5 ---
+  ok  L0's OWN route reads no real state - /api/lab returns a fixed census of nodes: 0 and touches no evidence. The projection is L3's build and arriving early would mean showing real gates before anything can say what a fogged one looks like. NARROWED FROM A WHOLE-FILE SCAN, which stopped meaning anything once L3, L4 and L5 shared this server — it was passing by accident of file layout.
+
+GATE: PASS - lab-l0, 10/10 checks
+  Open it: node viewer/lab/lab_server.cjs  ->  http://127.0.0.1:8103/lab
+
+--- the runner ---
+
+GATE RUNNER: PASS — law holds for 22/22 run · 0 law violation(s) · registry complete. Verdict tally: 20 PASS · 2 FAIL.
+(This runner asserts the exit⟺verdict LAW and its own completeness. A gate's own FAIL is law-consistent and does not fail the runner — it fails that gate.)

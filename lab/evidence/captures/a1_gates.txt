@@ -1,0 +1,2699 @@
+=== A1 GATES (baseline) ===
+--- compile --warnings-as-errors ---
+Compiling 98 files (.ex)
+Generated stratified_palimpsest app
+--- format --check-formatted ---
+** (Mix) mix format failed due to --check-formatted.
+The following files are not formatted:
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/producer/codec.ex
+[0m
+         |
+186 186  |      rows ->
+187 187  |        n = length(rows)
+188     -|        build = Enum.count(rows, fn r -> Map.get(r, :action) == "mine" or Map.get(r, :context) in @productive_ctx end) / n
+    188 +|
+    189 +|        build =
+    190 +|          Enum.count(rows, fn r ->
+    191 +|            Map.get(r, :action) == "mine" or Map.get(r, :context) in @productive_ctx
+    192 +|          end) / n
+    193 +|
+189 194  |        tools = Enum.sum(Enum.map(rows, fn r -> num(senses(r)["tools"], 0) end)) / n
+190 195  |        score = build * 2.0 + min(tools, 2.0)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/speech.ex
+[0m
+         |
+113 113  |        m =
+114 114  |          Language.load(path) ||
+115     -|            (Language.new(k: 10, seed: 7)
+116     -|             |> Language.learn_corpus(SP.Brain.MinecraftCorpus.generate(per: 12))
+117     -|             |> Language.fit(iters: 12))
+    115 +|            Language.new(k: 10, seed: 7)
+    116 +|            |> Language.learn_corpus(SP.Brain.MinecraftCorpus.generate(per: 12))
+    117 +|            |> Language.fit(iters: 12)
+118 118  |
+119 119  |        :persistent_term.put({__MODULE__, :mc}, m)
+         |
+134 134  |
+135 135  |    cond do
+136     -|      truthy(senses["hurt"]) or (is_number(threat) and threat < 10) -> :danger
+137     -|      String.contains?(look, ["lava", "fire", "magma"]) -> :danger
+138     -|      String.contains?(look, ["water", "kelp", "seagrass"]) -> :water
+139     -|      action == "mine" or String.contains?(look, ["stone", "ore", "cobble", "deepslate", "andesite"]) -> :mining
+140     -|      action in ["place", "craft"] -> :building
+141     -|      String.contains?(look, ["log", "leaves", "wood", "sapling"]) -> :forest
+142     -|      light == 0 -> :night
+143     -|      true -> :calm
+    136 +|      truthy(senses["hurt"]) or (is_number(threat) and threat < 10) ->
+    137 +|        :danger
+    138 +|
+    139 +|      String.contains?(look, ["lava", "fire", "magma"]) ->
+    140 +|        :danger
+    141 +|
+    142 +|      String.contains?(look, ["water", "kelp", "seagrass"]) ->
+    143 +|        :water
+    144 +|
+    145 +|      action == "mine" or String.contains?(look, ["stone", "ore", "cobble", "deepslate", "andesite"]) ->
+    146 +|        :mining
+    147 +|
+    148 +|      action in ["place", "craft"] ->
+    149 +|        :building
+    150 +|
+    151 +|      String.contains?(look, ["log", "leaves", "wood", "sapling"]) ->
+    152 +|        :forest
+    153 +|
+    154 +|      light == 0 ->
+    155 +|        :night
+    156 +|
+    157 +|      true ->
+    158 +|        :calm
+144 159  |    end
+145 160  |  end
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/strategist_test.exs
+[0m
+       |
+51 51  |  test "experiencing self (L1) commits fast; remembering self (L2) commits slow" do
+52 52  |    # L1: a sharp factor concentrates in a SINGLE observation
+53    -|    l1 = Factors.new([%{a: [[[0.95, 0.05], [0.05, 0.95]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5]}])
+   53 +|    l1 =
+   54 +|      Factors.new([
+   55 +|        %{a: [[[0.95, 0.05], [0.05, 0.95]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5]}
+   56 +|      ])
+   57 +|
+54 58  |    l1 = Factors.infer_states(l1, [[0]])
+55 59  |    l1_entropy = Math.entropy(hd(Factors.beliefs(l1)))
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/anchor.ex
+[0m
+         |
+ 35  35  |  # It LEARNS to read free language by pure active inference — no LLM. See SP.Brain.Reader.
+ 36  36  |  @seed [
+ 37     -|    {"who are you", :identity}, {"what are you", :identity}, {"are you real", :identity},
+ 38     -|    {"are you a robot", :identity}, {"are you human", :identity}, {"what is this show", :identity},
+ 39     -|    {"how many are alive", :count}, {"the population", :count}, {"the head count", :count},
+ 40     -|    {"how big is the cast", :count}, {"the number of agents", :count}, {"the crew size", :count},
+ 41     -|    {"who is in danger", :danger}, {"is anyone hurt", :danger}, {"anyone near death", :danger},
+ 42     -|    {"who is at risk", :danger}, {"are they wounded", :danger},
+ 43     -|    {"who is on camera", :star}, {"who is the star", :star}, {"who has the spotlight", :star},
+ 44     -|    {"what are we watching", :star}, {"who is in focus right now", :star},
+ 45     -|    {"who is the strongest", :healthiest}, {"the healthiest uni", :healthiest}, {"the fittest one", :healthiest},
+ 46     -|    {"who is the weakest", :weakest}, {"the most fragile", :weakest}, {"who is sick", :weakest},
+ 47     -|    {"what is the mood", :mood}, {"how do they feel", :mood}, {"their emotion", :mood}, {"are they happy", :mood},
+ 48     -|    {"the kin groups", :kin}, {"the families", :kin}, {"who is related", :kin},
+ 49     -|    {"where are they", :where}, {"their location", :where}, {"where is the colony", :where},
+ 50     -|    {"what are they doing", :doing}, {"what is going on", :doing}, {"what is happening to them", :doing},
+ 51     -|    {"why did you cut", :why}, {"what is your reason", :why}, {"explain that choice", :why}, {"how come you did that", :why},
+ 52     -|    {"how is the server", :server}, {"the tick rate", :server}, {"is it lagging", :server},
+ 53     -|    {"system performance", :server}, {"server health", :server},
+ 54     -|    {"what just happened", :recent}, {"recap recent events", :recent}, {"the history so far", :recent},
+ 55     -|    {"what is your plan", :plan}, {"what comes next", :plan}, {"your strategy", :plan}, {"what will you do", :plan},
+ 56     -|    {"do you need a sensor", :needs}, {"what do you want", :needs}, {"what are you missing", :needs},
+ 57     -|    {"say it in spanish", :language}, {"translate the caption", :language}, {"what language", :language},
+ 58     -|    {"how dramatic is it", :drama}, {"is it tense", :drama}, {"the tension level", :drama},
+ 59     -|    {"what is your focus", :focus}, {"what are you paying attention to", :focus},
+     37 +|    {"who are you", :identity},
+     38 +|    {"what are you", :identity},
+     39 +|    {"are you real", :identity},
+     40 +|    {"are you a robot", :identity},
+     41 +|    {"are you human", :identity},
+     42 +|    {"what is this show", :identity},
+     43 +|    {"how many are alive", :count},
+     44 +|    {"the population", :count},
+     45 +|    {"the head count", :count},
+     46 +|    {"how big is the cast", :count},
+     47 +|    {"the number of agents", :count},
+     48 +|    {"the crew size", :count},
+     49 +|    {"who is in danger", :danger},
+     50 +|    {"is anyone hurt", :danger},
+     51 +|    {"anyone near death", :danger},
+     52 +|    {"who is at risk", :danger},
+     53 +|    {"are they wounded", :danger},
+     54 +|    {"who is on camera", :star},
+     55 +|    {"who is the star", :star},
+     56 +|    {"who has the spotlight", :star},
+     57 +|    {"what are we watching", :star},
+     58 +|    {"who is in focus right now", :star},
+     59 +|    {"who is the strongest", :healthiest},
+     60 +|    {"the healthiest uni", :healthiest},
+     61 +|    {"the fittest one", :healthiest},
+     62 +|    {"who is the weakest", :weakest},
+     63 +|    {"the most fragile", :weakest},
+     64 +|    {"who is sick", :weakest},
+     65 +|    {"what is the mood", :mood},
+     66 +|    {"how do they feel", :mood},
+     67 +|    {"their emotion", :mood},
+     68 +|    {"are they happy", :mood},
+     69 +|    {"the kin groups", :kin},
+     70 +|    {"the families", :kin},
+     71 +|    {"who is related", :kin},
+     72 +|    {"where are they", :where},
+     73 +|    {"their location", :where},
+     74 +|    {"where is the colony", :where},
+     75 +|    {"what are they doing", :doing},
+     76 +|    {"what is going on", :doing},
+     77 +|    {"what is happening to them", :doing},
+     78 +|    {"why did you cut", :why},
+     79 +|    {"what is your reason", :why},
+     80 +|    {"explain that choice", :why},
+     81 +|    {"how come you did that", :why},
+     82 +|    {"how is the server", :server},
+     83 +|    {"the tick rate", :server},
+     84 +|    {"is it lagging", :server},
+     85 +|    {"system performance", :server},
+     86 +|    {"server health", :server},
+     87 +|    {"what just happened", :recent},
+     88 +|    {"recap recent events", :recent},
+     89 +|    {"the history so far", :recent},
+     90 +|    {"what is your plan", :plan},
+     91 +|    {"what comes next", :plan},
+     92 +|    {"your strategy", :plan},
+     93 +|    {"what will you do", :plan},
+     94 +|    {"do you need a sensor", :needs},
+     95 +|    {"what do you want", :needs},
+     96 +|    {"what are you missing", :needs},
+     97 +|    {"say it in spanish", :language},
+     98 +|    {"translate the caption", :language},
+     99 +|    {"what language", :language},
+    100 +|    {"how dramatic is it", :drama},
+    101 +|    {"is it tense", :drama},
+    102 +|    {"the tension level", :drama},
+    103 +|    {"what is your focus", :focus},
+    104 +|    {"what are you paying attention to", :focus},
+ 60 105  |    # conversational — the producer is a live HOST, not only a query box (it learns these too)
+ 61     -|    {"hello there", :greeting}, {"hey friend", :greeting}, {"good morning", :greeting},
+ 62     -|    {"good evening", :greeting}, {"greetings host", :greeting},
+ 63     -|    {"thanks so much", :thanks}, {"thank you", :thanks}, {"much appreciated", :thanks},
+ 64     -|    {"goodbye for now", :bye}, {"good night", :bye}, {"see you soon", :bye},
+ 65     -|    {"how is it going", :wellbeing}, {"how are things", :wellbeing}, {"hope you are well", :wellbeing},
+ 66     -|    {"say something", :speak}, {"speak to me", :speak}, {"talk to me", :speak}, {"narrate something", :speak}
+    106 +|    {"hello there", :greeting},
+    107 +|    {"hey friend", :greeting},
+    108 +|    {"good morning", :greeting},
+    109 +|    {"good evening", :greeting},
+    110 +|    {"greetings host", :greeting},
+    111 +|    {"thanks so much", :thanks},
+    112 +|    {"thank you", :thanks},
+    113 +|    {"much appreciated", :thanks},
+    114 +|    {"goodbye for now", :bye},
+    115 +|    {"good night", :bye},
+    116 +|    {"see you soon", :bye},
+    117 +|    {"how is it going", :wellbeing},
+    118 +|    {"how are things", :wellbeing},
+    119 +|    {"hope you are well", :wellbeing},
+    120 +|    {"say something", :speak},
+    121 +|    {"speak to me", :speak},
+    122 +|    {"talk to me", :speak},
+    123 +|    {"narrate something", :speak}
+ 67 124  |  ]
+ 68 125  |
+         |
+247 304  |    kinds =
+248 305  |      cond do
+249     -|        matched != [] -> matched
+    306 +|        matched != [] ->
+    307 +|          matched
+    308 +|
+250 309  |        # nothing matched: if two meanings are CLOSE, ask which (epistemic information-seeking);
+251 310  |        # else a named UNI ⇒ dossier; else an honest :unsure (never guess / hallucinate).
+         |
+275 334  |      # Word-boundaried so "hi" never fires inside "this"/"which"; these COMBINE with any real
+276 335  |      # query in the same line ("hey, who's in danger?" greets AND answers).
+277     -|      {~r/\b(hi|hello|hey|yo|hiya|howdy|sup|greetings)\b|\bgood (morning|afternoon|evening|day)\b/, :greeting},
+    336 +|      {~r/\b(hi|hello|hey|yo|hiya|howdy|sup|greetings)\b|\bgood (morning|afternoon|evening|day)\b/,
+    337 +|       :greeting},
+278 338  |      {~r/\b(thanks|thank you|thank u|thx|ty|cheers)\b|appreciate (it|that)|much appreciated/, :thanks},
+279 339  |      {~r/\b(bye|goodbye|goodnight|farewell|cya)\b|good night|see (you|ya)( soon| later)?|take care/, :bye},
+280     -|      {~r/\bhow (are|r) (you|u)\b|how.?s it going|how are things|how do you do|how have you been|are you (ok|okay|well|alright)/, :wellbeing},
+281     -|      {~r/\b(say something|speak|talk to me|improvise|freestyle)\b|in your own (words|voice)|narrate something|let me hear you/, :speak},
+    340 +|      {~r/\bhow (are|r) (you|u)\b|how.?s it going|how are things|how do you do|how have you been|are you (ok|okay|well|alright)/,
+    341 +|       :wellbeing},
+    342 +|      {~r/\b(say something|speak|talk to me|improvise|freestyle)\b|in your own (words|voice)|narrate something|let me hear you/,
+    343 +|       :speak},
+282 344  |      # — who/what am I (honest self-description; no language model) —
+283     -|      {~r/who are you|what are you|what is this|who.s the producer|are you (a |an )?(ai|llm|bot|human|real|fake|gpt)|are you real|explain yourself|what.s your name/, :identity},
+    345 +|      {~r/who are you|what are you|what is this|who.s the producer|are you (a |an )?(ai|llm|bot|human|real|fake|gpt)|are you real|explain yourself|what.s your name/,
+    346 +|       :identity},
+284 347  |      # — the colony —
+285 348  |      {~r/how many|head ?count|alive|populat|cast size|how big/, :count},
+         |
+302 365  |      {~r/your focus|attention|paying attention|concentrat/, :focus},
+303 366  |      # VISION (the producer's video sight): what its visual cortex is seeing on the feed.
+304     -|      {~r/what do you see|through your eyes|your (eyes|vision|visual|video|sight)|describe the (view|scene)|what does it look like|what.s on your screen/, :vision}
+    367 +|      {~r/what do you see|through your eyes|your (eyes|vision|visual|video|sight)|describe the (view|scene)|what does it look like|what.s on your screen/,
+    368 +|       :vision}
+305 369  |    ]
+306 370  |  end
+         |
+359 423  |
+360 424  |  defp who_in_danger(rows) do
+361     -|    danger = Enum.filter(rows, fn r -> s = senses(r); truthy(s["hurt"]) or near?(s["hostile_dist"]) or num(s["health"], 20) < 8 end)
+    425 +|    danger =
+    426 +|      Enum.filter(rows, fn r ->
+    427 +|        s = senses(r)
+    428 +|        truthy(s["hurt"]) or near?(s["hostile_dist"]) or num(s["health"], 20) < 8
+    429 +|      end)
+    430 +|
+362 431  |    names = Enum.map(danger, & &1.username)
+363 432  |
+         |
+374 443  |  defp current_star(rows, star) do
+375 444  |    case find(rows, star) do
+376     -|      nil -> %{kind: :star, text: "The camera is settling on the colony.", refs: []}
+377     -|      r -> %{kind: :star, text: "The camera is on #{star} — currently #{action(r)} (#{ctx_of(r)}).", refs: [star]}
+    445 +|      nil ->
+    446 +|        %{kind: :star, text: "The camera is settling on the colony.", refs: []}
+    447 +|
+    448 +|      r ->
+    449 +|        %{
+    450 +|          kind: :star,
+    451 +|          text: "The camera is on #{star} — currently #{action(r)} (#{ctx_of(r)}).",
+    452 +|          refs: [star]
+    453 +|        }
+378 454  |    end
+379 455  |  end
+         |
+381 457  |  defp healthiest(rows) do
+382 458  |    case rows do
+383     -|      [] -> %{kind: :health, text: "No UNIs are live yet.", refs: []}
+    459 +|      [] ->
+    460 +|        %{kind: :health, text: "No UNIs are live yet.", refs: []}
+    461 +|
+384 462  |      _ ->
+385 463  |        r = Enum.max_by(rows, fn x -> num(senses(x)["health"], 0) end)
+386     -|        %{kind: :health, text: "#{r.username} is the healthiest at #{round(num(senses(r)["health"], 0))}/20.", refs: [r.username]}
+    464 +|
+    465 +|        %{
+    466 +|          kind: :health,
+    467 +|          text: "#{r.username} is the healthiest at #{round(num(senses(r)["health"], 0))}/20.",
+    468 +|          refs: [r.username]
+    469 +|        }
+387 470  |    end
+388 471  |  end
+         |
+390 473  |  defp weakest(rows) do
+391 474  |    case rows do
+392     -|      [] -> %{kind: :health, text: "No UNIs are live yet.", refs: []}
+    475 +|      [] ->
+    476 +|        %{kind: :health, text: "No UNIs are live yet.", refs: []}
+    477 +|
+393 478  |      _ ->
+394 479  |        r = Enum.min_by(rows, fn x -> num(senses(x)["health"], 20) end)
+395     -|        %{kind: :health, text: "#{r.username} is the most fragile at #{round(num(senses(r)["health"], 20))}/20.", refs: [r.username]}
+    480 +|
+    481 +|        %{
+    482 +|          kind: :health,
+    483 +|          text: "#{r.username} is the most fragile at #{round(num(senses(r)["health"], 20))}/20.",
+    484 +|          refs: [r.username]
+    485 +|        }
+396 486  |    end
+397 487  |  end
+         |
+405 495  |
+406 496  |  defp kin_summary(rows) do
+407     -|    by_kin = rows |> Enum.group_by(& &1.kin) |> Enum.map(fn {k, rs} -> "kin #{k}: #{length(rs)}" end) |> Enum.sort()
+408     -|    text = if by_kin == [], do: "No kin groups are live yet.", else: "Kin groups — #{Enum.join(by_kin, " · ")}."
+    497 +|    by_kin =
+    498 +|      rows |> Enum.group_by(& &1.kin) |> Enum.map(fn {k, rs} -> "kin #{k}: #{length(rs)}" end) |> Enum.sort()
+    499 +|
+    500 +|    text =
+    501 +|      if by_kin == [], do: "No kin groups are live yet.", else: "Kin groups — #{Enum.join(by_kin, " · ")}."
+    502 +|
+409 503  |    %{kind: :kin, text: text, refs: []}
+410 504  |  end
+         |
+412 506  |  defp doing(rows, who) do
+413 507  |    case find(rows, who) do
+414     -|      nil -> %{kind: :doing, text: "I can't see that one right now.", refs: []}
+415     -|      r -> %{kind: :doing, text: "#{r.username} is #{action(r)} — strategy #{ctx_of(r)}, planning #{intent(r)}.", refs: [r.username]}
+    508 +|      nil ->
+    509 +|        %{kind: :doing, text: "I can't see that one right now.", refs: []}
+    510 +|
+    511 +|      r ->
+    512 +|        %{
+    513 +|          kind: :doing,
+    514 +|          text: "#{r.username} is #{action(r)} — strategy #{ctx_of(r)}, planning #{intent(r)}.",
+    515 +|          refs: [r.username]
+    516 +|        }
+416 517  |    end
+417 518  |  end
+         |
+436 537  |    mood = rows |> Enum.map(&Map.get(&1, :emotion, :calm)) |> mode() || :calm
+437 538  |    s = if star, do: "the camera follows #{star}", else: "the camera roams the colony"
+438     -|    %{kind: :overview, text: "#{length(rows)} UNIs are live; #{s}; the mood is #{mood}.", refs: List.wrap(star)}
+    539 +|
+    540 +|    %{
+    541 +|      kind: :overview,
+    542 +|      text: "#{length(rows)} UNIs are live; #{s}; the mood is #{mood}.",
+    543 +|      refs: List.wrap(star)
+    544 +|    }
+439 545  |  end
+440 546  |
+         |
+443 549  |  # CONCRETE, growing evidence that it is learning the language: its live vocabulary size.
+444 550  |  defp identity(c) do
+445     -|    %{kind: :identity, refs: [],
+446     -|      text: "I'm the Producer — a pure active-inference agent, not a language model. I direct this " <>
+447     -|        "show by choosing each camera cut and narration to minimise expected free energy over the " <>
+448     -|        "colony's live state, and I answer by reading that state directly (never inventing facts). " <>
+449     -|        "Right now #{length(c.rows)} UNIs are live." <> learned_suffix(c)}
+    551 +|    %{
+    552 +|      kind: :identity,
+    553 +|      refs: [],
+    554 +|      text:
+    555 +|        "I'm the Producer — a pure active-inference agent, not a language model. I direct this " <>
+    556 +|          "show by choosing each camera cut and narration to minimise expected free energy over the " <>
+    557 +|          "colony's live state, and I answer by reading that state directly (never inventing facts). " <>
+    558 +|          "Right now #{length(c.rows)} UNIs are live." <> learned_suffix(c)
+    559 +|    }
+450 560  |  end
+451 561  |
+         |
+458 568  |
+459 569  |        if k.words > 0,
+460     -|          do: " And I keep learning to talk as we go — #{k.words} words across #{map_size(k.examples)} kinds of question so far.",
+    570 +|          do:
+    571 +|            " And I keep learning to talk as we go — #{k.words} words across #{map_size(k.examples)} kinds of question so far.",
+461 572  |          else: ""
+462 573  |
+         |
+469 580  |  # GROUNDED (the live head-count is read, never invented), then invites a real question.
+470 581  |  defp greeting(c) do
+471     -|    %{kind: :greeting, refs: [],
+472     -|      text: "Hi! I'm the Producer, directing this live colony — #{length(c.rows)} UNIs are on screen right now. " <>
+473     -|        "Ask me how many are alive, who's in danger, who's on camera, why I made my last cut, or about a named UNI." <>
+474     -|        learned_suffix(c)}
+    582 +|    %{
+    583 +|      kind: :greeting,
+    584 +|      refs: [],
+    585 +|      text:
+    586 +|        "Hi! I'm the Producer, directing this live colony — #{length(c.rows)} UNIs are on screen right now. " <>
+    587 +|          "Ask me how many are alive, who's in danger, who's on camera, why I made my last cut, or about a named UNI." <>
+    588 +|          learned_suffix(c)
+    589 +|    }
+475 590  |  end
+476 591  |
+477 592  |  defp thanks do
+478     -|    %{kind: :thanks, refs: [], text: "You're welcome — glad you're watching. Ask me anything about the colony."}
+    593 +|    %{
+    594 +|      kind: :thanks,
+    595 +|      refs: [],
+    596 +|      text: "You're welcome — glad you're watching. Ask me anything about the colony."
+    597 +|    }
+479 598  |  end
+480 599  |
+         |
+488 607  |    watching =
+489 608  |      case SP.Brain.Vision.percept("producer") do
+490     -|        %{surprise: surp} when is_number(surp) -> "I'm watching through my visual cortex — the view is #{SP.Brain.Vision.novelty(surp)}."
+491     -|        _ -> "I'm watching the colony through my visual cortex."
+    609 +|        %{surprise: surp} when is_number(surp) ->
+    610 +|          "I'm watching through my visual cortex — the view is #{SP.Brain.Vision.novelty(surp)}."
+    611 +|
+    612 +|        _ ->
+    613 +|          "I'm watching the colony through my visual cortex."
+492 614  |      end
+493 615  |
+         |
+495 617  |      if is_binary(seen) and seen != "",
+496 618  |        # the producer DESCRIBES what it sees, generated from its Minecraft-trained voice, grounded
+497     -|        do: "#{watching} I see — #{seen} (I learn the look of the world from my own video feed; no script, no language model.)",
+498     -|        else: watching <> " I learn the look of every scene from my own video feed — no script, and I only report the scene I've inferred, never raw pixels."
+    619 +|        do:
+    620 +|          "#{watching} I see — #{seen} (I learn the look of the world from my own video feed; no script, no language model.)",
+    621 +|        else:
+    622 +|          watching <>
+    623 +|            " I learn the look of every scene from my own video feed — no script, and I only report the scene I've inferred, never raw pixels."
+499 624  |
+500 625  |    %{kind: :vision, refs: List.wrap(star), text: text}
+         |
+507 632  |  # WELLBEING — "how are you?". Honest + grounded: the producer reports its own running state.
+508 633  |  defp wellbeing(c) do
+509     -|    %{kind: :wellbeing, refs: [],
+510     -|      text: "I'm running the show — directing #{length(c.rows)} live UNIs and picking each shot to keep the " <>
+511     -|        "story clear. The work is steady." <> learned_suffix(c)}
+    634 +|    %{
+    635 +|      kind: :wellbeing,
+    636 +|      refs: [],
+    637 +|      text:
+    638 +|        "I'm running the show — directing #{length(c.rows)} live UNIs and picking each shot to keep the " <>
+    639 +|          "story clear. The work is steady." <> learned_suffix(c)
+    640 +|    }
+512 641  |  end
+513 642  |
+         |
+521 650  |        framed = if line == "", do: "I'm still gathering words.", else: String.capitalize(line) <> "."
+522 651  |
+523     -|        %{kind: :speak, refs: [],
+524     -|          text: "In my own learned voice: \"#{framed}\" " <>
+525     -|            "I compose that from everything I've heard and said — no script, no language model. It grows as the show goes on."}
+    652 +|        %{
+    653 +|          kind: :speak,
+    654 +|          refs: [],
+    655 +|          text:
+    656 +|            "In my own learned voice: \"#{framed}\" " <>
+    657 +|              "I compose that from everything I've heard and said — no script, no language model. It grows as the show goes on."
+    658 +|        }
+526 659  |
+527 660  |      _ ->
+         |
+535 668  |  # rather than guess, the producer UTTERS a question to gather the disambiguating observation.
+536 669  |  defp clarify([a, b]) do
+537     -|    %{kind: :clarify, refs: [],
+538     -|      text: "I'm not certain what you mean — #{intent_label(a)}, or #{intent_label(b)}? Tell me and I'll learn it."}
+    670 +|    %{
+    671 +|      kind: :clarify,
+    672 +|      refs: [],
+    673 +|      text:
+    674 +|        "I'm not certain what you mean — #{intent_label(a)}, or #{intent_label(b)}? Tell me and I'll learn it."
+    675 +|    }
+539 676  |  end
+540 677  |
+         |
+567 704  |  defp unsure(c) do
+568 705  |    ov = overview(c.rows, c.star)
+569     -|    %{kind: :unsure, refs: ov.refs,
+570     -|      text: "I don't recognise that one yet — I read your words against what I can see in the colony, and " <>
+571     -|        "I keep learning, but I'd rather say so than invent an answer. Try: how many are alive, who's in " <>
+572     -|        "danger, what the camera is on, why I made my last cut, the server health, the mood, my plan, or a " <>
+573     -|        "named UNI (e.g. UNI-1-1). For context: #{ov.text}"}
+    706 +|
+    707 +|    %{
+    708 +|      kind: :unsure,
+    709 +|      refs: ov.refs,
+    710 +|      text:
+    711 +|        "I don't recognise that one yet — I read your words against what I can see in the colony, and " <>
+    712 +|          "I keep learning, but I'd rather say so than invent an answer. Try: how many are alive, who's in " <>
+    713 +|          "danger, what the camera is on, why I made my last cut, the server health, the mood, my plan, or a " <>
+    714 +|          "named UNI (e.g. UNI-1-1). For context: #{ov.text}"
+    715 +|    }
+574 716  |  end
+575 717  |
+         |
+587 729  |  defp narr_rows(rows) do
+588 730  |    Enum.map(rows, fn r ->
+589     -|      %{who: Map.get(r, :username), emotion: Map.get(r, :emotion), context: Map.get(r, :context), action: Map.get(r, :action), senses: senses(r)}
+    731 +|      %{
+    732 +|        who: Map.get(r, :username),
+    733 +|        emotion: Map.get(r, :emotion),
+    734 +|        context: Map.get(r, :context),
+    735 +|        action: Map.get(r, :action),
+    736 +|        senses: senses(r)
+    737 +|      }
+590 738  |    end)
+591 739  |  end
+         |
+595 743  |  defp where_answer(%{star: star}) do
+596 744  |    tail = if star, do: " — right now the camera is on #{star}.", else: "."
+597     -|    %{kind: :where, text: "I don't track positions: by design, no UNI's coordinates leave its body#{tail}", refs: List.wrap(star)}
+    745 +|
+    746 +|    %{
+    747 +|      kind: :where,
+    748 +|      text: "I don't track positions: by design, no UNI's coordinates leave its body#{tail}",
+    749 +|      refs: List.wrap(star)
+    750 +|    }
+598 751  |  end
+599 752  |
+         |
+605 758  |    drama = latest_drama_label(p)
+606 759  |    tail = if drama, do: " — the colony is #{drama}", else: ""
+607     -|    %{kind: :why, text: "Last beat I chose to #{act}, because my attention was on #{foc}#{tail}.", refs: List.wrap(Map.get(p, :star))}
+    760 +|
+    761 +|    %{
+    762 +|      kind: :why,
+    763 +|      text: "Last beat I chose to #{act}, because my attention was on #{foc}#{tail}.",
+    764 +|      refs: List.wrap(Map.get(p, :star))
+    765 +|    }
+608 766  |  end
+609 767  |
+         |
+614 772  |    text =
+615 773  |      cond do
+616     -|        up == false -> "The server looks down — I can't read its tick rate."
+617     -|        is_number(tps) and tps < 18.0 -> "The server is lagging at #{Float.round(tps, 1)} TPS; I'm clearing clutter to recover it."
+618     -|        is_number(tps) -> "The server is healthy at #{Float.round(tps, 1)} of 20 TPS."
+619     -|        true -> "Server health looks nominal."
+    774 +|        up == false ->
+    775 +|          "The server looks down — I can't read its tick rate."
+    776 +|
+    777 +|        is_number(tps) and tps < 18.0 ->
+    778 +|          "The server is lagging at #{Float.round(tps, 1)} TPS; I'm clearing clutter to recover it."
+    779 +|
+    780 +|        is_number(tps) ->
+    781 +|          "The server is healthy at #{Float.round(tps, 1)} of 20 TPS."
+    782 +|
+    783 +|        true ->
+    784 +|          "Server health looks nominal."
+620 785  |      end
+621 786  |
+         |
+643 808  |
+644 809  |  defp plan(%{producer: p}, _subj) when is_map(p) do
+645     -|    %{kind: :plan, text: "My plan this beat is to #{phrase_action(Map.get(p, :action, :noop))}.", refs: List.wrap(Map.get(p, :star))}
+    810 +|    %{
+    811 +|      kind: :plan,
+    812 +|      text: "My plan this beat is to #{phrase_action(Map.get(p, :action, :noop))}.",
+    813 +|      refs: List.wrap(Map.get(p, :star))
+    814 +|    }
+646 815  |  end
+647 816  |
+         |
+755 924  |  defp action(r), do: Map.get(r, :action) || "—"
+756 925  |  defp ctx_of(r), do: Map.get(r, :context) || "exploring"
+757     -|  defp intent(r), do: (r |> Map.get(:intent, []) |> Enum.take(3) |> Enum.map(&to_string/1) |> Enum.join(" → ")) |> blank("its next move")
+    926 +|
+    927 +|  defp intent(r),
+    928 +|    do:
+    929 +|      r
+    930 +|      |> Map.get(:intent, [])
+    931 +|      |> Enum.take(3)
+    932 +|      |> Enum.map(&to_string/1)
+    933 +|      |> Enum.join(" → ")
+    934 +|      |> blank("its next move")
+    935 +|
+758 936  |  defp blank("", d), do: d
+759 937  |  defp blank(s, _d), do: s
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/minecraft_corpus.ex
+[0m
+         |
+125 125  |      Enum.flat_map_reduce(@templates, rng, fn {scene, tmpls}, r0 ->
+126 126  |        Enum.flat_map_reduce(tmpls, r0, fn t, r1 ->
+127     -|          Enum.map_reduce(1..per, r1, fn _, r -> {s, r2} = fill(t, r); {{s, scene}, r2} end)
+    127 +|          Enum.map_reduce(1..per, r1, fn _, r ->
+    128 +|            {s, r2} = fill(t, r)
+    129 +|            {{s, scene}, r2}
+    130 +|          end)
+128 131  |        end)
+129 132  |      end)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/factors_test.exs
+[0m
+       |
+50 50  |      specs =
+51 51  |        for _ <- 1..5 do
+52    -|          %{a: [ident(12)], b: [ident(12), ident(12)], c: [List.duplicate(0.0, 12)], d: List.duplicate(1.0, 12)}
+   52 +|          %{
+   53 +|            a: [ident(12)],
+   54 +|            b: [ident(12), ident(12)],
+   55 +|            c: [List.duplicate(0.0, 12)],
+   56 +|            d: List.duplicate(1.0, 12)
+   57 +|          }
+53 58  |        end
+54 59  |
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/minecraft/runner.ex
+[0m
+         |
+103 103  |        )
+104 104  |
+105     -|        if render.prev_loc, do: Rcon.command(sock, Builder.morphology_clear_command(sim.world, render.prev_loc, @base))
+    105 +|        if render.prev_loc,
+    106 +|          do: Rcon.command(sock, Builder.morphology_clear_command(sim.world, render.prev_loc, @base))
+    107 +|
+106 108  |        # Subtitle must be set BEFORE title (the `title` packet triggers the on-screen draw).
+107     -|        Rcon.command(sock, ~s|title @a subtitle {"text":"survived #{fit} ticks · best #{best_fit}","color":"gray"}|)
+    109 +|        Rcon.command(
+    110 +|          sock,
+    111 +|          ~s|title @a subtitle {"text":"survived #{fit} ticks · best #{best_fit}","color":"gray"}|
+    112 +|        )
+    113 +|
+108 114  |        Rcon.command(sock, ~s|title @a title {"text":"generation #{child.generation}","color":"gold"}|)
+109 115  |
+         |
+116 122  |        Rcon.commands(sock, Builder.spawn_agent_commands(sim.world, sim.body.location, @base))
+117 123  |        new_terrain = Builder.terrain_map(sim.world, @base)
+118     -|        respawn_changed = for {pos, spec} <- new_terrain, Map.get(render.prev_terrain, pos) != spec, do: {pos, spec}
+119 124  |
+    125 +|        respawn_changed =
+    126 +|          for {pos, spec} <- new_terrain, Map.get(render.prev_terrain, pos) != spec, do: {pos, spec}
+    127 +|
+120 128  |        if respawn_changed != [],
+121     -|          do: Rcon.commands(sock, Enum.flat_map(respawn_changed, fn {pos, spec} -> Builder.cell_commands(pos, spec, @base) end))
+    129 +|          do:
+    130 +|            Rcon.commands(
+    131 +|              sock,
+    132 +|              Enum.flat_map(respawn_changed, fn {pos, spec} -> Builder.cell_commands(pos, spec, @base) end)
+    133 +|            )
+122 134  |
+123 135  |        render = %{prev_loc: nil, prev_terrain: new_terrain, prev_crown: nil}
+         |
+142 154  |
+143 155  |        if changed != [],
+144     -|          do: Rcon.commands(sock, Enum.flat_map(changed, fn {pos, spec} -> Builder.cell_commands(pos, spec, @base) end))
+    156 +|          do:
+    157 +|            Rcon.commands(
+    158 +|              sock,
+    159 +|              Enum.flat_map(changed, fn {pos, spec} -> Builder.cell_commands(pos, spec, @base) end)
+    160 +|            )
+145 161  |
+146 162  |        # Morphology crown: redraw only when the agent moved or its body changed, so
+         |
+150 166  |        render =
+151 167  |          if sig != render.prev_crown do
+152     -|            if render.prev_loc, do: Rcon.command(sock, Builder.morphology_clear_command(sim.world, render.prev_loc, @base))
+    168 +|            if render.prev_loc,
+    169 +|              do: Rcon.command(sock, Builder.morphology_clear_command(sim.world, render.prev_loc, @base))
+    170 +|
+153 171  |            Rcon.commands(sock, morphology_crown(sim.world, sim.body, loc))
+154 172  |            %{render | prev_loc: loc, prev_crown: sig}
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/emotion_test.exs
+[0m
+       |
+27 27  |
+28 28  |    test "safe + uncertain reads as curiosity; safe + capable reads as content" do
+29    -|      assert Emotion.read(%{danger: 0.0, distress: 0.0, control: 0.2, epistemic_frac: 0.9}).dominant == :curiosity
+30    -|      assert Emotion.read(%{danger: 0.0, distress: 0.0, control: 0.95, epistemic_frac: 0.05}).dominant == :content
+   29 +|      assert Emotion.read(%{danger: 0.0, distress: 0.0, control: 0.2, epistemic_frac: 0.9}).dominant ==
+   30 +|               :curiosity
+   31 +|
+   32 +|      assert Emotion.read(%{danger: 0.0, distress: 0.0, control: 0.95, epistemic_frac: 0.05}).dominant ==
+   33 +|               :content
+31 34  |    end
+32 35  |
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/narrator.ex
+[0m
+         |
+ 25  25  |  # present-tense verb phrase (no subject) by ACTIVITY, per language.
+ 26  26  |  @verbs %{
+ 27     -|    forage: %{en: "forages through the wild", zh: "在荒野中觅食", hi: "जंगल में भोजन ढूँढ़ता है", es: "busca comida por el bosque", ar: "يبحث عن الطعام في البرّية"},
+ 28     -|    mine: %{en: "carves into the stone", zh: "凿入岩石", hi: "पत्थर में खुदाई करता है", es: "excava en la piedra", ar: "ينحت في الصخر"},
+ 29     -|    build: %{en: "shapes the world", zh: "改造着世界", hi: "दुनिया को गढ़ता है", es: "moldea el mundo", ar: "يعيد تشكيل العالم"},
+ 30     -|    flee: %{en: "flees from danger", zh: "逃离危险", hi: "ख़तरे से भागता है", es: "huye del peligro", ar: "يفرّ من الخطر"},
+ 31     -|    social: %{en: "draws close to its kin", zh: "靠近亲族", hi: "अपने स्वजनों के पास आता है", es: "se acerca a los suyos", ar: "يقترب من ذويه"},
+ 32     -|    rest: %{en: "pauses to rest", zh: "停下休息", hi: "रुककर सुस्ताता है", es: "se detiene a descansar", ar: "يتوقّف ليستريح"},
+     27 +|    forage: %{
+     28 +|      en: "forages through the wild",
+     29 +|      zh: "在荒野中觅食",
+     30 +|      hi: "जंगल में भोजन ढूँढ़ता है",
+     31 +|      es: "busca comida por el bosque",
+     32 +|      ar: "يبحث عن الطعام في البرّية"
+     33 +|    },
+     34 +|    mine: %{
+     35 +|      en: "carves into the stone",
+     36 +|      zh: "凿入岩石",
+     37 +|      hi: "पत्थर में खुदाई करता है",
+     38 +|      es: "excava en la piedra",
+     39 +|      ar: "ينحت في الصخر"
+     40 +|    },
+     41 +|    build: %{
+     42 +|      en: "shapes the world",
+     43 +|      zh: "改造着世界",
+     44 +|      hi: "दुनिया को गढ़ता है",
+     45 +|      es: "moldea el mundo",
+     46 +|      ar: "يعيد تشكيل العالم"
+     47 +|    },
+     48 +|    flee: %{
+     49 +|      en: "flees from danger",
+     50 +|      zh: "逃离危险",
+     51 +|      hi: "ख़तरे से भागता है",
+     52 +|      es: "huye del peligro",
+     53 +|      ar: "يفرّ من الخطر"
+     54 +|    },
+     55 +|    social: %{
+     56 +|      en: "draws close to its kin",
+     57 +|      zh: "靠近亲族",
+     58 +|      hi: "अपने स्वजनों के पास आता है",
+     59 +|      es: "se acerca a los suyos",
+     60 +|      ar: "يقترب من ذويه"
+     61 +|    },
+     62 +|    rest: %{
+     63 +|      en: "pauses to rest",
+     64 +|      zh: "停下休息",
+     65 +|      hi: "रुककर सुस्ताता है",
+     66 +|      es: "se detiene a descansar",
+     67 +|      ar: "يتوقّف ليستريح"
+     68 +|    },
+ 33  69  |    eat: %{en: "stops to eat", zh: "停下进食", hi: "रुककर खाता है", es: "se detiene a comer", ar: "يتوقّف ليأكل"},
+ 34     -|    explore: %{en: "wanders into the unknown", zh: "闯入未知", hi: "अनजान में भटकता है", es: "se adentra en lo desconocido", ar: "يخوض في المجهول"}
+     70 +|    explore: %{
+     71 +|      en: "wanders into the unknown",
+     72 +|      zh: "闯入未知",
+     73 +|      hi: "अनजान में भटकता है",
+     74 +|      es: "se adentra en lo desconocido",
+     75 +|      ar: "يخوض في المجهول"
+     76 +|    }
+ 35  77  |  }
+ 36  78  |
+         |
+ 53  95  |    fear: %{en: "wary and tense", zh: "警惕而紧张", hi: "सतर्क और तनावग्रस्त", es: "alerta y tenso", ar: "يقظ ومتوتّر"},
+ 54  96  |    content: %{en: "quietly content", zh: "静静满足", hi: "चुपचाप संतुष्ट", es: "callado y satisfecho", ar: "راضٍ بهدوء"},
+ 55     -|    curious: %{en: "bright with wonder", zh: "充满好奇", hi: "जिज्ञासा से भरा", es: "ávido de curiosidad", ar: "متّقد بالفضول"},
+     97 +|    curious: %{
+     98 +|      en: "bright with wonder",
+     99 +|      zh: "充满好奇",
+    100 +|      hi: "जिज्ञासा से भरा",
+    101 +|      es: "ávido de curiosidad",
+    102 +|      ar: "متّقد بالفضول"
+    103 +|    },
+ 56 104  |    fierce: %{en: "fierce and unbowed", zh: "凶猛无畏", hi: "प्रचंड और निडर", es: "feroz e firme", ar: "شرس لا يلين"},
+ 57     -|    weary: %{en: "weary but willing", zh: "疲惫却不屈", hi: "थका पर तैयार", es: "cansado pero entero", ar: "متعب لكنه صامد"},
+    105 +|    weary: %{
+    106 +|      en: "weary but willing",
+    107 +|      zh: "疲惫却不屈",
+    108 +|      hi: "थका पर तैयार",
+    109 +|      es: "cansado pero entero",
+    110 +|      ar: "متعب لكنه صامد"
+    111 +|    },
+ 58 112  |    default: %{en: "set on its way", zh: "专注前路", hi: "अपनी राह पर", es: "fijo en su camino", ar: "ماضٍ في دربه"}
+ 59 113  |  }
+         |
+300 354  |  # capitalise the first alphabetic char (for pro-drop languages whose sentence starts on the
+301 355  |  # verb); leaves CJK/Arabic/Devanagari untouched (no case).
+302     -|  defp capitalize(<<c::utf8, rest::binary>>) when c in ?a..?z, do: <<(c - 32)::utf8>> <> rest
+    356 +|  defp capitalize(<<c::utf8, rest::binary>>) when c in ?a..?z, do: <<c - 32::utf8>> <> rest
+303 357  |  defp capitalize(s), do: s
+304 358  |
+         |
+349 403  |        t when is_integer(t) and t != cur ->
+350 404  |          rest = if n > 2, do: 0.15 / (n - 2), else: 0.0
+351     -|          for nx <- 0..(n - 1), do: (cond do nx == cur -> 0.6; nx == t -> 0.25; true -> rest end)
+352 405  |
+    406 +|          for nx <- 0..(n - 1),
+    407 +|              do:
+    408 +|                (cond do
+    409 +|                   nx == cur -> 0.6
+    410 +|                   nx == t -> 0.25
+    411 +|                   true -> rest
+    412 +|                 end)
+    413 +|
+353 414  |        _ ->
+354 415  |          off = 0.2 / (n - 1)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/bridge.ex
+[0m
+         |
+127 127  |  @impl true
+128 128  |  def handle_call(:stats, _from, state) do
+129     -|    {:reply, %{count: state.count, brain: state.brain, senses: state.last_senses, action: state.last_action}, state}
+    129 +|    {:reply, %{count: state.count, brain: state.brain, senses: state.last_senses, action: state.last_action},
+    130 +|     state}
+130 131  |  end
+131 132  |
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/mix/tasks/sp.brain.verify.ex
+[0m
+       |
+69 69  |      %{who: "UNI-1-1", emotion: :calm, context: :forage, action: "forward", senses: %{"food" => 6}},
+70 70  |      %{who: "UNI-1-2", emotion: :curious, context: nil, action: "mine", senses: %{"food" => 18}},
+71    -|      %{who: "UNI-1-3", emotion: :fear, context: :flee, action: "forward", senses: %{"health" => 5, "hurt" => true}},
+   71 +|      %{
+   72 +|        who: "UNI-1-3",
+   73 +|        emotion: :fear,
+   74 +|        context: :flee,
+   75 +|        action: "forward",
+   76 +|        senses: %{"health" => 5, "hurt" => true}
+   77 +|      },
+72 78  |      %{who: "UNI-1-4", emotion: :content, context: :social, action: "forward", senses: %{"food" => 18}}
+73 79  |    ]
+       |
+77 83  |    m = SP.Brain.Readability.analyze(ss)
+78 84  |    mark = if ok?, do: "PASS", else: "FAIL"
+79    -|    IO.puts("  [#{mark}] 16 · scene meets the grade-4 contract  (grade #{m.grade}, #{m.sentences} sentences, #{length(m.connectives)} connectives)")
+   85 +|
+   86 +|    IO.puts(
+   87 +|      "  [#{mark}] 16 · scene meets the grade-4 contract  (grade #{m.grade}, #{m.sentences} sentences, #{length(m.connectives)} connectives)"
+   88 +|    )
+   89 +|
+80 90  |    unless ok?, do: IO.puts("        failed: #{inspect(reasons)}")
+81 91  |    ok?
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/hormones.ex
+[0m
+       |
+18 18  |  alias SP.Brain.Factors
+19 19  |
+20    -|  @gamma_gain 1.5   # at stress=1, policy precision is ×(1+gain)
+21    -|  @lr_floor 0.4     # at stress=1, learning rate is ×lr_floor
+   20 +|  # at stress=1, policy precision is ×(1+gain)
+   21 +|  @gamma_gain 1.5
+   22 +|  # at stress=1, learning rate is ×lr_floor
+   23 +|  @lr_floor 0.4
+22 24  |
+23 25  |  @doc """
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/awareness.ex
+[0m
+       |
+64 64  |    peaks = Enum.map(beliefs, &peakedness/1)
+65 65  |    wsum = Enum.sum(weights)
+66    -|    if wsum <= 0.0, do: 0.0, else: Enum.zip(peaks, weights) |> Enum.map(fn {p, w} -> p * w end) |> Enum.sum() |> Kernel./(wsum)
+   66 +|
+   67 +|    if wsum <= 0.0,
+   68 +|      do: 0.0,
+   69 +|      else: Enum.zip(peaks, weights) |> Enum.map(fn {p, w} -> p * w end) |> Enum.sum() |> Kernel./(wsum)
+67 70  |  end
+68 71  |
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/language_test.exs
+[0m
+       |
+12 12  |  defp trained do
+13 13  |    corpus =
+14    -|      (for _ <- 1..8, do: {"the colony grows calm at dawn", :narr}) ++
+15    -|        (for _ <- 1..8, do: {"a unit mines the cold stone", :narr})
+   14 +|      for(_ <- 1..8, do: {"the colony grows calm at dawn", :narr}) ++
+   15 +|        for _ <- 1..8, do: {"a unit mines the cold stone", :narr}
+16 16  |
+17 17  |    Language.new(k: 6, seed: 1) |> Language.learn_corpus(corpus) |> Language.fit(iters: 15)
+       |
+20 20  |  test "LEARNS — free energy is LOW on trained text, HIGH on word salad" do
+21 21  |    m = trained()
+   22 +|
+22 23  |    assert Language.surprise(m, "the colony grows calm at dawn", :narr) <
+23 24  |             Language.surprise(m, "stone qwerty colony zorp dawn foo", :narr)
+       |
+36 37  |  test "TRAINING is the lever — more corpus lowers surprise on held-out-style text" do
+37 38  |    base = Language.new(k: 6, seed: 2) |> Language.learn("the colony grows", :narr) |> Language.fit(iters: 8)
+   39 +|
+38 40  |    more =
+39 41  |      Language.new(k: 6, seed: 2)
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/gen2_hierarchy_test.exs
+[0m
+       |
+14 14  |
+15 15  |  # threatened: hurt + a hostile nearby ⇒ codec situation 1 (threatened)
+16    -|  @threat %{"health" => 16, "food" => 18, "inv" => %{}, "look" => "oak_log", "hostile_dist" => 3.0, "hurt" => true}
+   16 +|  @threat %{
+   17 +|    "health" => 16,
+   18 +|    "food" => 18,
+   19 +|    "inv" => %{},
+   20 +|    "look" => "oak_log",
+   21 +|    "hostile_dist" => 3.0,
+   22 +|    "hurt" => true
+   23 +|  }
+17 24  |  # non-threatening: healthy, fed, nothing hostile, empty-handed ⇒ codec situation 4 (idle)
+18    -|  @calm %{"health" => 20, "food" => 18, "inv" => %{}, "look" => "oak_log", "hostile_dist" => nil, "hurt" => false}
+   25 +|  @calm %{
+   26 +|    "health" => 20,
+   27 +|    "food" => 18,
+   28 +|    "inv" => %{},
+   29 +|    "look" => "oak_log",
+   30 +|    "hostile_dist" => nil,
+   31 +|    "hurt" => false
+   32 +|  }
+19 33  |
+20    -|  defp run(senses, n, seed), do: Enum.reduce(1..n, MC.new(seed: seed), fn _i, b -> elem(MC.step(b, senses), 1) end)
+   34 +|  defp run(senses, n, seed),
+   35 +|    do: Enum.reduce(1..n, MC.new(seed: seed), fn _i, b -> elem(MC.step(b, senses), 1) end)
+21 36  |
+22 37  |  test "the default genome boots a LIVE L2 with a standing :forage drive" do
+       |
+40 55  |    fleeing = Strategist.apply_context(threatened.model, threatened.context, threatened.l2_config)
+41 56  |    assert hd(Enum.at(fleeing.subs, threat_idx).c) == [3.0, -1.0, -5.0]
+42    -|    assert Hormones.modulate(threatened.model, Hormones.of_context(threatened.context)).gamma > brain.dna.gamma
+   57 +|
+   58 +|    assert Hormones.modulate(threatened.model, Hormones.of_context(threatened.context)).gamma >
+   59 +|             brain.dna.gamma
+43 60  |  end
+44 61  |
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/reader_test.exs
+[0m
+         |
+ 53  53  |  end
+ 54  54  |
+ 55     -|  test "GENERALISES to unseen paraphrases via learned word-evidence (keyword routing would miss these)", %{reader: r} do
+     55 +|  test "GENERALISES to unseen paraphrases via learned word-evidence (keyword routing would miss these)", %{
+     56 +|    reader: r
+     57 +|  } do
+ 56  58  |    # none of these are in the corpus; meaning is inferred from shared content words.
+ 57  59  |    assert Reader.meaning(r, "count the agents") == :count
+         |
+117 119  |    # (stemmed vocab: "lagging"→"lagg", etc.)
+118 120  |    assert Reader.compose(r, :server) == sentence
+119     -|    assert sentence |> String.split() |> Enum.any?(&(&1 in ~w(server tick rate lagg system performance health)))
+    121 +|
+    122 +|    assert sentence
+    123 +|           |> String.split()
+    124 +|           |> Enum.any?(&(&1 in ~w(server tick rate lagg system performance health)))
+120 125  |  end
+121 126  |
+         |
+129 134  |    # ONE strongly-repeated ordered chain — the trigram memory should reproduce the WORD ORDER,
+130 135  |    # which a bigram alone (or a bag of words) cannot distinguish from a scramble.
+131     -|    m = Enum.reduce(1..6, Reader.new(), fn _, acc -> Reader.train(acc, "wood feeds the bright fire", :narr) end)
+    136 +|    m =
+    137 +|      Enum.reduce(1..6, Reader.new(), fn _, acc -> Reader.train(acc, "wood feeds the bright fire", :narr) end)
+132 138  |
+133 139  |    line = Reader.compose(m, :narr, max: 8)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/runtime/supervisor.ex
+[0m
+         |
+ 31  31  |      nil ->
+ 32  32  |        case Supervisor.start_link(__MODULE__, opts, name: __MODULE__) do
+ 33     -|          {:ok, pid} -> Process.unlink(pid); pid
+ 34     -|          {:error, {:already_started, pid}} -> pid
+     33 +|          {:ok, pid} ->
+     34 +|            Process.unlink(pid)
+     35 +|            pid
+     36 +|
+     37 +|          {:error, {:already_started, pid}} ->
+     38 +|            pid
+     39 +|
+ 35  40  |          # e.g. the on-chip boot fence rejected a non-JIT BEAM — surface it clearly
+ 36  41  |          # rather than as an opaque CaseClauseError in the caller (a LiveView).
+ 37     -|          {:error, reason} -> raise "SP.Runtime.Supervisor failed to start: #{inspect(reason)}"
+     42 +|          {:error, reason} ->
+     43 +|            raise "SP.Runtime.Supervisor failed to start: #{inspect(reason)}"
+ 38  44  |        end
+ 39  45  |
+         |
+ 60  66  |  def spawn_agent(opts) do
+ 61  67  |    username = Keyword.fetch!(opts, :username)
+ 62     -|    spec = %{id: username, start: {Agent, :start_link, [Keyword.put(opts, :registry, @registry)]}, restart: :transient}
+ 63  68  |
+     69 +|    spec = %{
+     70 +|      id: username,
+     71 +|      start: {Agent, :start_link, [Keyword.put(opts, :registry, @registry)]},
+     72 +|      restart: :transient
+     73 +|    }
+     74 +|
+ 64  75  |    case DynamicSupervisor.start_child(shard(username), spec) do
+ 65  76  |      {:ok, _pid} -> {:ok, username}
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/viability_test.exs
+[0m
+       |
+18 18  |
+19 19  |    test "shutdown halts the experiencing loop: perception no longer updates beliefs" do
+20    -|      fm = Factors.new([%{a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5]}])
+   20 +|      fm =
+   21 +|        Factors.new([
+   22 +|          %{a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5]}
+   23 +|        ])
+21 24  |
+22 25  |      alive = Factors.infer_states(fm, [[0]]) |> Factors.beliefs() |> hd()
+       |
+43 46  |    end
+44 47  |
+45    -|    defp run(fm, obs), do: Enum.reduce(1..8, fm, fn _, m -> m |> Factors.infer_states([[obs]]) |> Factors.commit_action(0) end)
+   48 +|    defp run(fm, obs),
+   49 +|      do: Enum.reduce(1..8, fm, fn _, m -> m |> Factors.infer_states([[obs]]) |> Factors.commit_action(0) end)
+46 50  |
+47 51  |    test "shared extreme input clusters the narrative; different input diverges" do
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/gen2_reasoning_test.exs
+[0m
+         |
+ 10  10  |  alias SP.Determinism, as: Det
+ 11  11  |
+ 12     -|  @senses %{"health" => 20, "food" => 18, "inv" => %{}, "look" => "oak_log", "hostile_dist" => nil, "hurt" => false}
+     12 +|  @senses %{
+     13 +|    "health" => 20,
+     14 +|    "food" => 18,
+     15 +|    "inv" => %{},
+     16 +|    "look" => "oak_log",
+     17 +|    "hostile_dist" => nil,
+     18 +|    "hurt" => false
+     19 +|  }
+ 13  20  |
+ 14  21  |  test "plan_depth == 1 reproduces the gen-1 one-step decision (regression / oracle-faithful)" do
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/curriculum.ex
+[0m
+         |
+ 28  28  |  @self_pref %{0 => 3.0, 1 => -1.0, 2 => -5.0, 3 => -4.0}
+ 29  29  |  @phase_weights %{
+ 30     -|    0 => %{status: %{3 => 4.0, 2 => -1.0, 1 => -3.0, 0 => -8.0}, threat: %{0 => 3.0, 2 => -6.0}, social: @social, self: @self_pref},
+ 31     -|    1 => %{status: %{3 => 3.0, 0 => -8.0}, vision: %{2 => 4.0}, inventory: %{1 => 8.0}, threat: %{0 => 3.0, 2 => -6.0}, social: @social, self: @self_pref},
+ 32     -|    2 => %{status: %{3 => 3.0, 0 => -8.0}, inventory: %{1 => 4.0, 2 => 10.0}, threat: %{0 => 3.0, 2 => -6.0}, social: @social, self: @self_pref},
+ 33     -|    3 => %{status: %{3 => 3.0, 0 => -8.0}, vision: %{5 => 5.0}, inventory: %{2 => 12.0}, threat: %{0 => 3.0, 2 => -6.0}, sky: %{0 => 2.0}, social: @social, self: @self_pref},
+ 34     -|    4 => %{status: %{3 => 4.0, 0 => -10.0}, vision: %{5 => 10.0, 4 => -6.0}, threat: %{0 => 4.0, 2 => -8.0}, sky: %{0 => 6.0, 2 => -2.0}, social: @social, self: @self_pref}
+     30 +|    0 => %{
+     31 +|      status: %{3 => 4.0, 2 => -1.0, 1 => -3.0, 0 => -8.0},
+     32 +|      threat: %{0 => 3.0, 2 => -6.0},
+     33 +|      social: @social,
+     34 +|      self: @self_pref
+     35 +|    },
+     36 +|    1 => %{
+     37 +|      status: %{3 => 3.0, 0 => -8.0},
+     38 +|      vision: %{2 => 4.0},
+     39 +|      inventory: %{1 => 8.0},
+     40 +|      threat: %{0 => 3.0, 2 => -6.0},
+     41 +|      social: @social,
+     42 +|      self: @self_pref
+     43 +|    },
+     44 +|    2 => %{
+     45 +|      status: %{3 => 3.0, 0 => -8.0},
+     46 +|      inventory: %{1 => 4.0, 2 => 10.0},
+     47 +|      threat: %{0 => 3.0, 2 => -6.0},
+     48 +|      social: @social,
+     49 +|      self: @self_pref
+     50 +|    },
+     51 +|    3 => %{
+     52 +|      status: %{3 => 3.0, 0 => -8.0},
+     53 +|      vision: %{5 => 5.0},
+     54 +|      inventory: %{2 => 12.0},
+     55 +|      threat: %{0 => 3.0, 2 => -6.0},
+     56 +|      sky: %{0 => 2.0},
+     57 +|      social: @social,
+     58 +|      self: @self_pref
+     59 +|    },
+     60 +|    4 => %{
+     61 +|      status: %{3 => 4.0, 0 => -10.0},
+     62 +|      vision: %{5 => 10.0, 4 => -6.0},
+     63 +|      threat: %{0 => 4.0, 2 => -8.0},
+     64 +|      sky: %{0 => 6.0, 2 => -2.0},
+     65 +|      social: @social,
+     66 +|      self: @self_pref
+     67 +|    }
+ 35  68  |  }
+ 36  69  |
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/speaker.ex
+[0m
+       |
+55 55  |  def state_of(rows) when is_list(rows) do
+56 56  |    names = Enum.map(rows, &Map.get(&1, :who, Map.get(&1, :username)))
+57    -|    nums = Enum.flat_map(rows, fn r -> r |> Map.get(:senses, %{}) |> Map.values() |> Enum.filter(&is_integer/1) end)
+   57 +|
+   58 +|    nums =
+   59 +|      Enum.flat_map(rows, fn r -> r |> Map.get(:senses, %{}) |> Map.values() |> Enum.filter(&is_integer/1) end)
+   60 +|
+58 61  |    %{cast: Enum.reject(names, &is_nil/1), numbers: [length(rows) | nums]}
+59 62  |  end
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/vision_test.exs
+[0m
+       |
+42 42  |    assert action in Genome.actions()
+43 43  |    # determinism: same seed + same observation ⇒ same action
+44    -|    {action2, _} = MC.step(MC.new(seed: 1, dna: Genome.vision_primary()), %{"health" => 14, "food" => 9, "scene" => 5})
+   44 +|    {action2, _} =
+   45 +|      MC.step(MC.new(seed: 1, dna: Genome.vision_primary()), %{"health" => 14, "food" => 9, "scene" => 5})
+   46 +|
+45 47  |    assert action == action2
+46 48  |    # the scene factor accumulates evidence as it observes (it LEARNS what it sees)
+       |
+59 61  |    dir = Path.join(System.tmp_dir!(), "percepts_#{System.unique_integer([:positive])}")
+60 62  |    File.mkdir_p!(dir)
+61    -|    File.write!(Path.join(dir, "producer.json"), ~s({"stream":"producer","scene_state":4,"surprise":61.5,"frames":120}))
+62 63  |
+   64 +|    File.write!(
+   65 +|      Path.join(dir, "producer.json"),
+   66 +|      ~s({"stream":"producer","scene_state":4,"surprise":61.5,"frames":120})
+   67 +|    )
+   68 +|
+63 69  |    p = SP.Brain.Vision.percept("producer", dir)
+64 70  |    assert p.scene_state == 4 and p.surprise == 61.5 and p.frames == 120
+       |
+75 81  |
+76 82  |  test "Anchor answers 'what do you see' from the visual cortex — honest when sight is off" do
+77    -|    rows = [%{username: "UNI-0-1", kin: 0, senses: %{}, action: "mine", context: :build, emotion: :calm, intent: []}]
+   83 +|    rows = [
+   84 +|      %{username: "UNI-0-1", kin: 0, senses: %{}, action: "mine", context: :build, emotion: :calm, intent: []}
+   85 +|    ]
+   86 +|
+78 87  |    a = SP.Brain.Anchor.answer("what do you see?", rows, nil)
+79 88  |    assert a.kind == :vision
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/director.ex
+[0m
+         |
+ 52  52  |  colony, on overview). `opts` may carry `r:/h:/period:/lerp:`. (The Producer UNI calls these.)
+ 53  53  |  """
+ 54     -|  def shot(type, subject, opts \\ %{}), do: cam_cast(["shot", to_string(type), to_string(subject)] ++ kv(opts))
+     54 +|  def shot(type, subject, opts \\ %{}),
+     55 +|    do: cam_cast(["shot", to_string(type), to_string(subject)] ++ kv(opts))
+     56 +|
+ 55  57  |  def flyto(subject, secs \\ 2.0), do: cam_cast(["flyto", to_string(subject), "secs=#{secs}"])
+ 56  58  |  def cut(subject), do: cam_cast(["cut", to_string(subject)])
+         |
+ 86  88  |      else
+ 87  89  |        Narration.compose(
+ 88     -|          %{who: u, emotion: Map.get(row, :emotion), context: Map.get(row, :context), action: Map.get(row, :action)},
+     90 +|          %{
+     91 +|            who: u,
+     92 +|            emotion: Map.get(row, :emotion),
+     93 +|            context: Map.get(row, :context),
+     94 +|            action: Map.get(row, :action)
+     95 +|          },
+ 89  96  |          frame: frame
+ 90  97  |        )
+         |
+103 110  |    # driver: :self = the legacy rule-based show-runner; :producer = the Producer UNI drives
+104 111  |    # the star/lines/camera and the Director only keeps cards + the frame clock fresh.
+105     -|    {:ok, %{port: port, opts: opts, star: nil, lines: [], cards: [], frame: 0, prev: %{}, last_cut: 0, driver: :self}}
+    112 +|    {:ok,
+    113 +|     %{
+    114 +|       port: port,
+    115 +|       opts: opts,
+    116 +|       star: nil,
+    117 +|       lines: [],
+    118 +|       cards: [],
+    119 +|       frame: 0,
+    120 +|       prev: %{},
+    121 +|       last_cut: 0,
+    122 +|       driver: :self
+    123 +|     }}
+106 124  |  end
+107 125  |
+         |
+110 128  |    snaps = safe_snapshot()
+111 129  |    Process.send_after(self(), :beat, @tick_ms)
+112     -|    {:noreply, %{state | cards: Enum.map(snaps, &card/1), frame: state.frame + 1, prev: Map.new(snaps, &{&1.username, &1.senses})}}
+    130 +|
+    131 +|    {:noreply,
+    132 +|     %{
+    133 +|       state
+    134 +|       | cards: Enum.map(snaps, &card/1),
+    135 +|         frame: state.frame + 1,
+    136 +|         prev: Map.new(snaps, &{&1.username, &1.senses})
+    137 +|     }}
+113 138  |  end
+114 139  |
+         |
+131 156  |    new_line =
+132 157  |      cond do
+133     -|        (e = Enum.find(events, &(&1.kind == :major))) ->
+    158 +|        e = Enum.find(events, &(&1.kind == :major)) ->
+134 159  |          %{text: e.text, who: e.who, i18n: Narration.render(e.beat, e.data, frame: state.frame)}
+135 160  |
+136 161  |        star_snap ->
+137 162  |          {beat, data} = beat_of(star_snap)
+138     -|          %{text: headline(star_snap, state.frame), who: star, i18n: Narration.render(beat, data, frame: state.frame)}
+139 163  |
+    164 +|          %{
+    165 +|            text: headline(star_snap, state.frame),
+    166 +|            who: star,
+    167 +|            i18n: Narration.render(beat, data, frame: state.frame)
+    168 +|          }
+    169 +|
+140 170  |        true ->
+141 171  |          nil
+         |
+157 187  |
+158 188  |    {:noreply,
+159     -|     %{state
+    189 +|     %{
+    190 +|       state
+160 191  |       | star: star,
+161 192  |         lines: lines,
+         |
+163 194  |         frame: state.frame + 1,
+164 195  |         last_cut: last_cut,
+165     -|         prev: cur}}
+    196 +|         prev: cur
+    197 +|     }}
+166 198  |  end
+167 199  |
+         |
+185 217  |  @impl true
+186 218  |  def handle_call(:broadcast, _from, state) do
+187     -|    {:reply, %{star: state.star, lines: state.lines, cards: state.cards, day: div(state.frame, 120) + 1}, state}
+    219 +|    {:reply, %{star: state.star, lines: state.lines, cards: state.cards, day: div(state.frame, 120) + 1},
+    220 +|     state}
+188 221  |  end
+189 222  |
+         |
+271 304  |
+272 305  |    cond do
+273     -|      major -> {major.who, true}
+274     -|      scored == [] -> {state.star, false}
+275     -|      is_nil(state.star) -> {top_star(scored), true}
+276     -|      state.frame - state.last_cut >= @cut_cooldown -> top = top_star(scored); {top, top != state.star}
+277     -|      true -> {state.star, false}
+    306 +|      major ->
+    307 +|        {major.who, true}
+    308 +|
+    309 +|      scored == [] ->
+    310 +|        {state.star, false}
+    311 +|
+    312 +|      is_nil(state.star) ->
+    313 +|        {top_star(scored), true}
+    314 +|
+    315 +|      state.frame - state.last_cut >= @cut_cooldown ->
+    316 +|        top = top_star(scored)
+    317 +|        {top, top != state.star}
+    318 +|
+    319 +|      true ->
+    320 +|        {state.star, false}
+278 321  |    end
+279 322  |  end
+         |
+335 378  |      ctx ->
+336 379  |        {:strategy,
+337     -|         %{who: u, context: ctx, intent_actions: Map.get(a, :intent, []), conf: round(Map.get(a, :confidence, 0.0) * 100)}}
+    380 +|         %{
+    381 +|           who: u,
+    382 +|           context: ctx,
+    383 +|           intent_actions: Map.get(a, :intent, []),
+    384 +|           conf: round(Map.get(a, :confidence, 0.0) * 100)
+    385 +|         }}
+338 386  |    end
+339 387  |  end
+         |
+360 408  |    cond do
+361 409  |      truthy(s["hurt"]) ->
+362     -|        pick.(["#{u} is under attack — fighting for its life!", "Something is hurting #{u}!", "#{u} reels under a brutal assault."])
+    410 +|        pick.([
+    411 +|          "#{u} is under attack — fighting for its life!",
+    412 +|          "Something is hurting #{u}!",
+    413 +|          "#{u} reels under a brutal assault."
+    414 +|        ])
+363 415  |
+364 416  |      num(s["health"], 20) < 6 ->
+365     -|        pick.(["#{u} is on the brink, badly wounded.", "#{u} clings to life.", "One more hit could end #{u}."])
+    417 +|        pick.([
+    418 +|          "#{u} is on the brink, badly wounded.",
+    419 +|          "#{u} clings to life.",
+    420 +|          "One more hit could end #{u}."
+    421 +|        ])
+366 422  |
+367 423  |      near?(s["hostile_dist"]) ->
+         |
+372 428  |
+373 429  |      (s["social"] || 0) == 2 ->
+374     -|        pick.(["#{u} crosses paths with an outsider.", "A stranger drifts into #{u}'s view.", "#{u} eyes an outsider warily."])
+    430 +|        pick.([
+    431 +|          "#{u} crosses paths with an outsider.",
+    432 +|          "A stranger drifts into #{u}'s view.",
+    433 +|          "#{u} eyes an outsider warily."
+    434 +|        ])
+375 435  |
+376 436  |      (s["social"] || 0) == 1 ->
+         |
+378 438  |
+379 439  |      num(s["food"], 20) < 8 ->
+380     -|        pick.(["#{u} is hungry, foraging the forest.", "#{u} hunts for something to eat.", "Hunger drives #{u} onward."])
+    440 +|        pick.([
+    441 +|          "#{u} is hungry, foraging the forest.",
+    442 +|          "#{u} hunts for something to eat.",
+    443 +|          "Hunger drives #{u} onward."
+    444 +|        ])
+381 445  |
+382 446  |      a.action == "mine" ->
+383     -|        pick.(["#{u} digs in, working the world.", "#{u} mines, building toward something.", "#{u} carves into the earth."])
+    447 +|        pick.([
+    448 +|          "#{u} digs in, working the world.",
+    449 +|          "#{u} mines, building toward something.",
+    450 +|          "#{u} carves into the earth."
+    451 +|        ])
+384 452  |
+385 453  |      a.action == "eat" ->
+         |
+466 534  |  defp tension(s) do
+467 535  |    base = 100 - round(num(s["health"], 20) * 3) - round(num(s["food"], 20))
+468     -|    bonus = (if truthy(s["hurt"]), do: 45, else: 0) + (if near?(s["hostile_dist"]), do: 30, else: 0)
+    536 +|    bonus = if(truthy(s["hurt"]), do: 45, else: 0) + if near?(s["hostile_dist"]), do: 30, else: 0
+469 537  |    (base + bonus) |> max(0) |> min(100)
+470 538  |  end
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/mc.ex
+[0m
+         |
+223 223  |      build: by_name.(status: needs_safe, inventory: inv_build, vision: vis_shelter, threat: danger_calm),
+224 224  |      flee: by_name.(status: needs_safe, inventory: inv_neutral, vision: vis_neutral, threat: danger_flee),
+225     -|      socialize: by_name.(status: needs_safe, inventory: inv_neutral, vision: vis_neutral, threat: danger_calm),
+    225 +|      socialize:
+    226 +|        by_name.(status: needs_safe, inventory: inv_neutral, vision: vis_neutral, threat: danger_calm),
+226 227  |      rest: by_name.(status: needs_safe, inventory: inv_neutral, vision: vis_shelter, threat: danger_calm)
+227 228  |    }
+         |
+279 280  |        # reconcile grafts the learned tensors when the shape still matches, else starts
+280 281  |        # fresh — so a kin remembers across death while its genome keeps evolving.
+281     -|        dna = case Keyword.get(opts, :dna) do
+282     -|          %Genome{} = d -> d
+283     -|          _ -> file_dna
+284     -|        end
+    282 +|        dna =
+    283 +|          case Keyword.get(opts, :dna) do
+    284 +|            %Genome{} = d -> d
+    285 +|            _ -> file_dna
+    286 +|          end
+285 287  |
+286 288  |        %__MODULE__{dna: dna, model: reconcile(dna, model), rng: Det.new(Keyword.get(opts, :seed, 1))}
+         |
+331 333  |  defp compatible?(%Factors{subs: a, nu: nua}, %Factors{subs: b, nu: nub}) do
+332 334  |    nua == nub and length(a) == length(b) and
+333     -|      Enum.all?(Enum.zip(a, b), fn {x, y} -> Map.get(x, :no) == Map.get(y, :no) and Map.get(x, :nu) == Map.get(y, :nu) end)
+    335 +|      Enum.all?(Enum.zip(a, b), fn {x, y} ->
+    336 +|        Map.get(x, :no) == Map.get(y, :no) and Map.get(x, :nu) == Map.get(y, :nu)
+    337 +|      end)
+334 338  |  end
+335 339  |
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/runtime/supervisor_test.exs
+[0m
+       |
+36 36  |    Board.put("Z-row", %{count: 1})
+37 37  |    Board.put("A-row", %{count: 2})
+38    -|    assert Enum.map(Board.all(), & &1.username) |> Enum.filter(&(&1 in ["A-row", "Z-row"])) == ["A-row", "Z-row"]
+   38 +|
+   39 +|    assert Enum.map(Board.all(), & &1.username) |> Enum.filter(&(&1 in ["A-row", "Z-row"])) == [
+   40 +|             "A-row",
+   41 +|             "Z-row"
+   42 +|           ]
+   43 +|
+39 44  |    assert Board.get("A-row").count == 2
+40 45  |    Board.drop("A-row")
+       |
+47 52  |    listed = Supervisor.list_agents()
+48 53  |    me = Enum.find(listed, &(&1.username == "UNI-3-101"))
+49    -|    assert me && me.kin == 3 and me.mode == "see_all"
+   54 +|    assert (me && me.kin == 3) and me.mode == "see_all"
+50 55  |  end
+51 56  |
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/validation_engine.ex
+[0m
+         |
+ 66  66  |      g(17, "no simulator in the live UNI path (sense→decide→act)", check_no_simulator()),
+ 67  67  |      g(18, "no foreign mind (LLM/network/external model) in the live UNI path", check_no_foreign_mind()),
+ 68     -|      g(19, "grounded speech: the producer speaks no fact it cannot see (no hallucination)", check_grounding())
+     68 +|      g(
+     69 +|        19,
+     70 +|        "grounded speech: the producer speaks no fact it cannot see (no hallucination)",
+     71 +|        check_grounding()
+     72 +|      )
+ 69  73  |    ]
+ 70  74  |  end
+         |
+ 76  80  |    Enum.each(results, fn {id, name, s, detail} ->
+ 77  81  |      mark = %{pass: "PASS", fail: "FAIL", skip: "····"}[s]
+ 78     -|      IO.puts("  [#{mark}] #{String.pad_leading(to_string(id), 2)} · #{name}#{if detail == "", do: "", else: "  (#{detail})"}")
+     82 +|
+     83 +|      IO.puts(
+     84 +|        "  [#{mark}] #{String.pad_leading(to_string(id), 2)} · #{name}#{if detail == "", do: "", else: "  (#{detail})"}"
+     85 +|      )
+ 79  86  |    end)
+ 80  87  |
+         |
+ 98 105  |
+ 99 106  |  defp check_vfe_bound do
+100     -|    m = Model.new(a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5])
+    107 +|    m =
+    108 +|      Model.new(a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5])
+    109 +|
+101 110  |    m = Infer.infer_states(m, [0])
+102 111  |    f = Infer.vfe(m, [0])
+         |
+142 151  |  defp check_designer do
+143 152  |    dna = Genome.default()
+144     -|    if Designer.compile(Genome.card(dna)) == Genome.express(dna), do: {:pass, ""}, else: {:fail, "compile ≠ express"}
+    153 +|
+    154 +|    if Designer.compile(Genome.card(dna)) == Genome.express(dna),
+    155 +|      do: {:pass, ""},
+    156 +|      else: {:fail, "compile ≠ express"}
+145 157  |  end
+146 158  |
+         |
+152 164  |    seqs = for x <- 0..(fm.nu - 1), y <- 0..(fm.nu - 1), do: [x, y]
+153 165  |    exhaustive = seqs |> Enum.max_by(&Plan.sequence_value(fm, &1)) |> hd()
+154     -|    if Plan.best_action(fm, depth: 2, beam: fm.nu) == exhaustive, do: {:pass, ""}, else: {:fail, "beam ≠ exhaustive"}
+    166 +|
+    167 +|    if Plan.best_action(fm, depth: 2, beam: fm.nu) == exhaustive,
+    168 +|      do: {:pass, ""},
+    169 +|      else: {:fail, "beam ≠ exhaustive"}
+155 170  |  end
+156 171  |
+         |
+214 229  |  defp live_path_files do
+215 230  |    root = File.cwd!()
+216     -|    from_dirs = Enum.flat_map(@live_dirs, fn parts -> Path.wildcard(Path.join([root | parts] ++ ["**/*.ex"])) end)
+    231 +|
+    232 +|    from_dirs =
+    233 +|      Enum.flat_map(@live_dirs, fn parts -> Path.wildcard(Path.join([root | parts] ++ ["**/*.ex"])) end)
+    234 +|
+217 235  |    extras = Enum.map(@live_extra, fn parts -> Path.join([root | parts]) end)
+218 236  |
+         |
+255 273  |
+256 274  |    cond do
+257     -|      not SP.Brain.Speaker.grounded?(line, state) -> {:fail, "ungrounded line: #{line}"}
+    275 +|      not SP.Brain.Speaker.grounded?(line, state) ->
+    276 +|        {:fail, "ungrounded line: #{line}"}
+    277 +|
+258 278  |      # and it must REJECT a hallucinated name (proves the check actually bites)
+259     -|      SP.Brain.Speaker.grounded?("UNI-9-9 is hurt", state) -> {:fail, "grounding check failed to catch a fake name"}
+260     -|      true -> {:pass, "spoken facts ⊆ live state"}
+    279 +|      SP.Brain.Speaker.grounded?("UNI-9-9 is hurt", state) ->
+    280 +|        {:fail, "grounding check failed to catch a fake name"}
+    281 +|
+    282 +|      true ->
+    283 +|        {:pass, "spoken facts ⊆ live state"}
+261 284  |    end
+262 285  |  end
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/producer/genome.ex
+[0m
+         |
+ 47  47  |      n: 4,
+ 48  48  |      c: [1.0, 1.5, -2.0, -3.0],
+ 49     -|      fixers: %{cut_to_drama: %{2 => 0, 3 => 0}, cut_to_subject: %{2 => 0, 3 => 0}, b_roll: %{2 => 0, 3 => 0}, widen: %{3 => 0}}
+     49 +|      fixers: %{
+     50 +|        cut_to_drama: %{2 => 0, 3 => 0},
+     51 +|        cut_to_subject: %{2 => 0, 3 => 0},
+     52 +|        b_roll: %{2 => 0, 3 => 0},
+     53 +|        widen: %{3 => 0}
+     54 +|      }
+ 50  55  |    },
+ 51  56  |    %{name: :pacing, n: 4, c: [-0.5, 1.5, 1.0, -0.5], fixers: %{}},
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/structure.ex
+[0m
+         |
+ 22  22  |  alias SP.Brain.{Infer, Math}
+ 23  23  |
+ 24     -|  @lambda 0.3          # Occam: amortised complexity charged per added hidden state
+ 25     -|  @theta_frac 0.9      # trigger when EWMA pressure exceeds @theta_frac · ln(ns+1)
+ 26     -|  @beta_w 0.9          # EWMA smoothing of structural pressure
+ 27     -|  @warmup 40           # min steps before any growth (let the likelihood settle)
+ 28     -|  @ns_cap 16           # max states per factor (memory guardrail)
+ 29     -|  @birth 0.05          # birth mass: reachability of a newborn state
+ 30     -|  @seed_hi 0.8         # a newborn state is hypothesised to explain the surprising obs
+ 31     -|  @seed_strength 4.0   # Dirichlet weight of that hypothesis (so it persists in learning)
+     24 +|  # Occam: amortised complexity charged per added hidden state
+     25 +|  @lambda 0.3
+     26 +|  # trigger when EWMA pressure exceeds @theta_frac · ln(ns+1)
+     27 +|  @theta_frac 0.9
+     28 +|  # EWMA smoothing of structural pressure
+     29 +|  @beta_w 0.9
+     30 +|  # min steps before any growth (let the likelihood settle)
+     31 +|  @warmup 40
+     32 +|  # max states per factor (memory guardrail)
+     33 +|  @ns_cap 16
+     34 +|  # birth mass: reachability of a newborn state
+     35 +|  @birth 0.05
+     36 +|  # a newborn state is hypothesised to explain the surprising obs
+     37 +|  @seed_hi 0.8
+     38 +|  # Dirichlet weight of that hypothesis (so it persists in learning)
+     39 +|  @seed_strength 4.0
+ 32  40  |
+ 33  41  |  def ns_cap, do: @ns_cap
+         |
+ 97 105  |      |> Enum.map(fn {a_m, pa_m, o_m} ->
+ 98 106  |        peaked = peaked_col(length(hd(a_m)), o_m)
+    107 +|
+ 99 108  |        {List.replace_at(a_m, k, peaked),
+100 109  |         List.replace_at(pa_m, k, Enum.map(peaked, &(&1 * @seed_strength + 1.0)))}
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/narration_test.exs
+[0m
+       |
+18 18  |
+19 19  |  test "the strategy beat localises both context and the plan intent" do
+20    -|    s = Narration.render_one(:strategy, %{who: "U", context: :flee, intent_actions: [:forward, :mine], conf: 72}, :zh)
+   20 +|    s =
+   21 +|      Narration.render_one(
+   22 +|        :strategy,
+   23 +|        %{who: "U", context: :flee, intent_actions: [:forward, :mine], conf: 72},
+   24 +|        :zh
+   25 +|      )
+   26 +|
+21 27  |    assert s =~ "逃离危险" and s =~ "前进" and s =~ "开采" and s =~ "72"
+22    -|    es = Narration.render_one(:strategy, %{who: "U", context: :forage, intent_actions: [:forward], conf: 50}, :es)
+   28 +|
+   29 +|    es =
+   30 +|      Narration.render_one(
+   31 +|        :strategy,
+   32 +|        %{who: "U", context: :forage, intent_actions: [:forward], conf: 50},
+   33 +|        :es
+   34 +|      )
+   35 +|
+23 36  |    assert es =~ "buscar comida" and es =~ "avanzar" and es =~ "50"
+24 37  |  end
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/language.ex
+[0m
+         |
+ 25  25  |
+ 26  26  |  def new(opts \\ []) do
+ 27     -|    %__MODULE__{k: Keyword.get(opts, :k, 8), alpha: Keyword.get(opts, :alpha, 0.1), seed: Keyword.get(opts, :seed, 1)}
+     27 +|    %__MODULE__{
+     28 +|      k: Keyword.get(opts, :k, 8),
+     29 +|      alpha: Keyword.get(opts, :alpha, 0.1),
+     30 +|      seed: Keyword.get(opts, :seed, 1)
+     31 +|    }
+ 28  32  |  end
+ 29  33  |
+         |
+ 36  40  |  def learn(%Language{} = m, text, meaning) do
+ 37  41  |    words = tokenize(text)
+     42 +|
+ 38  43  |    if words == [] do
+ 39  44  |      m
+         |
+ 47  52  |  end
+ 48  53  |
+ 49     -|  def learn_corpus(%Language{} = m, pairs), do: Enum.reduce(pairs, m, fn {t, mean}, acc -> learn(acc, t, mean) end)
+     54 +|  def learn_corpus(%Language{} = m, pairs),
+     55 +|    do: Enum.reduce(pairs, m, fn {t, mean}, acc -> learn(acc, t, mean) end)
+ 50  56  |
+ 51  57  |  @doc "Fit the HMM for every meaning by Baum–Welch EM (`:iters`, default 12). Returns `{model, history}`."
+ 52  58  |  def fit(%Language{} = m, opts \\ []) do
+ 53  59  |    iters = Keyword.get(opts, :iters, 12)
+ 54     -|    model = Map.new(m.docs, fn {mean, seqs} -> {mean, fit_one(seqs, m.k, m.alpha, m.seed + :erlang.phash2(mean), iters)} end)
+     60 +|
+     61 +|    model =
+     62 +|      Map.new(m.docs, fn {mean, seqs} ->
+     63 +|        {mean, fit_one(seqs, m.k, m.alpha, m.seed + :erlang.phash2(mean), iters)}
+     64 +|      end)
+     65 +|
+ 55  66  |    %Language{m | model: model}
+ 56  67  |  end
+         |
+ 77  88  |
+ 78  89  |  def knowledge(%Language{} = m) do
+ 79     -|    %{states: m.k, words: MapSet.size(m.vocab), meanings: Map.keys(m.model),
+ 80     -|      docs: Map.new(m.docs, fn {k, v} -> {k, length(v)} end)}
+     90 +|    %{
+     91 +|      states: m.k,
+     92 +|      words: MapSet.size(m.vocab),
+     93 +|      meanings: Map.keys(m.model),
+     94 +|      docs: Map.new(m.docs, fn {k, v} -> {k, length(v)} end)
+     95 +|    }
+ 81  96  |  end
+ 82  97  |
+         |
+ 90 105  |  def load(path) do
+ 91 106  |    case File.read(path) do
+ 92     -|      {:ok, bin} -> (m = :erlang.binary_to_term(bin)) && match?(%Language{}, m) && m || nil
+    107 +|      {:ok, bin} -> ((m = :erlang.binary_to_term(bin)) && match?(%Language{}, m) && m) || nil
+ 93 108  |      _ -> nil
+ 94 109  |    end
+         |
+143 158  |
+144 159  |            z = lse(List.flatten(block))
+145     -|            norm = for i <- 0..(k - 1), do: for(j <- 0..(k - 1), do: :math.exp(Enum.at(Enum.at(block, i), j) - z))
+    160 +|
+    161 +|            norm =
+    162 +|              for i <- 0..(k - 1), do: for(j <- 0..(k - 1), do: :math.exp(Enum.at(Enum.at(block, i), j) - z))
+    163 +|
+146 164  |            mat_add(m, norm)
+147 165  |          end)
+         |
+151 169  |            w = Enum.at(seq, t)
+152 170  |            g = Enum.at(gamma, t)
+    171 +|
+153 172  |            Enum.reduce(0..(k - 1), b, fn s, b2 ->
+154 173  |              Map.update(b2, {s, w}, Enum.at(g, s), &(&1 + Enum.at(g, s)))
+         |
+208 227  |        cur =
+209 228  |          for i <- 0..(k - 1) do
+210     -|            terms = for j <- 0..(k - 1), do: Enum.at(Enum.at(log_a, i), j) + log_emit(p, j, o_next) + Enum.at(next, j)
+    229 +|            terms =
+    230 +|              for j <- 0..(k - 1),
+    231 +|                  do: Enum.at(Enum.at(log_a, i), j) + log_emit(p, j, o_next) + Enum.at(next, j)
+    232 +|
+211 233  |            lse(terms)
+212 234  |          end
+         |
+249 271  |
+250 272  |    cond do
+251     -|      w == @eos or w == nil -> Enum.reverse(acc)
+    273 +|      w == @eos or w == nil ->
+    274 +|        Enum.reverse(acc)
+    275 +|
+252 276  |      # no immediate word-repeat ("plains plains"); and ANTI-LOOP: stop when a word-pair (bigram)
+253 277  |      # repeats — kills both "the the…" and the 2-cycle "the gold cave the gold cave…". A
+254 278  |      # finite-state generator needs these guards against spinning.
+255     -|      acc != [] and ws == hd(acc) -> Enum.reverse(acc)
+256     -|      bigram && MapSet.member?(seen, bigram) -> Enum.reverse(acc)
+    279 +|      acc != [] and ws == hd(acc) ->
+    280 +|        Enum.reverse(acc)
+    281 +|
+    282 +|      bigram && MapSet.member?(seen, bigram) ->
+    283 +|        Enum.reverse(acc)
+    284 +|
+257 285  |      true ->
+258 286  |        seen = if bigram, do: MapSet.put(seen, bigram), else: seen
+         |
+262 290  |
+263 291  |  defp emit_word(p, state, rng) do
+264     -|    probs = case Map.get(p.b, state) do
+265     -|      %{probs: probs} -> probs
+266     -|      m when is_map(m) -> m
+267     -|      _ -> %{}
+268     -|    end
+    292 +|    probs =
+    293 +|      case Map.get(p.b, state) do
+    294 +|        %{probs: probs} -> probs
+    295 +|        m when is_map(m) -> m
+    296 +|        _ -> %{}
+    297 +|      end
+269 298  |
+270 299  |    cond do
+         |
+280 309  |    {r, _} = :rand.uniform_s(rng)
+281 310  |    target = r * Enum.sum(row)
+282     -|    {idx, _} = Enum.reduce_while(Enum.with_index(row), 0.0, fn {pr, i}, acc ->
+283     -|      if acc + pr >= target, do: {:halt, {i, acc}}, else: {:cont, acc + pr}
+284     -|    end) |> case do
+285     -|      {i, a} -> {i, a}
+286     -|      a when is_number(a) -> {length(row) - 1, a}
+287     -|    end
+    311 +|
+    312 +|    {idx, _} =
+    313 +|      Enum.reduce_while(Enum.with_index(row), 0.0, fn {pr, i}, acc ->
+    314 +|        if acc + pr >= target, do: {:halt, {i, acc}}, else: {:cont, acc + pr}
+    315 +|      end)
+    316 +|      |> case do
+    317 +|        {i, a} -> {i, a}
+    318 +|        a when is_number(a) -> {length(row) - 1, a}
+    319 +|      end
+    320 +|
+288 321  |    idx
+289 322  |  end
+         |
+293 326  |    {r, _} = :rand.uniform_s(rng)
+294 327  |    target = r * z
+295     -|    word = Enum.reduce_while(probs, 0.0, fn {w, pr}, acc -> if acc + pr >= target, do: {:halt, w}, else: {:cont, acc + pr} end)
+296     -|    {(if is_binary(word) or is_atom(word), do: word, else: @eos), rng}
+    328 +|
+    329 +|    word =
+    330 +|      Enum.reduce_while(probs, 0.0, fn {w, pr}, acc ->
+    331 +|        if acc + pr >= target, do: {:halt, w}, else: {:cont, acc + pr}
+    332 +|      end)
+    333 +|
+    334 +|    {if(is_binary(word) or is_atom(word), do: word, else: @eos), rng}
+297 335  |  end
+298 336  |
+         |
+300 338  |
+301 339  |  defp lse([]), do: -1.0e10
+    340 +|
+302 341  |  defp lse(xs) do
+303 342  |    mx = Enum.max(xs)
+304     -|    if mx == -1.0e10, do: -1.0e10, else: mx + :math.log(Enum.reduce(xs, 0.0, fn x, a -> a + :math.exp(x - mx) end))
+    343 +|
+    344 +|    if mx == -1.0e10,
+    345 +|      do: -1.0e10,
+    346 +|      else: mx + :math.log(Enum.reduce(xs, 0.0, fn x, a -> a + :math.exp(x - mx) end))
+305 347  |  end
+306 348  |
+         |
+308 350  |  defp safe_log(_), do: -1.0e10
+309 351  |
+310     -|  defp norm_log(row), do: (z = lse(row); Enum.map(row, &(&1 - z)))
+    352 +|  defp norm_log(row),
+    353 +|    do:
+    354 +|      (
+    355 +|        z = lse(row)
+    356 +|        Enum.map(row, &(&1 - z))
+    357 +|      )
+    358 +|
+311 359  |  defp vec_add(a, b), do: Enum.zip_with(a, b, &+/2)
+312 360  |  defp mat_add(a, b), do: Enum.zip_with(a, b, &vec_add/2)
+313 361  |  defp zeros(k), do: List.duplicate(0.0, k)
+314 362  |  defp zmat(k), do: List.duplicate(zeros(k), k)
+315     -|  defp normalize(row), do: (z = Enum.sum(row); if z > 0, do: Enum.map(row, &(&1 / z)), else: List.duplicate(1.0 / length(row), length(row)))
+316 363  |
+    364 +|  defp normalize(row),
+    365 +|    do:
+    366 +|      (
+    367 +|        z = Enum.sum(row)
+    368 +|        if z > 0, do: Enum.map(row, &(&1 / z)), else: List.duplicate(1.0 / length(row), length(row))
+    369 +|      )
+    370 +|
+317 371  |  defp rand_row(k, rng), do: rand_norm(k, rng)
+318 372  |  defp rand_mat(k, rng), do: Enum.map_reduce(1..k, rng, fn _, r -> rand_norm(k, r) end)
+319 373  |
+320 374  |  defp rand_norm(k, rng) do
+321     -|    {vals, rng} = Enum.map_reduce(1..k, rng, fn _, r -> {x, r2} = :rand.uniform_s(r); {0.5 + x, r2} end)
+    375 +|    {vals, rng} =
+    376 +|      Enum.map_reduce(1..k, rng, fn _, r ->
+    377 +|        {x, r2} = :rand.uniform_s(r)
+    378 +|        {0.5 + x, r2}
+    379 +|      end)
+    380 +|
+322 381  |    {normalize(vals), rng}
+323 382  |  end
+         |
+325 384  |  defp rand_emit(k, vocab, rng) do
+326 385  |    Enum.map_reduce(0..(k - 1), rng, fn _s, r ->
+327     -|      {vals, r2} = Enum.map_reduce(vocab, r, fn w, rr -> {x, rr2} = :rand.uniform_s(rr); {{w, 0.5 + x}, rr2} end)
+    386 +|      {vals, r2} =
+    387 +|        Enum.map_reduce(vocab, r, fn w, rr ->
+    388 +|          {x, rr2} = :rand.uniform_s(rr)
+    389 +|          {{w, 0.5 + x}, rr2}
+    390 +|        end)
+    391 +|
+328 392  |      z = vals |> Enum.map(&elem(&1, 1)) |> Enum.sum()
+329 393  |      {Map.new(vals, fn {w, x} -> {w, x / z} end), r2}
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/producer.ex
+[0m
+         |
+ 80  80  |      end)
+ 81  81  |
+ 82     -|    requests = for {name, v} <- new, v < @low_conf, do: %{kind: :sensor_request, factor: name, confidence: Float.round(v, 2)}
+     82 +|    requests =
+     83 +|      for {name, v} <- new,
+     84 +|          v < @low_conf,
+     85 +|          do: %{kind: :sensor_request, factor: name, confidence: Float.round(v, 2)}
+     86 +|
+ 83  87  |    {new, requests}
+ 84  88  |  end
+         |
+ 93  97  |  # widen = a deliberate god's-eye reveal of the whole colony.
+ 94  98  |  defp directives(:widen, _rows, _f), do: [{:shot, :overview, "-"}]
+     99 +|
+ 95 100  |  defp directives(beat, rows, _f) when beat in [:beat_crisis, :beat_social, :beat_mind, :beat_recap] do
+ 96 101  |    case Codec.top_subject(rows) do
+         |
+101 106  |
+102 107  |  defp directives(:spawn_agent, _rows, _f), do: [{:spawn}]
+103     -|  defp directives(:cull_agent, rows, _f), do: (s = Codec.low_subject(rows)) && [{:cull, s}] || []
+    108 +|  defp directives(:cull_agent, rows, _f), do: ((s = Codec.low_subject(rows)) && [{:cull, s}]) || []
+104 109  |  defp directives(:health_tps, _rows, _f), do: [{:health, :tps}]
+105 110  |  defp directives(:health_restart_cam, _rows, _f), do: [{:health, :cam}]
+         |
+184 189  |  def handle_call(:status, _from, state) do
+185 190  |    {:reply,
+186     -|     %{frame: state.frame, action: state.last_action, star: state.star, focus: Brain.awareness(state.brain).focus,
+187     -|       tps: state.tps, requests: state.requests, knowledge: Enum.take(state.knowledge, 8)}, state}
+    191 +|     %{
+    192 +|       frame: state.frame,
+    193 +|       action: state.last_action,
+    194 +|       star: state.star,
+    195 +|       focus: Brain.awareness(state.brain).focus,
+    196 +|       tps: state.tps,
+    197 +|       requests: state.requests,
+    198 +|       knowledge: Enum.take(state.knowledge, 8)
+    199 +|     }, state}
+188 200  |  end
+189 201  |
+         |
+193 205  |    |> Enum.reject(fn r -> Enum.any?(state.requests, &(&1.factor == r.factor)) end)
+194 206  |    |> Enum.each(fn r ->
+195     -|      Director.add_line(%{text: "PRODUCER REQUESTS a richer sensor for #{r.factor} (confidence #{r.confidence}).", who: nil, i18n: %{}})
+    207 +|      Director.add_line(%{
+    208 +|        text: "PRODUCER REQUESTS a richer sensor for #{r.factor} (confidence #{r.confidence}).",
+    209 +|        who: nil,
+    210 +|        i18n: %{}
+    211 +|      })
+196 212  |    end)
+197 213  |
+         |
+248 264  |        Director.add_line(line)
+249 265  |        # the producer LEARNS from its OWN speech — one faculty, learning all it says AND is asked.
+250     -|        if is_map(line) and is_binary(Map.get(line, :text)), do: safe(fn -> SP.Brain.Anchor.observe(line.text) end)
+    266 +|        if is_map(line) and is_binary(Map.get(line, :text)),
+    267 +|          do: safe(fn -> SP.Brain.Anchor.observe(line.text) end)
+251 268  |    end
+252 269  |
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/anchor_test.exs
+[0m
+         |
+  6   6  |
+  7   7  |  @rows [
+  8     -|    %{username: "UNI-0-1", kin: 0, senses: %{"health" => 20, "food" => 18}, action: "mine", context: :build, emotion: :content, intent: [:mine, :forward]},
+  9     -|    %{username: "UNI-0-2", kin: 0, senses: %{"health" => 4, "hurt" => true}, action: "forward", context: :flee, emotion: :fear, intent: []}
+      8 +|    %{
+      9 +|      username: "UNI-0-1",
+     10 +|      kin: 0,
+     11 +|      senses: %{"health" => 20, "food" => 18},
+     12 +|      action: "mine",
+     13 +|      context: :build,
+     14 +|      emotion: :content,
+     15 +|      intent: [:mine, :forward]
+     16 +|    },
+     17 +|    %{
+     18 +|      username: "UNI-0-2",
+     19 +|      kin: 0,
+     20 +|      senses: %{"health" => 4, "hurt" => true},
+     21 +|      action: "forward",
+     22 +|      context: :flee,
+     23 +|      emotion: :fear,
+     24 +|      intent: []
+     25 +|    }
+ 10  26  |  ]
+ 11  27  |
+         |
+154 170  |    rows = [
+155 171  |      %{username: "UNI-0-1", senses: %{"food" => 6}, action: "forward", context: :forage, emotion: :calm},
+156     -|      %{username: "UNI-0-2", senses: %{"health" => 4, "hurt" => true}, action: "forward", context: :flee, emotion: :fear},
+    172 +|      %{
+    173 +|        username: "UNI-0-2",
+    174 +|        senses: %{"health" => 4, "hurt" => true},
+    175 +|        action: "forward",
+    176 +|        context: :flee,
+    177 +|        emotion: :fear
+    178 +|      },
+157 179  |      %{username: "UNI-0-3", senses: %{"food" => 18}, action: "mine", context: nil, emotion: :curious},
+158 180  |      %{username: "UNI-0-4", senses: %{"food" => 18}, action: "forward", context: :social, emotion: :content}
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/math.ex
+[0m
+         |
+ 65  65  |  def matvec(cols, w) do
+ 66  66  |    r = length(hd(cols))
+     67 +|
+ 67  68  |    Enum.zip(cols, w)
+ 68  69  |    |> Enum.reduce(zeros(r), fn {col, wj}, acc -> vadd(acc, vscale(col, wj)) end)
+         |
+ 78  79  |  def ln_matvec(cols, w) do
+ 79  80  |    r = length(hd(cols))
+     81 +|
+ 80  82  |    Enum.zip(cols, w)
+ 81  83  |    |> Enum.reduce(zeros(r), fn {col, wj}, acc -> vadd(acc, vscale(vlog(col), wj)) end)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/mix/tasks/sp.uni.prove.ex
+[0m
+         |
+ 41  41  |    IO.puts("\n[3] DETERMINISTIC — a stochastic mimic cannot reproduce this")
+ 42  42  |    senses = %{"health" => 14, "food" => 9, "inv" => %{"wood" => 3}, "look" => "oak_log", "build" => 2}
+ 43     -|    run = fn seed -> Enum.map_reduce(1..8, MC.new(seed: seed), fn _, b -> MC.step(b, senses) end) |> elem(0) end
+     43 +|
+     44 +|    run = fn seed ->
+     45 +|      Enum.map_reduce(1..8, MC.new(seed: seed), fn _, b -> MC.step(b, senses) end) |> elem(0)
+     46 +|    end
+     47 +|
+ 44  48  |    det = run.(42) == run.(42) and run.(42) != run.(7)
+ 45     -|    IO.puts("  [#{if det, do: "PASS", else: "FAIL"}] same seed → identical actions; different seed → diverges")
+ 46  49  |
+     50 +|    IO.puts(
+     51 +|      "  [#{if det, do: "PASS", else: "FAIL"}] same seed → identical actions; different seed → diverges"
+     52 +|    )
+     53 +|
+ 47  54  |    IO.puts("\n[4] THE AGENTS LEARN — the generative model accumulates evidence, not scripted")
+ 48  55  |    mass = fn b -> b.model.subs |> Enum.flat_map(&List.flatten(&1.pa)) |> Enum.sum() end
+         |
+ 50  57  |    lived = Enum.reduce(1..60, newborn, fn _, b -> elem(MC.step(b, senses), 1) end)
+ 51  58  |    grew = mass.(lived) - mass.(newborn)
+ 52     -|    IO.puts("  [#{if grew > 0, do: "PASS", else: "FAIL"}] Dirichlet mass #{Float.round(mass.(newborn), 1)} → #{Float.round(mass.(lived), 1)} (+#{round(grew)} learned in 60 steps)")
+ 53  59  |
+     60 +|    IO.puts(
+     61 +|      "  [#{if grew > 0, do: "PASS", else: "FAIL"}] Dirichlet mass #{Float.round(mass.(newborn), 1)} → #{Float.round(mass.(lived), 1)} (+#{round(grew)} learned in 60 steps)"
+     62 +|    )
+     63 +|
+ 54  64  |    IO.puts("\n[5] THE PRODUCER LEARNS TO READ — free text → meaning, no keywords, admits ignorance")
+ 55  65  |    r = Anchor.seeded_reader()
+ 56     -|    reads = [{"count the agents", :count}, {"is the tick rate stable", :server}, {"explain your reason", :why}]
+     66 +|
+     67 +|    reads = [
+     68 +|      {"count the agents", :count},
+     69 +|      {"is the tick rate stable", :server},
+     70 +|      {"explain your reason", :why}
+     71 +|    ]
+     72 +|
+ 57  73  |    read_ok = Enum.all?(reads, fn {q, m} -> Reader.meaning(r, q) == m end)
+ 58  74  |    unsure_ok = Reader.meaning(r, "qwerty banana soup") == :unsure
+ 59     -|    for {q, m} <- reads, do: IO.puts("       #{String.pad_trailing(inspect(q), 28)} → #{inspect(Reader.meaning(r, q))}  (want #{inspect(m)})")
+ 60     -|    IO.puts("       #{String.pad_trailing(~s|"qwerty banana soup"|, 28)} → #{inspect(Reader.meaning(r, "qwerty banana soup"))}  (admits ignorance)")
+ 61     -|    IO.puts("  [#{if read_ok and unsure_ok, do: "PASS", else: "FAIL"}] generalises past keywords AND says :unsure on the unknown")
+ 62  75  |
+     76 +|    for {q, m} <- reads,
+     77 +|        do:
+     78 +|          IO.puts(
+     79 +|            "       #{String.pad_trailing(inspect(q), 28)} → #{inspect(Reader.meaning(r, q))}  (want #{inspect(m)})"
+     80 +|          )
+     81 +|
+     82 +|    IO.puts(
+     83 +|      "       #{String.pad_trailing(~s|"qwerty banana soup"|, 28)} → #{inspect(Reader.meaning(r, "qwerty banana soup"))}  (admits ignorance)"
+     84 +|    )
+     85 +|
+     86 +|    IO.puts(
+     87 +|      "  [#{if read_ok and unsure_ok, do: "PASS", else: "FAIL"}] generalises past keywords AND says :unsure on the unknown"
+     88 +|    )
+     89 +|
+ 63  90  |    IO.puts("\n[6] THE PRODUCER LEARNS TO SPEAK — SURPRISE (free energy) LOW on learned, HIGH on salad")
+ 64  91  |    pl = Reader.surprise(r, "the tick rate", :server)
+ 65  92  |    ps = Reader.surprise(r, "banana qwerty zorp", :server)
+ 66  93  |    IO.puts("       compose(:server) = #{inspect(Reader.compose(r, :server))}")
+ 67     -|    IO.puts("  [#{if pl < ps, do: "PASS", else: "FAIL"}] surprise learned #{Float.round(pl, 1)} < salad #{Float.round(ps, 1)}")
+ 68  94  |
+     95 +|    IO.puts(
+     96 +|      "  [#{if pl < ps, do: "PASS", else: "FAIL"}] surprise learned #{Float.round(pl, 1)} < salad #{Float.round(ps, 1)}"
+     97 +|    )
+     98 +|
+ 69  99  |    IO.puts("\n[7] IT SPEAKS GROUNDED — never a fact it cannot see (no hallucination)")
+ 70 100  |    rows = [%{who: "UNI-1-1", emotion: :fear, context: :flee, action: "forward", senses: %{"health" => 5}}]
+ 71 101  |    spoken = rows |> hd() |> SP.Brain.Speaker.line()
+ 72 102  |    st = SP.Brain.Speaker.state_of(rows)
+ 73     -|    grounded = SP.Brain.Speaker.grounded?(spoken, st) and not SP.Brain.Speaker.grounded?("UNI-9-9 is hurt", st)
+    103 +|
+    104 +|    grounded =
+    105 +|      SP.Brain.Speaker.grounded?(spoken, st) and not SP.Brain.Speaker.grounded?("UNI-9-9 is hurt", st)
+    106 +|
+ 74 107  |    IO.puts("       says: #{String.slice(spoken, 0, 84)}")
+ 75     -|    IO.puts("  [#{if grounded, do: "PASS", else: "FAIL"}] spoken facts ⊆ state, and a hallucinated name is rejected")
+    108 +|
+    109 +|    IO.puts(
+    110 +|      "  [#{if grounded, do: "PASS", else: "FAIL"}] spoken facts ⊆ state, and a hallucinated name is rejected"
+    111 +|    )
+    112 +|
+ 76 113  |    line.(g.(19))
+ 77 114  |
+ 78     -|    IO.puts("\n[8] IT SEES — vision-primary: POV pixels → a pure-FEP visual cortex → a discrete SCENE the brain reasons over")
+    115 +|    IO.puts(
+    116 +|      "\n[8] IT SEES — vision-primary: POV pixels → a pure-FEP visual cortex → a discrete SCENE the brain reasons over"
+    117 +|    )
+    118 +|
+ 79 119  |    vg = SP.Brain.Genome.vision_primary()
+ 80 120  |    vmods = SP.Brain.Genome.active_modalities(vg) |> Enum.map(& &1.name)
+         |
+ 82 122  |    {vact, _} = SP.Brain.MC.step(vbrain, %{"health" => 14, "food" => 9, "scene" => 5})
+ 83 123  |    scene_bin = SP.Brain.MCCodec.outcome(:scene, %{"scene" => 5})
+ 84     -|    vision_ok = :scene in vmods and length(vbrain.model.subs) == 13 and vact in SP.Brain.Genome.actions() and is_integer(scene_bin)
+ 85     -|    IO.puts("       vision-primary genome → #{length(vbrain.model.subs)} factors incl :scene (ns=#{SP.Brain.Genome.scene_states()})")
+ 86     -|    IO.puts("       the brain ingests scene-state #{scene_bin} — a DISCRETE bin, never raw pixels — and acts: #{vact}")
+ 87     -|    IO.puts("  [#{if vision_ok, do: "PASS", else: "FAIL"}] the UNI reasons over a learned scene; pixels stay in the cortex (UNI.OS, audited NN-free; free-energy-drop proof there)")
+ 88 124  |
+    125 +|    vision_ok =
+    126 +|      :scene in vmods and length(vbrain.model.subs) == 13 and vact in SP.Brain.Genome.actions() and
+    127 +|        is_integer(scene_bin)
+    128 +|
+    129 +|    IO.puts(
+    130 +|      "       vision-primary genome → #{length(vbrain.model.subs)} factors incl :scene (ns=#{SP.Brain.Genome.scene_states()})"
+    131 +|    )
+    132 +|
+    133 +|    IO.puts(
+    134 +|      "       the brain ingests scene-state #{scene_bin} — a DISCRETE bin, never raw pixels — and acts: #{vact}"
+    135 +|    )
+    136 +|
+    137 +|    IO.puts(
+    138 +|      "  [#{if vision_ok, do: "PASS", else: "FAIL"}] the UNI reasons over a learned scene; pixels stay in the cortex (UNI.OS, audited NN-free; free-energy-drop proof there)"
+    139 +|    )
+    140 +|
+ 89 141  |    passes = [g.(14), g.(18), g.(17), g.(19), g.(1), g.(2), g.(3), g.(5), g.(7), g.(11)]
+ 90 142  |    gate_ok = Enum.all?(passes, fn {_, _, s, _} -> s == :pass end)
+ 91     -|    ok = gate_ok and deps == [] and det and grew > 0 and read_ok and unsure_ok and pl < ps and grounded and vision_ok
+ 92 143  |
+    144 +|    ok =
+    145 +|      gate_ok and deps == [] and det and grew > 0 and read_ok and unsure_ok and pl < ps and grounded and
+    146 +|        vision_ok
+    147 +|
+ 93 148  |    IO.puts("\n══ VERDICT: #{if ok, do: "ALL PROVEN", else: "A CLAIM FAILED — investigate"} ══")
+ 94 149  |    IO.puts("To FALSIFY any line above, see docs/FALSIFICATION.md (e.g. inject an LLM call → [1] fails).\n")
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/reader.ex
+[0m
+         |
+116 116  |
+117 117  |  @doc "Learn a whole corpus of `{text, meaning}` pairs (order-independent — pure count accumulation)."
+118     -|  def learn_corpus(%Reader{} = m, pairs), do: Enum.reduce(pairs, m, fn {t, mean}, acc -> learn(acc, t, mean) end)
+    118 +|  def learn_corpus(%Reader{} = m, pairs),
+    119 +|    do: Enum.reduce(pairs, m, fn {t, mean}, acc -> learn(acc, t, mean) end)
+119 120  |
+120 121  |  @doc """
+         |
+137 138  |
+138 139  |  @doc "Train on many raw lines (a corpus) for generation fluency."
+139     -|  def train_corpus(%Reader{} = m, texts, channel \\ :narration), do: Enum.reduce(texts, m, &train(&2, &1, channel))
+    140 +|  def train_corpus(%Reader{} = m, texts, channel \\ :narration),
+    141 +|    do: Enum.reduce(texts, m, &train(&2, &1, channel))
+140 142  |
+141 143  |  @doc """
+         |
+189 191  |
+190 192  |    if known do
+191     -|      m |> infer(text) |> Enum.filter(fn {_, p} -> p >= min_conf end) |> Enum.take(k) |> Enum.map(&elem(&1, 0))
+    193 +|      m
+    194 +|      |> infer(text)
+    195 +|      |> Enum.filter(fn {_, p} -> p >= min_conf end)
+    196 +|      |> Enum.take(k)
+    197 +|      |> Enum.map(&elem(&1, 0))
+192 198  |    else
+193 199  |      []
+         |
+256 262  |      row ->
+257 263  |        next = if rng, do: sample_word(row, rng), else: row |> Enum.max_by(&elem(&1, 1)) |> elem(0)
+258     -|        if next == :end, do: Enum.reverse(acc), else: walk(m, mean, p1, next, [to_string(next) | acc], n - 1, rng)
+    264 +|
+    265 +|        if next == :end,
+    266 +|          do: Enum.reverse(acc),
+    267 +|          else: walk(m, mean, p1, next, [to_string(next) | acc], n - 1, rng)
+259 268  |    end
+260 269  |  end
+         |
+279 288  |    {r, _} = :rand.uniform_s(rng)
+280 289  |    target = r * z
+281     -|    Enum.reduce_while(row, 0.0, fn {w, c}, acc -> if acc + c >= target, do: {:halt, w}, else: {:cont, acc + c} end)
+    290 +|
+    291 +|    Enum.reduce_while(row, 0.0, fn {w, c}, acc ->
+    292 +|      if acc + c >= target, do: {:halt, w}, else: {:cont, acc + c}
+    293 +|    end)
+282 294  |  end
+283 295  |
+         |
+336 348  |
+337 349  |  @doc "Words the reader has learned (its vocabulary size + the meanings it knows)."
+338     -|  def knowledge(%Reader{} = m), do: %{words: MapSet.size(m.vocab), meanings: Map.keys(m.counts), examples: m.priors}
+    350 +|  def knowledge(%Reader{} = m),
+    351 +|    do: %{words: MapSet.size(m.vocab), meanings: Map.keys(m.counts), examples: m.priors}
+339 352  |
+340 353  |  @doc "Persist the learned model (so language grows across restarts — like the agents' memory)."
+         |
+353 366  |      {:ok, bin} ->
+354 367  |        m = :erlang.binary_to_term(bin)
+    368 +|
+355 369  |        if is_map(m) and Map.get(m, :__struct__) == __MODULE__,
+356 370  |          do: struct(__MODULE__, Map.delete(m, :__struct__)),
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/narrator_test.exs
+[0m
+       |
+ 7  7  |  @rows [
+ 8  8  |    %{who: "UNI-2-3", emotion: :calm, context: :forage, action: "forward", senses: %{"food" => 6}},
+ 9    -|    %{who: "UNI-1-1", emotion: :curious, context: nil, action: "mine", senses: %{"health" => 20, "food" => 18}},
+10    -|    %{who: "UNI-0-2", emotion: :fear, context: :flee, action: "forward", senses: %{"health" => 5, "hurt" => true}},
+    9 +|    %{
+   10 +|      who: "UNI-1-1",
+   11 +|      emotion: :curious,
+   12 +|      context: nil,
+   13 +|      action: "mine",
+   14 +|      senses: %{"health" => 20, "food" => 18}
+   15 +|    },
+   16 +|    %{
+   17 +|      who: "UNI-0-2",
+   18 +|      emotion: :fear,
+   19 +|      context: :flee,
+   20 +|      action: "forward",
+   21 +|      senses: %{"health" => 5, "hurt" => true}
+   22 +|    },
+11 23  |    %{who: "UNI-2-1", emotion: :content, context: :social, action: "forward", senses: %{"food" => 18}}
+12 24  |  ]
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/awareness_test.exs
+[0m
+       |
+39 39  |  test "the broadcast is informative: it changes when the dominant state changes" do
+40 40  |    fm = Genome.express(Genome.default())
+41    -|    a = Awareness.broadcast(peaked_belief(fm, 3, [1.0, 0.0, 0.0]) |> then(&%{&1 | subs: List.update_at(&1.subs, 3, fn s -> %{s | gamma_m: [4.0]} end)}))
+42    -|    b = Awareness.broadcast(peaked_belief(fm, 3, [0.0, 0.0, 1.0]) |> then(&%{&1 | subs: List.update_at(&1.subs, 3, fn s -> %{s | gamma_m: [4.0]} end)}))
+   41 +|
+   42 +|    a =
+   43 +|      Awareness.broadcast(
+   44 +|        peaked_belief(fm, 3, [1.0, 0.0, 0.0])
+   45 +|        |> then(&%{&1 | subs: List.update_at(&1.subs, 3, fn s -> %{s | gamma_m: [4.0]} end)})
+   46 +|      )
+   47 +|
+   48 +|    b =
+   49 +|      Awareness.broadcast(
+   50 +|        peaked_belief(fm, 3, [0.0, 0.0, 1.0])
+   51 +|        |> then(&%{&1 | subs: List.update_at(&1.subs, 3, fn s -> %{s | gamma_m: [4.0]} end)})
+   52 +|      )
+   53 +|
+43 54  |    assert a.focus_state != b.focus_state
+44 55  |  end
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/structure_test.exs
+[0m
+         |
+ 59  59  |  describe "bounds (4GB guardrail)" do
+ 60  60  |    test "ns saturates at the cap" do
+ 61     -|      capped = Enum.reduce(2..Structure.ns_cap(), certain_factor(), fn n, s -> Structure.expand_factor(s, n) end)
+     61 +|      capped =
+     62 +|        Enum.reduce(2..Structure.ns_cap(), certain_factor(), fn n, s -> Structure.expand_factor(s, n) end)
+     63 +|
+ 62  64  |      assert capped.ns == Structure.ns_cap()
+ 63  65  |
+         |
+ 96  98  |        Enum.reduce(0..119, fm, fn i, fm ->
+ 97  99  |          o = rem(i, 3)
+    100 +|
+ 98 101  |          fm
+ 99 102  |          |> Factors.infer_states([[o]])
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/agent.ex
+[0m
+       |
+43 43  |    present =
+44 44  |      Enum.map(obs, fn {ch, value} ->
+45    -|        model = Map.get(state.channels, ch) || Codec.channel_model(state.n_bins, state.n_states, state.n_actions, gamma: state.gamma)
+   45 +|        model =
+   46 +|          Map.get(state.channels, ch) ||
+   47 +|            Codec.channel_model(state.n_bins, state.n_states, state.n_actions, gamma: state.gamma)
+   48 +|
+46 49  |        o = Codec.bin(value, state.n_bins)
+47 50  |        {ch, model |> Infer.infer_states([o]) |> Learn.learn([o])}
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/producer/brain.ex
+[0m
+       |
+56 56  |
+57 57  |  @doc "Planned value of every root action (diagnostics: the producer's forward reasoning)."
+58    -|  def action_values(%__MODULE__{model: model}), do: Plan.action_values(model, depth: @plan_depth, beam: @plan_beam)
+   58 +|  def action_values(%__MODULE__{model: model}),
+   59 +|    do: Plan.action_values(model, depth: @plan_depth, beam: @plan_beam)
+59 60  |
+60 61  |  @doc "What is globally available to the producer right now (focus/confidence/emotion)."
+       |
+77 78  |  defp peakedness(q) do
+78 79  |    n = length(q)
+79    -|    if n <= 1, do: 1.0, else: (Enum.max(q) - 1.0 / n) / (1.0 - 1.0 / n) |> max(0.0) |> min(1.0)
+   80 +|    if n <= 1, do: 1.0, else: ((Enum.max(q) - 1.0 / n) / (1.0 - 1.0 / n)) |> max(0.0) |> min(1.0)
+80 81  |  end
+81 82  |end
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/minecraft_corpus_test.exs
+[0m
+       |
+14 14  |    scenes = pairs |> Enum.map(&elem(&1, 1)) |> Enum.uniq()
+15 15  |    assert :forest in scenes and :cave in scenes and :danger in scenes and :mining in scenes
+   16 +|
+16 17  |    # real Minecraft words, but never a raw number or UNI name (so a model trained on it can't hallucinate facts)
+17 18  |    for {s, _} <- pairs, do: refute(s =~ ~r/\d|uni-/i, "fact token in corpus: #{s}")
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/runtime/agent_test.exs
+[0m
+       |
+11 11  |  alias SP.Core.Directive.{Actuate, Emit}
+12 12  |
+13    -|  @senses %{"health" => 20, "food" => 18, "inv" => %{}, "look" => "oak_log", "hostile_dist" => nil, "hurt" => false}
+   13 +|  @senses %{
+   14 +|    "health" => 20,
+   15 +|    "food" => 18,
+   16 +|    "inv" => %{},
+   17 +|    "look" => "oak_log",
+   18 +|    "hostile_dist" => nil,
+   19 +|    "hurt" => false
+   20 +|  }
+14 21  |
+15 22  |  test "signal_of transduces senses into a valid CloudEvents Signal carrying the senses" do
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/genome.ex
+[0m
+         |
+114 114  |  def default do
+115 115  |    repair(%__MODULE__{
+116     -|      growth_plan: [:interoception, :chemotaction, :proprioception, :vision, :social_sense, :camera_control, :locomotion, :strategist]
+    116 +|      growth_plan: [
+    117 +|        :interoception,
+    118 +|        :chemotaction,
+    119 +|        :proprioception,
+    120 +|        :vision,
+    121 +|        :social_sense,
+    122 +|        :camera_control,
+    123 +|        :locomotion,
+    124 +|        :strategist
+    125 +|      ]
+117 126  |    })
+118 127  |  end
+         |
+126 135  |  def vision_primary do
+127 136  |    repair(%__MODULE__{
+128     -|      growth_plan: [:interoception, :chemotaction, :proprioception, :vision, :social_sense, :camera_control, :locomotion, :strategist, :sight_cortex]
+    137 +|      growth_plan: [
+    138 +|        :interoception,
+    139 +|        :chemotaction,
+    140 +|        :proprioception,
+    141 +|        :vision,
+    142 +|        :social_sense,
+    143 +|        :camera_control,
+    144 +|        :locomotion,
+    145 +|        :strategist,
+    146 +|        :sight_cortex
+    147 +|      ]
+129 148  |    })
+130 149  |  end
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/precision_test.exs
+[0m
+         |
+ 18  18  |
+ 19  19  |    test "a well-predicted channel gains precision; a surprising one loses it" do
+ 20     -|      m = Model.new(a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5])
+     20 +|      m =
+     21 +|        Model.new(
+     22 +|          a: [[[0.9, 0.1], [0.1, 0.9]]],
+     23 +|          b: [[[1.0, 0.0], [0.0, 1.0]]],
+     24 +|          c: [[0.0, 0.0]],
+     25 +|          d: [0.5, 0.5]
+     26 +|        )
+     27 +|
+ 21  28  |      m = %{m | qs: [1.0, 0.0]}
+ 22  29  |
+         |
+ 51  58  |
+ 52  59  |    test "VFE still falls under perception at γ_m ≠ 1 (the upper-bound property holds)" do
+ 53     -|      m = Model.new(a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5], gamma_m: [2.0])
+     60 +|      m =
+     61 +|        Model.new(
+     62 +|          a: [[[0.9, 0.1], [0.1, 0.9]]],
+     63 +|          b: [[[1.0, 0.0], [0.0, 1.0]]],
+     64 +|          c: [[0.0, 0.0]],
+     65 +|          d: [0.5, 0.5],
+     66 +|          gamma_m: [2.0]
+     67 +|        )
+     68 +|
+ 54  69  |      f_before = Infer.vfe(m, [0])
+ 55  70  |      f_after = m |> Infer.infer_states([0]) |> Infer.vfe([0])
+         |
+ 81  96  |          a: [[[0.95, 0.05], [0.05, 0.95]]],
+ 82  97  |          b: [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [0.0, 1.0]]],
+ 83     -|          c: [[0.0, 4.0]], d: [0.5, 0.5], horizon: 1, gamma: 8.0
+     98 +|          c: [[0.0, 4.0]],
+     99 +|          d: [0.5, 0.5],
+    100 +|          horizon: 1,
+    101 +|          gamma: 8.0
+ 84 102  |        )
+ 85 103  |        |> Infer.infer_states([0])
+         |
+ 93 111  |      run = fn ->
+ 94 112  |        Factors.new(
+ 95     -|          [%{a: [[[0.8, 0.2], [0.2, 0.8]]], b: [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]], c: [[1.0, 0.0]], d: [0.5, 0.5]}],
+    113 +|          [
+    114 +|            %{
+    115 +|              a: [[[0.8, 0.2], [0.2, 0.8]]],
+    116 +|              b: [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]],
+    117 +|              c: [[1.0, 0.0]],
+    118 +|              d: [0.5, 0.5]
+    119 +|            }
+    120 +|          ],
+ 96 121  |          gamma: 8.0
+ 97 122  |        )
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/mc_test.exs
+[0m
+         |
+ 54  54  |    test "rich sight: light / sky / tree-direction discretise (with safe defaults)" do
+ 55  55  |      s = %{"light" => 0, "sky" => 0, "tree_dir" => 2}
+ 56     -|      assert MCCodec.outcome(:light, s) == 0 and MCCodec.outcome(:sky, s) == 0 and MCCodec.outcome(:sight, s) == 2
+     56 +|
+     57 +|      assert MCCodec.outcome(:light, s) == 0 and MCCodec.outcome(:sky, s) == 0 and
+     58 +|               MCCodec.outcome(:sight, s) == 2
+     59 +|
+ 57  60  |      # absent ⇒ day / open-sky / no-tree (so a body that omits them degrades gracefully)
+ 58     -|      assert MCCodec.outcome(:light, %{}) == 2 and MCCodec.outcome(:sky, %{}) == 2 and MCCodec.outcome(:sight, %{}) == 0
+     61 +|      assert MCCodec.outcome(:light, %{}) == 2 and MCCodec.outcome(:sky, %{}) == 2 and
+     62 +|               MCCodec.outcome(:sight, %{}) == 0
+     63 +|
+ 59  64  |      # out-of-range bound to the modality's outcome count
+ 60  65  |      assert MCCodec.outcome(:sight, %{"tree_dir" => 9}) == 3
+         |
+116 121  |
+117 122  |  describe "MC — the Minecraft brain loop" do
+118     -|    @senses %{"health" => 20, "food" => 18, "inv" => %{}, "look" => "oak_log", "hostile_dist" => nil, "hurt" => false}
+    123 +|    @senses %{
+    124 +|      "health" => 20,
+    125 +|      "food" => 18,
+    126 +|      "inv" => %{},
+    127 +|      "look" => "oak_log",
+    128 +|      "hostile_dist" => nil,
+    129 +|      "hurt" => false
+    130 +|    }
+119 131  |
+120 132  |    test "step returns a valid primitive action and updates beliefs" do
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/emotion.ex
+[0m
+         |
+ 62  62  |
+ 63  63  |    ev = Factors.evaluate_policies(fm)
+ 64     -|    read(%{danger: danger, distress: distress, control: peakedness(ev.q_pi), epistemic_frac: epistemic_frac(ev)})
+     64 +|
+     65 +|    read(%{
+     66 +|      danger: danger,
+     67 +|      distress: distress,
+     68 +|      control: peakedness(ev.q_pi),
+     69 +|      epistemic_frac: epistemic_frac(ev)
+     70 +|    })
+ 65  71  |  end
+ 66  72  |
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/oracle_test.exs
+[0m
+         |
+ 12  12  |  describe "PERCEPTION — free-energy minimisation" do
+ 13  13  |    test "posterior concentrates on the observed state; F drops to the oracle value" do
+ 14     -|      m = Model.new(a: [[[0.9, 0.1], [0.1, 0.9]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5])
+     14 +|      m =
+     15 +|        Model.new(
+     16 +|          a: [[[0.9, 0.1], [0.1, 0.9]]],
+     17 +|          b: [[[1.0, 0.0], [0.0, 1.0]]],
+     18 +|          c: [[0.0, 0.0]],
+     19 +|          d: [0.5, 0.5]
+     20 +|        )
+ 15  21  |
+ 16  22  |      f_before = Infer.vfe(m, [0])
+         |
+ 90  96  |  describe "LEARNING — Dirichlet model learning, no reward" do
+ 91  97  |    test "the likelihood converges to the oracle value" do
+ 92     -|      m = Model.new(a: [[[0.5, 0.5], [0.5, 0.5]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5], lr: 1.0)
+     98 +|      m =
+     99 +|        Model.new(
+    100 +|          a: [[[0.5, 0.5], [0.5, 0.5]]],
+    101 +|          b: [[[1.0, 0.0], [0.0, 1.0]]],
+    102 +|          c: [[0.0, 0.0]],
+    103 +|          d: [0.5, 0.5],
+    104 +|          lr: 1.0
+    105 +|        )
+ 93 106  |
+ 94 107  |      m =
+         |
+111 124  |    test "identical inputs yield identical decisions (no hidden/global state)" do
+112 125  |      build = fn ->
+113     -|        Model.new(a: [[[0.8, 0.2], [0.2, 0.8]]], b: [[[1.0, 0.0], [0.0, 1.0]]], c: [[0.0, 0.0]], d: [0.5, 0.5])
+    126 +|        Model.new(
+    127 +|          a: [[[0.8, 0.2], [0.2, 0.8]]],
+    128 +|          b: [[[1.0, 0.0], [0.0, 1.0]]],
+    129 +|          c: [[0.0, 0.0]],
+    130 +|          d: [0.5, 0.5]
+    131 +|        )
+114 132  |        |> Infer.infer_states([0])
+115 133  |      end
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/narration.ex
+[0m
+         |
+101 101  |      zh: ["{{who}} 受好奇心驱使，闯入未知。", "{{who}} 四处游荡，消解未知。"],
+102 102  |      hi: ["{{who}} जिज्ञासा से प्रेरित होकर अनजान में बढ़ता है।", "{{who}} भटकता है, अनजान को कम करता है।"],
+103     -|      es: ["{{who}} se adentra en lo desconocido, movido por la curiosidad.", "{{who}} deambula, reduciendo lo desconocido."],
+    103 +|      es: [
+    104 +|        "{{who}} se adentra en lo desconocido, movido por la curiosidad.",
+    105 +|        "{{who}} deambula, reduciendo lo desconocido."
+    106 +|      ],
+104 107  |      ar: ["{{who}} يخوض في المجهول بدافع الفضول.", "{{who}} يتجوّل، يقلّص المجهول."]
+105 108  |    },
+         |
+118 121  |    build: %{en: "building", zh: "建造", hi: "निर्माण", es: "construir", ar: "البناء"},
+119 122  |    flee: %{en: "fleeing danger", zh: "逃离危险", hi: "ख़तरे से भागना", es: "huir del peligro", ar: "الفرار من الخطر"},
+120     -|    socialize: %{en: "seeking others", zh: "寻找同伴", hi: "साथियों की तलाश", es: "buscar a otros", ar: "البحث عن الآخرين"},
+    123 +|    socialize: %{
+    124 +|      en: "seeking others",
+    125 +|      zh: "寻找同伴",
+    126 +|      hi: "साथियों की तलाश",
+    127 +|      es: "buscar a otros",
+    128 +|      ar: "البحث عن الآخرين"
+    129 +|    },
+121 130  |    rest: %{en: "resting", zh: "休息", hi: "विश्राम", es: "descansar", ar: "الاستراحة"}
+122 131  |  }
+         |
+142 151  |  # verb-phrase by ACTIVITY (3rd-person singular; agent ids are gender-neutral, so no agreement).
+143 152  |  @vp %{
+144     -|    forage: %{en: "forages through the wild", zh: "在荒野中觅食", hi: "जंगल में भोजन ढूँढ़ता है", es: "busca comida por la espesura", ar: "يبحث عن الطعام في البرّية"},
+145     -|    mine: %{en: "carves into the stone", zh: "凿入岩石", hi: "पत्थर में खुदाई करता है", es: "se hunde en la piedra", ar: "ينحت في الصخر"},
+146     -|    build: %{en: "reshapes the world", zh: "改造着世界", hi: "दुनिया को गढ़ता है", es: "moldea el mundo", ar: "يعيد تشكيل العالم"},
+    153 +|    forage: %{
+    154 +|      en: "forages through the wild",
+    155 +|      zh: "在荒野中觅食",
+    156 +|      hi: "जंगल में भोजन ढूँढ़ता है",
+    157 +|      es: "busca comida por la espesura",
+    158 +|      ar: "يبحث عن الطعام في البرّية"
+    159 +|    },
+    160 +|    mine: %{
+    161 +|      en: "carves into the stone",
+    162 +|      zh: "凿入岩石",
+    163 +|      hi: "पत्थर में खुदाई करता है",
+    164 +|      es: "se hunde en la piedra",
+    165 +|      ar: "ينحت في الصخر"
+    166 +|    },
+    167 +|    build: %{
+    168 +|      en: "reshapes the world",
+    169 +|      zh: "改造着世界",
+    170 +|      hi: "दुनिया को गढ़ता है",
+    171 +|      es: "moldea el mundo",
+    172 +|      ar: "يعيد تشكيل العالم"
+    173 +|    },
+147 174  |    flee: %{en: "flees the danger", zh: "逃离危险", hi: "ख़तरे से भागता है", es: "huye del peligro", ar: "يفرّ من الخطر"},
+148     -|    social: %{en: "seeks out its kin", zh: "寻找亲族", hi: "अपने स्वजनों को खोजता है", es: "busca a los suyos", ar: "يبحث عن ذويه"},
+149     -|    rest: %{en: "pauses to recover", zh: "停下休整", hi: "थमकर सँभलता है", es: "se detiene a recuperarse", ar: "يتوقّف ليستعيد قوّته"},
+    175 +|    social: %{
+    176 +|      en: "seeks out its kin",
+    177 +|      zh: "寻找亲族",
+    178 +|      hi: "अपने स्वजनों को खोजता है",
+    179 +|      es: "busca a los suyos",
+    180 +|      ar: "يبحث عن ذويه"
+    181 +|    },
+    182 +|    rest: %{
+    183 +|      en: "pauses to recover",
+    184 +|      zh: "停下休整",
+    185 +|      hi: "थमकर सँभलता है",
+    186 +|      es: "se detiene a recuperarse",
+    187 +|      ar: "يتوقّف ليستعيد قوّته"
+    188 +|    },
+150 189  |    eat: %{en: "stops to eat", zh: "停下进食", hi: "रुककर खाता है", es: "se detiene a comer", ar: "يتوقّف ليأكل"},
+151     -|    explore: %{en: "wanders into the unknown", zh: "闯入未知", hi: "अनजान में भटकता है", es: "se adentra en lo desconocido", ar: "يخوض في المجهول"}
+    190 +|    explore: %{
+    191 +|      en: "wanders into the unknown",
+    192 +|      zh: "闯入未知",
+    193 +|      hi: "अनजान में भटकता है",
+    194 +|      es: "se adentra en lo desconocido",
+    195 +|      ar: "يخوض في المجهول"
+    196 +|    }
+152 197  |  }
+153 198  |
+         |
+158 203  |    fear: %{en: "wary and tense", zh: "警惕而紧张", hi: "सतर्क और तनावग्रस्त", es: "alerta y tenso", ar: "يقظ ومتوتّر"},
+159 204  |    content: %{en: "quietly content", zh: "静静满足", hi: "चुपचाप संतुष्ट", es: "callado y satisfecho", ar: "راضٍ بهدوء"},
+160     -|    curious: %{en: "bright with curiosity", zh: "充满好奇", hi: "जिज्ञासा से भरा", es: "ávido de curiosidad", ar: "متّقد بالفضول"},
+161     -|    fierce: %{en: "fierce and unflinching", zh: "凶猛无畏", hi: "प्रचंड और निडर", es: "feroz e inquebrantable", ar: "شرس لا يلين"},
+162     -|    weary: %{en: "weary but unbowed", zh: "疲惫却不屈", hi: "थका पर अडिग", es: "cansado pero entero", ar: "متعب لكنه صامد"},
+163     -|    default: %{en: "intent on the path ahead", zh: "专注于前路", hi: "अपनी राह पर अटल", es: "fijo en su camino", ar: "مركّز على دربه"}
+    205 +|    curious: %{
+    206 +|      en: "bright with curiosity",
+    207 +|      zh: "充满好奇",
+    208 +|      hi: "जिज्ञासा से भरा",
+    209 +|      es: "ávido de curiosidad",
+    210 +|      ar: "متّقد بالفضول"
+    211 +|    },
+    212 +|    fierce: %{
+    213 +|      en: "fierce and unflinching",
+    214 +|      zh: "凶猛无畏",
+    215 +|      hi: "प्रचंड और निडर",
+    216 +|      es: "feroz e inquebrantable",
+    217 +|      ar: "شرس لا يلين"
+    218 +|    },
+    219 +|    weary: %{
+    220 +|      en: "weary but unbowed",
+    221 +|      zh: "疲惫却不屈",
+    222 +|      hi: "थका पर अडिग",
+    223 +|      es: "cansado pero entero",
+    224 +|      ar: "متعب لكنه صامد"
+    225 +|    },
+    226 +|    default: %{
+    227 +|      en: "intent on the path ahead",
+    228 +|      zh: "专注于前路",
+    229 +|      hi: "अपनी राह पर अटल",
+    230 +|      es: "fijo en su camino",
+    231 +|      ar: "مركّز على دربه"
+    232 +|    }
+164 233  |  }
+165 234  |
+         |
+184 253  |  # the assembly rule (a tiny grammar): subject + verb-phrase, mood as a dash-appositive. zh uses
+185 254  |  # fullwidth punctuation; everyone else the em-dash. Empty pieces never break it.
+186     -|  defp assemble(who, vp, md, :zh), do: String.trim("#{who}#{vp}" <> if(md == "", do: "", else: " —— #{md}")) <> "。"
+187     -|  defp assemble(who, vp, md, :hi), do: String.trim("#{who} #{vp}" <> if(md == "", do: "", else: " — #{md}")) <> "।"
+188     -|  defp assemble(who, vp, md, _lang), do: String.trim("#{who} #{vp}" <> if(md == "", do: "", else: " — #{md}")) <> "."
+    255 +|  defp assemble(who, vp, md, :zh),
+    256 +|    do: String.trim("#{who}#{vp}" <> if(md == "", do: "", else: " —— #{md}")) <> "。"
+189 257  |
+    258 +|  defp assemble(who, vp, md, :hi),
+    259 +|    do: String.trim("#{who} #{vp}" <> if(md == "", do: "", else: " — #{md}")) <> "।"
+    260 +|
+    261 +|  defp assemble(who, vp, md, _lang),
+    262 +|    do: String.trim("#{who} #{vp}" <> if(md == "", do: "", else: " — #{md}")) <> "."
+    263 +|
+190 264  |  defp activity(data) do
+191 265  |    cond do
+         |
+221 295  |      |> Map.get(lang, Map.get(Map.get(@templates, beat_kind, %{}), :en, [""]))
+222 296  |
+223     -|    template = if phrasings == [], do: "", else: Enum.at(phrasings, rem(frame + :erlang.phash2(who), length(phrasings)))
+    297 +|    template =
+    298 +|      if phrasings == [],
+    299 +|        do: "",
+    300 +|        else: Enum.at(phrasings, rem(frame + :erlang.phash2(who), length(phrasings)))
+    301 +|
+224 302  |    interp(template, data, lang)
+225 303  |  end
+         |
+240 318  |
+241 319  |  defp context_word(nil, _lang), do: ""
+    320 +|
+242 321  |  defp context_word(ctx, lang) do
+243 322  |    @context_words |> Map.get(ctx, %{}) |> Map.get(lang) || to_string(ctx)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/genome_test.exs
+[0m
+       |
+14 14  |        for b_u <- sub.b, col <- b_u, do: assert_in_delta(Enum.sum(col), 1.0, 1.0e-12)
+15 15  |        # likelihoods start UNINFORMATIVE (uniform) — no priors about the world
+16    -|        for a_m <- sub.a, col <- a_m, do: assert Enum.all?(col, &(abs(&1 - hd(col)) < 1.0e-12))
+   16 +|        for a_m <- sub.a, col <- a_m, do: assert(Enum.all?(col, &(abs(&1 - hd(col)) < 1.0e-12)))
+17 17  |      end
+18 18  |    end
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/brain/mc_codec.ex
+[0m
+         |
+ 38  38  |  def outcome(:social, s), do: clamp_idx(get(s, "social", 0))
+ 39  39  |  # self: an interoceptive self-state summary from the body's own signals.
+ 40     -|  def outcome(:self, s), do: self_index(get(s, "health", 20), get(s, "food", 20), get(s, "hurt", false), get(s, "hostile_dist", nil))
+     40 +|  def outcome(:self, s),
+     41 +|    do:
+     42 +|      self_index(get(s, "health", 20), get(s, "food", 20), get(s, "hurt", false), get(s, "hostile_dist", nil))
+     43 +|
+ 41  44  |  # strategy: the strategic SITUATION (for the L2 strategist) — 0 calm · 1 threatened · 2 depleted · 3 social.
+ 42  45  |  def outcome(:strategy, s), do: situation_index(s)
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/sp/brain/plan_test.exs
+[0m
+       |
+36 36  |  test "pruned (beam=1) search still returns a valid action and stays bounded" do
+37 37  |    fm = foresight()
+   38 +|
+38 39  |    for depth <- 1..4 do
+39 40  |      a = Plan.best_action(fm, depth: depth, beam: 1)
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/runtime/mind.ex
+[0m
+       |
+26 26  |      confidence: (bc && bc.confidence) || 0.0,
+27 27  |      focus: bc && bc.focus,
+28    -|      intent: safe(fn -> brain.model |> Plan.preview(depth: plan_depth(brain.dna)) |> Enum.map(&MCCodec.action/1) end, []),
+   28 +|      intent:
+   29 +|        safe(
+   30 +|          fn -> brain.model |> Plan.preview(depth: plan_depth(brain.dna)) |> Enum.map(&MCCodec.action/1) end,
+   31 +|          []
+   32 +|        ),
+29 33  |      report: safe(fn -> bc && Awareness.report(bc) end, nil)
+30 34  |    }
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/sp/runtime/agent.ex
+[0m
+         |
+ 96  96  |
+ 97  97  |    # register in the runtime Registry (O(1) lookup) with display metadata
+ 98     -|    if reg = opts[:registry], do: Registry.register(reg, username, %{kin: opts[:kin] || 0, mode: opts[:visibility] || "see_all"})
+     98 +|    if reg = opts[:registry],
+     99 +|      do: Registry.register(reg, username, %{kin: opts[:kin] || 0, mode: opts[:visibility] || "see_all"})
+ 99 100  |
+100 101  |    # An evolved genome (opts[:dna], from the lineage) re-homes any inherited memory; with
+         |
+159 160  |
+160 161  |    if state.report_to,
+161     -|      do: send(state.report_to, {:agent_done, %{username: state.username, fitness: fitness(state), dna: state.brain.dna}})
+    162 +|      do:
+    163 +|        send(
+    164 +|          state.report_to,
+    165 +|          {:agent_done, %{username: state.username, fitness: fitness(state), dna: state.brain.dna}}
+    166 +|        )
+162 167  |
+163 168  |    {:stop, :normal, %{state | port: nil}}
+         |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/test/producer/host_test.exs
+[0m
+       |
+ 9  9  |  alias SP.Producer.Brain
+10 10  |
+11    -|  defp row(u, senses, action \\ "forward"), do: %{username: u, senses: senses, action: action, context: :forage}
+   11 +|  defp row(u, senses, action \\ "forward"),
+   12 +|    do: %{username: u, senses: senses, action: action, context: :forage}
+12 13  |
+13 14  |  test "cut_to_drama ⇒ set the star + a TIGHT closeup on the most dramatic agent (stay on the action)" do
+       |
+
+[1m[31mc:/Users/mpolz/Documents/Strings/lib/mix/tasks/sp.brain.readability.ex
+[0m
+       |
+24 24  |    ],
+25 25  |    "colony in crisis" => [
+26    -|      %{who: "UNI-2-1", emotion: :fear, context: :flee, action: "forward", senses: %{"health" => 4, "hurt" => true}},
+   26 +|      %{
+   27 +|        who: "UNI-2-1",
+   28 +|        emotion: :fear,
+   29 +|        context: :flee,
+   30 +|        action: "forward",
+   31 +|        senses: %{"health" => 4, "hurt" => true}
+   32 +|      },
+27 33  |      %{who: "UNI-2-2", emotion: :fear, context: :flee, action: "forward", senses: %{"health" => 6}},
+28 34  |      %{who: "UNI-2-3", emotion: :weary, context: :forage, action: "forward", senses: %{"food" => 5}},
+       |
+47 53  |        IO.puts("== #{label} ==")
+48 54  |        Enum.each(ss, &IO.puts("  " <> &1))
+49    -|        IO.puts("  metrics: grade=#{m.grade} · sentences=#{m.sentences} · clauses/sent=#{m.mean_clauses} · " <>
+50    -|                  "words/sent=#{m.mean_words} · multiclause=#{m.multiclause_frac} · connectives=#{inspect(m.connectives)} · " <>
+51    -|                  "cause→effect=#{m.cause_effect} · opening-repeat=#{m.opening_repeat_frac} · ref-violations=#{m.reference_violations}")
+   55 +|
+   56 +|        IO.puts(
+   57 +|          "  metrics: grade=#{m.grade} · sentences=#{m.sentences} · clauses/sent=#{m.mean_clauses} · " <>
+   58 +|            "words/sent=#{m.mean_words} · multiclause=#{m.multiclause_frac} · connectives=#{inspect(m.connectives)} · " <>
+   59 +|            "cause→effect=#{m.cause_effect} · opening-repeat=#{m.opening_repeat_frac} · ref-violations=#{m.reference_violations}"
+   60 +|        )
+   61 +|
+52 62  |        IO.puts("  GRADE-4: #{if ok?, do: "PASS", else: "FAIL — " <> inspect(reasons)}\n")
+53 63  |        ok?
+       |
+55 65  |
+56 66  |    if Enum.all?(results) do
+57    -|      IO.puts("ALL FIXTURES MEET THE GRADE-4 CONTRACT. Try to falsify: edit a fixture, or dispute grade_index/0.")
+   67 +|      IO.puts(
+   68 +|        "ALL FIXTURES MEET THE GRADE-4 CONTRACT. Try to falsify: edit a fixture, or dispute grade_index/0."
+   69 +|      )
+58 70  |    else
+59 71  |      Mix.raise("a fixture FAILED the grade-4 contract")
+       |
+
+
+
+format: OK
+--- mix test (full) ---
+Running ExUnit with seed: 0, max_cases: 32
+Excluding tags: [:skip]
+
+.................................................................................................................................................................................................................................................................................................................................................................................................................................
+Finished in 24.0 seconds (22.0s async, 1.9s sync)
+4 doctests, 413 tests, 0 failures
+--- format check (lab files, scoped) ---
+lab files: FORMATTED OK
+NOTE: repo-wide format drift exists in PRE-EXISTING non-lab files (codec.ex, speech.ex, ...) - not in scope, not modified.
+--- mix test (full suite) ---
+
+.................................................................................................................................................................................................................................................................................................................................................................................................................................
+Finished in 25.4 seconds (23.1s async, 2.2s sync)
+4 doctests, 413 tests, 0 failures

@@ -1,0 +1,7 @@
+# Containerfile.pubgate -- the ONE-URL camera gateway (System 2).
+# Node stdlib only (no npm install) so this builds offline once node:20-alpine is present.
+FROM docker.io/library/node:20-alpine
+WORKDIR /app
+COPY server.cjs pub.html /app/
+EXPOSE 8443
+CMD ["node", "/app/server.cjs"]

@@ -1,0 +1,26 @@
+PHASE 9 STEP 4.6 BUILD L6 - THE GAUNTLET, THEN THE CO-SIGN
+captured 2026-07-28  ·  HEAD 6799616
+
+The last build of the lab, and the first that is partly NOT MINE. The GAUNTLET is mine: every
+lab gate green, in sequence, as one lab. The CO-SIGN is the operator's: it DEFAULTS TO HOLD and
+nothing in the repository can lift it. The organic-operator human-flow review HELD, found one
+real gap (the operator was told to compare two images the surface did not show), and that gap is
+closed -- L2's two renders now sit on the co-sign panel so Checkpoint E is one glance.
+
+  ok  the gauntlet runs every lab build, and all six are green - L0=10/10 · L1=8/8 · L2=3/3 · L3=9/9 · L4=13/13 · L5=26/26 — 6/6 green in sequence, none killed. This is the whole lab proven AS ONE, which is what "welcome everyone into the lab" means: the surface is complete and it holds end to end.
+  ok  the gauntlet REPORTS a failure — it is not wired green - pointed at ip-fence (RED by acceptance, exit 1), the gauntlet reads all_green=false and passed=0. A sequence that reports green no matter what is a light with no bulb; this one goes dark when a gate goes red.
+  ok  L2 is proved by the screenshot gate, and the gauntlet names it - verify_shot.cjs — the CPU rasteriser whose --mutate MUST FAIL. Not a missing verify_lab_l2.cjs, and said so rather than leaving a gap a reader has to explain.
+  ok  the co-sign DEFAULTS TO HOLD — every path to air refuses - all 7 paths refused (NO_PRESENCE_TOKEN), claim level presence_evident. Going live needs a presence token nothing here can mint. This is not a verdict this gate reached — it is F31's refusal, read.
+  ok  the co-sign is COMPUTED from the refusals, not hardcoded - all-refused → HOLD, one-admitted → CLEAR. So the HOLD reported above is the guard actually refusing all seven, and the day a presence mint exists and admits a human, this reads CLEAR on its own — which is the whole point of measuring rather than asserting.
+  ok  the co-sign names whose it is: the operator's, at Checkpoint E - the HOLD names S6 (the mint does not exist), S5 (ADR-0008 not adopted) and S2 (the OBS WebSocket has no auth), and the operator's move is CHECKPOINT E — two images, distinguishable with NO TEXT READ, for a reason that is truth_class. That is M8, the operator's eye, which no gate can stand in for.
+  ok  the gauntlet cannot go live, and writes nothing - it touches guard.{mayGoLive, presence, CLAIM_LEVEL} — every one a READ — and nothing else. No spend(), no requireHumanOrThrow(), no POST, no write. A surface that draws the co-sign must not be able to sign it: the co-sign is the operator's, and code that could lift it would be lifting it.
+  ok  the page presents HOLD and names Checkpoint E, with no way to go live from it - the walk ends at a threshold that reads HOLD and says the next move is the operator's — there is no button, no POST, no path to air on the page. He crosses it; the page cannot.
+  ok  Checkpoint E is deliverable — the two images are on the surface and they DIFFER - the co-sign panel renders L2's golden fixture and its canonical material swap side by side, unlabelled, and the two PNGs are not byte-identical — so the operator's one move (do these differ, and is it the material?) is a glance, not homework. The organic-operator co-sign held on exactly this gap; it is closed, and the HOLD it names stays the operator's to lift.
+
+GATE: PASS - lab-l6, 9/9 checks
+  THE GAUNTLET: 6/6 green.  THE CO-SIGN: HOLD — the operator's, at Checkpoint E.
+
+--- the runner ---
+
+GATE RUNNER: PASS — law holds for 25/25 run · 0 law violation(s) · registry complete. Verdict tally: 23 PASS · 2 FAIL.
+(This runner asserts the exit⟺verdict LAW and its own completeness. A gate's own FAIL is law-consistent and does not fail the runner — it fails that gate.)

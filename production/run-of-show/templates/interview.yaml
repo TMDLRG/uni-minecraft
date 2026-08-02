@@ -1,0 +1,147 @@
+# UNI Production Platform - run-of-show template: INTERVIEW (host + 1 guest)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# Host welcomes a single remote guest. The guest is already in the green room
+# (LiveKit); the host admits them on air (admit_guest - HUMAN-GATED), the stage
+# page lays out a talking-head two-shot (set_layout talking-head), a lower-third
+# names the guest, then the host thanks and releases them.
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck roll_clip start_segment admit_guest set_layout
+
+template: interview
+description: >
+  Host plus one remote guest. Title open, host intro at the desk, admit the guest
+  to a talking-head two-shot, conduct the interview with guest lower-third, thank
+  and release the guest, then out. admit_guest is human-gated (outward-facing).
+defaultLanguage: en
+
+beats:
+  - id: iv-01-open
+    name: Interview title open
+    scene: TITLE
+    durationSec: 7
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: title
+        payload:
+          visible: true
+          kicker: INTERVIEW
+          text: A conversation
+          subtitle: The science behind the mission
+      - layer: nowPlaying
+        payload: { segment: Interview, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; set_overlay title; music up (no speech).
+
+  - id: iv-02-host-intro
+    name: Host introduces the guest
+    scene: NEWSDESK
+    durationSec: 30
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: HOST
+          title: Welcome
+          subtitle: Setting up todays conversation
+          tone: ok
+      - layer: ticker
+        payload:
+          - { text: "Guest joins from the green room - admitted by the host", tone: ok }
+    narrate: null
+    music: { volume: 0.12, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; duck(on) for live host speech; guest waits in the LiveKit green room (off-air).
+
+  - id: iv-03-admit-guest
+    name: Admit the guest to air (talking-head)
+    scene: GUESTS
+    durationSec: 5
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: UNI EXPERT
+          title: Dr. A. Rivera
+          subtitle: Trauma and the nervous system
+          tone: ok
+      - layer: nowPlaying
+        payload: { segment: Interview, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: >
+      HUMAN-GATED - admit_guest(guestId, layout=talking-head) requires an explicit operator decision.
+      Then set_layout(talking-head) on the stage page; cut_to GUESTS (OBS captures the LiveKit stage page).
+
+  - id: iv-04-interview-body
+    name: The interview
+    scene: GUESTS
+    durationSec: 240
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: UNI EXPERT
+          title: Dr. A. Rivera
+          subtitle: Trauma and the nervous system
+          tone: ok
+      - layer: caption
+        payload: { visible: true, lang: en, text: "" }
+    narrate: null
+    music: { volume: 0.08, duck: true }
+    clip: null
+    notes: >
+      Two-shot talking-head. Live captions stream from uni-bcast-captions into the caption layer.
+      Host can lower-third toggle topic chips via set_overlay. Music stays ducked under speech.
+
+  - id: iv-05-thank-release
+    name: Thank and release the guest
+    scene: NEWSDESK
+    durationSec: 20
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: HOST
+          title: Thank you
+          subtitle: Wrapping the conversation
+          tone: ok
+      - layer: caption
+        payload: { visible: false }
+    narrate: null
+    music: { volume: 0.14, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; host thanks the guest; remove_guest(guestId) drops them back to green room (session-auth).
+
+  - id: iv-06-out
+    name: Interview out
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: title
+        payload:
+          visible: true
+          kicker: INTERVIEW
+          text: Thank you for watching
+          subtitle: The feed continues
+      - layer: lowerThird
+        payload: { visible: false }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; lift the music; hand off to the slot.

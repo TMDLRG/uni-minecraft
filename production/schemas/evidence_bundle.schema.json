@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/evidence_bundle.v1.json",
+  "title": "UNI approval evidence bundle",
+  "description": "The bundle that MUST accompany any mutating MCP call (D-B1) and every uni_propose_change (C-C1). Every approval decision becomes reproducible from these shas alone: the human sees the SAME bytes the agent saw. Attached to production/mcp/server.py:235-260 approvals.require(summary=...).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "git_head_sha", "timestamp"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "git_head_sha": {
+      "type": "string",
+      "description": "The SHA of the code that produced this bundle. If null the bundle is refused."
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "colony_gate_stdout_sha": {
+      "type": "string",
+      "description": "sha256 of the current viewer/verify_colony.cjs stdout against COLONY_HOST. Required for any mutation that could affect the colony (start_broadcast, panic, uni_propose_change touching lib/sp/**)."
+    },
+    "heartbeat_tail_ndjson_sha": {
+      "type": "string",
+      "description": "sha256 of the tail (last 100 rows) of /var/lib/uni/broadcast/audit/heartbeat.ndjson. Proves the requester saw a fresh mesh state."
+    },
+    "verify_p1_stdout_sha": {
+      "type": "string",
+      "description": "sha256 of the current production/verify_p1_v2.sh output. Required for any mutation touching the relay lane (node2)."
+    },
+    "fleet_status_sha": {
+      "type": "string",
+      "description": "sha256 of the last row of /var/lib/uni/status/fleet_status.ndjson (D-C1). Required for cross-box mutations."
+    },
+    "lab_team_review_receipt_path": {
+      "type": "string",
+      "description": "Repo-relative path to a docs/receipts/lab_team_review_<sha>.md. REQUIRED for any FE-touching change or new MCP verb (C-C1); mechanically enforced (non-empty) for uni_propose_change via the `uni_propose_change` variant below. Empty for pure-OS mutations on other mutating tools."
+    },
+    "typed_spec_path": {
+      "type": "string",
+      "description": "Repo-relative path to the typed spec artifact (C-C1). REQUIRED for uni_propose_change; mechanically enforced via the `uni_propose_change` variant below."
+    },
+    "paired_red_launcher_path": {
+      "type": "string",
+      "description": "Repo-relative path to the runs/*.exs RED launcher (C-C1). REQUIRED for uni_propose_change; mechanically enforced via the `uni_propose_change` variant below."
+    }
+  },
+  "$defs": {
+    "uni_propose_change": {
+      "description": "Tool-specific variant of this schema for `uni_propose_change` (C-C1) only, referenced by production/mcp/SPEC_uni_propose_change.md refusal check #5 as `evidence_bundle.schema.json#/$defs/uni_propose_change`. The base schema above (D-B1) stays generic -- it MUST accompany ANY mutating MCP call and leaves lab_team_review_receipt_path / typed_spec_path / paired_red_launcher_path optional so pure-OS mutations on other tools are not forced to carry them. This variant is strictly additive on top of the base (same $id, same additionalProperties:false) and layers the three C-C1 fields as REQUIRED non-empty strings, which is what makes refusal check #5 mechanically checkable by schema validation alone rather than by prose. RESOLUTION NOTE (implementation-critical): this variant is self-referential (`allOf` includes `{\"$ref\": \"#\"}`) and MUST be validated against the enclosing document, keeping this schema's own `$id` as the base URI (e.g. resolve `evidence_bundle.schema.json#/$defs/uni_propose_change` through a registry/resolver rooted at the parent document). Extracting `$defs.uni_propose_change` into a standalone dict and validating an instance against it in isolation makes `\"$ref\": \"#\"` resolve back to that same standalone dict, which recurses to RecursionError (reproduced against jsonschema 4.23.0, Draft 2020-12).",
+      "allOf": [
+        { "$ref": "#" },
+        {
+          "required": ["lab_team_review_receipt_path", "typed_spec_path", "paired_red_launcher_path"],
+          "properties": {
+            "lab_team_review_receipt_path": { "type": "string", "minLength": 1 },
+            "typed_spec_path": { "type": "string", "minLength": 1 },
+            "paired_red_launcher_path": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  }
+}

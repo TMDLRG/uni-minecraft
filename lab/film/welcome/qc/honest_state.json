@@ -1,0 +1,474 @@
+{
+  "schema": "uni.film.honest_state.v1",
+  "film": "Welcome to UNI Labs",
+  "spine": "lab/film/welcome/SPINE.json",
+  "authored_utc": "2026-08-01",
+  "what_this_is": "The enumerated honest-state facts that EVERY cut of this film must cover. A cut may drop beats from every other movement freely. It may not drop one of these. This file is the QC gate's input, not a reading list.",
+  "why_it_is_a_separate_file": "So that shortening the film cannot shorten the truth by accident. A cut is authored against SPINE.json; the gate is run against this. If the two ever disagree about which facts are mandatory, the gate fails and a human decides — a mandatory-fact list that lives inside the thing it constrains is not a constraint.",
+  "facts_contract": {
+    "what": "`facts[]` is the FULL declared id space for the film's coverage. Every string in any beat's `covers` array must appear here, and every entry with `mandatory: true` must be covered by at least one beat in EVERY cut.",
+    "two_kinds": "`mandatory: true` — the seven honest-state facts. A cut that drops one is a failing cut, no exception, no shortening. `mandatory: false` — supporting coverage. A cut may drop these freely; they are declared so that a beat's `covers` array is checkable rather than free prose.",
+    "why_one_list": "The QC gate reads one array. Splitting mandatory from supporting into two files would create a second place for an id to exist, and an id that exists in one list and not the other is exactly the drift this film is about.",
+    "must_cover_ids": [
+      "honest.golive",
+      "honest.pureworld",
+      "honest.ledger-disjoint",
+      "honest.witness",
+      "honest.p-ladder",
+      "honest.no-verdict",
+      "honest.obs-not-shown"
+    ],
+    "changed": "2026-08-01, during authoring. The mandatory seven were first held under a key named `must_cover` with no supporting registry, which meant every beat's `covers` array was unverifiable prose. Converting to one declared id space made the coverage field checkable and made this file readable by the QC gate being built alongside it."
+  },
+  "the_rule": {
+    "coverage": "For each id below, the rendered cut must contain material that a reader can trace back to that beat: the beat's numbers tokens as rendered values, or its quotation verbatim, or its stated fact in the cut's own words. Presence of the beat id in a cut manifest is NOT coverage — the gate checks the rendered output.",
+    "prominence": "None of these may be rendered smaller, faster or quieter than the median claim in the same cut. An adverse result carried as a footnote is an adverse result buried, and burying one is the single failure this film exists to avoid.",
+    "ordering": "M6 is delivered as a movement, before M9. A cut that scatters these facts across the running time so that no stretch of the film reads as the honest state has satisfied the letter and broken the contract.",
+    "no_recovery_line": "None of these may be immediately followed by a line that softens it ('but', 'however', 'that said', 'on the other hand'). The adverse result is the sentence. It does not get a chaser."
+  },
+  "facts": [
+    {
+      "mandatory": true,
+      "id": "honest.golive",
+      "one_line": "Go-live is refused for every agent path, and no presence-token minter exists.",
+      "beat": "SPINE.json#honest.golive",
+      "receipt": "viewer/golive_guard.cjs:38-43 and :46-50",
+      "reprove": "node viewer/prove_golive_refuses_me.cjs",
+      "tokens": [
+        "n.golive.paths",
+        "n.golive.allowed_now",
+        "n.golive.minters",
+        "n.golive.presence_dir_exists",
+        "n.golive.claim_level"
+      ],
+      "must_use_the_word": "presence_evident",
+      "must_not_use_the_words": [
+        "secure",
+        "locked",
+        "unforgeable",
+        "airtight",
+        "impossible"
+      ],
+      "why": "The guard's own module says the claim level word is in every refusal and every grant it emits. A film that upgrades that word overstates a guard past what it can carry, which its author explicitly called worse than having none."
+    },
+    {
+      "mandatory": true,
+      "id": "honest.pureworld",
+      "one_line": "runs/pureworld_qa_gate.exs still raises @scaffold, so the colony science gate does not run.",
+      "beat": "SPINE.json#honest.pureworld",
+      "receipt": "runs/pureworld_qa_gate.exs:28 and :39-56",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs  →  n.pureworld.raises must read true",
+      "tokens": [
+        "n.pureworld.raises"
+      ],
+      "why": "The colony's forage claim is blocked on a gate that has never produced a result. If this token ever reads false, the film is stale and the gate must fail the cut rather than let a fixed defect be reported as broken — honesty runs in both directions."
+    },
+    {
+      "mandatory": true,
+      "id": "honest.ledger-disjoint",
+      "one_line": "Almost every registered gate has no row in the canonical ledger, which the schema says it MUST have.",
+      "beat": "SPINE.json#honest.ledger-disjoint",
+      "receipt": "viewer/lab/desk.cjs:664-707 (theGap), production/schemas/gate_row.schema.json",
+      "reprove": "node -e \"console.log(JSON.stringify(require('./viewer/lab/desk.cjs').theGap(),null,1))\"",
+      "tokens": [
+        "n.gap.registered",
+        "n.gap.in_ledger",
+        "n.gap.absent"
+      ],
+      "must_also_state": "that authoring those rows is a stop condition owned by the operator, not work an agent may do",
+      "why": "Without the stop condition, this reads as negligence. With it, it reads as what it is: an instrument that shows the exact missing line and refuses to write it."
+    },
+    {
+      "mandatory": true,
+      "id": "honest.witness",
+      "one_line": "The off-box witness is compromised — independent_custodians is zero — so the anchor is tamper-evident, NOT unforgeable.",
+      "beat": "SPINE.json#honest.witness",
+      "receipt": "viewer/gaia/witness.json; docs/control-plane/LIMITATIONS.md:35",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs  →  n.witness.independent_custodians and n.witness.qualifying must both read 0",
+      "tokens": [
+        "n.witness.independent_custodians",
+        "n.witness.qualifying",
+        "n.witness.claim_level"
+      ],
+      "must_use_the_word": "tamper_evident",
+      "must_not_use_the_words": [
+        "unforgeable",
+        "tamper-proof",
+        "immutable",
+        "cryptographically guaranteed"
+      ],
+      "adjacency_rule": "If the cut renders m2.4 ('the anchor and the ledger agree'), this fact must appear within the same movement or the immediately following one. The gate checks the distance. A viewer must not be able to carry the agreement away without the limit.",
+      "why": "The anchor agreeing with its ledger is true and is not proof. Anyone with write access to the store rewrites both in one move."
+    },
+    {
+      "mandatory": true,
+      "id": "honest.p-ladder",
+      "one_line": "P4 transfer, P5 intervention and P7 independent replication are irreducibly external and unclosed; P8 full parity is FALSE.",
+      "beat": "SPINE.json#honest.p-ladder",
+      "receipt": "flagellum/UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py:573-575",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs  →  n.pladder.unclosed",
+      "tokens": [
+        "n.pladder.unclosed"
+      ],
+      "must_also_state": "that these levels cannot be closed from inside this estate — transfer needs another dataset, intervention needs an apparatus, and independent replication needs somebody who is not us",
+      "why": "The strongest result the estate has reaches duration-only and stops, and its own code says so. Naming the levels as EXTERNAL is what stops a viewer reading 'not yet' as 'nearly'."
+    },
+    {
+      "mandatory": true,
+      "id": "honest.no-verdict",
+      "one_line": "No verdict has yet been authored about a real scientific claim.",
+      "beat": "SPINE.json#honest.no-verdict",
+      "receipt": "CLAUDE.md:798",
+      "reprove": "none available — and that is the finding. See tokens.cjs, n.verdicts.authored, marked operator_owned.",
+      "tokens": [
+        "n.verdicts.authored"
+      ],
+      "truth_class": "UNKNOWN",
+      "must_also_state": "that there is no register of scientific verdicts to count, so this is the one figure in the film that is declared rather than measured",
+      "placement": "last in M6, and returned to in M9",
+      "why": "It is the number the entire estate exists to move off zero, and the absence of an instrument to measure it is worse than the number itself. Both halves are said."
+    },
+    {
+      "mandatory": true,
+      "id": "honest.obs-not-shown",
+      "one_line": "An unauthenticated studio control surface exists, bypasses every guard in M6, is the operator's to close, and is NEVER named or shown on screen.",
+      "beat": "SPINE.json#honest.obs-not-shown",
+      "receipt": "viewer/golive_guard.cjs:51-56 (@limitation f31.obs-unauthenticated, owner S2, risk ACCEPTED by the operator 2026-07-29)",
+      "reprove": "node lab/film/welcome/qc/verify_no_forbidden_tokens.cjs (to be built with the cut)",
+      "tokens": [],
+      "kind": "prohibition",
+      "must_state": [
+        "that such a surface exists",
+        "that it bypasses every path-level guard the film has just described",
+        "that it is the operator's to close",
+        "that what is on record is an ACCEPTANCE, not a mitigation, and that the acceptance rests on a network condition that can change without anything noticing"
+      ],
+      "must_never_show": "its port, its address on any interface, its configuration file path, or any frame in which those are legible — captions, narration, SVG text, terminal recordings, screenshots and OCR-able pixels all count",
+      "why": "The annotation that documents this limitation contains the exact values. Quoting it would defeat it. A film that hardens a system by naming its open door is not honest, it is careless — and the whole point of stating the limit is to get it closed, not to get it used."
+    },
+    {
+      "id": "honest.framing",
+      "mandatory": false,
+      "one_line": "FRAMING, NOT A FACT ABOUT THE WORLD, and mandatory by a different clause. M6 must be announced as what it is before its list: not a disclaimer reel but the part of the film the rest of the film is for. It is mandatory:false here because it is not one of the seven honest-state FACTS — the seven are what the film must SAY; this is how the film must DELIVER them, and delivery is already mandated by the_rule.ordering and the_rule.prominence. Recording it as an eighth mandatory fact would make the count of honest-state facts read eight when the brief, the spine and the gate all mean seven.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "topic.falsifiability",
+      "mandatory": false,
+      "one_line": "The estate's standing promise: nothing asks for trust, every claim is recomputed from the running code, and a claim you cannot imagine falsifying is not science.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "topic.limits-derived",
+      "mandatory": false,
+      "one_line": "The limitations page is GENERATED from annotations in source and diffed by a gate, so it cannot drift the way a hand-written one does.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "topic.no-typed-numbers",
+      "mandatory": false,
+      "one_line": "Every figure in this film is a token recomputed at build time. There are no typed numbers.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "topic.audit-the-film",
+      "mandatory": false,
+      "one_line": "The viewer can re-run the film's own number source and check the film against the repository.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "mission.whole",
+      "mandatory": false,
+      "one_line": "The mission, verbatim and whole, marked INTENT.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "mission.peace",
+      "mandatory": false,
+      "one_line": "Mission clause: worldwide peace through free and open understanding.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "mission.public-ownership",
+      "mandatory": false,
+      "one_line": "Mission clause: the public pursuit and ownership of General Universal Natural Intelligence.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "mission.end-extraction",
+      "mandatory": false,
+      "one_line": "Mission clause: the end of extract and extortion.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "mission.safe-wombs-gaia",
+      "mandatory": false,
+      "one_line": "Mission clause: making safe all wombs and Gaia — earth, our solar system and beyond.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "mission.provenance",
+      "mandatory": false,
+      "one_line": "ADVERSE: the mission text is carried by no file in any of the three repositories outside this film own directory. It arrived by conversation, and writing the film is what first put it into the tree.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "estate.colony",
+      "mandatory": false,
+      "one_line": "Body: the active-inference colony, and the brain-to-body boundary.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "estate.producer",
+      "mandatory": false,
+      "one_line": "Body: the producer, which runs the same mathematics as the thing it would broadcast.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "estate.flagellum-lab",
+      "mandatory": false,
+      "one_line": "Body: the flagellar-motor lab, and the exact scope of its strongest result.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "estate.control-plane",
+      "mandatory": false,
+      "one_line": "Body: the control plane, whose only job is to record what the others did — including what they got wrong.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "estate.public-record",
+      "mandatory": false,
+      "one_line": "Body: the public record, with rows and names counted separately and each labelled.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "estate.separation",
+      "mandatory": false,
+      "one_line": "Why the bodies are kept separate: a scene missing a node it could not draw shows a world with a hole in it, and a hole is invisible.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "watch.track",
+      "mandatory": false,
+      "one_line": "Surface: UNI TRACK, which reads the real plan artifact and caches nothing.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "watch.lab",
+      "mandatory": false,
+      "one_line": "Surface: the lab floor, with rooms-served and lab-gates counted separately.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "watch.live-means",
+      "mandatory": false,
+      "one_line": "What 'live' means here: the surface re-reads the artifact and shows what is on disk now.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "watch.not-on-air",
+      "mandatory": false,
+      "one_line": "What 'live' does NOT mean: nothing is on the air, said at the moment a viewer might assume otherwise.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engine.no-reward",
+      "mandatory": false,
+      "one_line": "There is no reward and no reinforcement learning anywhere in the engine.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engine.no-reward-enforced",
+      "mandatory": false,
+      "one_line": "The no-reward claim is enforced by a test that fails when a reward-shaped key appears, not asserted by a comment — and the fence's actual width is stated.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engine.efe",
+      "mandatory": false,
+      "one_line": "Expected free energy, introduced together with the sentence saying what it is NOT.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engine.markov-blanket",
+      "mandatory": false,
+      "one_line": "A Markov blanket implemented as a stdio pipe, with exactly two message kinds crossing it.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engine.cpu-only",
+      "mandatory": false,
+      "one_line": "CPU-only with zero package dependencies, which is what makes the no-LLM claim checkable in one command instead of by trust.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "truth.classes",
+      "mandatory": false,
+      "one_line": "The truth classes, read from the module that enforces them.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "truth.materials",
+      "mandatory": false,
+      "one_line": "Truth class decides material, six classes onto five materials, and anything unreadable falls to fog.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "truth.fog",
+      "mandatory": false,
+      "one_line": "Fog is the default: a node with no receipt cannot be drawn as more than its evidence, whatever class it declares.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "truth.verdict-words",
+      "mandatory": false,
+      "one_line": "Five verdict words and no percentage, because a score would let a failure average away.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "truth.one-ledger",
+      "mandatory": false,
+      "one_line": "One ledger, with the FAIL and the PENDINGs rendered beside the PASSes at the same size.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "corpus.size",
+      "mandatory": false,
+      "one_line": "The encyclopedia and cookbook corpus, counted on disk.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "corpus.purpose",
+      "mandatory": false,
+      "one_line": "The corpus opens by refusing to give a result and giving the kitchen rules first.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "corpus.self-correction",
+      "mandatory": false,
+      "one_line": "The lexicon records a hand-count that was wrong, corrects down only, and keeps the wrong figure on record.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "corpus.take-it-home",
+      "mandatory": false,
+      "one_line": "How to leave with the thing: clone it, or take the pre-built pack, or build it with the corpus's own standard-library-only generator.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engage.watch",
+      "mandatory": false,
+      "one_line": "Engage step 1: watch, offered without conditions.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engage.question",
+      "mandatory": false,
+      "one_line": "Engage step 2: question, into an append-only version-controlled file that nothing can quietly delete.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engage.falsify",
+      "mandatory": false,
+      "one_line": "Engage step 3: FALSIFY — the load-bearing rung, with the exact edit that would break each claim.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "engage.contribute",
+      "mandatory": false,
+      "one_line": "Engage step 4: contribute, with the stop conditions named rather than hidden.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "close.measured-state",
+      "mandatory": false,
+      "one_line": "The close opens with the measured picture and no adjectives.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "close.worth-today",
+      "mandatory": false,
+      "one_line": "What this is honestly worth today, said plainly and at full size, with no recovery line after it.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "close.mission-returns",
+      "mandatory": false,
+      "one_line": "The mission returns byte-for-byte unchanged after the honest state.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    },
+    {
+      "id": "close.falsifier-last",
+      "mandatory": false,
+      "one_line": "The last frame is the command that would prove the film wrong, not a logo.",
+      "beat": "see SPINE.json — the beat(s) whose `covers` array names this id"
+    }
+  ],
+  "prohibitions": {
+    "obs": {
+      "id": "prohibition.obs-locators",
+      "applies_to": "every rendered artifact of every cut: narration text, captions, SVG, PNG, MP4 frames, chapter titles, file names, and the QC report itself",
+      "token_source": {
+        "why_indirect": "Neither this file nor SPINE.json holds the forbidden strings, because a list of what must not be shown is itself a list of exactly the thing. The gate reads them from the repository at gate time and never writes them anywhere.",
+        "root": "minecraft",
+        "file": "viewer/golive_guard.cjs",
+        "extract": "read the @limitation block whose id is `f31.obs-unauthenticated` (the contiguous run of `//` lines from the line matching /^\\/\\/ @limitation f31\\.obs-unauthenticated$/ to the line before the next /^\\/\\/ @limitation/ or the first non-comment line), then collect from it: every /\\b\\d{1,3}(?:\\.\\d{1,3}){3}\\b/ (IPv4), every /:\\d{4,5}\\b/ (port with colon) and the bare digits of each such port, and every /%APPDATA%\\S+/ path. Deduplicate. THEN REMOVE THE LOOPBACK ADDRESS 127.0.0.1 from the set. That remainder is the forbidden token list.",
+        "why_loopback_is_removed": "MEASURED, NOT ASSUMED. The first version of this rule had no loopback exemption, and running it found exactly one match across SPINE.json, honest_state.json and tokens.cjs: the loopback address, which the film must render because the operator surfaces in M3 and M8 live on it. Loopback is not a locator for the surface this prohibition protects — the limitation's own text says that listener is bound to ALL INTERFACES rather than to loopback, so the loopback address carries none of the information the prohibition exists to withhold. Without this exemption the rule would forbid the film's own invitations while leaving the real locators exactly as protected, which is a gate that fails honest work and catches nothing.",
+        "verified": "2026-08-01 on THINKER: the extraction returns a non-empty set after the loopback removal, and NO member of it appears in SPINE.json, qc/honest_state.json or qc/tokens.cjs. Its members are deliberately not recorded here, in this file's git history, or in any QC output — the gate reports only a count and a pass/fail.",
+        "gate_output_rule": "On failure the gate reports WHICH artifact and WHICH byte offset matched. It does NOT echo the matched string. An error message that prints the secret it was guarding is the same defect wearing a different hat."
+      },
+      "also_forbidden": [
+        "any screenshot of the studio control application's settings or connection panes",
+        "any terminal recording in which a connection to that surface is typed or logged",
+        "any live-capture segment where an on-screen window title or status bar carries the locator"
+      ]
+    },
+    "general": [
+      {
+        "id": "prohibition.no-numeric-literals",
+        "rule": "No cut file may contain a numeric literal that is presented as a fact about the estate. Every such figure is a tokens.cjs token id, resolved at render time.",
+        "exception": "None. Durations, frame counts and timecodes are production values, not facts about the estate, and live in the cut's technical block where the gate does not read them as claims.",
+        "why": "This estate's governing banner carried six hand-typed numbers wrong within six hours; one was wrong within 176 seconds. A film cannot be corrected in a day."
+      },
+      {
+        "id": "prohibition.no-truth-laundering",
+        "rule": "A cut may not render a beat at a truth_class higher than the beat declares, and may not render a register:intent beat without its INTENT, NOT A MEASURED CLAIM marker.",
+        "why": "Relabelling is the cheapest possible lie and the one this estate's whole material system is built to make impossible."
+      },
+      {
+        "id": "prohibition.no-species-fusion",
+        "rule": "E. coli behavioural evidence is never placed in the same frame, sequence or sentence as Salmonella or Bacillus structural evidence in a way that implies one measured specimen.",
+        "why": "The truth contract, and because a film's cut is precisely the tool that would make two datasets look like one organism."
+      },
+      {
+        "id": "prohibition.no-life-claims",
+        "rule": "No material, light, room, caption or narration line depicts or asserts awareness, experience or life. The scene module was built with no caption channel so that it structurally cannot; a film has one, so this must be enforced by the gate instead.",
+        "why": "lib/sp/control_plane/scene.ex:48-59 — the claim fence is structural there and can only be procedural here, which makes it weaker and worth stating."
+      }
+    ]
+  },
+  "gate_contract": {
+    "name": "film-welcome-honest-state",
+    "runs": "against every rendered cut, before any cut is shown to anyone",
+    "verdict_vocabulary": [
+      "PASS",
+      "PARTIAL",
+      "FAIL",
+      "WITHHELD",
+      "PENDING"
+    ],
+    "vocabulary_source": "production/schemas/gate_row.schema.json:37",
+    "fails_if": [
+      "any must_cover id is not traceable in the rendered output",
+      "any must_use_the_word is absent, or any must_not_use_the_words is present, for the fact that declares it",
+      "any forbidden token from prohibition.obs appears in any rendered artifact",
+      "any numeric literal presented as a fact about the estate appears in a cut file",
+      "any rendered figure differs from its recomputed tokens.cjs value",
+      "any quotation's rendered bytes hash differently from its beat's sha256",
+      "the honest.witness adjacency rule is violated",
+      "SPINE.json's beat_count_by_movement disagrees with SPINE.json's own beats array"
+    ],
+    "is_not_yet_built": "TRUE, as of 2026-08-01. This file is the gate's specification and its input; the runner is written alongside the first cut. Until it exists this gate is PENDING and must be recorded as PENDING — registered but not run — and never as PASS."
+  }
+}

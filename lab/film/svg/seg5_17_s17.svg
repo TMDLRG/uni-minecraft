@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g16" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#1a1822"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g16)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <ellipse cx="960" cy="640" rx="1200" ry="100" fill="#f9e2af" opacity="0.08"/>
+  <ellipse cx="960" cy="640" rx="800" ry="50" fill="#fab387" opacity="0.10"/>
+  <g fill="#6c7393" opacity="0.7">
+    <circle cx="380" cy="558" r="6"/><rect x="378" y="564" width="4" height="22" rx="2"/>
+    <circle cx="560" cy="548" r="7"/><rect x="557" y="555" width="6" height="26" rx="2"/>
+    <circle cx="760" cy="566" r="6"/><rect x="758" y="572" width="4" height="22" rx="2"/>
+    <circle cx="980" cy="543" r="8"/><rect x="976" y="551" width="8" height="28" rx="2"/>
+    <circle cx="1180" cy="560" r="6"/><rect x="1178" y="566" width="4" height="22" rx="2"/>
+    <circle cx="1380" cy="550" r="7"/><rect x="1377" y="557" width="6" height="26" rx="2"/>
+  </g>
+  <rect x="0" y="667" width="1920" height="413" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="667" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">And now we walk on. We did not solve the universe in five segments. We did not promise we</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">would. We honored some hopeful ideas, we listened to what the world said back, and we</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">wrote down — exactly, with care, in plain English and plain Marathi — what survived and</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">what did not. That is a small thing. It is also, I think, the only thing that has ever</text>
+  <text x="960" y="855" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">moved a species from where it is to where it might be.</text>
+  <rect x="800" y="869" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">आणि आता आपण पुढे चालतो. आपण पाच भागांत विश्वाची सोडवणूक केली नाही. आपण तसे वचन</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">दिले नव्हते. आपण काही आशादायक कल्पनांचा सन्मान केला, जगाने काय परत सांगितले ते आपण</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">ऐकले, आणि आपण लिहिले — नेमके, काळजीपूर्वक, साध्या इंग्रजीत आणि साध्या मराठीत — काय</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">टिकले आणि काय टिकले नाही. ती छोटी गोष्ट आहे. ती, मला वाटते, अशी एकमेव गोष्ट आहे</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">जिने कधीही एका प्रजातीला ती जिथे आहे तिथून ती जिथे असू शकते तिथे हलवले आहे.</text>
+</svg>

@@ -1,0 +1,32 @@
+[Unit]
+Description=UNI Producer (show-runner: run-of-show clock + auto-duck + standby/watchdog, emits beats)
+# The director_show.cjs seam generalised. Runs the deterministic run-of-show clock; an LLM (Claude over
+# the production MCP) handles creative/narration/guest decisions + the operator's voice/text commands.
+# The producer writes broadcast.json atomically (tmp + os.replace); it only PROPOSES outward-facing
+# verbs - it never holds the operator token and cannot self-approve (GAP G-PA).
+After=network-online.target uni-production-mcp.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/uni
+Environment=PYTHONPATH=/opt/uni
+Environment=UNI_BCAST_SPOOL=/var/lib/uni/broadcast
+Environment=UNI_BCAST_JSON=/var/lib/uni/broadcast/broadcast.json
+# The producer reaches the MCP over loopback (the same surface nginx fronts at /prod-mcp). It is a
+# CLIENT here; it never carries the operator's auto-approve session token.
+Environment=UNI_PROD_MCP_URL=http://127.0.0.1:8095/prod-mcp
+Environment=UNI_OBS_WS=ws://127.0.0.1:4455
+# Catalog + run-of-show inputs (shared with uni-playout).
+Environment=UNI_BCAST_CATALOG=/var/lib/uni/broadcast/catalog.json
+Environment=UNI_BCAST_RUNOFSHOW=/var/lib/uni/broadcast/run-of-show
+EnvironmentFile=-/etc/uni/runtime.env
+ExecStartPre=-/bin/mount -o remount,rw /
+ExecStartPre=-/bin/mkdir -p /var/lib/uni/broadcast/run-of-show
+ExecStart=/opt/uni/.venv/bin/python -m production.producer.run
+StandardError=append:/run/uni-producer.err.log
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

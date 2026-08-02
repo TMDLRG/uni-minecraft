@@ -1,0 +1,115 @@
+PHASE 7 ITEM 7.6 — RED
+date: 2026-07-26
+HEAD: 793cc30
+cmd: mix test test/sp/control_plane/material_comes_from_truth_class_test.exs --seed 0
+======================================================================
+Running ExUnit with seed: 0, max_cases: 32
+Excluding tags: [:skip]
+
+     warning: default values for the optional arguments in the private function node!/1 are never used
+     │
+ 110 │   defp node!(over \\ %{}) do
+     │        ~
+     │
+     └─ test/sp/control_plane/material_comes_from_truth_class_test.exs:110:8: SP.ControlPlane.MaterialComesFromTruthClassTest (module)
+
+........     warning: comparison between distinct types found:
+
+         left == right
+
+     given types:
+
+         dynamic(:lit_solid) == :fog
+
+     where "left" (context ExUnit.Assertions) was given the type:
+
+         # type: dynamic(:lit_solid)
+         # from: test/sp/control_plane/material_comes_from_truth_class_test.exs:262
+         left = SP.ControlPlane.Scene.material(unconsidered)
+
+     where "right" (context ExUnit.Assertions) was given the type:
+
+         # type: :fog
+         # from: test/sp/control_plane/material_comes_from_truth_class_test.exs:262
+         right = :fog
+
+     While Elixir can compare across all types, you are comparing across types which are always disjoint, and the result is either always true or always false
+
+     typing violation found at:
+     │
+ 262 │     assert Scene.material(unconsidered) == :fog
+     │                                         ~
+     │
+     └─ test/sp/control_plane/material_comes_from_truth_class_test.exs:262:41: SP.ControlPlane.MaterialComesFromTruthClassTest."test 7.6 ADVERSE — a map where NOBODY CONSIDERED the receipt must not draw lit and solid"/1
+
+
+
+  1) test 7.6 ADVERSE — a map where NOBODY CONSIDERED the receipt must not draw lit and solid (SP.ControlPlane.MaterialComesFromTruthClassTest)
+     test/sp/control_plane/material_comes_from_truth_class_test.exs:250
+     an absent receipt_ref key drew the one material that means MEASURED. Absent means nobody looked; item 7.2 closed this for nil but left the absent key to node/2, and material/1 is public.
+     code: refute Scene.material(unconsidered) == :lit_solid,
+     stacktrace:
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:258: (test)
+
+
+
+  2) test 7.6 ADVERSE — absent and nil agree at the RENDER call, as they must once neither is refused there (SP.ControlPlane.MaterialComesFromTruthClassTest)
+     test/sp/control_plane/material_comes_from_truth_class_test.exs:265
+     OBSERVED with no receipt_ref key at all drew lit_solid
+     code: for tc <- Scene.truth_classes() do
+     stacktrace:
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:269: anonymous fn/2 in SP.ControlPlane.MaterialComesFromTruthClassTest."test 7.6 ADVERSE — absent and nil agree at the RENDER call, as they must once neither is refused there"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:266: (test)
+
+.
+
+  3) test 7.6 ADVERSE — material/1 is documented 'Never an error' and must therefore be total (SP.ControlPlane.MaterialComesFromTruthClassTest)
+     test/sp/control_plane/material_comes_from_truth_class_test.exs:281
+     material/1 answered {:raised, FunctionClauseError} for %{truth_class: :REAL, receipt_ref: "docs/GATES.md"} — §8.1 says fog is not an error but the honest depiction of an unbacked assertion, and an unrecognised truth class is one
+     code: for bad <- [
+     stacktrace:
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:297: anonymous fn/2 in SP.ControlPlane.MaterialComesFromTruthClassTest."test 7.6 ADVERSE — material/1 is documented 'Never an error' and must therefore be total"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:282: (test)
+
+
+
+  4) test the fallback is conservative — an input it cannot read never draws stronger than fog (SP.ControlPlane.MaterialComesFromTruthClassTest)
+     test/sp/control_plane/material_comes_from_truth_class_test.exs:303
+     ** (FunctionClauseError) no function clause matching in SP.ControlPlane.Scene.material/1
+
+     The following arguments were given to SP.ControlPlane.Scene.material/1:
+
+         # 1
+         %{}
+
+     Attempted function clauses (showing 7 out of 7):
+
+         def material(-%{receipt_ref: nil}-)
+         def material(-%{truth_class: :OBSERVED}-)
+         def material(-%{truth_class: :STRUCTURAL_RECONSTRUCTION}-)
+         def material(-%{truth_class: :REDUCED_MODEL}-)
+         def material(-%{truth_class: :DERIVED}-)
+         def material(-%{truth_class: :SIMULATED}-)
+         def material(-%{truth_class: :UNKNOWN}-)
+
+     code: for bad <- [%{}, %{truth_class: :TOTALLY_PROVEN, receipt_ref: "docs/GATES.md"}] do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) lib/sp/control_plane/scene.ex:172: SP.ControlPlane.Scene.material/1
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:305: anonymous fn/2 in SP.ControlPlane.MaterialComesFromTruthClassTest."test the fallback is conservative — an input it cannot read never draws stronger than fog"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:304: (test)
+
+.
+
+  5) test the fallback exists and is fog, so the two claims above are not in tension (SP.ControlPlane.MaterialComesFromTruthClassTest)
+     test/sp/control_plane/material_comes_from_truth_class_test.exs:330
+     there is no total fallback — then material/1 raises, and its own @doc is false
+     code: assert source =~ ~r/def material\(_[a-z_]*\), do: :fog/,
+     stacktrace:
+       test/sp/control_plane/material_comes_from_truth_class_test.exs:333: (test)
+
+.
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+16 tests, 5 failures

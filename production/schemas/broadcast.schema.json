@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://uni.os/production/schemas/broadcast.schema.json",
+  "title": "broadcast.json",
+  "description": "The fixed overlay state contract for the UNI Production Platform. The producer writes this file atomically (tmp + os.replace) to /var/lib/uni/broadcast/broadcast.json; nginx aliases it to /overlays/state.json with Cache-Control: no-store; every transparent 2D-canvas/CSS overlay page polls it with fetch(...,{cache:'no-store'}). DESIGN/REFERENCE only - not deployed. Field shape matches docs/UNI_PRODUCTION_PLATFORM.md exactly.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["updatedUtc", "source"],
+  "properties": {
+    "updatedUtc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC instant this snapshot was written. Every page renders staleness honestly from this; if it is missing or old the page shows a muted STALE marker rather than faking liveness."
+    },
+    "source": {
+      "type": "string",
+      "description": "Who wrote this snapshot (e.g. 'uni-producer', 'producer-sample').",
+      "examples": ["uni-producer", "producer-sample"]
+    },
+    "onAir": {
+      "type": "object",
+      "description": "ON-AIR indicator state. When absent or value=false, the onair overlay shows nothing (never a fake LIVE).",
+      "additionalProperties": false,
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "boolean", "description": "True when the public program is live." },
+        "text": { "type": "string", "description": "Label shown when on air.", "default": "LIVE", "examples": ["LIVE", "ON AIR"] }
+      }
+    },
+    "lowerThird": {
+      "type": "object",
+      "description": "Animated lower-third (name strap). Crossfades in/out on the 'visible' flag.",
+      "additionalProperties": false,
+      "required": ["visible"],
+      "properties": {
+        "visible": { "type": "boolean" },
+        "kicker": { "type": "string", "description": "Small over-line / eyebrow, e.g. 'UNI EXPERT'." },
+        "title": { "type": "string", "description": "Primary line, e.g. a name." },
+        "subtitle": { "type": "string", "description": "Secondary line, e.g. a topic." },
+        "tone": { "$ref": "#/definitions/tone" }
+      }
+    },
+    "title": {
+      "type": "object",
+      "description": "Full-screen title / bumper card. Crossfades in/out on the 'visible' flag.",
+      "additionalProperties": false,
+      "required": ["visible"],
+      "properties": {
+        "visible": { "type": "boolean" },
+        "kicker": { "type": "string" },
+        "text": { "type": "string", "description": "Headline of the card." },
+        "subtitle": { "type": "string" },
+        "tone": { "$ref": "#/definitions/tone" }
+      }
+    },
+    "ticker": {
+      "type": "array",
+      "description": "Ordered ticker items rendered as one seamless doubled-string CSS scroll. Empty array = no ticker shown.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text"],
+        "properties": {
+          "text": { "type": "string" },
+          "tone": { "$ref": "#/definitions/tone" }
+        }
+      }
+    },
+    "caption": {
+      "type": "object",
+      "description": "Live caption / subtitle line plus optional translations. The caption overlay selects a language via ?lang= override or this 'lang'.",
+      "additionalProperties": false,
+      "required": ["visible"],
+      "properties": {
+        "visible": { "type": "boolean" },
+        "lang": { "type": "string", "description": "BCP-47-ish primary caption language code.", "examples": ["en", "es", "fr", "it", "pt", "hi"] },
+        "text": { "type": "string", "description": "The current transcript line in the primary language." },
+        "translations": {
+          "type": "object",
+          "description": "Optional map of language code -> translated line. The overlay shows the requested language from here if present.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "clock": {
+      "type": "object",
+      "description": "Multi-zone world-clock strap.",
+      "additionalProperties": false,
+      "properties": {
+        "zones": {
+          "type": "array",
+          "description": "IANA time-zone identifiers rendered with Intl.DateTimeFormat + tabular-nums.",
+          "items": { "type": "string" },
+          "examples": [["UTC", "America/Chicago", "Europe/London", "Asia/Kolkata"]]
+        }
+      }
+    },
+    "music": {
+      "type": "object",
+      "description": "Music-bed state for on-screen audio indicators (informational; OBS does the actual mixing).",
+      "additionalProperties": false,
+      "properties": {
+        "volume": { "type": "number", "minimum": 0, "maximum": 1, "description": "0..1 music-bed level." },
+        "ducked": { "type": "boolean", "description": "True while ducked under speech/narration." }
+      }
+    },
+    "nowPlaying": {
+      "type": "object",
+      "description": "What segment/clip is currently on the program.",
+      "additionalProperties": false,
+      "properties": {
+        "segment": { "type": "string" },
+        "lang": { "type": "string" },
+        "clipId": { "type": ["string", "null"] },
+        "layout": { "type": ["string", "null"], "description": "On-air guest layout hint (talking-head / panel / pip) written by the set_layout tool; the stage page reads it." }
+      }
+    },
+    "brand": {
+      "type": "object",
+      "description": "Brand asset filenames (served from the overlays static root).",
+      "additionalProperties": false,
+      "properties": {
+        "logo": { "type": "string" },
+        "poweredBy": { "type": "string" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Appliance evidence taxonomy badge. Class A is never styled here (A = independently reproduced, asserted off-air only).",
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "type": "string",
+          "enum": ["A", "B", "C", "Sec", "pending"],
+          "description": "A=independently reproduced, B=observed-with-artifact, C=command-output, Sec=security-relevant-unproven, pending=not-yet-established."
+        }
+      }
+    }
+  },
+  "definitions": {
+    "tone": {
+      "type": "string",
+      "enum": ["ok", "warn", "crit", "unknown", "accent"],
+      "description": "Maps to a CSS class (left-border colour). 'accent' is the neutral brand-accent default the pages + CSS use; unknown/absent renders muted, never a confident colour."
+    }
+  }
+}

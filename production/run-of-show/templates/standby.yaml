@@ -1,0 +1,99 @@
+# UNI Production Platform - run-of-show template: STANDBY (green-room / watchdog loop)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# The fallback loop the watchdog cuts to on ANY source/encoder glitch (ADR-PROD-007):
+# last-frame hold -> standby reel -> calm music + "we will be right back" card. The
+# producer/playout returns to the live run-of-show automatically on recovery. This
+# template also doubles as the between-slots holding pattern.
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck roll_clip
+#
+# IMPORTANT (resilience): standby is a LOOP. The producer holds here (re-running the
+# reel beat) until uni-playout / the watchdog reports the live source recovered, then
+# start_segment returns to the interrupted slot. STANDBY must never go to black.
+
+template: standby
+description: >
+  Green-room / standby holding loop. Cut here on glitch (watchdog) or between slots.
+  Standby card + calm music + a looping catalog reel; loops until recovery, then the
+  producer resumes the live run-of-show. Never goes to black.
+defaultLanguage: en
+
+params:
+  reelClipId: STANDBY-REEL
+  language: en
+
+beats:
+  - id: sb-01-hold
+    name: Standby card - we will be right back
+    scene: STANDBY
+    durationSec: 15
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: STANDBY }
+      - layer: title
+        payload:
+          visible: true
+          kicker: STANDBY
+          text: We will be right back
+          subtitle: The science feed returns shortly
+      - layer: ticker
+        payload:
+          - { text: "EducateWright - standing by - the feed returns shortly", tone: warn }
+      - layer: nowPlaying
+        payload: { segment: Standby, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.20, duck: false }
+    clip: null
+    notes: >
+      cut_to STANDBY immediately (watchdog path). onAir text=STANDBY (honest - not "LIVE"). Calm music up.
+      This is the entry beat after a glitch / last-frame hold.
+
+  - id: sb-02-reel
+    name: Standby reel loop
+    scene: STANDBY
+    durationSec: 120
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: WHILE YOU WAIT
+          title: From the UNI catalog
+          subtitle: A short, on a loop
+          tone: ok
+    narrate: null
+    music: { volume: 0.10, duck: true }
+    clip: { clipId: "{{reelClipId}}", mode: loop }
+    notes: >
+      roll_clip(reelClipId, mode=loop) - a calm catalog reel. THIS BEAT LOOPS: the producer re-enters it until
+      the watchdog reports recovery. No black frame ever. On recovery -> start_segment back to the live slot.
+
+  - id: sb-03-recovery
+    name: Back to the feed
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload: { visible: false }
+      - layer: title
+        payload:
+          visible: true
+          kicker: EDUCATEWRIGHT
+          text: Thanks for waiting
+          subtitle: We are back
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+    narrate: null
+    music: { volume: 0.24, duck: false }
+    clip: null
+    notes: >
+      Only reached when uni-playout signals the live source recovered. onAir text back to LIVE; cut_to TITLE
+      sting, then the producer resumes the interrupted run-of-show at the next live beat.

@@ -1,0 +1,111 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "doc_m9",
+  "movement": "M9",
+  "design_rule": [
+    "M9 — THE CLOSE, authored for the LONG TREATMENT. Same rule as every other movement: expose the",
+    "measurement, never assert the conclusion. Three frames are the estate's own source, verbatim,",
+    "with file, line range and sha256 recomputed at render time. Four are recorded stdout from",
+    "capture/forensic_latest.json. One is the mission, on the amber rail, marked as intent.",
+    "The close ends where the film's own honest state ends: on the fact that no verdict has yet been",
+    "authored about a real scientific claim, and then on the command that would catch the film."
+  ],
+  "why_that_number_is_a_word_and_not_a_token": [
+    "The brief for this movement asked for the verdict count to be rendered as the token id",
+    "n.verdicts.authored. It is not rendered here, and that is the gate's ruling rather than a",
+    "shortcut. tokens.cjs marks that token operator_owned and says of it: 'It must be re-ruled by the",
+    "operator before any cut renders it.' verify_welcome_film.cjs enforces exactly that — a cut that",
+    "renders it while the spine's numbers[] entry carries no operator_ruling is a FAIL. So the close",
+    "says the figure in words, which is what the spine itself says, and the frame that carries it is",
+    "the governing file quoted verbatim. The prose moved; the rule did not.",
+    "The same fact is shown a second way at d_m9_constant, which puts the token's own entry on screen."
+  ],
+  "scenes": [
+    {
+      "id": "d_m9_open",
+      "plate": "title",
+      "kicker": "THE CLOSE — WHAT YOU WOULD BE JOINING",
+      "line1": "Where the work actually stands.",
+      "line2": "Every frame after this is a command, a file, or its output.",
+      "narration": "This is the last chapter, and it does one thing: it states where the work actually stands. What follows gets the same treatment as everything before it. A question, a command, and the output. Nothing here is a summary of the film you have just watched.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m9_measured",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do, and how much of the plan is finished?",
+      "source": "docs/control-plane/LIMITATIONS.md — generated from annotations beside the code, then diffed by a gate",
+      "note": "@n.plan.done of @n.plan.steps steps carried, @n.plan.blocked blocked, @n.plan.operator the operator's alone. Limits counted for one repository of three.",
+      "narration": "@n.limitations.declared limitations are declared today, and the frame carries the tail of that list. The page holding them is generated from annotations in the source rather than written by hand. The line beneath carries the plan: steps carried, steps blocked, and steps no agent may take. If the page and the annotations disagree, the gate that regenerates it fails.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m9_record",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How much of this project's permanent record has actually been written?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, printed with its own reason for standing",
+      "note": "Independent parties corroborating the evidence chain: @n.witness.independent_custodians — claim level tamper_evident, and the chain is not unforgeable.",
+      "narration": "Of the @n.gap.registered checks this project registers, @n.gap.in_ledger has a row in the permanent record. The schema says every gate it claims must be represented there. The instrument prints the missing line and stops, because writing those rows is a stop condition the operator signs.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m9_ladder",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The parity ladder, in the code of the result it belongs to — @n.pladder.unclosed rungs untouched",
+      "narration": "The strongest result in the flagellar-motor work is a held-out duration prediction, and this is the sentence its own code carries about what it does not reach. @n.pladder.unclosed rungs above it are untouched in either direction. Transfer needs another dataset. Intervention needs an apparatus. Independent replication needs somebody who is not us.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m9_constant",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lab/film/welcome/qc/tokens.cjs",
+      "from": 276,
+      "to": 283,
+      "why": "One figure in this film is a declared constant. This is its entry, unedited.",
+      "narration": "Every number you have seen was an expression evaluated against a real file. One was not. This is that entry in the film's own number source, saying it cannot be measured because there is no register of scientific verdicts to count. The missing instrument is the finding, not the figure.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m9_mission",
+      "plate": "intent",
+      "lines": [
+        "Worldwide peace through free and open understanding.",
+        "The public pursuit and ownership of",
+        "General Universal Natural Intelligence.",
+        "The end of extract and extortion.",
+        "Making safe all wombs, and Gaia —",
+        "earth, our solar system, and beyond."
+      ],
+      "narration": "The mission again, in the same words, on the same amber rail that marks it as intent. Nothing on this frame was measured. It stands here after the state of the work rather than before it, and not one clause of it is smaller than it was in the opening.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m9_worth",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "CLAUDE.md",
+      "from": 796,
+      "to": 798,
+      "why": "The project's own standing declaration, quoted with its line range and digest",
+      "narration": "This is the file that governs everyone working on the project, quoted with its line range and its digest. Read the last sentence. No verdict has yet been authored about a real scientific claim. There is no register of verdicts to count from, so that line is a declaration and not a measurement.",
+      "_lint_note": "The verdict count is said as a WORD here and is deliberately not rendered as the token id n.verdicts.authored. tokens.cjs marks that token operator_owned — 'it must be re-ruled by the operator before any cut renders it' — and verify_welcome_film.cjs enforces it: a cut that renders it while the spine's numbers[] entry carries no operator_ruling FAILS. Measured, not assumed: rendering it took the gate to nineteen of twenty checks. Do not convert this line to a token during assembly without the operator's ruling landing in SPINE.json first.",
+      "tail_silence": 1.9
+    },
+    {
+      "id": "d_m9_invite",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "Can you check every number in this film against the files it came from?",
+      "source": "lab/film/welcome/qc/tokens.cjs — every figure is an expression over a live file, never a typed digit",
+      "narration": "So the last frame is a command rather than a logo. That one re-measures every figure this film rendered, straight from the files it read. Clone the repository and run it. If your output disagrees with what you have just watched, the film is wrong, and that disagreement is worth more to us than the film is.",
+      "tail_silence": 2.0
+    }
+  ]
+}

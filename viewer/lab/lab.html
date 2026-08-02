@@ -1,0 +1,230 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>UNI LAB — L0, the empty room</title>
+<!--
+  L0: THE EMPTY ROOM. Phase 9 step 4.6, build 0.
+
+  Floor, grid, walls, three room shells, five arches, the Gaia dome, WASD, click-to-stand.
+  ZERO NODES, and that is the whole discipline of this build: nothing here knows what a
+  truth_class is. L1 brings the five materials, L2 brings the screenshot gate that must be able
+  to FAIL on swapped materials — and it cannot prove that against a renderer which already
+  assumed them. So this one commits to nothing.
+
+  CPU-ONLY, 2D CANVAS. CLAUDE.md forbids WebGL, WebGPU and Three.js in the released product.
+  There is no shader here, no GPU context, no 3D library: a 2D context, an isometric projection
+  done in arithmetic, and a requestAnimationFrame loop. `viewer/lab/verify_lab_l0.cjs` fails if
+  any of those words appear in this file.
+-->
+<style>
+  :root { --ink:#e8eef2; --dim:#7c8b96; --floor:#141b21; --line:#1e2a33; --wall:#243039;
+          --arch:#2d3b46; --dome:#22333f; --you:#7fd1c4; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:#0a0f13; color:var(--ink);
+               font:13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  #wrap { position:fixed; inset:0; }
+  canvas { display:block; width:100%; height:100%; cursor:crosshair; }
+  #hud { position:fixed; left:14px; top:12px; pointer-events:none; }
+  #hud h1 { margin:0 0 2px; font-size:13px; letter-spacing:.14em; font-weight:600; }
+  #hud p { margin:0; color:var(--dim); }
+  #zero { position:fixed; right:14px; top:12px; text-align:right; color:var(--dim); pointer-events:none; }
+  #zero b { color:var(--ink); font-weight:600; }
+  #keys { position:fixed; left:14px; bottom:12px; color:var(--dim); pointer-events:none; }
+  kbd { background:#1a242c; border:1px solid #2a3742; border-radius:3px; padding:0 4px; color:var(--ink); }
+</style>
+
+<div id="wrap"><canvas id="c"></canvas></div>
+<div id="hud">
+  <h1>UNI LAB · L0</h1>
+  <p>the empty room</p>
+</div>
+<div id="zero">
+  <b id="nodecount">0 nodes</b><br />
+  nothing here is claimed<br />
+  <span id="boot">boot …</span>
+</div>
+<div id="keys">
+  <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk · <kbd>click</kbd> stand there ·
+  <kbd>shift</kbd> stride
+</div>
+
+<script>
+  "use strict";
+  // ---- the room, in metres. Arithmetic only; nothing here is a scene graph. ----------------
+  const ROOM = { w: 48, h: 34 };
+  // Three room shells: the lab floor is one hall divided by three open shells. They are WALLS,
+  // not containers — L4 brings rooms, airlocks and portals, and a shell that already behaved
+  // like a room would prejudge that build.
+  const SHELLS = [
+    { x: 4,  y: 4,  w: 13, h: 11, label: "" },
+    { x: 20, y: 4,  w: 12, h: 11, label: "" },
+    { x: 35, y: 4,  w: 9,  h: 11, label: "" },
+  ];
+  // Five arches along the south wall of the shells — the openings, drawn as gaps with a lintel.
+  const ARCHES = [
+    { x: 9,  y: 15 }, { x: 14, y: 15 }, { x: 25, y: 15 }, { x: 30, y: 15 }, { x: 39, y: 15 },
+  ];
+  const DOME = { x: 24, y: 25, r: 7 };   // the Gaia dome: a shell, and empty
+
+  const you = { x: 24, y: 20, vx: 0, vy: 0 };
+  const target = { x: null, y: null };
+  const keys = new Set();
+
+  const c = document.getElementById("c");
+  const g = c.getContext("2d");            // 2d. Not webgl, not webgpu, and there is a gate on it.
+  let W = 0, H = 0, DPR = 1;
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  window.addEventListener("resize", resize);
+
+  // Isometric projection, done in arithmetic. Scale follows the window so the whole room is
+  // always on screen — you should never have to hunt for the floor.
+  function view() {
+    const s = Math.min(W / (ROOM.w * 1.5), H / (ROOM.h * 0.95));
+    return { s, ox: W / 2, oy: H / 2 - (ROOM.h * s) / 4 };
+  }
+  function iso(x, y) {
+    const { s, ox, oy } = view();
+    return [ox + (x - ROOM.w / 2) * s * 0.75 - (y - ROOM.h / 2) * s * 0.75,
+            oy + (x - ROOM.w / 2) * s * 0.38 + (y - ROOM.h / 2) * s * 0.38];
+  }
+  function unIso(px, py) {
+    const { s, ox, oy } = view();
+    const a = (px - ox) / (s * 0.75), b = (py - oy) / (s * 0.38);
+    return [(a + b) / 2 + ROOM.w / 2, (b - a) / 2 + ROOM.h / 2];
+  }
+
+  function poly(pts, fill, stroke, lw) {
+    g.beginPath();
+    pts.forEach(([x, y], i) => { const [px, py] = iso(x, y); i ? g.lineTo(px, py) : g.moveTo(px, py); });
+    g.closePath();
+    if (fill) { g.fillStyle = fill; g.fill(); }
+    if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw || 1; g.stroke(); }
+  }
+
+  function drawFloorAndGrid() {
+    poly([[0, 0], [ROOM.w, 0], [ROOM.w, ROOM.h], [0, ROOM.h]], getVar("--floor"), getVar("--line"), 1.5);
+    g.strokeStyle = getVar("--line"); g.lineWidth = 1; g.globalAlpha = 0.55;
+    for (let x = 1; x < ROOM.w; x++) line(x, 0, x, ROOM.h);
+    for (let y = 1; y < ROOM.h; y++) line(0, y, ROOM.w, y);
+    g.globalAlpha = 1;
+  }
+  function line(x1, y1, x2, y2) {
+    const [a, b] = iso(x1, y1), [d, e] = iso(x2, y2);
+    g.beginPath(); g.moveTo(a, b); g.lineTo(d, e); g.stroke();
+  }
+
+  // A wall is drawn as its footprint plus a raised top face — enough to read as standing up
+  // without pretending to be a 3D engine.
+  function wall(x, y, w, h, lift, fill) {
+    const top = (v) => v - lift;
+    poly([[x, y], [x + w, y], [x + w, y + h], [x, y + h]], fill, "#0c1216", 1);
+    const pts = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]].map(([a, b]) => [a, b]);
+    g.save(); g.translate(0, -lift * view().s * 0.5);
+    poly(pts, fill, "#33454f", 1);
+    g.restore();
+    void top;
+  }
+
+  function drawShells() {
+    const t = 0.6;
+    for (const s of SHELLS) {
+      wall(s.x, s.y, s.w, t, 2.2, getVar("--wall"));                 // north
+      wall(s.x, s.y, t, s.h, 2.2, getVar("--wall"));                 // west
+      wall(s.x + s.w - t, s.y, t, s.h, 2.2, getVar("--wall"));       // east
+      wall(s.x, s.y + s.h - t, s.w, t, 1.1, getVar("--wall"));       // south, low — the arch wall
+    }
+  }
+
+  function drawArches() {
+    for (const a of ARCHES) {
+      wall(a.x - 1.4, a.y - 0.9, 0.5, 1.6, 2.6, getVar("--arch"));   // left pier
+      wall(a.x + 1.0, a.y - 0.9, 0.5, 1.6, 2.6, getVar("--arch"));   // right pier
+      g.save(); g.translate(0, -2.6 * view().s * 0.5);
+      poly([[a.x - 1.4, a.y - 0.9], [a.x + 1.5, a.y - 0.9], [a.x + 1.5, a.y + 0.7], [a.x - 1.4, a.y + 0.7]],
+           getVar("--arch"), "#3b4c58", 1);                          // lintel
+      g.restore();
+    }
+  }
+
+  function drawDome() {
+    const [cx, cy] = iso(DOME.x, DOME.y);
+    const { s } = view();
+    g.beginPath(); g.ellipse(cx, cy, DOME.r * s * 0.78, DOME.r * s * 0.40, 0, 0, Math.PI * 2);
+    g.fillStyle = getVar("--dome"); g.globalAlpha = 0.5; g.fill(); g.globalAlpha = 1;
+    g.strokeStyle = "#3a5361"; g.lineWidth = 1.4; g.stroke();
+    for (let i = 1; i <= 3; i++) {                                    // ribs, so it reads as a dome
+      g.beginPath();
+      g.ellipse(cx, cy, DOME.r * s * 0.78 * (i / 4), DOME.r * s * 0.40 * (i / 4), 0, 0, Math.PI * 2);
+      g.strokeStyle = "#2b3f4b"; g.lineWidth = 1; g.stroke();
+    }
+  }
+
+  function drawYou() {
+    const [px, py] = iso(you.x, you.y);
+    const { s } = view();
+    g.beginPath(); g.ellipse(px, py, s * 0.42, s * 0.22, 0, 0, Math.PI * 2);
+    g.fillStyle = "rgba(0,0,0,.45)"; g.fill();
+    g.beginPath(); g.moveTo(px, py - s * 1.15); g.lineTo(px + s * 0.30, py); g.lineTo(px - s * 0.30, py);
+    g.closePath(); g.fillStyle = getVar("--you"); g.fill();
+    if (target.x !== null) {
+      const [tx, ty] = iso(target.x, target.y);
+      g.beginPath(); g.ellipse(tx, ty, s * 0.34, s * 0.18, 0, 0, Math.PI * 2);
+      g.strokeStyle = getVar("--you"); g.globalAlpha = 0.65; g.lineWidth = 1.4; g.stroke(); g.globalAlpha = 1;
+    }
+  }
+
+  function getVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  // ---- walking -----------------------------------------------------------------------------
+  addEventListener("keydown", (e) => { keys.add(e.key.toLowerCase()); if (["w","a","s","d"].includes(e.key.toLowerCase())) { target.x = null; e.preventDefault(); } });
+  addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
+  c.addEventListener("click", (e) => {
+    const r = c.getBoundingClientRect();
+    const [x, y] = unIso(e.clientX - r.left, e.clientY - r.top);
+    target.x = Math.max(0.6, Math.min(ROOM.w - 0.6, x));
+    target.y = Math.max(0.6, Math.min(ROOM.h - 0.6, y));
+  });
+
+  function step(dt) {
+    const stride = keys.has("shift") ? 15 : 7.5;
+    let dx = 0, dy = 0;
+    if (keys.has("w")) { dx -= 1; dy -= 1; }
+    if (keys.has("s")) { dx += 1; dy += 1; }
+    if (keys.has("a")) { dx -= 1; dy += 1; }
+    if (keys.has("d")) { dx += 1; dy -= 1; }
+
+    if (dx || dy) {
+      const m = Math.hypot(dx, dy);
+      you.x += (dx / m) * stride * dt;
+      you.y += (dy / m) * stride * dt;
+    } else if (target.x !== null) {
+      const ax = target.x - you.x, ay = target.y - you.y, d = Math.hypot(ax, ay);
+      if (d < 0.15) { target.x = null; }
+      else { you.x += (ax / d) * stride * dt; you.y += (ay / d) * stride * dt; }
+    }
+    you.x = Math.max(0.6, Math.min(ROOM.w - 0.6, you.x));
+    you.y = Math.max(0.6, Math.min(ROOM.h - 0.6, you.y));
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    step(dt);
+    g.clearRect(0, 0, W, H);
+    drawFloorAndGrid(); drawShells(); drawArches(); drawDome(); drawYou();
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  requestAnimationFrame(frame);
+
+  // Boot identity, the same claim every other body makes: WHICH COMMIT is this page from.
+  fetch("/api/identity").then((r) => r.json()).then((i) => {
+    document.getElementById("boot").textContent = "boot " + String(i.boot_git_commit || "?").slice(0, 7);
+  }).catch(() => { document.getElementById("boot").textContent = "boot unknown"; });
+</script>

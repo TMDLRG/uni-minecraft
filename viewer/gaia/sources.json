@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "_doc": "Gaia declared source-locator registry (DATA, not code). The audit spine of the signal model: every direct signal Gaia may project is DECLARED here with {id, seat, group, kind, locator, capture_hint} and DELIBERATELY NO value/raw/sha256/captured_at — those are captured LIVE by collectors.cjs and stamped per Signal. Declared-vs-captured drift (a declared id never captured, or a captured id never declared) is itself auditable against this file. GAIA LAW: this registry names WHERE a raw signal lives; it NEVER stores a summarized/scored/interpreted value. NO IP LITERALS: probe locators name a viewer/infra_registry.json service id (resolved live via ${name}.${zone} by infra.cjs), never a hardcoded address.",
+  "_frozen_source_keys": ["id", "seat", "group", "kind", "locator", "capture_hint", "slice", "provenance_note"],
+  "_seat_enum": ["gaia-self", "repo", "gates", "infra", "studio", "colony", "relay", "sessions", "science", "drift"],
+  "_kind_enum": ["git", "file", "config", "command", "tcp", "http", "mcp", "transcript", "drift"],
+
+  "seat_panels": {
+    "gaia-self": "Gaia self + calibration",
+    "studio": "Studio ports (THINKER)",
+    "colony": "Colony (chip)",
+    "relay": "Five-seat flow / vectors map",
+    "repo": "Repo & commits",
+    "gates": "Gate ledger (science verdicts)",
+    "science": "Science & math (the FE engine)",
+    "infra": "Infra / DNS",
+    "sessions": "Chat histories / sessions",
+    "drift": "Drift (documented-vs-measured, first-class)"
+  },
+
+  "panels": [
+    { "panel": "Gaia self + calibration", "position": "top-strip", "seats": ["gaia-self"], "consumes": ["self.identity", "self.source_hash", "self.mcp_manifest", "self.calibration", "self.lint"] },
+    { "panel": "Five-seat flow / vectors map", "position": "map", "seats": ["studio", "colony", "relay", "repo", "sessions", "gaia-self"], "consumes": ["studio.probe.launcher", "colony.probe.health", "relay.probe.rtmp", "git.head", "sessions.transcripts", "self.identity"], "edges_note": "declared data-flow edges (chip -> THINKER capture -> OBS -> node2/THINKER-local tee) labeled 'declared', not 'observed'." },
+    { "panel": "Repo & commits", "seats": ["repo"], "consumes": ["git.head", "git.status", "git.log", "git.pushstate"] },
+    { "panel": "Gate ledger (science verdicts)", "seats": ["gates"], "consumes": ["gates.ndjson.row", "gates.schema", "gates.ladder"] },
+    { "panel": "Science & math (the FE engine)", "seats": ["science"], "consumes": ["science.infer.kernel", "science.efe.kernel", "science.learn.kernel", "science.novelty.kernel", "science.red.forage_preregistration", "science.red.forage_honest"] },
+    { "panel": "Infra / DNS", "seats": ["infra"], "consumes": ["infra.registry", "infra.dns_drift"] },
+    { "panel": "Studio ports (THINKER)", "seats": ["studio"], "consumes": ["studio.probe.launcher", "studio.probe.command_center", "studio.probe.overlays", "studio.probe.publisher", "studio.probe.mediamtx", "studio.probe.obs_ws", "studio.probe.rtmp", "studio.config.mediamtx", "studio.doors.register", "studio.doors.journey"] },
+    { "panel": "Colony (chip)", "seats": ["colony"], "consumes": ["colony.probe.health", "colony.producer.stream", "colony.probe.mc", "colony.probe.rcon", "colony.mirror.podman"] },
+    { "panel": "Chat histories / sessions", "seats": ["sessions"], "consumes": ["sessions.transcripts", "sessions.mirror.list"] },
+    { "panel": "Drift (documented-vs-measured, first-class)", "seats": ["drift"], "consumes": ["drift.fqdn_cjs", "drift.gate_row_schema_path", "drift.resolver_planned", "drift.git_dirty_vs_clean", "drift.self_doc_vs_served", "drift.studio_declared_vs_down"] }
+  ],
+
+  "sources": [
+    {
+      "id": "git.head",
+      "seat": "repo", "group": "repo", "kind": "git", "slice": "slice1",
+      "locator": "git rev-parse HEAD",
+      "capture_hint": "verbatim stdout, one 40-hex sha; hash over that stdout.",
+      "provenance_note": "envelope.git_commit is derived from this same command."
+    },
+    {
+      "id": "git.status",
+      "seat": "repo", "group": "repo", "kind": "git", "slice": "slice1",
+      "locator": "git status --short",
+      "capture_hint": "verbatim stdout; a clean tree is the empty string carried as-is, never a synthesized 'clean' label."
+    },
+    {
+      "id": "git.log",
+      "seat": "repo", "group": "repo", "kind": "git", "slice": "slice1",
+      "locator": "git log --oneline -20",
+      "capture_hint": "verbatim stdout, up to 20 lines; hash over exact bytes."
+    },
+    {
+      "id": "git.pushstate",
+      "seat": "repo", "group": "repo", "kind": "git", "slice": "slice1",
+      "locator": "git rev-list --left-right --count origin/gen2-runtime...HEAD",
+      "capture_hint": "verbatim stdout '<behind>\\t<ahead>'; the numbers are the SOURCE's own count, projected verbatim (not a Gaia aggregate)."
+    },
+
+    {
+      "id": "gates.ndjson.row",
+      "seat": "gates", "group": "gates", "kind": "file", "slice": "slice1",
+      "locator": "evidence/gates.ndjson (line-by-line; one hashed Signal per line, id gates.ndjson.row.<n>)",
+      "capture_hint": "16 rows at declaration time; each row byte-for-byte, PASS/PARTIAL/FAIL/WITHHELD/PENDING intact; sha256 per line equals on-disk bytes. Gaia never computes a pass-count/percent/rank.",
+      "provenance_note": "row count is discovered live (wc -l), never fixed here; a claimed row count would be a Gaia aggregate = build defect."
+    },
+    {
+      "id": "gates.schema",
+      "seat": "gates", "group": "gates", "kind": "file", "slice": "slice1",
+      "locator": "production/schemas/gate_row.schema.json",
+      "capture_hint": "verbatim file bytes; required keys schema_version,name,verdict,receipt_path,evidence_class,last_updated. Note $id is gate_row.v1.json though the FILE is gate_row.schema.json -> see drift.gate_row_schema_path."
+    },
+    {
+      "id": "gates.ladder",
+      "seat": "gates", "group": "gates", "kind": "file", "slice": "slice1",
+      "locator": "docs/GATES.md",
+      "capture_hint": "verbatim rendered ladder bytes; a view of gates.ndjson, carried as-is."
+    },
+
+    {
+      "id": "infra.registry",
+      "seat": "infra", "group": "infra", "kind": "config", "slice": "slice1",
+      "locator": "viewer/infra_registry.json",
+      "capture_hint": "verbatim file bytes; THE single sanctioned IP-bearing source (the one declared name->IP map + goLiveGate). All other hosts derive via ${name}.${zone}."
+    },
+    {
+      "id": "infra.dns_drift",
+      "seat": "infra", "group": "infra", "kind": "drift", "slice": "slice1",
+      "locator": "require('../infra.cjs').snapshot() -> .drift[] rows (dnsDrift)",
+      "capture_hint": "each row's state:'drift'|'fresh' is the SOURCE's own computation, carried verbatim with infra.cjs as locator; Gaia does not recompute or judge it. up:null where no live resolve ran.",
+      "provenance_note": "reuses viewer/infra.cjs across the read-only import boundary; not duplicated."
+    },
+
+    {
+      "id": "science.infer.kernel",
+      "seat": "science", "group": "science", "kind": "file", "slice": "slice1",
+      "locator": "lib/sp/brain/infer.ex#L1-L45",
+      "capture_hint": "verbatim source lines carrying q(s)=softmax(forward_prior + Sum_m gamma_m * lnA). Behaviour-only projection; NEVER narrated as experience/felt state."
+    },
+    {
+      "id": "science.efe.kernel",
+      "seat": "science", "group": "science", "kind": "file", "slice": "slice1",
+      "locator": "lib/sp/brain/efe.ex#L1-L100",
+      "capture_hint": "verbatim lines carrying G(pi) = -Sum[ epistemic H(qo)-E[H(o|s)] + pragmatic qo.C ], softmax(gamma*(epistemic+pragmatic)). Claim-fence: math verbatim, no experience narration."
+    },
+    {
+      "id": "science.learn.kernel",
+      "seat": "science", "group": "science", "kind": "file", "slice": "slice1",
+      "locator": "lib/sp/brain/learn.ex#L1-L70",
+      "capture_hint": "verbatim lines carrying Hebbian Dirichlet accumulation (NO reward; E[ln A]=psi(a)-psi(Sum a))."
+    },
+    {
+      "id": "science.novelty.kernel",
+      "seat": "science", "group": "science", "kind": "file", "slice": "slice1",
+      "locator": "lib/sp/brain/novelty.ex#L1-L60",
+      "capture_hint": "verbatim lines carrying W-decay (monotonic to 0 as counts->inf, floored at prior pseudocount @floor)."
+    },
+    {
+      "id": "science.red.forage_preregistration",
+      "seat": "science", "group": "science", "kind": "file", "slice": "slice1",
+      "locator": "docs/receipts/forage_red_preregistration.md (front-matter / named PASS+FALSIFIES gates)",
+      "capture_hint": "verbatim front-matter bytes; carries the pre-registered RED, gate forage-pureworld-graduation PENDING (task #25). evidence_class carried verbatim if the receipt declares one."
+    },
+    {
+      "id": "science.red.forage_honest",
+      "seat": "science", "group": "science", "kind": "file", "slice": "slice1",
+      "locator": "docs/receipts/forage_honest_consummation_RED.md (front-matter)",
+      "capture_hint": "verbatim front-matter bytes; consummation_honest offline-proven, live necessity marginal — projected as the receipt states it, not reframed."
+    },
+
+    {
+      "id": "studio.probe.launcher",
+      "seat": "studio", "group": "studio", "kind": "http", "slice": "slice1",
+      "locator": "probes.httpJson(infra_registry.service['launcher']) -> launcher.${zone}:8090",
+      "capture_hint": "live probe; live.up true/false ONLY from a real probes.httpJson() result; up:null,'not probed' if no probe ran. Never up:true from a PID."
+    },
+    {
+      "id": "studio.probe.command_center",
+      "seat": "studio", "group": "studio", "kind": "http", "slice": "slice1",
+      "locator": "probes.httpJson(infra_registry.service['studio']) -> studio.${zone}:8098/api/state",
+      "capture_hint": "live http probe of the command_center console; down => up:false + one-line detail + captured_at."
+    },
+    {
+      "id": "studio.probe.overlays",
+      "seat": "studio", "group": "studio", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['overlays']) -> overlays.${zone}:8099",
+      "capture_hint": "live tcp probe of overlay_server.cjs; up:false when down."
+    },
+    {
+      "id": "studio.probe.publisher",
+      "seat": "studio", "group": "studio", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['cams']) -> cams.${zone}:8443",
+      "capture_hint": "live tcp probe of publisher.cjs camera gateway (regs 8095)."
+    },
+    {
+      "id": "studio.probe.mediamtx",
+      "seat": "studio", "group": "studio", "kind": "http", "slice": "slice1",
+      "locator": "probes.httpJson(infra_registry.service['mediamtx']) -> mediamtx.${zone}:9997/v3/paths/list",
+      "capture_hint": "live http probe of THINKER local MediaMTX api; raw body carried verbatim, no rollup."
+    },
+    {
+      "id": "studio.probe.obs_ws",
+      "seat": "studio", "group": "studio", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['obs']) -> obs.${zone}:4455",
+      "capture_hint": "live tcp probe of OBS-websocket; up:false when OBS absent."
+    },
+    {
+      "id": "studio.probe.rtmp",
+      "seat": "studio", "group": "studio", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['mediamtx'], 1935) -> mediamtx.${zone}:1935",
+      "capture_hint": "live tcp probe of THINKER local RTMP ingest."
+    },
+    {
+      "id": "studio.config.mediamtx",
+      "seat": "studio", "group": "studio", "kind": "config", "slice": "slice1",
+      "locator": "viewer/mediamtx_local.yml",
+      "capture_hint": "verbatim config bytes; kind=config, hashed."
+    },
+    {
+      "id": "studio.doors.register",
+      "seat": "studio", "group": "studio", "kind": "file", "slice": "slice1",
+      "locator": "viewer/runtime/door_state.json",
+      "capture_hint": "verbatim file bytes of the door lifecycle register (state of all open/locked doors, the vectors, per-door predictions of future openings/closings, and the audit tail) as WRITTEN BY door_lifecycle.cjs. Gaia carries it as-is: the predictions are the SOURCE's own declarations, never Gaia's. Absent/unwritten file => up:null 'not probed', never synthesized.",
+      "provenance_note": "the append-only ledger lives at viewer/runtime/door_lifecycle.ndjson; this register embeds its tail verbatim. Machine-local (gitignored runtime/) - a cold clone honestly shows it absent."
+    },
+    {
+      "id": "studio.doors.journey",
+      "seat": "studio", "group": "studio", "kind": "file", "slice": "slice1",
+      "locator": "viewer/runtime/door_journey.json",
+      "capture_hint": "verbatim file bytes of THE JOURNEY (door_journey.cjs): the reboot-surviving operator plan (graceful close -> reboot -> verify+self-heal -> feature test -> off air -> reboot -> verify+self-heal -> go live -> run of show -> off air), current step, and per-step live-check detail, all as WRITTEN by the source. Gaia carries it as-is - the step statuses and predictions are the journey's own, never Gaia's judgment of progress.",
+      "provenance_note": "the append-only ledger lives at viewer/runtime/door_journey.ndjson (not separately projected). Machine-local (gitignored runtime/) - a cold clone honestly shows it absent."
+    },
+
+    {
+      "id": "colony.probe.health",
+      "seat": "colony", "group": "colony", "kind": "http", "slice": "slice1",
+      "locator": "probes.httpJson(infra_registry.service['colony']) -> colony.${zone}:4000/producer/health",
+      "capture_hint": "live LAN http probe of the chip colony; raw body carried verbatim (verdict/driver as the SOURCE reports them). Unreachable => up:false; unprobed => up:null,'not probed'. A verdict here is the source's, never Gaia's."
+    },
+    {
+      "id": "colony.producer.stream",
+      "seat": "colony", "group": "colony", "kind": "http", "slice": "slice1",
+      "locator": "probes.httpJson(infra_registry.service['colony'], '/stream') -> colony.${zone}:4000/stream",
+      "capture_hint": "live http probe of THE UNI PRODUCER's own surface (/stream) - the unique UNI inside UNI.Minecraft that flies the camera and reports the show, distinct from the world UNIs. Status carried verbatim; its ABSENCE on the stale v2 mind (health 404, camera unflown, narration silent) is a true signal, never masked. Paired with colony.producer_health (the pulse).",
+      "provenance_note": "the Producer's life = health 200 + driver=producer + advancing frames; Gaia carries each piece verbatim and never composes the verdict herself."
+    },
+    {
+      "id": "colony.probe.mc",
+      "seat": "colony", "group": "colony", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['mc']) -> mc.${zone}:25565",
+      "capture_hint": "live tcp probe of Minecraft mc-server; up:false/null honestly."
+    },
+    {
+      "id": "colony.probe.rcon",
+      "seat": "colony", "group": "colony", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['mc'], 25575) -> mc.${zone}:25575",
+      "capture_hint": "live tcp probe of RCON port; presence-of-port only, not a colony-count claim."
+    },
+    {
+      "id": "colony.mirror.podman",
+      "seat": "colony", "group": "colony", "kind": "mcp", "slice": "roadmap",
+      "locator": "mcp__uni-lab__podman_ps (agent-ingested via ingest_mcp.cjs; NOT callable by the headless server)",
+      "capture_hint": "ROADMAP. When ingested: label truncated:{of:'stdout_tail',complete:false}, hash only the shown tail; colony (mc-server/uni-colony) presence shown UNCONFIRMED. Until ingested: up:null,'not probed' — never faked."
+    },
+
+    {
+      "id": "relay.probe.rtmp",
+      "seat": "relay", "group": "relay", "kind": "tcp", "slice": "slice1",
+      "locator": "probes.tcp(infra_registry.service['relay']) -> relay.${zone}:1935",
+      "capture_hint": "live tcp probe of node2 uni-bcast-relay ingest (public go-live dependency); up:false when down/unreachable."
+    },
+
+    {
+      "id": "sessions.transcripts",
+      "seat": "sessions", "group": "sessions", "kind": "transcript", "slice": "slice1",
+      "locator": "listdir(~/.claude/projects/C--Users-mpolz-Documents-UNI-Minecraft/*.jsonl) -> per file {name,size,mtime,sha256}",
+      "capture_hint": "hash each .jsonl file's bytes (closes the 'no content hash on sync' gap); name+size+mtime+sha256 per file, verbatim, no content summarization."
+    },
+    {
+      "id": "sessions.mirror.list",
+      "seat": "sessions", "group": "sessions", "kind": "mcp", "slice": "roadmap",
+      "locator": "mcp__ccd_session_mgmt__list_sessions (agent-ingested via ingest_mcp.cjs)",
+      "capture_hint": "ROADMAP. A standalone gaia_server is not an MCP client; shown up:null until an agent-ingest snapshot exists — no faked session mirror."
+    },
+
+    {
+      "id": "self.identity",
+      "seat": "gaia-self", "group": "gaia-self", "kind": "command", "slice": "slice1",
+      "locator": "gaia self-read: git HEAD (envelope.git_commit) + listen host gaia.${zone} (no IP literal) + pid + uptime",
+      "capture_hint": "each field from a real self-read at request time; listen host derived gaia.${zone} from infra snapshot zone, never a literal."
+    },
+    {
+      "id": "self.source_hash",
+      "seat": "gaia-self", "group": "gaia-self", "kind": "file", "slice": "slice1",
+      "locator": "sha256sum viewer/gaia/gaia.cjs (+ sig.cjs + gaia_server.cjs), pinned against committed golden",
+      "capture_hint": "live sha256 of on-disk bytes re-read per request; a modified-but-uncommitted Gaia shows a self-hash that no longer matches the golden — surfaced, never hidden (decider byte-identity idiom)."
+    },
+    {
+      "id": "self.mcp_manifest",
+      "seat": "gaia-self", "group": "gaia-self", "kind": "config", "slice": "slice1",
+      "locator": "require('./caps.cjs').CAPS (the ONE registry; served == self-reported == docs/GAIA.md table)",
+      "capture_hint": "CAPS projected verbatim; byte-compared across initialize handshake, gaia.self.manifest(), and docs/GAIA.md — divergence emits a self-drift signal, never silent reconcile."
+    },
+    {
+      "id": "self.calibration",
+      "seat": "gaia-self", "group": "gaia-self", "kind": "command", "slice": "slice1",
+      "locator": "gaia_lint.verify_hash over the last N emitted signals -> {stored, recomputed, match:bool} per signal",
+      "capture_hint": "a boolean per signal (never a pass-rate); instrument_version + envelope contract path+hash + verify-gate names with carried verdicts."
+    },
+    {
+      "id": "self.lint",
+      "seat": "gaia-self", "group": "gaia-self", "kind": "command", "slice": "slice1",
+      "locator": "require('./gaia_lint.cjs').lint(gaia()) result",
+      "capture_hint": "the verbatim no-summarization LINT result over Gaia's own output; carried as-is."
+    },
+
+    {
+      "id": "drift.fqdn_cjs",
+      "seat": "drift", "group": "drift", "kind": "drift", "slice": "slice1",
+      "locator": "a: CLAUDE.md 'viewer/fqdn.cjs canonical' | b: git ls-files viewer/ | grep fqdn (empty)",
+      "capture_hint": "relation:'absent'; both byte-sets carried; mechanical equal boolean only. Gaia reuses infra.cjs ${name}.${zone} and must NOT re-hardcode an IP to route around the missing helper.",
+      "provenance_note": "no severity, no 'bug' verdict, no fix — surfaced, never reconciled."
+    },
+    {
+      "id": "drift.gate_row_schema_path",
+      "seat": "drift", "group": "drift", "kind": "drift", "slice": "slice1",
+      "locator": "a: gate_row.schema.json $id 'gate_row.v1.json' | b: on-disk file production/schemas/gate_row.schema.json (no gate_row.v1.json file exists)",
+      "capture_hint": "relation:'declared_vs_observed'; two locators, mechanical equal boolean."
+    },
+    {
+      "id": "drift.resolver_planned",
+      "seat": "drift", "group": "drift", "kind": "drift", "slice": "slice1",
+      "locator": "a: infra_registry.json resolver.kind 'dnsmasq (planned)' | b: live resolve result (up:null until probed)",
+      "capture_hint": "relation:'declared_vs_observed'; b side up:null,'not probed' when no live resolve ran."
+    },
+    {
+      "id": "drift.git_dirty_vs_clean",
+      "seat": "drift", "group": "drift", "kind": "drift", "slice": "slice1",
+      "locator": "a: session-start gitStatus (dirty) | b: live git status --short",
+      "capture_hint": "relation:'snapshot_vs_live'; both byte-sets carried; surfaced not silently reconciled."
+    },
+    {
+      "id": "drift.self_doc_vs_served",
+      "seat": "drift", "group": "drift", "kind": "drift", "slice": "slice1",
+      "locator": "a: docs/GAIA.md rendered CAPS table | b: served CAPS from caps.cjs (initialize + self.manifest)",
+      "capture_hint": "relation:'self'; byte-equal boolean; a divergence renders as a drift row, never hidden."
+    },
+    {
+      "id": "drift.studio_declared_vs_down",
+      "seat": "drift", "group": "drift", "kind": "drift", "slice": "slice1",
+      "locator": "a: infra_registry.json declared studio endpoints | b: live studio.probe.* results (down/up:null)",
+      "capture_hint": "relation:'declared_vs_observed'; edges labeled 'declared' not 'observed'; everything-down at capture is a true signal, not a defect."
+    }
+  ]
+}

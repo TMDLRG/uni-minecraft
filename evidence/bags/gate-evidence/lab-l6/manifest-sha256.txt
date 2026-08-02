@@ -1,0 +1,1 @@
+741566a7372a8d669dd7930f401541a619b7c04850f882d08fff40b0dec40a9d  data/docs/receipts/control-plane/phase9_4.6_L6_green_2026-07-28.txt

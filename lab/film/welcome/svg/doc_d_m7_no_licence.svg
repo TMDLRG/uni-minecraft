@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">Can you take this corpus home today?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">git ls-files | grep -ciE "licen[cs]e|copying"; grep -m1 "^## STATUS" deploy/PUBLISH-DECISION.md</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="94" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">0</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">## STATUS: STAGED, NOT DEPLOYED. NOTHING IS EXPOSED.</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">run at the root of the UNI-Encyclopedia-Cookbook repository — a count of tracked licence files, then the corpus's own exposure decision</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">No licence file yet. That the repository is not public is stated by the operator, not counted by this frame.</text>
+</svg>

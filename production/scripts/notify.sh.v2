@@ -1,0 +1,58 @@
+#!/bin/sh
+# notify.sh.v2 — DESIGN/REFERENCE, D-D6.
+# Supersedes v1's silent-no-op-when-UNI_NOTIFY_URL-unset behaviour with a real default channel.
+# Never a silent no-op.
+#
+# Order of delivery (first success wins):
+#   1. HTTP POST to UNI_NOTIFY_URL if set.
+#   2. Local mail (via existing swo-stalwart on uni-lab) to broadcast-ops@uni-lab.local.
+#   3. HTTP POST to launcher :8090/api/alert on THINKER (via mesh LAN, best-effort).
+#   4. Local log at /var/lib/uni/broadcast/audit/notify.log (always, regardless of success above,
+#      so operator can see what happened).
+#
+# Exit 0 ALWAYS. Notify failures NEVER propagate to the caller (heartbeat.sh).
+
+set -u
+check="${1:-unknown}"
+reason="${2:-(no reason given)}"
+ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+MAIL_TO="${UNI_NOTIFY_MAIL_TO:-broadcast-ops@uni-lab.local}"
+THINKER_LAUNCHER="${UNI_THINKER_LAUNCHER_URL:-http://10.190.245.196:8090/api/alert}"
+NOTIFY_LOG="${UNI_NOTIFY_LOG:-/var/lib/uni/broadcast/audit/notify.log}"
+
+payload=$(printf '{"schema_version":1,"source":"notify","ts":"%s","kind":"event","payload":{"check":"%s","reason":"%s"}}' "$ts" "$check" "$reason")
+
+delivered="none"
+
+# 1. Webhook
+if [ -n "${UNI_NOTIFY_URL:-}" ]; then
+  if curl -sS -m 5 -X POST -H 'Content-Type: application/json' -d "$payload" "$UNI_NOTIFY_URL" >/dev/null 2>&1; then
+    delivered="webhook"
+  fi
+fi
+
+# 2. Mail (via existing swo-stalwart)
+if [ "$delivered" = "none" ]; then
+  if command -v sendmail >/dev/null 2>&1; then
+    if printf 'Subject: UNI alert [%s]\nTo: %s\n\n[%s]\ncheck: %s\nreason: %s\n' \
+        "$check" "$MAIL_TO" "$ts" "$check" "$reason" | sendmail -f "notify@uni-lab.local" "$MAIL_TO" >/dev/null 2>&1; then
+      delivered="mail"
+    fi
+  fi
+fi
+
+# 3. Launcher endpoint
+if [ "$delivered" = "none" ]; then
+  if curl -sS -m 5 -X POST -H 'Content-Type: application/json' -H 'x-uni-cc: 1' -d "$payload" "$THINKER_LAUNCHER" >/dev/null 2>&1; then
+    delivered="launcher"
+  fi
+fi
+
+# 4. Local log (always)
+mkdir -p "$(dirname "$NOTIFY_LOG")"
+printf '%s delivered=%s check=%s reason=%s\n' "$ts" "$delivered" "$check" "$reason" >> "$NOTIFY_LOG"
+
+# echo to stderr for the caller's log
+echo "notify.sh.v2: [$check] $reason -> delivered=$delivered" >&2
+exit 0

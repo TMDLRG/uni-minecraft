@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI Studio — Send a Source</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#141b24;--edge:#25313f;--ink:#e8eff7;--dim:#8fa3b8;--acc:#3fd2ff;--ok:#2ecc71;--live:#ff2d55;--warn:#f1b40f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif;padding:16px;max-width:760px;margin:0 auto}
+  h1{font-size:20px;letter-spacing:.02em;margin-bottom:2px}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:16px}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:12px}
+  h3{font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:9px}
+  label{display:block;color:var(--dim);font-size:12px;margin:8px 0 3px}
+  select,input[type=text],input[type=number]{width:100%;background:#0e141c;color:var(--ink);border:1px solid #2c3a4d;border-radius:8px;padding:9px;font:inherit}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .row>*{flex:1;min-width:120px}
+  button{background:#1b2532;color:var(--ink);border:1px solid #2c3a4d;border-radius:9px;padding:11px 14px;font:inherit;cursor:pointer}
+  button:hover{border-color:var(--acc)}
+  button.sel{outline:2px solid var(--acc);background:#22303f}
+  #go{width:100%;font-size:17px;font-weight:800;padding:15px;background:#1d3a2a;border-color:var(--ok);margin-top:6px}
+  #stop{width:100%;font-weight:700;border-color:var(--live);display:none}
+  video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;margin-top:8px}
+  #status{margin-top:10px;font-size:13px;color:var(--dim);white-space:pre-line}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:.08em}
+  .b-idle{background:#22303f;color:var(--dim)} .b-preview{background:#2a2410;color:var(--warn)} .b-live{background:#3a0f1c;color:var(--live)} .b-off{background:#1a2230;color:var(--dim)}
+  .hint{color:var(--dim);font-size:12px;margin-top:6px}
+  .hidden{display:none}
+  /* P6 additions */
+  #airstrip{display:none;padding:12px 16px;border-radius:12px;font-weight:800;letter-spacing:.14em;text-align:center;margin-bottom:12px;font-size:16px}
+  #airstrip.b-idle{background:#1a2230;color:var(--dim);border:1px solid var(--edge)}
+  #airstrip.b-preview{background:#2a2410;color:var(--warn);border:1px solid var(--warn)}
+  #airstrip.b-live{background:#3a0f1c;color:var(--live);border:1px solid var(--live);box-shadow:0 0 24px rgba(255,45,85,.35)}
+  #airstrip.b-off{background:#1a2230;color:var(--dim);border:1px solid var(--edge)}
+  #mixer{display:none}
+  .mixer-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .mixer-row button{padding:12px;font-weight:700}
+  #btn-mute{border-color:var(--live)} #btn-mute.on{background:#3a0f1c;color:var(--live);outline:2px solid var(--live)}
+  #btn-cam{border-color:var(--warn)}  #btn-cam.off{background:#2a2410;color:var(--warn);outline:2px solid var(--warn)}
+  #btn-tone{border-color:var(--acc)}  #btn-tone.on{background:#0f2733;color:var(--acc);outline:2px solid var(--acc)}
+  #btn-ptt-check{width:auto;margin-right:6px}
+  #meter{width:100%;height:24px;background:#0e141c;border-radius:6px;overflow:hidden;margin-top:6px;position:relative;border:1px solid var(--edge)}
+  #meter-fill{height:100%;width:0%;background:linear-gradient(90deg,#2ecc71 0%,#2ecc71 60%,#f1b40f 70%,#f1b40f 85%,#ff2d55 92%,#ff2d55 100%);transition:width 80ms linear}
+  #meter-label{position:absolute;left:8px;top:2px;font-size:11px;color:var(--dim);text-shadow:0 0 2px #000}
+  #camoff-overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.9);color:var(--warn);font-weight:800;font-size:22px;letter-spacing:.16em;border-radius:10px}
+  #muted-overlay{position:absolute;inset:auto 0 0 0;display:none;background:var(--live);color:#fff;text-align:center;padding:4px;font-weight:800;letter-spacing:.14em;font-size:12px}
+  #preview-wrap{position:relative}
+  #preview.live-border{outline:6px solid var(--live);outline-offset:-3px;box-shadow:0 0 24px rgba(255,45,85,.5)}
+  #cue-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.75);z-index:100;pointer-events:none}
+  #cue-box{font-size:min(30vw,220px);font-weight:900;color:#fff;text-shadow:0 0 40px rgba(255,45,85,.6);letter-spacing:.02em;text-align:center;line-height:1}
+  #err-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.85);z-index:110;padding:20px}
+  #err-modal .box{max-width:500px;background:var(--panel);border:1px solid var(--warn);border-radius:12px;padding:20px}
+  #err-modal h3{color:var(--warn);text-transform:none;letter-spacing:normal;font-size:16px;margin-bottom:8px}
+  #err-modal p{color:var(--ink);margin-bottom:14px;line-height:1.5}
+  #err-modal button{width:100%}
+</style>
+</head>
+<body>
+<div style="background:#3a0f1c;border:1px solid var(--live);border-radius:10px;padding:10px 12px;margin-bottom:12px;color:var(--ink);font-size:13px;line-height:1.4">
+  <strong style="color:var(--live);letter-spacing:.06em">⚠ UNAUTHENTICATED</strong> — this endpoint has <strong>no PIN</strong> and <strong>no approval flow</strong>.
+  Anyone who can reach <code>:8443</code> can publish. Keep it on the LAN or your Tailnet only.
+  See <code>docs/WORKING_LOGIC.md</code> "Remote-source security model" (retracted 2026-07-16).
+</div>
+<h1>UNI Studio — Send a Source</h1>
+<div class="sub">Pick what to send and which slot, then Publish. Off-air it sends a tiny heartbeat; it ramps to full quality the moment the studio previews or airs it.</div>
+<!-- P6.8: LIVE / PREVIEW / IDLE strip. Server pushes state via WSS 'quality' messages; strip is the operator's ground truth. -->
+<div id="airstrip" class="b-idle">IDLE</div>
+
+<div class="panel">
+  <h3>1 · What are you sending?</h3>
+  <div class="row">
+    <button class="srcbtn sel" data-src="webcam">📷 Camera + mic</button>
+    <button class="srcbtn" data-src="screen">🖥 Screen / window</button>
+    <button class="srcbtn" data-src="file">🎞 Video file</button>
+    <button class="srcbtn" data-src="url">🔗 Video URL</button>
+  </div>
+  <div id="webcam-opts">
+    <label>Camera</label><select id="cam"></select>
+    <label>Microphone</label><select id="mic"></select>
+  </div>
+  <div id="file-opts" class="hidden"><label>Choose a video file</label><input type="file" id="vfile" accept="video/*"></div>
+  <div id="url-opts" class="hidden"><label>Video URL (must allow cross-origin / be same-origin)</label><input type="text" id="vurl" placeholder="https://…/clip.mp4"></div>
+  <div id="screen-opts" class="hidden"><div class="hint">You'll pick the screen or window when you press Publish.</div></div>
+</div>
+
+<div class="panel">
+  <h3>2 · Which studio slot?</h3>
+  <select id="slot">
+    <option value="cam1">Slot 1 (primary camera)</option><option value="cam2">Slot 2 (primary camera)</option>
+    <option value="cam3">Slot 3</option><option value="cam4">Slot 4</option><option value="cam5">Slot 5</option>
+    <option value="cam6">Slot 6</option><option value="cam7">Slot 7</option><option value="cam8">Slot 8</option>
+    <option value="cam9">Slot 9</option><option value="cam10">Slot 10</option>
+  </select>
+  <label>Label (shown in the studio)</label><input type="text" id="label" placeholder="e.g. Guest laptop / Overhead cam">
+  <label>Host (shown next to the label so the studio knows where the source came from)</label>
+  <input type="text" id="hostname" placeholder="e.g. Guest MacBook">
+</div>
+
+<div class="panel">
+  <h3>3 · Publish</h3>
+  <button id="go">▶ PUBLISH TO STUDIO</button>
+  <button id="stop">■ STOP</button>
+  <div id="preview-wrap">
+    <video id="preview" muted autoplay playsinline></video>
+    <div id="camoff-overlay">CAM OFF</div>
+    <div id="muted-overlay">MIC MUTED</div>
+  </div>
+  <div id="status">idle — pick a source and press Publish. <span class="hint">(accept the certificate warning once.)</span></div>
+</div>
+
+<!-- P6: Live mixer — shows after Publish. Mute, cam, PTT, meter, test tone, mid-session device swap. -->
+<div class="panel" id="mixer">
+  <h3>Live mixer</h3>
+  <div class="mixer-row">
+    <button id="btn-mute">🎤 MUTE MIC</button>
+    <button id="btn-cam">📷 CAM ON</button>
+  </div>
+  <div style="margin-top:10px">
+    <label><input type="checkbox" id="btn-ptt-check">Push-to-talk (spacebar unmutes while held)</label>
+  </div>
+  <div style="margin-top:10px">
+    <label>Mic level</label>
+    <div id="meter"><div id="meter-fill"></div><div id="meter-label">-∞ dB</div></div>
+  </div>
+  <div class="mixer-row">
+    <button id="btn-tone">🔊 SEND 1kHz TEST TONE (5s)</button>
+    <button id="btn-swap-cam">🔄 CHANGE CAMERA</button>
+  </div>
+  <div class="mixer-row">
+    <button id="btn-swap-mic">🔄 CHANGE MIC</button>
+    <button id="btn-swap-screen">🔄 CHANGE SCREEN</button>
+  </div>
+  <div class="hint">Change buttons swap the device mid-stream — no reconnect, the studio slot stays live.</div>
+</div>
+
+<!-- P6.11: cue overlay from studio (WSS 'cue' message: {message, ttl}) -->
+<div id="cue-overlay"><div id="cue-box">3</div></div>
+<!-- P6.10: OverconstrainedError modal -->
+<div id="err-modal"><div class="box"><h3 id="err-title">Camera error</h3><p id="err-msg"></p><button id="err-retry">Retry</button></div></div>
+
+<script>
+const $=(id)=>document.getElementById(id);
+const qs=new URLSearchParams(location.search);
+let srcType="webcam", stream=null, pc=null, sessionUrl=null, ctlWs=null, videoSender=null, audioSender=null, beat=null, captureW=1280;
+// WS1-E rich labels: telemetry state carried in EVERY register + change-telemetry frame.
+let telemetry={ deviceLabel:"", resolution:{w:0,h:0}, framerate:0, codec:"unknown" };
+// P6 state
+let muted=false, camOff=false, pttOn=false, pttUnmuted=false;
+let meterCtx=null, meterAnalyser=null, meterRaf=null;
+let toneCtx=null, toneOsc=null, toneDest=null, toneMicTrackBackup=null, toneTimer=null;
+let regFrame=null, wsBackoff=1000, wsRetries=0, wsReconnectTimer=null;
+
+if(qs.get("slot")&&/^cam([1-9]|10)$/.test(qs.get("slot"))) $("slot").value=qs.get("slot");
+// hostname: cached across sessions so a guest laptop keeps its identity
+{
+  const cached=localStorage.getItem("uni.pub.hostname");
+  if(cached) $("hostname").value=cached;
+  $("hostname").addEventListener("change",()=>localStorage.setItem("uni.pub.hostname",$("hostname").value));
+}
+// clientId: persistent per-browser so the studio can dedupe reconnects
+function clientId(){
+  let id=localStorage.getItem("uni.pub.clientId");
+  if(!id){ id=(crypto.randomUUID?crypto.randomUUID():(Date.now()+"-"+Math.random().toString(16).slice(2))); localStorage.setItem("uni.pub.clientId",id); }
+  return id;
+}
+
+document.querySelectorAll(".srcbtn").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".srcbtn").forEach(x=>x.classList.remove("sel")); b.classList.add("sel");
+  srcType=b.dataset.src;
+  for(const t of ["webcam","screen","file","url"]) $(t+"-opts").classList.toggle("hidden",t!==srcType);
+});
+
+async function listDevices(){
+  try{ const probe=await navigator.mediaDevices.getUserMedia({audio:true,video:true}); probe.getTracks().forEach(t=>t.stop()); }catch(_){}
+  const devs=await navigator.mediaDevices.enumerateDevices();
+  const cam=$("cam"), mic=$("mic"); cam.innerHTML=""; mic.innerHTML="";
+  devs.filter(d=>d.kind==="videoinput").forEach((d,i)=>{const o=document.createElement("option");o.value=d.deviceId;o.text=d.label||("Camera "+(i+1));cam.appendChild(o);});
+  devs.filter(d=>d.kind==="audioinput").forEach((d,i)=>{const o=document.createElement("option");o.value=d.deviceId;o.text=d.label||("Mic "+(i+1));mic.appendChild(o);});
+  const sc=localStorage.getItem("uni.pub.cam"), sm=localStorage.getItem("uni.pub.mic");
+  if(sc) cam.value=sc; if(sm) mic.value=sm;
+}
+listDevices();
+
+async function acquire(){
+  if(srcType==="webcam"){
+    localStorage.setItem("uni.pub.cam",$("cam").value); localStorage.setItem("uni.pub.mic",$("mic").value);
+    // P6.10: try exact deviceId; on OverconstrainedError fall back to ideal (device may be held by
+    // another app — Zoom / Teams / other tab). If ideal also fails, surface the modal instead of a
+    // silent black frame.
+    const stream=await gumWithFallback({video:{deviceId:$("cam").value||undefined,width:{ideal:1280},height:{ideal:720}},audio:{deviceId:$("mic").value||undefined}});
+    // WS1-E: remember the human device label the studio will show in its role dropdown.
+    const camEl=$("cam"); telemetry.deviceLabel=(camEl.selectedOptions[0]||{}).text||"camera";
+    return stream;
+  }
+  if(srcType==="screen"){
+    const stream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:true});
+    telemetry.deviceLabel="screen share";
+    return stream;
+  }
+  // file / url -> play in a hidden <video>, captureStream
+  const v=document.createElement("video"); v.muted=false; v.loop=true; v.playsInline=true;
+  if(srcType==="file"){ const f=$("vfile").files[0]; if(!f) throw new Error("choose a video file first"); v.src=URL.createObjectURL(f); telemetry.deviceLabel=f.name; }
+  else { const u=$("vurl").value.trim(); if(!u) throw new Error("enter a video URL"); v.crossOrigin="anonymous"; v.src=u; telemetry.deviceLabel=u.slice(0,80); }
+  await v.play();
+  const cs=v.captureStream ? v.captureStream() : v.mozCaptureStream();
+  window.__vEl=v; // keep alive
+  return cs;
+}
+
+function setStatus(t,badge){ $("status").innerHTML=(badge?`<span class="badge b-${badge}">${badge.toUpperCase()}</span>  `:"")+t; }
+
+// P6.10: getUserMedia with exact→ideal fallback + modal on hard fail.
+async function gumWithFallback(constraints){
+  const relax=(c)=>{
+    const out=JSON.parse(JSON.stringify(c||{}));
+    if(out.video&&out.video.deviceId){ const v=out.video.deviceId; if(v&&typeof v==="string") out.video.deviceId={ideal:v}; }
+    if(out.audio&&out.audio.deviceId){ const v=out.audio.deviceId; if(v&&typeof v==="string") out.audio.deviceId={ideal:v}; }
+    return out;
+  };
+  const exactify=(c)=>{
+    const out=JSON.parse(JSON.stringify(c||{}));
+    if(out.video&&out.video.deviceId){ const v=out.video.deviceId; if(v&&typeof v==="string") out.video.deviceId={exact:v}; }
+    if(out.audio&&out.audio.deviceId){ const v=out.audio.deviceId; if(v&&typeof v==="string") out.audio.deviceId={exact:v}; }
+    return out;
+  };
+  try{ return await navigator.mediaDevices.getUserMedia(exactify(constraints)); }
+  catch(e1){
+    if(e1&&(e1.name==="OverconstrainedError"||e1.name==="NotReadableError")){
+      try{ return await navigator.mediaDevices.getUserMedia(relax(constraints)); }
+      catch(e2){ showErrModal("Camera/mic in use","This device is likely held by another app (Zoom, Teams, another browser tab). Close it and press Retry.",()=>publish()); throw e2; }
+    }
+    throw e1;
+  }
+}
+function showErrModal(title,msg,onRetry){
+  $("err-title").textContent=title; $("err-msg").textContent=msg;
+  $("err-modal").style.display="flex";
+  $("err-retry").onclick=()=>{ $("err-modal").style.display="none"; try{ onRetry&&onRetry(); }catch(_){} };
+}
+
+// P6.4: mic level meter — analyser on the mic MediaStreamSource. Peak dBFS -> bar width.
+function startMeter(micTrack){
+  stopMeter();
+  if(!micTrack) return;
+  try{
+    meterCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const src=meterCtx.createMediaStreamSource(new MediaStream([micTrack]));
+    meterAnalyser=meterCtx.createAnalyser(); meterAnalyser.fftSize=1024; meterAnalyser.smoothingTimeConstant=0.4;
+    src.connect(meterAnalyser);
+    const buf=new Float32Array(meterAnalyser.fftSize);
+    const tick=()=>{
+      meterAnalyser.getFloatTimeDomainData(buf);
+      let peak=0; for(let i=0;i<buf.length;i++){ const v=Math.abs(buf[i]); if(v>peak) peak=v; }
+      const db=peak>0 ? 20*Math.log10(peak) : -Infinity;
+      const pct=Math.max(0,Math.min(100,(db+60)/60*100)); // -60 dB..0 dB → 0..100%
+      $("meter-fill").style.width=pct.toFixed(1)+"%";
+      $("meter-label").textContent=(peak>0? db.toFixed(1)+" dB":"-∞ dB");
+      meterRaf=requestAnimationFrame(tick);
+    };
+    tick();
+  }catch(_){}
+}
+function stopMeter(){
+  if(meterRaf) cancelAnimationFrame(meterRaf), meterRaf=null;
+  try{ meterCtx&&meterCtx.close(); }catch(_){} meterCtx=null; meterAnalyser=null;
+  $("meter-fill").style.width="0%"; $("meter-label").textContent="-∞ dB";
+}
+
+// P6.1: mute mic. Toggles the outgoing audio track's enabled flag AND tells the studio via WSS.
+function setMuted(next){
+  muted=!!next;
+  const at=stream&&stream.getAudioTracks()[0];
+  if(at) at.enabled=!muted;
+  $("btn-mute").classList.toggle("on",muted);
+  $("btn-mute").textContent=muted?"🚫 MUTED — click to UNMUTE":"🎤 MUTE MIC";
+  $("muted-overlay").style.display=muted?"block":"none";
+  if(ctlWs&&ctlWs.readyState===1) ctlWs.send(JSON.stringify({type:"mute",slot:$("slot").value,muted}));
+}
+// P6.2: cam on/off (video track disabled → transport up, black frames on the wire).
+function setCamOff(next){
+  camOff=!!next;
+  const vt=stream&&stream.getVideoTracks()[0];
+  if(vt) vt.enabled=!camOff;
+  $("btn-cam").classList.toggle("off",camOff);
+  $("btn-cam").textContent=camOff?"📷 CAM OFF — click to turn ON":"📷 CAM ON";
+  $("camoff-overlay").style.display=camOff?"flex":"none";
+  if(ctlWs&&ctlWs.readyState===1) ctlWs.send(JSON.stringify({type:"cam",slot:$("slot").value,off:camOff}));
+}
+// P6.3: push-to-talk. Checkbox enables PTT mode → start MUTED; spacebar unmutes while held.
+function setPTT(on){
+  pttOn=!!on;
+  if(pttOn){ setMuted(true); pttUnmuted=false; }
+}
+window.addEventListener("keydown",(e)=>{
+  if(!pttOn||e.repeat) return;
+  if(e.code==="Space"&&(document.activeElement?.tagName||"").toLowerCase()!=="input"){ e.preventDefault(); if(!pttUnmuted){ pttUnmuted=true; setMuted(false); } }
+});
+window.addEventListener("keyup",(e)=>{
+  if(!pttOn) return;
+  if(e.code==="Space"){ e.preventDefault(); if(pttUnmuted){ pttUnmuted=false; setMuted(true); } }
+});
+// P6.5: 1kHz test tone (5s). Replace outgoing audio track with an oscillator, then swap back.
+async function sendTestTone(){
+  if(!audioSender||!stream) return;
+  if(toneTimer) return; // debounce
+  try{
+    toneCtx=new (window.AudioContext||window.webkitAudioContext)();
+    toneOsc=toneCtx.createOscillator(); toneOsc.type="sine"; toneOsc.frequency.value=1000;
+    const gain=toneCtx.createGain(); gain.gain.value=0.1;
+    toneDest=toneCtx.createMediaStreamDestination();
+    toneOsc.connect(gain); gain.connect(toneDest); toneOsc.start();
+    const toneTrack=toneDest.stream.getAudioTracks()[0];
+    toneMicTrackBackup=stream.getAudioTracks()[0];
+    await audioSender.replaceTrack(toneTrack);
+    $("btn-tone").classList.add("on"); $("btn-tone").textContent="🔊 TONE… (unmutes for 5s)";
+    // ensure the wire actually carries it — force-unmute during the tone
+    const wasMuted=muted; if(muted) setMuted(false);
+    toneTimer=setTimeout(async()=>{
+      try{ await audioSender.replaceTrack(toneMicTrackBackup); }catch(_){}
+      try{ toneOsc&&toneOsc.stop(); toneCtx&&toneCtx.close(); }catch(_){}
+      toneOsc=null; toneCtx=null; toneDest=null; toneMicTrackBackup=null;
+      $("btn-tone").classList.remove("on"); $("btn-tone").textContent="🔊 SEND 1kHz TEST TONE (5s)";
+      if(wasMuted) setMuted(true);
+      toneTimer=null;
+    },5000);
+  }catch(e){ setStatus("test tone failed: "+e.message,"off"); toneTimer=null; }
+}
+// P6.7: mid-session device swap. getUserMedia the new track + replaceTrack on the sender. No renegotiation.
+async function swapVideoDevice(){
+  await listDevices();
+  const val=$("cam").value; if(!val){ setStatus("no camera picked","off"); return; }
+  try{
+    const s=await gumWithFallback({video:{deviceId:val,width:{ideal:1280},height:{ideal:720}}});
+    const newT=s.getVideoTracks()[0]; if(!newT) throw new Error("no video track");
+    const oldT=stream.getVideoTracks()[0];
+    await videoSender.replaceTrack(newT);
+    if(oldT) oldT.stop();
+    stream.removeTrack(oldT); stream.addTrack(newT);
+    $("preview").srcObject=stream;
+    telemetry.deviceLabel=($("cam").selectedOptions[0]||{}).text||telemetry.deviceLabel;
+    if(ctlWs&&ctlWs.readyState===1) ctlWs.send(JSON.stringify({type:"telemetry",slot:$("slot").value,deviceLabel:telemetry.deviceLabel}));
+    setStatus("camera swapped to "+telemetry.deviceLabel,"idle");
+  }catch(e){ setStatus("camera swap failed: "+e.message,"off"); }
+}
+async function swapAudioDevice(){
+  await listDevices();
+  const val=$("mic").value; if(!val) return;
+  try{
+    const s=await gumWithFallback({audio:{deviceId:val}});
+    const newT=s.getAudioTracks()[0]; if(!newT) throw new Error("no audio track");
+    const oldT=stream.getAudioTracks()[0];
+    await audioSender.replaceTrack(newT);
+    if(oldT) oldT.stop();
+    stream.removeTrack(oldT); stream.addTrack(newT);
+    newT.enabled=!muted;
+    startMeter(newT);
+    setStatus("microphone swapped","idle");
+  }catch(e){ setStatus("mic swap failed: "+e.message,"off"); }
+}
+async function swapScreen(){
+  if(srcType!=="screen"){ setStatus("swap-screen only works when the source is a screen share","off"); return; }
+  try{
+    const s=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:true});
+    const newT=s.getVideoTracks()[0];
+    const oldT=stream.getVideoTracks()[0];
+    await videoSender.replaceTrack(newT);
+    if(oldT) oldT.stop();
+    stream.removeTrack(oldT); stream.addTrack(newT);
+    $("preview").srcObject=stream;
+    setStatus("screen swapped","idle");
+  }catch(e){ setStatus("screen swap cancelled or failed: "+e.message,"off"); }
+}
+// wire the mixer buttons once
+$("btn-mute").onclick=()=>setMuted(!muted);
+$("btn-cam").onclick=()=>setCamOff(!camOff);
+$("btn-ptt-check").onchange=(e)=>setPTT(e.target.checked);
+$("btn-tone").onclick=sendTestTone;
+$("btn-swap-cam").onclick=swapVideoDevice;
+$("btn-swap-mic").onclick=swapAudioDevice;
+$("btn-swap-screen").onclick=swapScreen;
+
+async function publish(){
+  const slot=$("slot").value;
+  try{
+    stream=await acquire();
+  }catch(e){ setStatus("could not get that source: "+e.message,"off"); return; }
+  $("preview").srcObject=stream;
+  const vt=stream.getVideoTracks()[0], at=stream.getAudioTracks()[0];
+  if(vt){ const s=vt.getSettings(); captureW=s.width||1280; }
+
+  pc=new RTCPeerConnection({iceServers:[]});
+  // start at the IDLE floor so an off-air source is tiny on the wire by default
+  const vTx=pc.addTransceiver(vt,{direction:"sendonly",sendEncodings:[{maxBitrate:120000,scaleResolutionDownBy:Math.max(1,captureW/160),maxFramerate:4}]});
+  videoSender=vTx.sender;
+  let codec="unknown";
+  try{ const caps=RTCRtpSender.getCapabilities("video").codecs.filter(c=>/h264/i.test(c.mimeType)); if(caps.length){ vTx.setCodecPreferences(caps); codec="H264"; } }catch(_){}
+  // WS1-E: record the initial telemetry snapshot for the register frame
+  if(vt){ const s=vt.getSettings(); telemetry.resolution={w:s.width||captureW,h:s.height||Math.round(captureW*9/16)}; telemetry.framerate=s.frameRate||30; }
+  telemetry.codec=codec;
+  if(at){ const aTx=pc.addTransceiver(at,{direction:"sendonly"}); audioSender=aTx.sender; }
+  // P6: reveal the live mixer + air strip; wire the meter to the mic track
+  $("mixer").style.display="block"; $("airstrip").style.display="block";
+  if(at) startMeter(at); else { $("meter").style.display="none"; }
+
+  const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+  // non-trickle: wait for ICE gathering to finish, then POST the complete offer
+  await new Promise(res=>{ if(pc.iceGatheringState==="complete") return res(); const t=setTimeout(res,2500); pc.addEventListener("icegatheringstatechange",()=>{ if(pc.iceGatheringState==="complete"){clearTimeout(t);res();} }); });
+
+  setStatus("connecting to slot "+slot+"…","idle");
+  const whip="/"+slot+"/whip";
+  let resp;
+  try{ resp=await fetch(whip,{method:"POST",headers:{"Content-Type":"application/sdp"},body:pc.localDescription.sdp}); }
+  catch(e){ setStatus("cannot reach the studio gateway: "+e.message,"off"); return teardown(); }
+  if(resp.status!==201){ setStatus("studio refused the publish ("+resp.status+"): "+(await resp.text()).slice(0,120),"off"); return teardown(); }
+  const loc=resp.headers.get("Location"); sessionUrl=loc? new URL(loc,location.href).pathname : null;
+  const answer=await resp.text();
+  await pc.setRemoteDescription({type:"answer",sdp:answer});
+
+  $("go").style.display="none"; $("stop").style.display="block";
+  setStatus("published to slot "+slot+" — waiting for the studio to place you.","idle");
+  connectControl(slot);
+}
+
+function buildRegFrame(slot){
+  return {
+    type:"register", regVersion:2, slot, kind:srcType,
+    label:$("label").value||srcType,
+    deviceLabel:telemetry.deviceLabel,
+    hostname:$("hostname").value||"",
+    clientId:clientId(),
+    resolution:telemetry.resolution,
+    framerate:telemetry.framerate,
+    codec:telemetry.codec,
+    publishedAt:new Date().toISOString(),
+  };
+}
+function connectControl(slot){
+  regFrame=buildRegFrame(slot);
+  ctlWs=new WebSocket((location.protocol==="https:"?"wss":"ws")+"://"+location.host+"/control");
+  ctlWs.onopen=()=>{
+    wsBackoff=1000; wsRetries=0; // P6.9: reset the backoff on any successful open
+    ctlWs.send(JSON.stringify(regFrame));
+    // re-assert mute/cam state so the studio's slot row is honest post-reconnect
+    if(ctlWs.readyState===1){
+      ctlWs.send(JSON.stringify({type:"mute",slot,muted}));
+      ctlWs.send(JSON.stringify({type:"cam",slot,off:camOff}));
+    }
+    // heartbeat -- 3 s cadence; the studio's 8 s liveness cutoff gives ~3 grace beats.
+    if(beat) clearInterval(beat);
+    beat=setInterval(()=>{ if(ctlWs&&ctlWs.readyState===1) ctlWs.send(JSON.stringify({type:"heartbeat",slot})); },3000);
+    // change-telemetry: every 5 s check if resolution/framerate/codec drifted (adaptive quality
+    // ramp can rescale the video), and re-send if so.
+    let lastSig=JSON.stringify([telemetry.resolution,telemetry.framerate,telemetry.codec]);
+    setInterval(()=>{
+      const vt=stream&&stream.getVideoTracks()[0]; if(!vt) return;
+      const s=vt.getSettings();
+      const cur={ resolution:{w:s.width||telemetry.resolution.w,h:s.height||telemetry.resolution.h}, framerate:s.frameRate||telemetry.framerate };
+      const sig=JSON.stringify([cur.resolution,cur.framerate,telemetry.codec]);
+      if(sig===lastSig) return;
+      lastSig=sig; telemetry.resolution=cur.resolution; telemetry.framerate=cur.framerate;
+      if(ctlWs&&ctlWs.readyState===1) ctlWs.send(JSON.stringify({type:"telemetry",slot,resolution:cur.resolution,framerate:cur.framerate,codec:telemetry.codec}));
+    },5000);
+  };
+  ctlWs.onmessage=(ev)=>{
+    let m; try{m=JSON.parse(ev.data)}catch(_){return}
+    if(m.type==="quality") applyQuality(m.state,m.profile);
+    else if(m.type==="cue") showCue(m.message||"",Number(m.ttl)||1200); // P6.11
+  };
+  ctlWs.onclose=()=>{
+    if(beat){ clearInterval(beat); beat=null; }
+    // P6.9: exponential-backoff reconnect (only if we haven't been torn down)
+    if(!stream||!pc) return; // teardown() has already cleared state — don't reconnect
+    if(wsRetries>=5){ setStatus("DISCONNECTED — click to retry","off"); $("status").style.cursor="pointer"; $("status").onclick=()=>{ wsRetries=0; wsBackoff=1000; $("status").onclick=null; $("status").style.cursor=""; connectControl(slot); }; return; }
+    wsRetries++;
+    setStatus("reconnecting to studio in "+Math.round(wsBackoff/1000)+"s (try "+wsRetries+"/5)…","idle");
+    if(wsReconnectTimer) clearTimeout(wsReconnectTimer);
+    wsReconnectTimer=setTimeout(()=>connectControl(slot),wsBackoff);
+    wsBackoff=Math.min(8000,wsBackoff*2);
+  };
+  ctlWs.onerror=()=>{};
+}
+// P6.11: render the studio cue as a big centered number/word for ttl ms
+function showCue(msg,ttl){
+  const box=$("cue-box"); box.textContent=String(msg).slice(0,40);
+  const ov=$("cue-overlay"); ov.style.display="flex";
+  clearTimeout(showCue._t); showCue._t=setTimeout(()=>{ ov.style.display="none"; },ttl);
+}
+
+async function applyQuality(state,p){
+  // P6.8 + P6.12: state drives the LIVE/PREVIEW/IDLE strip + the persistent red border on the
+  // preview when we are on air, so the operator ALWAYS sees whether they are visible on program.
+  const strip=$("airstrip"); const preview=$("preview");
+  const cls={idle:"b-idle",preview:"b-preview",live:"b-live",off:"b-off"}[state]||"b-idle";
+  strip.className=cls; strip.textContent={idle:"IDLE — off-air",preview:"PREVIEW — you may be on next",live:"● LIVE — YOU ARE ON PROGRAM",off:"OFF"}[state]||state.toUpperCase();
+  preview.classList.toggle("live-border",state==="live");
+  if(!videoSender||!p) return;
+  try{
+    const params=videoSender.getParameters();
+    if(!params.encodings||!params.encodings.length) params.encodings=[{}];
+    params.encodings[0].maxBitrate=p.maxBitrate;
+    params.encodings[0].scaleResolutionDownBy=Math.max(1,captureW/(p.targetW||captureW));
+    params.encodings[0].maxFramerate=p.maxFramerate;
+    await videoSender.setParameters(params);
+    const label={idle:"off-air (tiny heartbeat)",preview:"PREVIEW — ramping to full",live:"LIVE — full quality"}[state]||state;
+    setStatus("slot "+$("slot").value+": "+label,state);
+  }catch(e){ /* keep last */ }
+}
+
+function teardown(){
+  try{ if(sessionUrl) fetch(sessionUrl,{method:"DELETE"}); }catch(_){}
+  try{ if(pc) pc.close(); }catch(_){}
+  try{ if(stream) stream.getTracks().forEach(t=>t.stop()); }catch(_){}
+  try{ if(ctlWs) ctlWs.close(); }catch(_){}
+  if(beat) clearInterval(beat);
+  if(wsReconnectTimer){ clearTimeout(wsReconnectTimer); wsReconnectTimer=null; }
+  if(toneTimer){ clearTimeout(toneTimer); toneTimer=null; }
+  try{ toneOsc&&toneOsc.stop(); toneCtx&&toneCtx.close(); }catch(_){}
+  stopMeter();
+  pc=null; stream=null; sessionUrl=null; videoSender=null; audioSender=null; regFrame=null;
+  muted=false; camOff=false; pttOn=false; pttUnmuted=false;
+  $("btn-mute").classList.remove("on"); $("btn-mute").textContent="🎤 MUTE MIC";
+  $("btn-cam").classList.remove("off"); $("btn-cam").textContent="📷 CAM ON";
+  $("btn-tone").classList.remove("on"); $("btn-tone").textContent="🔊 SEND 1kHz TEST TONE (5s)";
+  $("btn-ptt-check").checked=false;
+  $("muted-overlay").style.display="none"; $("camoff-overlay").style.display="none";
+  $("preview").classList.remove("live-border");
+  $("mixer").style.display="none"; $("airstrip").style.display="none";
+  $("go").style.display="block"; $("stop").style.display="none"; $("preview").srcObject=null;
+  setStatus("stopped.","off");
+}
+
+$("go").onclick=publish;
+$("stop").onclick=teardown;
+window.addEventListener("beforeunload",teardown);
+</script>
+</body>
+</html>

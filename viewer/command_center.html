@@ -1,0 +1,1055 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UNI COMMAND CENTER</title>
+<style>
+  :root { --bg:#0b0f14; --panel:#121821; --edge:#1f2937; --ink:#e5eef7; --dim:#8296ab; --acc:#3fd2ff;
+          --ok:#2ecc71; --warn:#f1b40f; --live:#e5484d; --deep:#ff2d55; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--ink); font:13px/1.45 "Segoe UI",system-ui,sans-serif; padding:10px; }
+  .row { display:flex; gap:10px; }
+  .panel { background:var(--panel); border:1px solid var(--edge); border-radius:10px; padding:10px; }
+  h3 { font-size:11px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; margin-bottom:8px; }
+  button { background:#1b2532; color:var(--ink); border:1px solid #2c3a4d; border-radius:8px; padding:6px 10px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--acc); }
+  button.sel { outline:2px solid var(--acc); }
+  select, input[type=text], input[type=number] { background:#0e141c; color:var(--ink); border:1px solid #2c3a4d; border-radius:8px; padding:6px 8px; font:inherit; }
+  input[type=text] { width:100%; }
+  /* AIR BANNER */
+  #air { display:flex; align-items:center; gap:16px; padding:10px 16px; border-radius:12px; margin-bottom:10px;
+         background:#161d27; border:2px solid var(--edge); }
+  #airlabel { font-size:28px; font-weight:800; letter-spacing:.08em; }
+  #airsub { color:var(--dim); font-size:12px; }
+  #airmeta { margin-left:auto; text-align:right; color:var(--dim); font-size:12px; white-space:pre-line; }
+  .air-OFF { border-color:#2c3a4d !important; } .air-OFF #airlabel { color:var(--dim); }
+  .air-REHEARSAL { border-color:var(--warn) !important; } .air-REHEARSAL #airlabel { color:var(--warn); }
+  .air-STREAMING { border-color:var(--live) !important; background:#2a1215 !important; } .air-STREAMING #airlabel { color:var(--live); }
+  .air-LIVE_LIVE { border-color:var(--deep) !important; background:#38101c !important; }
+  /* cheap GPU-composited opacity pulse (NOT box-shadow, which forces a per-frame blur re-raster) */
+  .air-LIVE_LIVE #airlabel { color:var(--deep); animation:pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity:.5; } }
+  /* MONITORS */
+  .mon { flex:1; } .mon img { width:100%; aspect-ratio:16/9; background:#000; border-radius:8px; display:block; }
+  .mon .tag { font-size:11px; letter-spacing:.12em; margin-bottom:5px; }
+  #prevwrap { border:2px solid var(--ok); border-radius:10px; padding:6px; }
+  #progwrap { border:2px solid var(--live); border-radius:10px; padding:6px; }
+  #takebtn { font-size:22px; font-weight:800; padding:0 24px; background:#20303f; border:2px solid var(--acc); align-self:stretch; }
+  /* TEMPLATE GROUPS */
+  .group { margin-top:10px; }
+  .group h4 { font-size:10px; letter-spacing:.18em; color:var(--acc); margin:0 0 5px 2px; }
+  .cards { display:flex; gap:8px; flex-wrap:wrap; }
+  .card { width:172px; background:#0e141c; border:2px solid #22303f; border-radius:10px; padding:5px; cursor:pointer; position:relative; }
+  .card:hover { border-color:var(--acc); }
+  .card.preview { border-color:var(--ok); box-shadow:0 0 0 1px var(--ok); }
+  .card.program { border-color:var(--live); box-shadow:0 0 0 1px var(--live); }
+  .card img { width:100%; aspect-ratio:16/9; background:#05080c; border-radius:6px; display:block; object-fit:cover; }
+  .card .nm { font-size:10.5px; letter-spacing:.05em; margin-top:4px; text-align:center; }
+  .card .age { position:absolute; top:8px; right:8px; font-size:9px; color:#cfe3f5; background:rgba(8,12,18,.75); border-radius:5px; padding:1px 5px; }
+  .hint { color:var(--dim); font-size:11px; margin-top:6px; }
+  /* RAILS */
+  #rails { margin-top:12px; align-items:flex-start; }
+  .btnrow { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; background:#556; margin-right:6px; flex:none; }
+  .dot.on { background:var(--ok); } .dot.bad { background:var(--live); }
+  label.chk { color:var(--dim); font-size:12px; display:inline-flex; gap:5px; align-items:center; }
+  .mt { margin-top:8px; }
+  textarea { background:#0e141c; color:var(--ink); border:1px solid #2c3a4d; border-radius:8px; padding:7px 9px; font:inherit; width:100%; resize:vertical; }
+  .rolegrid { display:grid; grid-template-columns:auto 1fr; gap:6px 10px; align-items:center; }
+  /* HEALTH */
+  #health { display:grid; grid-template-columns:repeat(2,1fr); gap:4px 12px; font-size:12px; }
+  #health .hc { display:flex; align-items:center; gap:4px; }
+  #health .fixbtn { margin-left:auto; font-size:10px; padding:2px 7px; }
+  #preflight { width:100%; font-weight:800; border-color:var(--warn); margin-top:8px; }
+  #pfresult { display:none; margin-top:8px; max-height:220px; overflow:auto; background:#0e141c; border-radius:8px; padding:8px; font-size:11.5px; }
+  #toast { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#20303f; border:1px solid var(--acc);
+           border-radius:10px; padding:10px 16px; display:none; max-width:70vw; z-index:9; }
+  #toast.fence { border-color:var(--warn); }
+  .grow { flex:1; }
+</style>
+</head>
+<body>
+
+<div id="air" class="air-OFF">
+  <div><div id="airlabel">OFF AIR</div><div id="airsub">nothing is being broadcast</div></div>
+  <div id="airmeta"></div>
+  <button id="helpbtn" title="Open / close the quick guide" style="margin-left:12px;font-size:16px;padding:6px 12px">?</button>
+</div>
+
+<details id="guide" style="background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:10px 14px;margin-bottom:10px">
+  <summary style="cursor:pointer;color:var(--acc);font-weight:700;letter-spacing:.04em">QUICK GUIDE — how to run the show (click to expand)</summary>
+  <div style="margin:10px 0 2px;padding:9px 12px;border:1px solid var(--warn);border-radius:8px;background:#241d0b;color:var(--ink);line-height:1.6;font-weight:600">⚠️ This console is System 1 — the colony SOURCE + a DEV preview. Its GO LIVE drives a LOCAL restreamer (rtmp://127.0.0.1:1935 → your own YouTube/Twitch test), NOT the worldwide broadcast. The worldwide go-live is System 2 (production/) — see docs/STUDIO_SYSTEMS.md.</div>
+  <ol style="margin:10px 0 4px 18px;line-height:1.7;color:var(--ink)">
+    <li><b>Pick a look:</b> click any <b>template</b> below → it loads into the green <b>PREVIEW</b> monitor (what you're about to show). Hover a card for what it is.</li>
+    <li><b>Put it on air:</b> press <b>TAKE</b> to transition preview → program. <i>Double-click</i> a card to hot-cut straight to air. For a truly smooth monitor, click <b>OPEN SMOOTH 30fps MONITOR</b>.</li>
+    <li><b>Cameras:</b> set <b>roles</b> A/B/C to any camera or live remote slot. The PC camera is always video-only; remote cameras carry their own mic. Pick the on-air <b>voice</b>.</li>
+    <li><b>Content:</b> load a <b>web</b> page, roll a <b>YouTube clip</b> (full / side-by-side / PIP), or bind a <b>shared window</b> into a slot for DESK/SHARE/TEACH.</li>
+    <li><b>Remote sources:</b> on another computer open <b>https://<span class="lanip">…</span>:8443/</b> — pick a Camera / Screen / Video into a slot; it appears in the role dropdowns (● = live).</li>
+    <li><b>Overlays &amp; air:</b> set the lower-third / ticker / caption (kept honest by the claim fence). To broadcast: start the restreamer, type <b>CONFIRM</b>, press <b>GO LIVE</b>. The banner + the lab glass badge show OFF / REHEARSAL / LIVE STREAMING / LIVE LIVE.</li>
+  </ol>
+</details>
+
+<div class="row">
+  <div class="mon" id="prevwrap"><div class="tag" style="color:var(--ok)">PREVIEW <span id="prevname"></span> <span id="prevmode" style="font-size:9px;opacity:.85"></span></div><img id="prevthumb" alt=""></div>
+  <button id="takebtn" title="Transition preview to program">TAKE ➜</button>
+  <div class="mon" id="progwrap"><div class="tag" style="color:var(--live)">PROGRAM <span id="progname"></span> — what the audience sees<button id="projbtn" style="float:right;font-size:10px;padding:2px 8px;margin-top:-2px">OPEN SMOOTH 30fps MONITOR ↗</button></div><img id="progthumb" alt=""></div>
+</div>
+
+<div id="groups"></div>
+<div class="hint">these panels are lightweight preview snapshots (they refresh every ~2s to stay smooth) — for a true <b>30fps monitor</b> click "OPEN SMOOTH 30fps MONITOR" (OBS's own program window). Grid: click = PREVIEW · <b>TAKE</b> = program · double-click = hot cut · run <b>PREFLIGHT</b> once to fill every card with a real frame.</div>
+
+<div class="row" id="rails">
+  <div class="panel grow" style="max-width:330px">
+    <h3 id="cameras" style="scroll-margin-top:12px">Camera roles <span class="hint">(A=host · B=guest · C=third — assign any live slot)</span></h3>
+    <div class="rolegrid">
+      <b>A</b><select class="rolesel" data-role="A" title="Which camera/source fills the A (host) position in every template"></select>
+      <b>B</b><select class="rolesel" data-role="B" title="Which camera/source fills the B (guest) position"></select>
+      <b>C</b><select class="rolesel" data-role="C" title="Which camera/source fills the C (third) position"></select>
+    </div>
+    <!-- PC cam (CamHost) device picker 2026-07-16 (sweep B3). Was: no UI at all; CamHost's
+         video_device_id was empty by default and could only be bound by a hand-crafted curl. Now: a
+         dropdown from /api/state.camsInfo.pcDevices + a Bind button that POSTs /api/camhost/bind.
+         The current binding truth is displayed as a pill (pcBoundPill). Persists across rebuilds
+         via runtime/camhost.json (studio_stage.cjs's auto-bind picks it up). -->
+    <div class="rolegrid mt" style="grid-template-columns:auto 1fr auto; align-items:center;">
+      <b>PC cam</b>
+      <select id="pc-dev" title="Pick a physical webcam for the CamHost source"></select>
+      <button id="pc-bind" title="Bind the picked device to CamHost (persists across rebuilds)">Bind</button>
+    </div>
+    <div id="pc-bound" class="hint" style="margin-top:4px">PC cam: —</div>
+    <div class="hint" id="camstatus"></div>
+    <div class="hint">PC cam is ALWAYS video-only; if it is the only camera on program, voice auto-mutes.</div>
+    <!-- MIC pill 2026-07-16 (sweep B5): a persistent affordance so the operator can never be blind
+         to mic mute. Boots MUTED by default (talent-hot policy). -->
+    <div id="mic-pill" class="hint mt" style="padding:5px 8px; border-radius:6px; background:#1a2230; color:var(--dim)">MIC: —</div>
+    <h3 class="mt">Voice</h3>
+    <!-- WS1-D: voice buttons for every publishing remote cam, rendered dynamically at refresh
+         time so slots 3-10 also appear when in use. PC mic + MUTE are always present. -->
+    <div class="btnrow" id="voicebtns"></div>
+    <div class="btnrow mt">
+      <button id="v-MicHost">PC mic</button>
+      <button id="v-mute">MUTE</button>
+    </div>
+    <h3 class="mt">Music bed</h3>
+    <input type="range" id="music" min="0" max="100" value="50" style="width:100%">
+    <div class="btnrow mt">
+      <button id="autobtn">AUTO: off</button>
+      <button id="unifeed">UNI FEED: off</button>
+    </div>
+    <input type="text" id="beats" class="mt" placeholder="beats e.g. COLONY:28,CAM_PIP:18">
+  </div>
+
+  <div class="panel grow" style="max-width:320px">
+    <h3>Camera picker <span class="hint">(any of 10 → full/pip/side/trio/grid)</span></h3>
+    <div class="btnrow" id="layoutbtns">
+      <button data-lay="full" class="laybtn sel" title="One camera, full frame">FULL</button>
+      <button data-lay="pip" class="laybtn" title="Camera A full + camera B as PIP">PIP</button>
+      <button data-lay="side" class="laybtn" title="Two cameras side by side">SIDE</button>
+      <button data-lay="trio" class="laybtn" title="Three cameras across">TRIO</button>
+      <button data-lay="grid" class="laybtn" title="All up to 10 cameras, 5x2 wall">GRID·10</button>
+    </div>
+    <div class="hint mt">click cameras in order — 1st = hero (A). ● = live:</div>
+    <div class="btnrow mt" id="campick"></div>
+    <div class="btnrow mt">
+      <button id="camlay-prev">→ PREVIEW</button>
+      <button id="camlay-cut" style="border-color:var(--live)">CUT to program</button>
+      <button id="camlay-clear">clear</button>
+    </div>
+    <div class="hint" id="campickstatus"></div>
+  </div>
+
+  <div class="panel grow">
+    <h3>Web feed</h3>
+    <input type="text" id="weburl" placeholder="https://…">
+    <div class="btnrow mt">
+      <button id="webprev" title="Load into preview (arm before TAKE)">→ preview</button>
+      <button id="webcut" title="Web page full-frame, live">CUT full</button>
+      <button id="webhostcut" title="Web page + you in the corner">+ host</button>
+      <button id="websidecut" title="You and the web page side-by-side">+ side</button>
+    </div>
+    <h3 class="mt">YouTube clip <span class="hint">(re-air our own videos — full / side-by-side / PIP)</span></h3>
+    <input type="text" id="clipurl" placeholder="youtube url or 11-char id">
+    <div class="btnrow mt">
+      <input type="number" id="clipsecs" placeholder="auto-return s" style="width:110px">
+      <button id="clip-full" title="Clip full-frame">▶ FULL</button>
+      <button id="clip-host" title="Clip full + you in the corner">+ HOST</button>
+      <button id="clip-side" title="Clip and you side-by-side (react to a video)">+ SIDE</button>
+      <button id="clip-pip" title="You full-frame + clip as a PIP (react shot)">+ PIP</button>
+      <button id="clipback">◀ BACK</button>
+    </div>
+    <div class="btnrow mt" id="favs"></div>
+    <div class="btnrow mt" id="recent"></div>
+    <h3 class="mt">Window shares <span class="hint">(slots 1-3 feed DESK/SHARE/TEACH…)</span></h3>
+    <div class="btnrow">
+      <button id="winlist">list windows</button>
+      <select id="winsel" style="max-width:260px"></select>
+      <button data-slot="1" class="bindbtn">→ slot 1</button>
+      <button data-slot="2" class="bindbtn">→ slot 2</button>
+      <button data-slot="3" class="bindbtn">→ slot 3</button>
+    </div>
+  </div>
+
+  <div class="panel grow">
+    <h3>On-screen text <span class="hint">(claim-fenced)</span></h3>
+    <input type="text" id="lt-k" placeholder="kicker">
+    <input type="text" id="lt-t" class="mt" placeholder="title">
+    <input type="text" id="lt-s" class="mt" placeholder="subtitle">
+    <input type="text" id="cap" class="mt" placeholder="caption band (empty = off)">
+    <textarea id="ticker" class="mt" rows="2" placeholder="ticker items — one per line"></textarea>
+    <div class="btnrow mt">
+      <button id="applyoverlays">APPLY</button>
+      <label class="chk"><input type="checkbox" id="force"> FORCE (logged)</label>
+    </div>
+    <h3 class="mt">Broadcast</h3>
+    <div class="btnrow">
+      <input type="text" id="confirm" placeholder='type CONFIRM (for GO LIVE)' style="width:170px" title="Only GO LIVE needs this. Type CONFIRM then click GO LIVE (or press Enter).">
+      <button id="golive" style="border-color:var(--live)">GO LIVE</button>
+      <button id="offair" style="border-color:var(--warn);font-weight:800" title="One click. Stops the stream immediately — no CONFIRM needed.">■ OFF AIR (1-click)</button>
+    </div>
+  </div>
+
+  <div class="panel grow" style="max-width:300px">
+    <h3>Watermarks <span class="hint">(up to 3 · % of frame)</span></h3>
+    <div id="wm-list"></div>
+    <div class="btnrow mt"><button id="wm-apply" style="border-color:var(--ok)">APPLY watermarks</button></div>
+    <div class="hint">image url or data: · x/y/w in % · opacity 0-1 · tick on</div>
+  </div>
+
+  <div class="panel grow" style="max-width:340px">
+    <h3 id="endpoints" style="scroll-margin-top:12px">Streaming endpoints <span class="hint">(up to 20 · encrypted at rest)</span></h3>
+    <div class="btnrow">
+      <input type="password" id="ep-pass" placeholder="passphrase" style="width:140px" title="Unlocks + encrypts your keys (AES-256-GCM). Not stored anywhere.">
+      <button id="ep-unlock">UNLOCK</button>
+      <button id="ep-lock">lock</button>
+    </div>
+    <div id="ep-list" class="mt"></div>
+    <div class="btnrow mt">
+      <select id="ep-preset" style="width:150px" title="Known ingest URL for a platform — fills the URL below, still editable before saving">
+        <option value="">+ add from preset…</option>
+      </select>
+      <button id="ep-add">+ blank</button>
+      <button id="ep-save" style="border-color:var(--ok)">SAVE (encrypt)</button>
+    </div>
+    <div class="btnrow mt">
+      <!-- 2026-07-17: SAFE IMPORT button — reads ~/Desktop/streaming.txt server-side, encrypts,
+           wraps PIN. The agent triggers by POST, never sees the plaintext (gate
+           endpoints-import-key-blind). Faster than re-typing keys after any command-center restart. -->
+      <button id="ep-import" style="border-color:var(--acc)" title="Read ~/Desktop/streaming.txt server-side and encrypt the keys. Nothing sensitive traverses the agent.">📥 IMPORT from streaming.txt</button>
+      <span class="hint" id="ep-import-status"></span>
+    </div>
+    <div class="btnrow mt">
+      <button id="fanout-on" style="border-color:var(--live)">FAN-OUT ON</button>
+      <button id="fanout-off">FAN-OUT OFF</button>
+      <span class="hint" id="fanout-status"></span>
+    </div>
+    <div class="hint">Enter URL (e.g. rtmp://a.rtmp.youtube.com/live2/) + key — the same platform can appear more than once (e.g. 3 YouTube accounts), just give each a distinct name. Keys masked after save, never committed. Start FAN-OUT, then GO LIVE.</div>
+    <hr style="border:0; border-top:1px solid var(--edge); margin:10px 0;">
+    <div class="hint" style="margin-bottom:4px">PIN unlock — a short PIN that unwraps the SAME passphrase (separate secret; losing the PIN never touches your saved keys). Set it once, then arm with just the PIN — from here or the HUD.</div>
+    <div class="btnrow">
+      <input type="password" id="ep-newpin" placeholder="new 4-8 digit PIN" inputmode="numeric" pattern="[0-9]*" style="width:120px">
+      <button id="ep-setpin">SET PIN</button>
+      <span class="hint" id="ep-pinstatus"></span>
+    </div>
+    <div class="btnrow mt">
+      <input type="password" id="ep-arm-pin" placeholder="PIN" inputmode="numeric" pattern="[0-9]*" style="width:70px">
+      <button id="ep-pin-arm" style="border-color:var(--live)">ARM (PIN)</button>
+      <button id="ep-pin-disarm">DISARM</button>
+      <span class="hint" id="ep-armstatus"></span>
+    </div>
+  </div>
+
+  <!-- COLONY panel 2026-07-16 (sweep #C21). Was: no producer probe in the cc at all — the operator
+       had no surface for Producer degradation. Now read-only from spool.colony, populated by the
+       pollColony every-5s poller. NEVER binds to on-air overlays. Science fence intact: no life or
+       awareness claim from these numbers. -->
+  <div class="panel grow" style="max-width:270px">
+    <h3 id="colony" style="scroll-margin-top:12px">Colony <span class="hint">(read-only; from :4200/producer/health)</span></h3>
+    <div id="colony-panel" style="font-size:12px;line-height:1.6"><span class="hint">syncing…</span></div>
+    <div class="hint" id="colony-src" style="margin-top:6px"></div>
+  </div>
+
+  <!-- MUSIC panel 2026-07-16. Now-playing from spool.nowPlaying (poller in cc every 5s). The DMCA
+       gate `musicOnAir` defaults ON (operator's policy: full on-air, owned/licensed). Toggle here. -->
+  <div class="panel grow" style="max-width:320px">
+    <h3 id="music" style="scroll-margin-top:12px">Music <span class="hint">(uni-lab.local:8687)</span></h3>
+    <div id="music-panel">
+      <div style="display:flex;gap:8px;align-items:center">
+        <img id="music-art" style="width:64px;height:64px;border-radius:6px;background:#1a2230" alt="">
+        <div style="min-width:0;flex:1">
+          <div id="music-title" style="font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+          <div id="music-artist" class="hint" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+          <div id="music-album" class="hint" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+        </div>
+      </div>
+      <div id="music-progress" style="height:4px;background:#1a2230;border-radius:2px;margin-top:6px;overflow:hidden"><div id="music-progressbar" style="height:100%;background:var(--acc);width:0"></div></div>
+      <div class="hint mt" id="music-next">next: —</div>
+      <div class="hint" id="music-stats">— listeners · —</div>
+    </div>
+    <div class="btnrow mt">
+      <button id="music-onair" title="Toggle whether ShowRadio may air on program. Default ON per your DMCA policy (owned/licensed).">MUSIC ON AIR: —</button>
+    </div>
+    <div class="hint" style="margin-top:6px">Cover art / store links / lyrics are picked up by the ovl_nowplaying / ovl_music_hero overlays from the studio's own spool — the operator (or an overlay) never hits the music service directly.</div>
+  </div>
+
+  <!-- BROADCAST METADATA 2026-07-16 (sweep #19). Was: only lower-third kicker/title/subtitle/caption
+       and ticker existed. The sweep flagged these as the "missing metadata" the operator called out.
+       Every field is optional (null = renders UNKNOWN, never fabricated). -->
+  <div class="panel grow" style="max-width:340px">
+    <h3 id="metadata" style="scroll-margin-top:12px">Broadcast metadata <span class="hint">(overlays read from spool.meta)</span></h3>
+    <label class="hint">Show title</label>
+    <input type="text" id="m-show" placeholder="UNI Live" maxlength="120">
+    <label class="hint">Segment / episode</label>
+    <input type="text" id="m-seg" placeholder="Colony hour 3" maxlength="120">
+    <label class="hint">Segment ID (short, machine-readable)</label>
+    <input type="text" id="m-segid" placeholder="colony-h3-2026-07-16" maxlength="48">
+    <label class="hint">Air date (UTC ISO)</label>
+    <input type="text" id="m-airdate" placeholder="2026-07-16T21:00:00Z" maxlength="40">
+    <label class="hint">Presenter(s) — one per line</label>
+    <textarea id="m-presenter" rows="2" placeholder="Michael Polzin"></textarea>
+    <label class="hint">Guest(s) — one per line</label>
+    <textarea id="m-guest" rows="2" placeholder=""></textarea>
+    <label class="hint">Dateline (location/date shown on lower third)</label>
+    <input type="text" id="m-dateline" placeholder="Milwaukee · 21:00 UTC" maxlength="80">
+    <label class="hint">Kicker (breaking-news / segment kicker chip)</label>
+    <input type="text" id="m-kicker" placeholder="LIVE" maxlength="60">
+    <label class="hint">Rundown (upcoming segments — one per line)</label>
+    <textarea id="m-rundown" rows="3" placeholder="Colony recap · Music hour · Q&A"></textarea>
+    <div class="btnrow mt">
+      <button id="m-apply" style="border-color:var(--ok)">APPLY metadata</button>
+    </div>
+    <hr style="border:0; border-top:1px solid var(--edge); margin:12px 0;">
+    <h3>Station bug <span class="hint">(corner watermark)</span></h3>
+    <div class="rolegrid" style="grid-template-columns:1fr auto auto auto">
+      <input type="text" id="bug-text" placeholder="UNI · LIVE" maxlength="60">
+      <select id="bug-corner"><option value="tl">TL</option><option value="tr">TR</option><option value="bl">BL</option><option value="br" selected>BR</option></select>
+      <input type="text" id="bug-color" placeholder="#3fd2ff" value="#3fd2ff" style="width:80px">
+      <label class="chk"><input type="checkbox" id="bug-enabled"> ON</label>
+    </div>
+    <div class="btnrow mt"><button id="bug-apply" style="border-color:var(--ok)">APPLY bug</button></div>
+  </div>
+
+  <div class="panel grow" style="max-width:360px">
+    <h3 id="health" style="scroll-margin-top:12px">Health <span class="hint">(the broadcast engineer)</span></h3>
+    <!-- Aggregate GO/HOLD/BLOCK pill 2026-07-16 (sweep C25). Was: nothing above the individual dots
+         to summarize whether the operator can honestly go live. -->
+    <div id="sight-pill" style="padding:8px 12px; border-radius:8px; text-align:center; font-weight:800; letter-spacing:.08em; margin-bottom:8px; background:#1a2230; color:var(--dim)">SIGHT: —</div>
+    <div id="health"></div>
+    <button id="preflight">PREFLIGHT — render + verify EVERYTHING</button>
+    <div id="pfresult"></div>
+    <hr style="border:0; border-top:1px solid var(--edge); margin:12px 0;">
+    <div style="font-size:12px;color:var(--dim);margin-bottom:6px">Runs THE ONE LIVE PATH (never private — owner directive). With FAN-OUT ON this is PUBLIC AIR; without egress it honestly FAILS stage 4.</div>
+    <button id="broadcast_test" style="width:100%; font-weight:800; border-color:var(--live); background:#22303f;">▶ BROADCAST TEST — live on-air 5-stage sweep</button>
+    <div id="bt_panel" style="margin-top:8px; display:none;"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const api = async (p, body) => {
+  const r = await fetch(p, body ? { method:"POST", headers:{ "Content-Type":"application/json", "x-uni-cc":"1" }, body: JSON.stringify(body) } : undefined);
+  return r.json();
+};
+let toastT = null;
+function toast(msg, fence) {
+  const t = $("toast"); t.textContent = msg; t.className = fence ? "fence" : ""; t.style.display = "block";
+  clearTimeout(toastT); toastT = setTimeout(() => t.style.display = "none", fence ? 9000 : 3500);
+}
+
+// ---- template grid (built from the stage manifest; thumbnails are REAL frames) ----
+let built = false;
+function buildGrid(groups, desc) {
+  desc = desc || {};
+  const wrap = $("groups"); wrap.innerHTML = "";
+  for (const g of groups) {
+    const gd = document.createElement("div"); gd.className = "group";
+    gd.innerHTML = `<h4>${g.name}</h4>`;
+    const cards = document.createElement("div"); cards.className = "cards";
+    for (const name of g.scenes) {
+      const d = document.createElement("div");
+      d.className = "card"; d.id = "card-" + name;
+      d.innerHTML = `<img alt=""><span class="age">click</span><div class="nm">${name}</div>`;
+      d.title = (desc[name] ? desc[name] + "\n\n" : "") + "click = load into PREVIEW · double-click = hot cut to program";
+      d.onclick = () => api("/api/preview", { scene: name }).then(r => { if (!r.ok) return toast(r.err || "preview failed"); startClickLoop(name); });
+      d.ondblclick = () => api("/api/cut", { scene: name }).then(r => r.ok ? null : toast(r.err || "cut failed"));
+      cards.appendChild(d);
+    }
+    gd.appendChild(cards); wrap.appendChild(gd);
+  }
+  built = true;
+  // DEEP-LINK RE-SCROLL (2026-07-16). The panel anchors (#endpoints, #metadata, #music, …) are in
+  // the static HTML, so the browser scrolls to them on load — but the scene grid above them is
+  // built HERE, by JS, from /api/state. That insertion pushes every panel DOWN after the browser
+  // has already scrolled, so a deep link lands short (measured: #endpoints landed on the scene
+  // grid instead of the keys box). Re-honor the hash once the grid exists and the layout is final.
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+  }
+}
+
+$("takebtn").onclick = () => api("/api/take", {}).then(r => r.ok ? null : toast(r.err || "take failed"));
+$("projbtn").onclick = () => api("/api/projector", {}).then(r => r.ok ? toast("OBS 30fps program window opened — resize/move it; that is your smooth monitor") : toast(r.err || "projector failed"));
+document.querySelectorAll(".rolesel").forEach(sel => sel.onchange = () => api("/api/role", { role: sel.dataset.role, source: sel.value }).then(r => r.ok ? null : toast(r.err || "role failed")));
+function camOptions(s) {
+  const pc = (s.camsInfo && s.camsInfo.pcDevices && s.camsInfo.pcDevices[0]) ? " (" + String(s.camsInfo.pcDevices[0]).slice(0, 16) + ")" : "";
+  const opts = [{ v: "CamHost", t: "PC camera" + pc }];
+  // WS1-E rich labels: "Slot 3 - Overhead cam - 1920x1080@30 - H264 - guest-mac  [dot]"
+  // Registrations with regVersion:2 supply device/resolution/framerate/codec/hostname; v1 clients
+  // omit those fields and we fall back to just label+kind.
+  const dot = (state, live) => {
+    if (!live) return " -";
+    if (state === "live")    return " GREEN";
+    if (state === "preview") return " AMBER";
+    return " OK";
+  };
+  const esc = (s) => String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  for (let i = 1; i <= 10; i++) {
+    const reg = (s.slots || {})["cam" + i];
+    if (!reg) { opts.push({ v: "RemoteCam" + i, t: "Slot " + i }); continue; }
+    const live = reg.ageMs < 8000;
+    const bits = ["Slot " + i];
+    if (reg.label) bits.push(esc(String(reg.label).slice(0, 24)));
+    if (reg.resolution && reg.resolution.w) bits.push(reg.resolution.w + "x" + reg.resolution.h + (reg.framerate ? "@" + Math.round(reg.framerate) : ""));
+    if (reg.codec && reg.codec !== "unknown") bits.push(esc(reg.codec));
+    if (reg.hostname) bits.push(esc(String(reg.hostname).slice(0, 16)));
+    let mark = "";
+    if (live) {
+      if (reg.state === "live") mark = " *LIVE*";
+      else if (reg.state === "preview") mark = " *PVW*";
+      else mark = " *";
+    }
+    opts.push({ v: "RemoteCam" + i, t: bits.join(" · ") + mark });
+  }
+  return opts;
+}
+// PC mic + MUTE are static; the RemoteCamN buttons are (re)wired every refresh (WS1-D)
+for (const v of ["MicHost","mute"])
+  $("v-" + v).onclick = () => api("/api/voice", { which: v }).then(r => { if (r.note) toast(r.note, true); });
+function renderVoiceButtons(s) {
+  const box = $("voicebtns");
+  const slots = s.slots || {};
+  const live = [];
+  for (let i = 1; i <= 10; i++) {
+    const reg = slots["cam" + i];
+    if (reg && reg.ageMs < 8000) live.push({ i, label: reg.label || reg.kind || ("Slot " + i) });
+  }
+  // Signature-based rebuild so we don't churn DOM every 2 s.
+  const sig = JSON.stringify(live.map(x => [x.i, x.label]));
+  if (sig === window.__voiceSig) return;
+  window.__voiceSig = sig;
+  box.innerHTML = live.map(x => {
+    const safe = String(x.label).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+    return `<button id="v-RemoteCam${x.i}" title="Put remote camera ${x.i} (${safe}) on air.">Slot ${x.i} mic</button>`;
+  }).join("");
+  for (const x of live) {
+    const el = $("v-RemoteCam" + x.i);
+    if (!el) continue;
+    el.onclick = () => api("/api/voice", { which: "RemoteCam" + x.i }).then(r => { if (r.note) toast(r.note, true); });
+  }
+}
+$("music").onchange = (e) => api("/api/music", { pct: +e.target.value });
+// toggles read SERVER truth (set by refresh), never their own label — no stale-response races
+let srvAuto = false, srvFeed = false;
+$("autobtn").onclick = async () => { const r = await api("/api/auto", { on: !srvAuto, beats: $("beats").value || undefined }); if (r.err) toast(r.err); else srvAuto = r.auto; $("autobtn").textContent = "AUTO: " + (srvAuto ? "ON" : "off"); };
+$("unifeed").onclick = async () => { const r = await api("/api/unifeed", { on: !srvFeed }); srvFeed = r.uniFeed; $("unifeed").textContent = "UNI FEED: " + (srvFeed ? "ON" : "off"); };
+$("webprev").onclick = () => api("/api/web", { url: $("weburl").value, layout: "full" }).then(r => r.ok ? toast("WEB loaded to preview") : toast(r.err));
+$("webcut").onclick = () => api("/api/web", { url: $("weburl").value, cut: true, layout: "full" }).then(r => r.ok ? null : toast(r.err));
+$("webhostcut").onclick = () => api("/api/web", { url: $("weburl").value, cut: true, layout: "host" }).then(r => r.ok ? null : toast(r.err));
+$("websidecut").onclick = () => api("/api/web", { url: $("weburl").value, cut: true, layout: "side" }).then(r => r.ok ? null : toast(r.err));
+const rollClip = (layout, note) => api("/api/clip", { url: $("clipurl").value, secs: $("clipsecs").value, layout }).then(r => r.ok ? toast(r.autoReturn ? `${note} — auto-return ${r.autoReturn}s` : `${note} — BACK to return`) : toast(r.err));
+$("clip-full").onclick = () => rollClip("full", "clip full");
+$("clip-host").onclick = () => rollClip("host", "clip + host");
+$("clip-side").onclick = () => rollClip("side", "clip side-by-side");
+$("clip-pip").onclick = () => rollClip("pip", "clip as PIP");
+$("clipback").onclick = () => api("/api/back", {});
+$("winlist").onclick = async () => {
+  const r = await api("/api/share", { list: true });
+  const sel = $("winsel"); sel.innerHTML = "";
+  (r.windows || []).forEach(w => { const o = document.createElement("option"); o.value = w.n; o.textContent = w.name; sel.appendChild(o); });
+  toast((r.windows || []).length + " windows found");
+};
+document.querySelectorAll(".bindbtn").forEach(b => b.onclick = async () => {
+  const n = parseInt($("winsel").value, 10);
+  if (isNaN(n)) return toast("list windows and pick one first");
+  const r = await api("/api/share", { slot: +b.dataset.slot, n });
+  toast(r.ok ? `slot ${b.dataset.slot} ← ${r.bound}` : r.err);
+});
+$("applyoverlays").onclick = async () => {
+  const r = await api("/api/overlay", {
+    kicker: $("lt-k").value, title: $("lt-t").value, subtitle: $("lt-s").value,
+    caption: $("cap").value, ticker: $("ticker").value.split("\n").map(s => s.trim()).filter(Boolean),
+    force: $("force").checked,
+  });
+  if (r.ok) toast(r.forced ? "APPLIED — FENCE FORCED (logged)" : "text applied");
+  else toast("CLAIM FENCE blocked \"" + r.fence + "\" — " + r.hint, true);
+};
+function doGoLive(){ api("/api/golive", { confirm: $("confirm").value }).then(r => r.ok ? toast("StartStream sent — VERIFY both platform dashboards") : toast(r.err, true)); }
+$("golive").onclick = doGoLive;
+// Enter in the CONFIRM box arms GO LIVE (the outward cut). The box no longer gates OFF AIR.
+$("confirm").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); doGoLive(); } });
+// OFF AIR is ONE CLICK — stopping the stream must never be blocked behind typing CONFIRM.
+$("offair").onclick = () => api("/api/offair", {}).then(r => r.ok ? toast("stream stopped") : toast(r.err, true));
+$("preflight").onclick = async () => {
+  if ($("preflight").disabled) return;
+  $("preflight").disabled = true;
+  $("preflight").textContent = "PREFLIGHT RUNNING… (~40s, renders every template)";
+  try {
+    const r = await api("/api/preflight", {});
+    const pf = $("pfresult"); pf.style.display = "block"; pf.textContent = "";
+    const head = document.createElement("b");
+    if (r.err) { head.style.color = "var(--warn)"; head.textContent = r.err; pf.appendChild(head); return; }
+    head.style.color = r.go ? "var(--ok)" : "var(--live)";
+    head.textContent = r.go
+      ? (r.warnings ? `GO — critical systems green + every template rendered (${r.warnings} non-critical warning${r.warnings > 1 ? "s" : ""} below)` : "GO — every check passed, every template rendered real pixels")
+      : "NO-GO";
+    pf.appendChild(head);
+    const line = (txt, color) => { const d = document.createElement("div"); d.textContent = txt; if (color) d.style.color = color; pf.appendChild(d); };
+    (r.checks || []).filter(c => !c.ok).forEach(c => line(`✗ ${c.name}: ${c.detail}`, "var(--warn)"));
+    // status: pass (rendered) / skip (a content input is legitimately absent) / fail (BLACK with inputs
+    // present — the real defect). Only fails are NO-GO; skips are shown but do not block.
+    (r.templates || []).filter(t => t.status === "fail").forEach(t => line(`✗ ${t.scene}: ${t.detail}`, "var(--live)"));
+    (r.templates || []).filter(t => t.status === "skip").forEach(t => line(`– ${t.scene}: ${t.detail}`, "var(--muted)"));
+    if ((r.checks || []).every(c => c.ok) && (r.templates || []).every(t => t.status !== "fail")) line((r.templates || []).filter(t => t.status === "pass").map(t => "✓ " + t.scene).join(" "));
+  } catch (e) {
+    toast("preflight failed: " + (e.message || e), true);
+  } finally {
+    $("preflight").disabled = false;
+    $("preflight").textContent = "PREFLIGHT — render + verify EVERYTHING";
+  }
+};
+
+// ---- P4: BROADCAST TEST (5-stage visible loop, polls GET /api/broadcast_test) ----
+const BT_STAGES = ["PREFLIGHT","ENCODER","SEEN SWEEP","CAMERAS+FANOUT","PARK"];
+let btPollTimer = null;
+function btRenderPanel(state){
+  const p = $("bt_panel");
+  if (!state){ p.style.display = "none"; return; }
+  p.style.display = "block";
+  const stages = state.stages || [];
+  const banner = state.running
+    ? `<b style="color:var(--warn)">RUNNING — THE ONE LIVE PATH (public when fan-out is on) · watch the OBS program monitor</b>`
+    : (state.go === true
+        ? `<b style="color:var(--ok)">PASS — all 5 stages green${state.durationMs?` · ${Math.round(state.durationMs/1000)}s`:""}</b>`
+        : state.go === false
+          ? `<b style="color:var(--live)">FAIL — see stage rows below</b>`
+          : `<b style="color:var(--dim)">idle · press BROADCAST TEST to start</b>`);
+  const rowsHtml = BT_STAGES.map((name, i) => {
+    const stageNum = i + 1;
+    const s = stages.find(x => x.stage === stageNum) || {};
+    const verdict = s.verdict; // "PASS" | "FAIL" | null (running)
+    const dot = verdict === "PASS" ? "✓" : verdict === "FAIL" ? "✗" : s.startedAt ? "▸" : "·";
+    const color = verdict === "PASS" ? "var(--ok)" : verdict === "FAIL" ? "var(--live)" : s.startedAt ? "var(--warn)" : "var(--dim)";
+    const detail = (s.rows || []).map(r => {
+      const c = r.status === "fail" ? "var(--live)" : r.status === "pass" ? "var(--ok)" : r.status === "skip" ? "var(--dim)" : "var(--dim)";
+      const mark = r.status === "pass" ? "✓" : r.status === "fail" ? "✗" : r.status === "skip" ? "○" : "·";
+      const line = `${mark} ${r.label || r.name}${r.detail ? " — " + r.detail : ""}`;
+      const thumb = r.thumb ? `<div style="margin-left:14px; margin-top:2px;"><img src="${r.thumb}" style="max-width:240px; border:1px solid var(--edge);"></div>` : "";
+      return `<div style="font-size:11px; color:${c}; margin-left:14px;">${line}</div>${thumb}`;
+    }).join("");
+    return `<div style="margin:6px 0;"><div style="color:${color}; font-weight:700; font-size:12px;">${dot} STAGE ${stageNum} — ${name}${verdict ? " · " + verdict : ""}</div>${detail}</div>`;
+  }).join("");
+  p.innerHTML = `<div style="border:1px solid var(--edge); padding:8px; border-radius:4px; background:#0f1620;">${banner}${rowsHtml}</div>`;
+}
+async function btPoll(){
+  try{
+    const r = await fetch("/api/broadcast_test", { headers: { "x-uni-cc": "1" } });
+    if (!r.ok) return;
+    const st = await r.json();
+    btRenderPanel(st);
+    if (!st.running && btPollTimer){
+      clearInterval(btPollTimer); btPollTimer = null;
+      $("broadcast_test").disabled = false;
+      $("broadcast_test").textContent = "▶ BROADCAST TEST — 5-stage SEEN loop";
+    }
+  } catch(e){}
+}
+$("broadcast_test").onclick = async () => {
+  if ($("broadcast_test").disabled) return;
+  $("broadcast_test").disabled = true;
+  $("broadcast_test").textContent = "TEST RUNNING… (~2-3 min, watch OBS program)";
+  try{
+    const r = await api("/api/broadcast_test", {});
+    if (r.err){ toast("broadcast test failed to start: " + r.err, true); $("broadcast_test").disabled = false; $("broadcast_test").textContent = "▶ BROADCAST TEST — live on-air 5-stage sweep"; return; }
+    toast("test started — THE ONE LIVE PATH (public when fan-out is on)");
+    btPoll();
+    if (btPollTimer) clearInterval(btPollTimer);
+    btPollTimer = setInterval(btPoll, 1000);
+  } catch(e){
+    toast("broadcast test failed: " + (e.message || e), true);
+    $("broadcast_test").disabled = false;
+    $("broadcast_test").textContent = "▶ BROADCAST TEST — 5-stage SEEN loop";
+  }
+};
+
+// ---- state + thumbs + health polling ----
+const AIRTEXT = {
+  OFF: ["OFF AIR", "nothing is being broadcast"],
+  REHEARSAL: ["REHEARSAL — CAM/MIC HOT", "a camera or mic is up but NOTHING is being streamed"],
+  STREAMING: ["LIVE STREAMING", "program is public — you are not on it"],
+  LIVE_LIVE: ["LIVE LIVE — YOU ARE ON AIR", "you are visible and/or audible on the public stream"],
+};
+let curPreview = "", curProgram = "";
+async function refresh() {
+  try {
+    const s = await api("/api/state");
+    if (!built && s.groups) buildGrid(s.groups, s.desc);
+    const a = s.air || { level: "OFF" };
+    curPreview = s.preview; curProgram = a.program;
+    // M1: when the server can't read OBS truth (airStale), show an amber SYNCING banner instead
+    // of a confident "OFF AIR" — the studio may actually be live; we just don't know this instant.
+    if (s.airStale) {
+      $("air").className = "air-REHEARSAL";
+      $("airlabel").textContent = "SYNCING…";
+      $("airsub").textContent = "reconnecting to OBS — air state unknown (NOT confirmed off)";
+    } else {
+      $("air").className = "air-" + a.level;
+      $("airlabel").textContent = AIRTEXT[a.level][0];
+      $("airsub").textContent = AIRTEXT[a.level][1] + (a.visible ? " · cam VISIBLE" : "") + (a.audible ? " · mic AUDIBLE" : "");
+    }
+    $("airmeta").textContent = `program: ${a.program} · preview: ${s.preview}\n${a.streaming ? "stream " + a.timecode + " · congestion " + a.congestion : (s.restreamer ? "restreamer up, not streaming" : "restreamer not running")}${s.obs ? "" : "\nOBS DISCONNECTED"}`;
+    $("prevname").textContent = "— " + s.preview; $("progname").textContent = "— " + a.program;
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("preview", "program"));
+    const pc = $("card-" + s.preview); if (pc) pc.classList.add("preview");
+    const gc = $("card-" + a.program); if (gc) gc.classList.add("program");
+    const roleSig = JSON.stringify(s.slots || {}) + JSON.stringify((s.camsInfo || {}).pcDevices || []);
+    if (roleSig !== window.__roleSig) {
+      window.__roleSig = roleSig;
+      const opts = camOptions(s).map(o => `<option value="${o.v}">${o.t}</option>`).join("");
+      document.querySelectorAll(".rolesel").forEach(sel => { sel.innerHTML = opts; });
+    }
+    document.querySelectorAll(".rolesel").forEach(sel => { const want = (s.roles || {})[sel.dataset.role] || "CamHost"; if (sel.value !== want) sel.value = want; });
+    renderVoiceButtons(s);
+    camPickDots(s);
+    // Clear "sel" on every voice button (static + dynamic), then re-mark the current voice.
+    document.querySelectorAll("#voicebtns button, #v-MicHost, #v-mute").forEach(b => b.classList.remove("sel"));
+    const vb = $("v-" + (s.voice || "mute")); if (vb) vb.classList.add("sel");
+    srvAuto = !!s.auto; srvFeed = !!s.uniFeed;
+    $("autobtn").textContent = "AUTO: " + (srvAuto ? "ON" : "off");
+    $("unifeed").textContent = "UNI FEED: " + (srvFeed ? "ON" : "off");
+    // HONEST (2026-07-15): "live" from rc() means the MediaMTX path has an H264 track — that is
+    // codec/registration truth, NOT proof of a non-black rendered frame. Label exactly what is
+    // verified ("publishing H264"), never a bare "LIVE" (which claims video). rendering-verified
+    // LIVE for a remote cam arrives with cure 2 (the per-source capture).
+    const rcTxt = (v) => v === "live" ? '<b style="color:var(--ok)">publishing (H264)</b>' : v === "badcodec" ? '<b style="color:var(--warn)">WRONG CODEC — republish H264 (see Health)</b>' : '<b style="color:var(--live)">not publishing</b>';
+    $("camstatus").innerHTML = `Remote 1: ${rcTxt(s.camsInfo.remote1)} · Remote 2: ${rcTxt(s.camsInfo.remote2)} · PC: ${(s.camsInfo.pcDevices || []).map(d => String(d).replace(/[<>&]/g, "")).join(", ") || "none"}`;
+    // ---- 2026-07-16 panels ----
+    renderPcPicker(s); renderMicPill(s); renderColonyPanel(s); renderMusicPanel(s); renderMetaFromServer(s); renderSightPill(s); renderRemotesSummary(s);
+    const clipSig = JSON.stringify([s.favorites, s.recent]);
+    if (clipSig !== window.__clipSig) { // rebuild only on change — no swallowed clicks
+      window.__clipSig = clipSig;
+      const favs = $("favs"); favs.textContent = "";
+      (s.favorites || []).forEach(f => { const b = document.createElement("button"); b.textContent = "★ " + (f.label || f.url); b.onclick = () => { $("clipurl").value = f.url; }; favs.appendChild(b); });
+      const rec = $("recent"); rec.textContent = "";
+      (s.recent || []).slice(0, 3).forEach(f => { const b = document.createElement("button"); b.textContent = "↻ " + f.url.slice(0, 34); b.onclick = () => { $("clipurl").value = f.url; }; rec.appendChild(b); });
+    }
+  } catch (_) { $("airmeta").textContent = "command center API unreachable"; }
+}
+
+// ---- 2026-07-16 render helpers for the new panels ------------------------------------------------
+const _esc = (s) => String(s == null ? "" : s).replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
+let _lastMusicPoll = { at: 0, positionSec: null, durationSec: null, seq: null };
+
+function renderPcPicker(s) {
+  const sel = $("pc-dev");
+  const devs = ((s.camsInfo && s.camsInfo.pcDevices) || []);
+  const sig = JSON.stringify(devs);
+  if (sel._sig !== sig) { sel._sig = sig; sel.innerHTML = devs.length ? devs.map(d => `<option>${_esc(d)}</option>`).join("") : "<option>(no devices enumerated)</option>"; }
+  const bound = s.pcBound || {};
+  const label = bound.deviceName ? bound.deviceName : (bound.deviceId ? "(unrecognized device — pick again)" : "no device bound");
+  $("pc-bound").textContent = "PC cam: " + label;
+  $("pc-bound").style.color = bound.deviceName ? "var(--ok)" : "var(--warn)";
+}
+function renderMicPill(s) {
+  const el = $("mic-pill");
+  const m = s.mic || {};
+  if (m.muted === true) { el.textContent = "MIC: MUTED — unmute before a talk cut"; el.style.background = "#3a0f1c"; el.style.color = "var(--live)"; }
+  else if (m.muted === false) { el.textContent = "MIC: LIVE (hot on program)"; el.style.background = "#1d3a2a"; el.style.color = "var(--ok)"; }
+  else { el.textContent = "MIC: unknown (OBS disconnected?)"; el.style.background = "#1a2230"; el.style.color = "var(--dim)"; }
+}
+function renderColonyPanel(s) {
+  const c = s.colony || {};
+  if (c.err || !c.verdict) {
+    $("colony-panel").innerHTML = `<span class="hint">${c.err ? _esc(c.err) : "poller idle — colony.uni-lab.local may not resolve; check uni-dns on the chip"}</span>`;
+    $("colony-src").textContent = "";
+    return;
+  }
+  const stale = c.updatedUtcExternal && (Date.now() - new Date(c.updatedUtcExternal).getTime() > 20000);
+  const dot = (b, on) => `<span style="color:${b ? "var(--ok)" : "var(--live)"}">${on || (b ? "●" : "○")}</span>`;
+  $("colony-panel").innerHTML = `
+    <div>verdict: <b style="color:${c.verdict === "LIVE" ? "var(--ok)" : "var(--warn)"}">${_esc(c.verdict)}</b> · driver: ${_esc(c.driver)}${stale ? " · <span style='color:var(--warn)'>STALE</span>" : ""}</div>
+    <div>colony_count: ${c.colony_count == null ? "—" : c.colony_count} · tps: ${c.tps == null ? "—" : c.tps.toFixed ? c.tps.toFixed(1) : c.tps}</div>
+    <div>frame: ${c.frame == null ? "—" : c.frame} · star: ${_esc(c.star)}</div>
+    <div>${dot(c.director_up)} director · ${dot(c.producer_up)} producer · ${dot(c.show_up)} show · ${dot(c.colony_up)} colony</div>
+    <div class="hint" style="margin-top:4px">last_action: ${_esc(c.last_action)}</div>
+  `;
+  $("colony-src").textContent = "source: " + (c.source || "—");
+}
+function renderMusicPanel(s) {
+  const n = s.nowPlaying || {};
+  if (n.err) {
+    $("music-title").textContent = "unbound (" + n.err + ")";
+    $("music-artist").textContent = ""; $("music-album").textContent = "";
+    $("music-art").src = ""; $("music-progressbar").style.width = "0"; $("music-next").textContent = "";
+    $("music-stats").textContent = "";
+  } else {
+    $("music-title").textContent = n.title || "—";
+    $("music-artist").textContent = n.artist || "";
+    $("music-album").textContent = n.album || "";
+    if (n.artUrl && $("music-art").src !== n.artUrl) $("music-art").src = n.artUrl;
+    // interpolate positionSec locally between spool updates so the progress bar is smooth
+    const now = Date.now();
+    if (_lastMusicPoll.seq !== n.seq || _lastMusicPoll.positionSec == null) {
+      _lastMusicPoll = { at: now, positionSec: n.positionSec, durationSec: n.durationSec, seq: n.seq };
+    }
+    const inflight = n.positionSec == null ? 0 : n.positionSec + (now - _lastMusicPoll.at) / 1000;
+    const pct = n.durationSec ? Math.min(100, Math.max(0, (inflight / n.durationSec) * 100)) : 0;
+    $("music-progressbar").style.width = pct + "%";
+    $("music-next").textContent = n.next ? `next: ${n.next.title} — ${n.next.album || ""}` : "next: —";
+    $("music-stats").textContent = `${n.listeners || 0} listener${n.listeners === 1 ? "" : "s"} · ${n.bitrateKbps || "?"} kbps · v${n.contractVersion || "?"}`;
+  }
+  const on = s.musicOnAir === true;
+  $("music-onair").textContent = "MUSIC ON AIR: " + (on ? "ON" : "OFF");
+  $("music-onair").style.borderColor = on ? "var(--live)" : "var(--edge)";
+}
+function renderMetaFromServer(s) {
+  const m = s.meta || {};
+  // Only overwrite fields the user hasn't touched (avoid clobbering typing) — approximated by:
+  // only fill fields that are currently blank in the DOM.
+  const setIfBlank = (id, v) => { const el = $(id); if (el && !el.value && v) el.value = v; };
+  setIfBlank("m-show", m.showTitle); setIfBlank("m-seg", m.segment); setIfBlank("m-segid", m.segmentId);
+  setIfBlank("m-airdate", m.airDateUtc); setIfBlank("m-dateline", m.dateline); setIfBlank("m-kicker", m.kicker);
+  if (Array.isArray(m.presenter) && !$("m-presenter").value) $("m-presenter").value = m.presenter.join("\n");
+  if (Array.isArray(m.guest) && !$("m-guest").value) $("m-guest").value = m.guest.join("\n");
+  if (Array.isArray(m.rundown) && !$("m-rundown").value) $("m-rundown").value = m.rundown.join("\n");
+  const bug = s.bug || {}; if (bug.text && !$("bug-text").value) $("bug-text").value = bug.text;
+  if (bug.corner) $("bug-corner").value = bug.corner;
+  if (bug.color && !$("bug-color")._touched) $("bug-color").value = bug.color;
+  $("bug-enabled").checked = !!bug.enabled;
+}
+function renderSightPill(s) {
+  const v = s.sightVerdict || "—";
+  const el = $("sight-pill");
+  el.textContent = "SIGHT: " + v;
+  if (v === "GO") { el.style.background = "#1d3a2a"; el.style.color = "var(--ok)"; }
+  else if (v === "HOLD") { el.style.background = "#2a2410"; el.style.color = "var(--warn)"; }
+  else if (v === "BLOCK") { el.style.background = "#3a0f1c"; el.style.color = "var(--live)"; }
+  else { el.style.background = "#1a2230"; el.style.color = "var(--dim)"; }
+}
+function renderRemotesSummary(s) {
+  // The camstatus line already carries remote 1/2. Add a summary chip below it if the new .summary
+  // + .remotes exist (2026-07-16 all-10 upgrade).
+  if (!(s.camsInfo && s.camsInfo.summary)) return;
+  const sig = s.camsInfo.summary;
+  if ($("camstatus")._sum === sig) return;
+  $("camstatus")._sum = sig;
+  const tail = document.createElement("div");
+  tail.className = "hint"; tail.textContent = "All 10 slots: " + sig;
+  // remove prior tail if any
+  const prev = $("camstatus").nextSibling;
+  if (prev && prev._tail) prev.remove();
+  tail._tail = true;
+  $("camstatus").parentNode.insertBefore(tail, $("camstatus").nextSibling);
+}
+
+// ---- 2026-07-16 wire-up: buttons ---------------------------------------------------------------
+$("pc-bind").onclick = async () => {
+  const name = $("pc-dev").value;
+  if (!name) return toast("pick a webcam first");
+  // The devices endpoint returns names; the CC needs a video_device_id (an OBS-specific string).
+  // Fetch full devices to map name -> value.
+  const d = await api("/api/devices");
+  const item = (d.pcCamDevices || []).find(x => x.name === name);
+  if (!item) return toast("device not found in /api/devices");
+  const r = await api("/api/camhost/bind", { video_device_id: item.value });
+  toast(r.ok ? "CamHost bound to " + name : ("bind failed: " + (r.err || "?")));
+};
+$("music-onair").onclick = async () => {
+  const st = await api("/api/state");
+  const r = await api("/api/music/on-air", { on: !(st.musicOnAir === true) });
+  toast(r.ok ? "musicOnAir: " + (r.musicOnAir ? "ON" : "OFF") : "flip failed");
+};
+$("m-apply").onclick = async () => {
+  const arr = (id) => $(id).value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  const body = {
+    showTitle: $("m-show").value || null,
+    segment: $("m-seg").value || null,
+    segmentId: $("m-segid").value || null,
+    airDateUtc: $("m-airdate").value || null,
+    presenter: arr("m-presenter"),
+    guest: arr("m-guest"),
+    dateline: $("m-dateline").value || null,
+    kicker: $("m-kicker").value || null,
+    rundown: arr("m-rundown"),
+  };
+  const r = await api("/api/meta", body);
+  toast(r.ok ? "metadata applied" : "apply failed");
+};
+$("bug-apply").onclick = async () => {
+  const r = await api("/api/bug", {
+    text: $("bug-text").value || null,
+    corner: $("bug-corner").value,
+    color: $("bug-color").value,
+    enabled: $("bug-enabled").checked,
+    opacity: 0.85,
+  });
+  toast(r.ok ? "bug applied" : "apply failed");
+};
+$("bug-color").addEventListener("input", () => { $("bug-color")._touched = true; });
+
+async function pollThumbs() {
+  try {
+    const t = await fetch("/api/thumbs").then(r => r.json());
+    for (const [scene, v] of Object.entries(t)) {
+      // monitors update FIRST — even for scenes with no grid card (program cut in OBS itself)
+      if (scene === curPreview && $("prevthumb").src !== v.img) $("prevthumb").src = v.img;
+      if (scene === curProgram && $("progthumb").src !== v.img) $("progthumb").src = v.img;
+      const c = $("card-" + scene); if (!c) continue;
+      const img = c.querySelector("img"), age = c.querySelector(".age");
+      if (img.src !== v.img) img.src = v.img;
+      // HONEST (2026-07-15): a black/absent/stale frame is NEVER labeled LIVE. `rendering` (from
+      // /api/thumbs: a recent non-black frame, bytes>threshold within the window) is the ONLY thing
+      // that may read LIVE. registered-but-not-rendering reads "NO SIGNAL", not LIVE.
+      if (!v.rendering) { age.textContent = "NO SIGNAL"; age.style.color = "var(--live)"; age.title = `camera black/absent (${Math.round((v.frac||0)*100)}% of frame non-black, age ${v.age}s) — not labeled LIVE`; }
+      else { age.textContent = scene === curProgram ? "LIVE" : (v.age < 3 ? "now" : v.age + "s"); age.style.color = ""; age.title = `rendering: camera non-black (${Math.round((v.frac||0)*100)}% of frame, age ${v.age}s)`; }
+    }
+  } catch (_) {}
+}
+// ---- cure 2: the live-feel loops (2026-07-15) ----------------------------------------------------
+// Both read /api/thumb (ONE scene, binary jpeg); hitting it keeps the server's 3fps capture loop awake.
+// NEVER an all-card fast-poll (that is the perf-floor falsifier). curPreview/curProgram come from
+// refresh() (2s). liveFrame preloads via a detached Image so a 404 (no thumb yet) never flashes broken.
+function liveFrame(imgEl, scene) {
+  if (!imgEl) return;
+  const probe = new Image();
+  probe.onload = () => { imgEl.src = probe.src; }; // memory-cached; no second network hit
+  probe.src = "/api/thumb?scene=" + encodeURIComponent(scene) + "&_=" + Date.now();
+}
+let clickLoopScene = null, clickLoopTimer = null;
+function startClickLoop(scene) {            // §1.1: a clicked tile plays a ~5s live loop, then falls back to still
+  clickLoopScene = scene;
+  if (clickLoopTimer) clearInterval(clickLoopTimer);
+  const card = $("card-" + scene), img = card && card.querySelector("img");
+  if (!img) return;
+  const started = Date.now();
+  clickLoopTimer = setInterval(() => {
+    if (clickLoopScene !== scene || Date.now() - started > 5000) { clearInterval(clickLoopTimer); clickLoopTimer = null; return; }
+    liveFrame(img, scene);
+  }, 333);
+}
+function pollPreviewMonitor() {             // §1.2/§1.3: armed PREVIEW monitor live at ~3fps; freezes on air
+  if (!curPreview) return;
+  const onAir = (curPreview === curProgram);
+  const pm = $("prevmode");
+  if (pm) pm.textContent = onAir ? "⏸ ON AIR — frozen (program owns it)" : "● live 3fps";
+  if (onAir) return;                        // freeze-on-air: hold the last snap (do not refresh)
+  liveFrame($("prevthumb"), curPreview);
+}
+let lastHealthJson = "";
+async function pollHealth() {
+  try {
+    const h = await api("/api/health");
+    const sig = JSON.stringify(h);
+    if (sig === lastHealthJson) return; // no DOM churn (rebuild mid-click swallows FIX presses)
+    lastHealthJson = sig;
+    const el = $("health"); el.textContent = "";
+    for (const c of h.checks || []) {
+      const d = document.createElement("div"); d.className = "hc";
+      const dot = document.createElement("span"); dot.className = "dot " + (c.ok ? "on" : "bad");
+      const nm = document.createElement("span"); nm.textContent = c.name; nm.title = c.detail || "";
+      d.appendChild(dot); d.appendChild(nm);
+      if (!c.ok && c.fix) {
+        const fb = document.createElement("button"); fb.className = "fixbtn"; fb.textContent = "FIX";
+        fb.onclick = () => api("/api/fix", { what: c.fix }).then(r => toast(r.note || r.err));
+        d.appendChild(fb);
+      }
+      if (!c.ok && !c.fix) { nm.style.color = "var(--warn)"; nm.title = c.detail || ""; }
+      el.appendChild(d);
+    }
+  } catch (_) {}
+}
+// ---- tooltips on every control + the quick guide (WS4) ----
+const HELP = {
+  takebtn: "Transition the PREVIEW scene onto PROGRAM (what the audience sees), with a fade.",
+  projbtn: "Open OBS's own program window — the true 30fps smooth monitor. These panels are lightweight snapshots.",
+  music: "Background music bed level. 0 = silent, 100 = full.",
+  autobtn: "Auto-rotate the program through a set of templates on a timer. Any manual cut takes control back.",
+  beats: "Auto-rotation schedule, e.g. COLONY:28,CAM_PIP:18 (TEMPLATE:seconds).",
+  unifeed: "Mirror the UNI colony Producer's own live narration into the ticker + caption (claim-fenced) — via the in-app OverlayPublisher (the old broadcast_bridge.exs is retired).",
+  weburl: "A web page URL to show. Defaults to the master-plan board.",
+  clipurl: "A YouTube URL or 11-char video id to re-air. Plays with its own audio.",
+  clipsecs: "Optional: auto-return to the previous scene after N seconds.",
+  clipback: "Return to whatever was on program before the clip.",
+  winlist: "List the open windows you can share into a slot.",
+  winsel: "Pick a window to bind into a share slot (feeds DESK / SHARE / SHARE_MULTI / TEACH).",
+  "lt-k": "Lower-third kicker (small label above the title).",
+  "lt-t": "Lower-third title (the main strap line).",
+  "lt-s": "Lower-third subtitle.",
+  cap: "Caption band text (leave empty to hide).",
+  ticker: "Ticker items, one per line, scrolling across the bottom.",
+  applyoverlays: "Apply the on-screen text. Blocked by the claim fence unless it describes behaviour / viability-learning.",
+  force: "Bypass the claim fence — you own the claim and it must have a committed receipt. Logged.",
+  confirm: "Type CONFIRM to arm GO LIVE / OFF AIR (the outward cut is always human-triggered).",
+  golive: "DEV PREVIEW ONLY — Start streaming to YouTube + Twitch (needs the restreamer up + keys). Requires CONFIRM.",
+  offair: "Stop the public stream. Requires CONFIRM.",
+  preflight: "Render every template + run all health checks → GO / NO-GO before you go live.",
+  "v-MicHost": "Put this PC's microphone on air (blocked when the PC camera is the only camera on program).",
+  "v-mute": "Mute all voice. Slot buttons (Slot 1..10 mic) appear here whenever that slot is publishing.",
+};
+for (const [id, t] of Object.entries(HELP)) { const el = $(id); if (el && !el.title) el.title = t; }
+$("helpbtn").onclick = () => { $("guide").open = !$("guide").open; };
+if (!localStorage.getItem("uni_cc_seen")) { $("guide").open = true; localStorage.setItem("uni_cc_seen", "1"); }
+document.querySelectorAll(".lanip").forEach(el => el.textContent = "10.190.245.196");
+
+// ---- camera picker (dynamic: any of the 10 slots into full/pip/side/trio/grid, chosen at select) ----
+let pickLay = "full", pickCams = [], pickBuilt = false;
+function buildCamPick(){
+  const box = $("campick"); if (!box) return;
+  let html = `<button data-cam="host" class="cambtn">PC</button>`;
+  for (let i = 1; i <= 10; i++) html += `<button data-cam="${i}" class="cambtn">${i}</button>`;
+  box.innerHTML = html;
+  box.querySelectorAll(".cambtn").forEach(b => b.onclick = () => { const c = b.dataset.cam; const idx = pickCams.indexOf(c); if (idx >= 0) pickCams.splice(idx, 1); else pickCams.push(c); updatePickUI(); });
+  pickBuilt = true; updatePickUI();
+}
+function updatePickUI(){
+  const box = $("campick"); if (!box) return;
+  box.querySelectorAll(".cambtn").forEach(b => { const n = pickCams.indexOf(b.dataset.cam); b.classList.toggle("sel", n >= 0); const base = b.dataset.cam === "host" ? "PC" : b.dataset.cam; b.textContent = base + (n >= 0 ? " #" + (n + 1) : ""); });
+  const st = $("campickstatus"); if (st) st.textContent = `${pickLay.toUpperCase()} · ${pickCams.map(c => c === "host" ? "PC" : ("cam" + c)).join(", ") || "pick cameras"}`;
+}
+function camPickDots(s){
+  if (!pickBuilt) buildCamPick();
+  const slots = (s && s.slots) || {};
+  $("campick").querySelectorAll(".cambtn").forEach(b => { const c = b.dataset.cam; if (c === "host") return; const reg = slots["cam" + c]; b.style.borderColor = (reg && reg.ageMs < 8000) ? "var(--ok)" : ""; });
+}
+document.querySelectorAll(".laybtn").forEach(b => b.onclick = () => { pickLay = b.dataset.lay; document.querySelectorAll(".laybtn").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); updatePickUI(); });
+const doCamLay = (preview) => api("/api/camlayout", { layout: pickLay, cams: pickCams, preview }).then(r => r.ok ? toast(`${pickLay} → ${r.scene}`) : toast(r.err || "camlayout failed", true));
+$("camlay-cut").onclick = () => doCamLay(false);
+$("camlay-prev").onclick = () => doCamLay(true);
+$("camlay-clear").onclick = () => { pickCams = []; updatePickUI(); };
+
+// ---- streaming endpoints (encrypted at rest; up to 20 · node-managed ffmpeg fan-out) ----
+let epRows = [];
+// PRESETS (2026-07-16): only platforms whose ingest URL is a STABLE, publicly-documented address are
+// listed here — never a guessed/dynamic-per-account URL (that would be a confident-looking wrong
+// answer, exactly the kind of dishonesty this feature exists to remove). Multiple accounts on the
+// SAME platform are already supported — pick the preset more than once and rename each row
+// (e.g. "YouTube #1", "YouTube #2"); the platform is not a unique key, the row name is.
+const EP_PRESETS = [
+  { label: "YouTube", url: "rtmp://a.rtmp.youtube.com/live2/" },
+  { label: "Twitch",  url: "rtmp://live.twitch.tv/app/" },
+  { label: "Facebook Live", url: "rtmps://live-api-s.facebook.com:443/rtmp/" },
+  { label: "Custom / paste from platform dashboard…", url: "" },
+];
+(function buildPresetSelect(){
+  const sel = $("ep-preset"); if (!sel) return;
+  for (const p of EP_PRESETS) { const o = document.createElement("option"); o.value = p.url; o.textContent = p.label; o.dataset.label = p.label; sel.appendChild(o); }
+})();
+$("ep-preset").onchange = () => {
+  const sel = $("ep-preset"); const opt = sel.selectedOptions[0]; if (!opt || !opt.dataset.label) { sel.value=""; return; }
+  if (epRows.length >= 20) { toast("max 20 endpoints", true); sel.value = ""; return; }
+  const label = opt.dataset.label.replace(/ \/ paste.*$/, "");
+  const n = epRows.filter(e => (e.name||"").startsWith(label)).length;
+  epRows.push({ name: n ? `${label} #${n+1}` : label, url: opt.value, key: "", enabled: true });
+  renderEpList(); sel.value = "";
+};
+function esc2(s){ return String(s||"").replace(/"/g,"&quot;"); }
+function renderEpList(){
+  const box = $("ep-list"); if(!box) return;
+  box.innerHTML = epRows.map((e,i)=>`<div class="btnrow" style="margin-bottom:4px" data-i="${i}">`+
+    `<input type="text" class="ep-name" placeholder="name" value="${esc2(e.name)}" style="width:70px">`+
+    `<input type="text" class="ep-url" placeholder="rtmp://…/app/" value="${esc2(e.url)}" style="width:148px">`+
+    `<input type="password" class="ep-key" placeholder="${esc2(e.keyMask)||'key'}" style="width:74px">`+
+    `<label class="chk"><input type="checkbox" class="ep-en" ${e.enabled?"checked":""}>on</label>`+
+    `<button class="ep-del" title="remove">✕</button></div>`).join("");
+  box.querySelectorAll(".ep-del").forEach((b,idx)=>b.onclick=()=>{ epRows.splice(idx,1); renderEpList(); });
+}
+function collectEps(){
+  return Array.from($("ep-list").querySelectorAll("[data-i]")).map(row=>{ const i=+row.dataset.i; return {
+    id: epRows[i] && epRows[i].id, name: row.querySelector(".ep-name").value, url: row.querySelector(".ep-url").value,
+    key: row.querySelector(".ep-key").value, enabled: row.querySelector(".ep-en").checked }; });
+}
+function renderEpStatus(r){
+  // 2026-07-16 sweep D2: an ORPHANED PIN (wrapper on disk, key store gone) used to render the same
+  // reassuring "PIN set" as a working one — and only failed at pin-arm, seconds before air. Say it
+  // here, where there is still time to fix it.
+  if (r.pinOrphan) { $("ep-pinstatus").textContent = "PIN ORPHANED — unwraps nothing (clear it + set keys again)"; $("ep-pinstatus").style.color = "var(--live)"; }
+  else if (r.hasPin !== undefined) { $("ep-pinstatus").textContent = r.hasPin ? "PIN set" : "no PIN set yet"; $("ep-pinstatus").style.color = ""; }
+  if (r.armed !== undefined) { $("ep-armstatus").textContent = r.armed ? "ARMED — fan-out running (" + r.fanout + ")" : "disarmed";
+    $("ep-armstatus").style.color = r.armed ? "var(--live)" : ""; }
+  if (r.fanout !== undefined) $("fanout-status").textContent = r.armed ? "ON · " + r.fanout : "off";
+}
+async function epRefreshStatus(){ const r = await api("/api/endpoints", { action: "status" }); renderEpStatus(r); return r; }
+$("ep-unlock").onclick = async ()=>{ const r=await api("/api/endpoints",{action:"unlock",pass:$("ep-pass").value}); if(r.err) return toast(r.err,true); epRows=r.endpoints||[]; renderEpList(); toast("unlocked — "+epRows.length+" endpoint(s)"); epRefreshStatus(); };
+$("ep-lock").onclick = async ()=>{ await api("/api/endpoints",{action:"lock"}); epRows=[]; renderEpList(); toast("locked"); epRefreshStatus(); };
+$("ep-add").onclick = ()=>{ if(epRows.length>=20) return toast("max 20 endpoints"); epRows.push({name:"",url:"",key:"",enabled:true}); renderEpList(); };
+$("ep-save").onclick = async ()=>{ if(!$("ep-pass").value) return toast("enter your passphrase first",true); const r=await api("/api/endpoints",{action:"save",pass:$("ep-pass").value,endpoints:collectEps(),pin:$("ep-newpin").value||undefined}); if(r.err) return toast(r.err,true); epRows=r.endpoints||[]; renderEpList(); toast(r.hasPin&&$("ep-newpin").value?"saved + encrypted + PIN set":"saved + encrypted"); $("ep-newpin").value=""; renderEpStatus(r); };
+// 2026-07-17: safe import — server reads ~/Desktop/streaming.txt, encrypts, wraps PIN. Nothing
+// sensitive traverses this page: the request carries only {action:"import"}, the response returns
+// only masked keys + counts. Full round-trip < 2s. (Gate: endpoints-import-key-blind.)
+$("ep-import").onclick = async ()=>{
+  const btn=$("ep-import"), st=$("ep-import-status");
+  btn.disabled=true; st.textContent=" reading Desktop/streaming.txt…"; st.style.color="";
+  try {
+    const r=await api("/api/endpoints",{action:"import"});
+    if(r.err) { st.textContent=" ✗ "+r.err; st.style.color="var(--live)"; return toast(r.err,true); }
+    epRows=r.endpoints||[]; renderEpList(); renderEpStatus(r);
+    const msg = "imported "+r.imported+" endpoint(s)"+(r.pinSet?" + PIN wrapped":"")+(r.warnings&&r.warnings.length?" · "+r.warnings.length+" warning(s)":"");
+    st.textContent=" ✓ "+msg; st.style.color="var(--ok)";
+    toast(msg + " — delete streaming.txt now");
+  } catch(e) { st.textContent=" ✗ "+(e.message||e); st.style.color="var(--live)"; toast("import failed: "+(e.message||e),true); }
+  finally { btn.disabled=false; }
+};
+$("fanout-on").onclick = async ()=>{ const r=await api("/api/fanout",{on:true}); if(r.err) return toast(r.err,true); $("fanout-status").textContent="ON · "+r.count; toast("fan-out ON — "+r.count+" endpoint(s)"); epRefreshStatus(); };
+$("fanout-off").onclick = async ()=>{ await api("/api/fanout",{on:false}); $("fanout-status").textContent="off"; toast("fan-out OFF"); epRefreshStatus(); };
+// ---- PIN unlock (separate secret from the passphrase; wraps the SAME passphrase — 2026-07-16) ----
+$("ep-setpin").onclick = async ()=>{
+  const pin=$("ep-newpin").value, pass=$("ep-pass").value;
+  if(!pass) return toast("enter your passphrase first — the PIN wraps it, it doesn't replace it",true);
+  if(!/^\d{4,8}$/.test(pin)) return toast("PIN must be 4-8 digits",true);
+  const r=await api("/api/endpoints",{action:"setpin",pass,pin}); if(r.err) return toast(r.err,true);
+  toast("PIN set — you can now ARM with just the PIN, here or from the HUD"); $("ep-newpin").value=""; renderEpStatus(r);
+};
+$("ep-pin-arm").onclick = async ()=>{
+  const pin=$("ep-arm-pin").value; if(!/^\d{4,8}$/.test(pin)) return toast("enter your PIN",true);
+  const r=await api("/api/endpoints",{action:"pin-arm",pin}); if(r.err) return toast(r.err,true);
+  epRows=r.endpoints||epRows; renderEpList(); toast("ARMED — fan-out ON ("+r.fanout+" endpoint(s)) — GO LIVE is still your separate typed CONFIRM"); $("ep-arm-pin").value=""; renderEpStatus(r);
+};
+$("ep-pin-disarm").onclick = async ()=>{ const r=await api("/api/endpoints",{action:"pin-disarm"}); toast("disarmed — fan-out OFF, endpoints re-locked"); epRows=[]; renderEpList(); renderEpStatus(r); };
+epRefreshStatus();
+
+// ---- watermarks (up to 3, spool-driven via ovl_watermark) ----
+function buildWmList(){
+  const box=$("wm-list"); if(!box) return;
+  box.innerHTML=[0,1,2].map(i=>`<div class="btnrow" style="margin-bottom:4px" data-wm="${i}">`+
+    `<input type="text" class="wm-url" placeholder="img url / data:" style="width:116px">`+
+    `<input type="number" class="wm-x" title="x%" value="2" style="width:40px">`+
+    `<input type="number" class="wm-y" title="y%" value="4" style="width:40px">`+
+    `<input type="number" class="wm-w" title="w%" value="12" style="width:40px">`+
+    `<input type="number" class="wm-op" title="opacity 0-1" value="0.85" step="0.05" min="0" max="1" style="width:46px">`+
+    `<label class="chk"><input type="checkbox" class="wm-en">on</label></div>`).join("");
+}
+$("wm-apply").onclick = async ()=>{
+  const wms=Array.from($("wm-list").querySelectorAll("[data-wm]")).map(r=>({url:r.querySelector(".wm-url").value,x:+r.querySelector(".wm-x").value,y:+r.querySelector(".wm-y").value,w:+r.querySelector(".wm-w").value,opacity:+r.querySelector(".wm-op").value,enabled:r.querySelector(".wm-en").checked}));
+  const r=await api("/api/watermark",{watermarks:wms}); toast(r.ok?("watermarks applied ("+(r.watermarks||[]).filter(w=>w.enabled).length+" on)"):(r.err||"failed"),!r.ok);
+};
+buildWmList();
+
+
+
+refresh(); pollThumbs(); pollHealth();
+setInterval(refresh, 2000);      // status/air — lighter cadence (air truth changes on action, not sub-second)
+setInterval(pollThumbs, 3000);   // reference stills for every grid card (NOT video) + the honest labels
+setInterval(pollPreviewMonitor, 333); // cure 2: armed PREVIEW monitor @ ~3fps (ONE scene, freezes on air)
+setInterval(pollHealth, 5000);
+// HONESTY FIX 2026-07-16 (caught LIVE during the operator walkthrough — the panel read
+// "no PIN set yet / disarmed" while the server was hasPin:true, armed:true, fanout:2).
+// epRefreshStatus() only ever ran on THIS page's own clicks and once at load, so any state change
+// from anywhere else was invisible: arming from the HUD, a cc restart, a fan-out dying, another
+// browser tab. The endpoints panel is a GO-LIVE surface — a stale "disarmed" there is exactly the
+// class of lie that gets someone to hit ARM twice or believe they are not live when they are.
+// Poll it on its own cadence (5s; it is one cheap loopback POST) so it can never drift from truth.
+setInterval(() => { epRefreshStatus().catch(() => {}); }, 5000);
+</script>
+</body>
+</html>

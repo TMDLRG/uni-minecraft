@@ -1,0 +1,46 @@
+[Unit]
+Description=UNI Production MCP (FastMCP - token-gated, LAN/WireGuard only, session-gated live verbs)
+# Inbound control only (EPISTEMIC_CHARTER Art. V governs OUTBOUND telemetry; this server makes no
+# outbound calls - it accepts commands arriving over the owner's private network). Mirrors
+# uni-control-mcp.service exactly; new port 8094, new nginx /prod-mcp location, SHARED /etc/uni-approvals.
+After=network-online.target uni-builder-api.service podman.socket
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/uni
+Environment=PYTHONPATH=/opt/uni
+Environment=UNI_PROD_MCP_BIND_HOST=127.0.0.1
+# 8095, NOT the designed 8094: on the broadcast node (uni-lab-79740c) lab-os allocates 8094 to
+# uni-glass-configure.service (found 2026-07-11 — Errno 98 crash-loop; the glass configurator's
+# 404s had been answering "health" probes). Port checked free via ss before selection.
+Environment=UNI_PROD_MCP_PORT=8095
+Environment=UNI_MCP_FS_ROOTS=/opt/uni:/var/lib/uni:/etc/uni:/var/log/uni:/run
+# Approval gate: the production MCP SHARES the existing /etc/uni-approvals store + the uni-approvald
+# daemon (ADR-PROD-002). Destructive/outward-facing verbs (start/stop_broadcast, admit_guest, schedule)
+# ALWAYS require an explicit human decision; the in-show verbs run under an operator-set live session
+# (UNI_APPROVALS_AUTOAPPROVE allowlist = operator pre-authorization, NOT agent self-approval - GAP G-PA).
+Environment=UNI_MCP_APPROVAL_REQUIRED=1
+Environment=UNI_APPROVALS_DIR=/etc/uni-approvals
+# Where the producer writes the overlay state the MCP set_overlay/narrate/duck tools mutate.
+Environment=UNI_BCAST_SPOOL=/var/lib/uni/broadcast
+Environment=UNI_BCAST_JSON=/var/lib/uni/broadcast/broadcast.json
+# obs-websocket control endpoint (the mixer quadlet publishes it loopback-only on the same node).
+Environment=UNI_OBS_WS=ws://127.0.0.1:4455
+# UNI_RUNTIME_TOKEN (raw deploy password) + UNI_RUNTIME_NAME come from the image; the MCP derives the
+# 32-hex bearer = sha256(password)[:16].hex(). Fail-closed: it refuses to start without a token.
+EnvironmentFile=-/etc/uni/runtime.env
+ExecStartPre=-/bin/mount -o remount,rw /
+ExecStartPre=-/bin/mkdir -p /var/lib/uni/broadcast
+ExecStartPre=-/bin/mkdir -p /var/lib/uni/logs
+ExecStart=/opt/uni/.venv/bin/python -m production.mcp.server
+StandardError=append:/run/uni-production-mcp.err.log
+Restart=always
+RestartSec=3
+# NOTE: no systemd sandboxing (ProtectControlGroups/ProtectKernelTunables) - this service must drive
+# rootful podman + obs-websocket + filesystem, which those directives would break. Containment is the
+# fail-closed token + the loopback/WireGuard-only bind guard + the append-only audit log + the
+# human-approval gate on outward-facing verbs.
+
+[Install]
+WantedBy=multi-user.target

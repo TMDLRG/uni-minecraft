@@ -1,0 +1,141 @@
+# UNI Production Platform - run-of-show template: PANEL (host + N guests)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# Host moderates N remote guests. Each guest is admitted from the green room in
+# turn (admit_guest - HUMAN-GATED, once per guest), the stage page lays them out
+# in a panel grid (set_layout panel), rotating lower-thirds name whoever speaks.
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck admit_guest set_layout remove_guest
+
+template: panel
+description: >
+  Moderated panel - host plus N guests in a panel-grid layout. Title open, host
+  frames the topic, admit each guest in turn, open discussion with rotating
+  lower-thirds, wrap and release. Each admit_guest is a separate human-gated act.
+defaultLanguage: en
+
+beats:
+  - id: pn-01-open
+    name: Panel title open
+    scene: TITLE
+    durationSec: 7
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: title
+        payload:
+          visible: true
+          kicker: PANEL
+          text: Many voices, one mission
+          subtitle: A moderated discussion
+      - layer: nowPlaying
+        payload: { segment: Panel, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; music up.
+
+  - id: pn-02-host-frame
+    name: Host frames the topic
+    scene: NEWSDESK
+    durationSec: 30
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: MODERATOR
+          title: Todays panel
+          subtitle: World understanding and the path to peace
+          tone: ok
+    narrate: null
+    music: { volume: 0.12, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; duck(on) for the live host; guests wait in the green room.
+
+  - id: pn-03-admit-guests
+    name: Admit each guest to the panel
+    scene: GUESTS
+    durationSec: 20
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: PANELIST
+          title: Introducing the panel
+          subtitle: Each guest admitted from the green room
+          tone: ok
+    narrate: null
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: >
+      HUMAN-GATED, once PER guest - admit_guest(guestId, layout=panel) for each panelist.
+      set_layout(panel) on the stage page; cut_to GUESTS. OBS captures the LiveKit stage page (grid).
+
+  - id: pn-04-discussion
+    name: Open discussion
+    scene: GUESTS
+    durationSec: 300
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: PANELIST
+          title: Active speaker
+          subtitle: Rotated by the moderator
+          tone: ok
+      - layer: caption
+        payload: { visible: true, lang: en, text: "" }
+    narrate: null
+    music: { volume: 0.08, duck: true }
+    clip: null
+    notes: >
+      Panel grid. Moderator drives rotating speaker lower-thirds via set_overlay(lowerThird,...) as each
+      panelist speaks. Live captions stream into the caption layer. Music stays ducked.
+
+  - id: pn-05-wrap
+    name: Wrap and release
+    scene: NEWSDESK
+    durationSec: 25
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: MODERATOR
+          title: Thank you to our panel
+          subtitle: Closing thoughts
+          tone: ok
+      - layer: caption
+        payload: { visible: false }
+    narrate: null
+    music: { volume: 0.14, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; thank the panel; remove_guest(guestId) per panelist (session-auth) back to green room.
+
+  - id: pn-06-out
+    name: Panel out
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: title
+        payload:
+          visible: true
+          kicker: PANEL
+          text: Thank you for watching
+          subtitle: The feed continues
+      - layer: lowerThird
+        payload: { visible: false }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; lift the music; hand off to the slot.

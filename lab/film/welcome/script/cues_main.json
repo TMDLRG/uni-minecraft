@@ -1,0 +1,492 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "main",
+  "assembled_utc": "2026-08-02T02:21:43.567Z",
+  "forensic_capture_utc": "2026-08-02T01:10:13.645Z",
+  "design_rule": [
+    "EXPOSE THE MEASUREMENT, NEVER ASSERT THE CONCLUSION. The operator's instruction, verbatim:",
+    "'only ever shown and presented for others to observe of the signal and calibrate for them selves'.",
+    "Narration names what is on screen and stops. Every PRINTS band is the recorded stdout of a probe;",
+    "every quotation is re-read and re-hashed at render time; every number is a token id."
+  ],
+  "scenes": [
+    {
+      "id": "m0m1_open",
+      "plate": "title",
+      "kicker": "A LABORATORY BUILT TO BE CAUGHT BEING WRONG",
+      "line1": "Welcome to UNI Labs",
+      "line2": "Every frame after this one is a command, and what it printed.",
+      "narration": "This is the long version. What follows is a laboratory shown one frame at a time. Each frame carries a question in plain words, the command that answers it, and the output that command actually printed. Nothing in it asks you to accept a summary. You are being handed the receipts.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m0+m1_open"
+    },
+    {
+      "id": "m0m1_the_falsifier",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 30,
+      "to": 33,
+      "why": "The same file, further down: the exact edit that would break one of its claims",
+      "narration": "And this is what stands behind that sentence. Every claim in that document ships with the specific change that would break it. On screen is one of them. Alter an update equation in the way it names, and a named gate stops holding. It tells you where to put the crowbar.",
+      "tail_silence": 1.6,
+      "_from_documentary": "d_m0+m1_the_falsifier"
+    },
+    {
+      "id": "m0m1_mission",
+      "plate": "intent",
+      "lines": [
+        "Worldwide peace through free and open understanding.",
+        "The public pursuit and ownership of",
+        "General Universal Natural Intelligence.",
+        "The end of extract and extortion.",
+        "Making safe all wombs, and Gaia —",
+        "earth, our solar system, and beyond."
+      ],
+      "narration": "That is what this work is for, whole and unsoftened. Nothing has been trimmed off it to make it easier to say out loud. The amber rail and the header are the point: none of that frame was measured, and none of it is offered as a finding. It is where the instruments are pointed.",
+      "tail_silence": 1.8,
+      "_from_documentary": "d_m0+m1_mission"
+    },
+    {
+      "id": "m0m1_numbers_measured",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "Where did the numbers in this film come from?",
+      "source": "lab/film/welcome/qc/tokens.cjs — each figure is an expression over a live file, evaluated while the frames were being made",
+      "note": "A number typed into a film has no half-life. It simply becomes wrong at an unannounced moment.",
+      "narration": "Not one figure in this film was typed. Each is an expression run against a real file at the moment the frame was built. The line on screen is that register reporting how many expressions it carries and how many failed to resolve. Run it after you clone, and compare.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m0+m1_numbers_measured"
+    },
+    {
+      "id": "m0m1_film_under_its_own_gate",
+      "plate": "measurement",
+      "probe": "film.qc",
+      "asks": "Is this film itself held to a check?",
+      "source": "lab/film/welcome/qc/verify_welcome_film.cjs — and a mutation suite that breaks the film on purpose to see whether the check notices",
+      "note": "The check reads words and receipts. It has no way to tell whether the film is honest in spirit, and it prints that limitation on every run.",
+      "narration": "The film is treated the way it treats everything else. This check forbids a list of words, re-reads every quoted line range and hashes it again, and re-derives each figure from the file it came from. The second count on that line is deliberate sabotage it was required to catch.",
+      "tail_silence": 1.6,
+      "_from_documentary": "d_m0+m1_film_under_its_own_gate"
+    },
+    {
+      "id": "m2_title",
+      "plate": "title",
+      "kicker": "THE ESTATE — FIVE BODIES",
+      "line1": "Five bodies, kept apart on purpose.",
+      "line2": "Each one is shown in its own source, then tested.",
+      "narration": "Five bodies. A colony that acts inside a world, a producer that would direct a broadcast, a laboratory that models a bacterial motor, a control plane that records what the others did, and a public record. They are kept apart on purpose. Each one is about to be shown in its own source.",
+      "tail_silence": 1.2,
+      "_from_documentary": "d_m2_title"
+    },
+    {
+      "id": "m2_colony_boundary",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/bridge.ex",
+      "from": 7,
+      "to": 14,
+      "why": "Body one, the colony — the two messages that cross between brain and body, and nothing else",
+      "narration": "Body one is a colony acting inside a world. This is its boundary, in the file that enforces it. Senses go in on one line, one action comes back, and the code puts the word ONLY in capitals. The brain never sees raw world state. The body never sees beliefs.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m2_colony_boundary"
+    },
+    {
+      "id": "m2_producer",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/producer/brain.ex",
+      "from": 5,
+      "to": 7,
+      "why": "Body two, the producer — the header of the module that would choose every shot",
+      "narration": "Body two would direct a broadcast: which shot, which cut, when to hold. Read what it runs on. Expected free energy minimisation, no scripted rules, no reward. The thing that would point the camera runs the same mathematics as the thing it would broadcast. That is the sentence on screen, not a summary of it.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m2_producer"
+    },
+    {
+      "id": "m2_one_engine",
+      "plate": "measurement",
+      "probe": "engine.zero_deps",
+      "asks": "How many third-party dependencies does the engine those two bodies share carry?",
+      "source": "mix.exs — the dependency declaration itself, printed rather than described",
+      "note": "Hex dependencies declared: @n.engine.hex_deps",
+      "narration": "Both of those bodies run one engine, and this is its dependency list. Nothing between the brackets. It declares @n.engine.hex_deps hex dependencies. That is not offered here as a virtue. It is what makes the no-language-model claim checkable in one command instead of by trust, because there is no library an inference call could hide inside.",
+      "tail_silence": 1.3,
+      "_from_documentary": "d_m2_one_engine"
+    },
+    {
+      "id": "m2_control_plane",
+      "plate": "measurement",
+      "probe": "ledger.chain",
+      "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+      "source": "evidence/control_plane/ledger.ndjson and anchor.json — each entry naming the hash of the entry before it",
+      "narration": "Body four records what the other four did, including what they got wrong. Every entry names the hash of the entry before it. The command counted @n.cp.entries entries, no broken links, and an anchor whose declared length and head match the chain it anchors. Watch the next frame before you carry that agreement anywhere.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m2_control_plane"
+    },
+    {
+      "id": "m3+m4_watch_two_lives",
+      "plate": "title",
+      "kicker": "HOW TO WATCH",
+      "line1": "Two things get called live.",
+      "line2": "One is a file being re-read. The other is a broadcast.",
+      "narration": "Two things get called live, and they are not the same. One means a surface re-reading a file on disk the moment you ask. The other means something on the air. The next two frames separate them, with commands.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "m3+m4_watch_disk",
+      "plate": "measurement",
+      "probe": "tree.mc",
+      "asks": "Was the tree clean when these frames were made?",
+      "source": "git status -sb in the estate's main repository, at the instant of capture",
+      "note": "A working tree is a fact about one machine at one instant, not about any other clone.",
+      "narration": "Here is what reading disk looks like. This command ran while these frames were being made, and it reports the film's own render code sitting edited, with captures not yet committed. Nobody tidied the tree before filming it. Read the lines.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "m3+m4_watch_not_on_air",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Is any of this reaching an audience today?",
+      "source": "viewer/prove_golive_refuses_me.cjs — every path to air, tried and recorded",
+      "note": "This binds the paths inside this codebase. The machine underneath is a separate question, and the operator's.",
+      "narration": "The other sense of live. A program here attempts to broadcast, deliberately, down every path this codebase offers, and writes down what stopped it. The last line is its result. The lines above it say what that binding covers and what it leaves open.",
+      "tail_silence": 1.5,
+      "prints_tail": 1,
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "m3+m4_engine_no_reward_line",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/mc.ex",
+      "from": 9,
+      "to": 9,
+      "why": "The brain's own module documentation, one line, unedited",
+      "narration": "Now the engine. A system that chooses actions is usually pointed at a number to push upward. This one states otherwise in its own module documentation, and the line is on screen with its file, its line number and its digest. Go and check it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "m3+m4_engine_no_reward_search",
+      "plate": "measurement",
+      "probe": "engine.no_reward",
+      "asks": "Where does the word reward appear in the brain?",
+      "source": "lib/sp/brain — the search, and the lines it returned, unedited",
+      "note": "This is a word search across the brain modules. A word search is not a search for a concept.",
+      "narration": "And here is the search behind that sentence. It reads the brain for the word reward and prints what it finds. A short list of comment lines comes back. They are on screen, whole, and nobody has summarised them for you.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "m3+m4_engine_efe_fence",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/plan.ex",
+      "from": 12,
+      "to": 16,
+      "why": "The planner, and the fence the same paragraph draws around it",
+      "narration": "This is how it chooses instead. It rolls its beliefs forward and scores expected free energy over the futures it expects to hold. The same paragraph draws the fence: this is planning, and it is not the other thing. Both halves are on screen together.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "m3+m4_engine_blanket_pipe",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/brain/bridge.ex",
+      "from": 3,
+      "to": 5,
+      "why": "The Markov blanket, as it is actually implemented",
+      "narration": "And this is the boundary between brain and body. In theoretical biology it is called a Markov blanket. Here it is a pipe. Senses go in as one text line, one action atom comes back, and exactly @n.blanket.channels_out message kinds ever cross it.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "m5_classes",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 40,
+      "to": 40,
+      "why": "The vocabulary a claim may declare, read from the module that enforces it",
+      "narration": "Every claim this project draws carries one word from this list. There are @n.truth.classes of them. What is on screen is not a summary. It is that line of the module that enforces it, with the file, the line number, and the digest of those bytes.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "m5_materials",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 257,
+      "to": 263,
+      "why": "Not injective — a material cannot be read backwards (the module's own heading)",
+      "narration": "@n.truth.classes classes, @n.truth.materials materials. There are fewer materials than classes, so a surface cannot be read backwards to the class behind it. And the last clause is on screen with the rest: anything unreadable falls to fog, never to a default.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "m5_verdict_words",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 37,
+      "to": 38,
+      "why": "The verdict words a row may carry, and the description that ships beside them",
+      "narration": "@n.truth.verdict_words words, and no percentage anywhere in the schema. A score can be averaged until a failure disappears into it. These cannot. The description on screen defines the least comfortable of them: a claim withdrawn, and a gate registered but never run.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "m5_one_ledger",
+      "plate": "measurement",
+      "probe": "gates.runner",
+      "asks": "Can a check exit zero without printing the word PASS?",
+      "source": "viewer/gate_runner.cjs — the law: exit zero if and only if the printed verdict is PASS",
+      "note": "In the canonical ledger: @n.gap.in_ledger of @n.gap.registered registered gates.",
+      "narration": "The law here is narrow. A check may exit zero only if it also printed the word PASS, and the runner asserts that over every gate it ran. The line at the foot asks a different question of the same registry. Its answer is there too.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "m5_locators",
+      "plate": "measurement",
+      "probe": "concepts.locators",
+      "asks": "Does every concept in the registry point at a line that exists?",
+      "source": "viewer/verify_concepts.cjs --mutate — the registry is broken on purpose and the check must notice",
+      "narration": "Every concept in this registry names a file and a line. This check opens each one. It ran with its mutation suite, which breaks the registry on purpose and requires the check to notice. What it cannot settle is whether an anchor is the right anchor.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "m5_bag",
+      "plate": "measurement",
+      "probe": "bag.roundtrip",
+      "asks": "Does an evidence pack survive a round trip, and is a forged one caught?",
+      "source": "viewer/verify_bag.cjs --mutate — every mutation is required to FAIL verification",
+      "note": "Independent custodians: @n.witness.independent_custodians — claim level tamper_evident, never authenticated.",
+      "narration": "This packs the evidence, ships it, unpacks it, then forges it on purpose to see whether the forgery is refused. The note under the frame names what that is worth. Tamper-evident, and not unforgeable. The count of independent custodians is beside it.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "m6_open",
+      "plate": "title",
+      "kicker": "M6 — THE HONEST STATE",
+      "line1": "What is not true here today.",
+      "line2": "One fact. One command. One frame.",
+      "narration": "This next stretch is not a disclaimer reel at the end of a pitch. It is the part of the film the rest of the film is for. Every fact in it gets its own frame, its own command and its own output, at the same size as everything you have already been shown.",
+      "tail_silence": 1.5,
+      "_from_documentary": "d_m6_open"
+    },
+    {
+      "id": "m6_golive_run",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Can this software put itself on air?",
+      "source": "viewer/prove_golive_refuses_me.cjs — an agent walking every path to air in this codebase and recording what stops it",
+      "note": "Paths the guard recognises: @n.golive.paths — paths it permits right now: @n.golive.allowed_now",
+      "narration": "A program here attempts to broadcast, deliberately, down every route this codebase has, and records what refuses it. The count of routes and the count it is allowed down are both under the frame. The last line the program printed is its own limit, not its own strength.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m6_golive_run",
+      "prints_tail": 1,
+      "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+    },
+    {
+      "id": "m6_gap_run",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many registered gates have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, cached nowhere",
+      "note": "@n.gap.in_ledger of @n.gap.registered registered gates. @n.gap.absent have no row at all.",
+      "narration": "This is the sharpest number in the film, and it is put on screen without a sentence wrapped around it. Of the gates this project registers, that many appear in its canonical evidence record. The rest do not appear in it at all. The instrument recomputes both counts every time it is asked.",
+      "tail_silence": 1.7,
+      "_from_documentary": "d_m6_gap_run"
+    },
+    {
+      "id": "m6_witness_run",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is there an independent party corroborating this record?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from the capture rather than recalled",
+      "note": "Independent custodians: @n.witness.independent_custodians — custodians qualifying as a witness: @n.witness.qualifying",
+      "narration": "A record only its author can vouch for is worth less than one a stranger can check. This counts the parties outside this machine that corroborate the evidence here. The box that was meant to be the second domain answers the writer's own key, so no custodian sits anywhere the writer cannot reach.",
+      "tail_silence": 1.6,
+      "_from_documentary": "d_m6_witness_run"
+    },
+    {
+      "id": "m6_witness_forgery",
+      "plate": "measurement",
+      "probe": "bag.roundtrip",
+      "asks": "Is a forged evidence pack caught?",
+      "source": "viewer/verify_bag.cjs --mutate — the pack is tampered with on purpose and every mutation is required to fail verification",
+      "note": "Claim level: @n.witness.claim_level — never authenticated, never independent",
+      "narration": "The pack survives a round trip and a tampered one is refused. The same run records the case it cannot catch: edit the payload, recompute the manifest and the tag manifest, and the forgery verifies clean. The gate says that itself, at the foot of its own passing output.",
+      "tail_silence": 1.6,
+      "_from_documentary": "d_m6_witness_forgery"
+    },
+    {
+      "id": "m6_pureworld_run",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the file is read and its first raise located by line number",
+      "note": "The road to air for the colony's forage claim runs through this file.",
+      "narration": "This is the check that would graduate the colony's forage claim. The command opens its runner, finds the first raise, prints the line number it sits on and the block that follows. It does not run the check. There is nothing in there yet to run.",
+      "tail_silence": 1.5,
+      "_from_documentary": "d_m6_pureworld_run"
+    },
+    {
+      "id": "m6_pladder_receipt",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The parity ladder, as the strongest result in this programme states it in its own code",
+      "narration": "The strongest result here reaches held-out duration prediction and stops. @n.pladder.unclosed levels above it are named in the same string and marked untouched, in either direction. That clause is doing real work. Untouched is not weak support. It is no evidence at all, for or against.",
+      "tail_silence": 1.6,
+      "_from_documentary": "d_m6_pladder_receipt"
+    },
+    {
+      "id": "m6_limitations_run",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do?",
+      "source": "docs/control-plane/LIMITATIONS.md — every declared limitation, listed by its identifier",
+      "note": "@n.limitations.declared declared, and derived from one repository of the three.",
+      "narration": "Each identifier on screen names a thing this project states it does not do, carried in the document that collects them. The count under the frame is for one repository out of three. The document says that about itself, and records the omission as one of its own limitations.",
+      "tail_silence": 1.5,
+      "_from_documentary": "d_m6_limitations_run"
+    },
+    {
+      "id": "m6_no_verdict",
+      "plate": "title",
+      "kicker": "THE FIGURE THIS WORK EXISTS TO MOVE",
+      "line1": "No verdict has yet been authored",
+      "line2": "about a real scientific claim.",
+      "narration": "That is the honest position, and it is the last thing this movement says. There is also no register of scientific verdicts anywhere in this estate to count, so this is the one figure in the film that is declared rather than measured. The missing instrument is the harder finding.",
+      "tail_silence": 2,
+      "_from_documentary": "d_m6_no_verdict"
+    },
+    {
+      "id": "m7_title",
+      "plate": "title",
+      "kicker": "THE METHOD, WRITTEN DOWN",
+      "line1": "The Cookbook",
+      "line2": "A corpus this film can count, and you cannot yet clone.",
+      "narration": "The method behind this laboratory is written down. Not as a paper, but as an encyclopedia and a cookbook — chapters, recipes and a lexicon, in a repository of their own. The next frames count it, quote it, and then say plainly what stands between that corpus and you.",
+      "tail_silence": 1.2,
+      "_from_documentary": "d_m7_title"
+    },
+    {
+      "id": "m7_counted",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "How large is the written corpus, and what counted it?",
+      "source": "lab/film/welcome/qc/tokens.cjs — the corpus figures are directory walks and a lexicon read, evaluated when the frame is built",
+      "note": "Chapters are markdown files counted on disk. Concepts and domains are read out of the lexicon's own file.",
+      "narration": "@n.corpus.chapters chapters. @n.corpus.concepts concepts in the lexicon, across @n.corpus.domains registered domains. Not one of those figures is typed into this film. On screen is the tail of the run that resolved every number you will hear: its first three lines are corpus counts, and its last is how many figures the register resolved without failing.",
+      "tail_silence": 1.4,
+      "_from_documentary": "d_m7_counted"
+    },
+    {
+      "id": "m7_kitchen_rules",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/01-kitchen-rules.md",
+      "from": 3,
+      "to": 5,
+      "why": "What the first chapter of the cookbook says it is building",
+      "narration": "This is how the corpus opens. Not with a result, but with the kitchen: the governance discipline, the pantry, and the fence vocabulary that binds every recipe. Read this before you cook anything. Under the frame is the file, the line range, and a digest recomputed from those bytes as the frame was made.",
+      "tail_silence": 1.5,
+      "_from_documentary": "d_m7_kitchen_rules"
+    },
+    {
+      "id": "m7_no_licence",
+      "plate": "measurement",
+      "runs": "git ls-files | grep -ciE \"licen[cs]e|copying\"; grep -m1 \"^## STATUS\" deploy/PUBLISH-DECISION.md",
+      "prints_literal": "0\n## STATUS: STAGED, NOT DEPLOYED. NOTHING IS EXPOSED.",
+      "asks": "Can you take this corpus home today?",
+      "source": "run at the root of the UNI-Encyclopedia-Cookbook repository — a count of tracked licence files, then the corpus's own exposure decision",
+      "note": "No licence file yet. That the repository is not public is stated by the operator, not counted by this frame.",
+      "narration": "The mission clause says free and open. Here is where the corpus stands against it today. Zero files tracked in that repository match a licence or a copying notice, and its own exposure document opens with the words on screen. It is not public, and that part is the operator's statement rather than something this frame counts.",
+      "tail_silence": 1.7,
+      "_from_documentary": "d_m7_no_licence"
+    },
+    {
+      "id": "m8_doors",
+      "plate": "title",
+      "kicker": "HOW TO ENGAGE — FOUR DOORS",
+      "line1": "Watch. Question. Falsify. Contribute.",
+      "line2": "Every command in this film is one you can run yourself.",
+      "narration": "Four ways in. Watch the work on its own surface. Ask a question — it lands in an append-only file under version control. Try to break something. Or take a piece of work. The third door is where the rest of this chapter goes.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "m8_already_checkable",
+      "plate": "measurement",
+      "probe": "public.coverage",
+      "asks": "What can somebody outside this project already check, today, without asking anyone?",
+      "source": "UNI.Public safety/verify_coverage.cjs — the declared universe of pages and subsystems, and the floors under it",
+      "note": "A floor that can only be lowered deliberately is a floor somebody has to sign for.",
+      "narration": "Nothing here needs an account or permission. This one reads the published site and prints its floors. It also printed an amendment: a page was withdrawn because its bytes were not in the commit it cited, so the floor was lowered rather than the fence weakened.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "m8_falsify",
+      "plate": "measurement",
+      "probe": "public.provenance",
+      "asks": "Which command would be worth the most to us if it printed something else on your machine?",
+      "source": "UNI.Public safety/verify_provenance.cjs — every published page held against the commit its citation names",
+      "note": "The last lines are the check naming the one gap that no code inside it can close.",
+      "narration": "Every command in this film runs on a clone. This one holds each published page against the commit it names, then says what it cannot reach from inside that clone. If yours prints something else, that difference is the most useful thing anyone could send back.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "m8_contribute",
+      "plate": "measurement",
+      "probe": "public.a11y",
+      "asks": "What is left for a person once every check on screen has gone green?",
+      "source": "UNI.Public generators/verify_a11y.cjs — contrast computed over a declared pairing table, structure read from the built export",
+      "note": "@n.gap.absent of @n.gap.registered registered checks still have no row in the permanent record, and writing those rows is the operator's.",
+      "narration": "The fourth door. This check computes contrast, reads structure, then names what it cannot measure — whether the words land for a frightened reader. That part is a person's. So are the @n.plan.operator steps in the plan that no agent, and no stranger, may take.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "m9_limits",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do?",
+      "source": "docs/control-plane/LIMITATIONS.md — generated from annotations sitting on the line each limitation lives on",
+      "note": "Derived from one repository of the three. Limitations declared in the flagellar-motor repository are not counted here, and the file says so.",
+      "narration": "The close opens with the list of things the project says it cannot do. @n.limitations.declared of them today, each generated from an annotation in the source and diffed by a gate, so the page cannot drift away from the code it describes.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "m9_mission_returns",
+      "plate": "intent",
+      "lines": [
+        "Worldwide peace through free and open understanding.",
+        "The public pursuit and ownership of",
+        "General Universal Natural Intelligence.",
+        "The end of extract and extortion.",
+        "Making safe all wombs, and Gaia —",
+        "earth, our solar system, and beyond."
+      ],
+      "narration": "The mission again, in the same words as before, on the same amber rail that marks it as intent. Nothing on this frame was measured. It is stated here so that the next frame lands against it rather than instead of it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "m9_worth_today",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "CLAUDE.md",
+      "from": 796,
+      "to": 798,
+      "why": "What it is honestly worth today — and @n.pladder.unclosed parity rungs still untouched.",
+      "narration": "What it is honestly worth today, quoted from the project's governing file with its line range and digest. No verdict has yet been authored about a real scientific claim. No register of verdicts exists to count from, so that is a declaration, not a measurement.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "m9_invitation",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "Where did the numbers in this film come from, and can you check them?",
+      "source": "lab/film/welcome/qc/tokens.cjs — every figure is an expression over a live file, never a typed digit",
+      "narration": "The last frame is a command rather than a logo. That one re-measures every number this film renders. Run it after you clone. If your output disagrees with what you have just watched, the film is wrong, and we would want the receipt.",
+      "tail_silence": 2
+    }
+  ]
+}

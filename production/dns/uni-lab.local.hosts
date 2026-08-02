@@ -1,0 +1,110 @@
+# uni-lab.local.hosts — the authoritative uni-lab.local NAME MAP (dnsmasq addn-hosts).
+# THE ONE declared source of truth for fleet names. Format: <IP> <fqdn> [aliases].
+# dnsmasq serves an A record per line and auto-generates the matching PTR (reverse) record.
+# Multi-homed names carry several lines; `localise-queries` in dnsmasq.uni.conf returns the
+# A record on the SAME subnet the query arrived on, so one clean name is plane-correct:
+#   a LAN querier gets 10.190.245.x · a wg querier gets 10.13.13.x · a Tailscale querier gets 100.x.
+# NV = backend not verified live (box/port down in survey); the NAME is correct — it must not be
+# treated as "up" until its live probe passes (see viewer/infra.cjs). Lines commented with
+# "# NV-HOLD" are withheld until a gate proves them (uncomment after the named gate).
+#
+# Corresponds 1:1 to viewer/infra_registry.json ON NAMES. It no longer mirrors the chip's ADDRESS, and
+# must not: as of 2026-07-16 the registry declares NO LAN address for the chip (see its
+# _lan_dynamic_law). The chip's LAN address is a DHCP lease on a disposable uplink, so THIS FILE — the
+# zone uni-dns serves — is its single source of truth. Studio consumers resolve the name through
+# viewer/host_resolve.cjs and follow whatever this file says; gate: node viewer/verify_host_tracking.cjs.
+#
+# WHY THE OLD "keep the two in sync" INSTRUCTION FAILED (2026-07-16): the lease moved .122 -> .121 and
+# this file, the NRPT rule and infra.cjs's bootstrap literals were all updated — infra_registry.json was
+# not. Nothing enforced the sync, so the Door's hrefs, the HUD's links, Gaia's colony collectors, the
+# glass badge ssh pusher and the litigation-hold mind capture all addressed a dead host while the colony
+# was demonstrably LIVE. The sync requirement is gone because the duplicate declaration is gone.
+#
+# ON THE NEXT LEASE MOVE, exactly two places need the new address (not ~15): the chip lines below, and
+# THINKER's NRPT rule (viewer/apply_nrpt.ps1). Automating that is the reconciliation beacon — P1 of
+# docs/handoffs/ADAPTIVE_SELF_NETWORK_HANDOFF_2026-07-15.md. Until it lands this is a hand edit.
+# Receipt: docs/receipts/chip_address_tracking_2026-07-16.md
+#
+# APPLYING AN EDIT TO THIS ZONE (learned live 2026-08-01, at the cost of a few seconds of DNS):
+#   uni-dns is a dnsmasq CONTAINER that FILE-bind-mounts this file. Editing the file is not enough — the
+#   running dnsmasq must be told to re-read, and the ONLY correct way is:
+#         systemctl restart uni-dns.service
+#   Two tempting shortcuts are BOTH wrong and were both proven wrong on 2026-08-01:
+#   * A SIGHUP (`podman kill --signal HUP uni-dns`) re-reads a STALE inode. An atomic writer swaps the
+#     file's inode on save, but the file bind-mount is pinned to the OLD inode, so dnsmasq faithfully
+#     re-reads the pre-edit text (it logged "90 names" when the file already held 96).
+#   * `podman restart uni-dns` REMOVES the container — the Quadlet runs it with --rm — and does not bring
+#     it back, dropping DNS *and* DHCP on the chip. `systemctl restart uni-dns.service` recreates it from
+#     the Quadlet unit, which re-resolves the bind-mount to the current inode. Confirm with:
+#         podman logs uni-dns  (expect: "read /etc/uni/dns/uni-lab.local.hosts - <N> names")
+
+# ── SERVICES (uni-lab / "the chip", L1 — colony + ERP + DNS) ────────────────────────────────
+10.190.245.121   dns.uni-lab.local
+10.13.13.1       dns.uni-lab.local
+100.100.188.48   dns.uni-lab.local
+
+10.89.1.40       mc.uni-lab.local
+# NV-HOLD (gate: prove a host port-forward of :25565): a LAN A record for mc.uni-lab.local.
+# Withheld, and verified still withheld 2026-07-16: :25565 and :25575 time out from THINKER because
+# mc-server binds COLNET (10.89.1.40) only — unroutable from the studio. This is why Gaia's
+# colony.mc.port.25565 / colony.rcon.port.25575 read DOWN against a healthy, LIVE colony: structural,
+# NOT address drift. Do not "fix" it by adding an address here — uncomment only when the port-forward
+# gate passes, and write the chip's CURRENT lease address (see the header: this file is its one source).
+
+10.190.245.121   colony.uni-lab.local
+10.190.245.121   colonycam.uni-lab.local
+# producer = uni-producer, the fenced HEAD show-runner (:4200 /producer/health + /stream;
+# gate producer-camera-attached PASS 2026-07-15). Added 2026-07-15 with gaia/hud below —
+# the three services declared in infra_registry.json after the 07-12 ship whose missing
+# A records were the "zone regression" (NXDOMAIN was drift, not data loss).
+10.190.245.121   producer.uni-lab.local
+# music: The Collected Packages Radio (audio + metadata for the studio), on the chip.
+# Added 2026-08-01 to close host-tracking check 3 (chip-names-resolve-via-dns). The registry
+# (viewer/infra_registry.json) declares only the STABLE planes per the _lan_dynamic_law; the
+# LAN lease lives HERE in the zone, like every other chip service.
+10.190.245.121   music.uni-lab.local
+10.13.13.1       music.uni-lab.local
+100.100.188.48   music.uni-lab.local
+10.190.245.121   glass.uni-lab.local
+10.190.245.121   erp.uni-lab.local
+10.190.245.121   meet.uni-lab.local
+10.190.245.121   mail.uni-lab.local
+
+10.190.245.121   masterplan.uni-lab.local
+10.13.13.1       masterplan.uni-lab.local
+
+10.190.245.121   mcp.uni-lab.local
+10.13.13.1       mcp.uni-lab.local
+
+# ── SERVICES (thinker — PORTABLE STUDIO, LAN only; NO wg/Tailscale record on the publish path) ─
+10.190.245.196   studio.uni-lab.local
+10.190.245.196   obs.uni-lab.local
+10.190.245.196   cams.uni-lab.local
+10.190.245.196   overlays.uni-lab.local
+10.190.245.196   mediamtx.uni-lab.local
+10.190.245.196   launcher.uni-lab.local
+10.190.245.196   gaia.uni-lab.local
+# hud: the name maps to THINKER per the registry, but the native HUD service binds
+# LOOPBACK-ONLY (docs/HUD.md) — this record resolving does NOT mean :8100 answers on the LAN.
+10.190.245.196   hud.uni-lab.local
+
+# ── SERVICES (node2 — fan-out RELAY; UNREACHABLE in survey; not on Tailscale) ────────────────
+10.190.245.149   relay.uni-lab.local
+10.13.13.3       relay.uni-lab.local
+
+# ── BOX names (ops tier) ────────────────────────────────────────────────────────────────────
+10.190.245.121   uni-lab.uni-lab.local  lab.uni-lab.local
+10.13.13.1       uni-lab.uni-lab.local  lab.uni-lab.local
+100.100.188.48   uni-lab.uni-lab.local  lab.uni-lab.local
+# plane-forced aliases (use when you must pin a plane, bypassing localise-queries):
+10.190.245.121   uni-lab-lan.uni-lab.local
+10.13.13.1       uni-lab-mesh.uni-lab.local
+
+10.190.245.196   thinker.uni-lab.local
+100.98.223.27    thinker.uni-lab.local
+
+10.190.245.149   node2.uni-lab.local
+10.13.13.3       node2.uni-lab.local
+
+100.74.211.85    signals.uni-lab.local
+10.13.13.5       tab.uni-lab.local

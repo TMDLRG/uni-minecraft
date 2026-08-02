@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">What can somebody outside this project check today, without</text>
+  <text x="120" y="216" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">asking anyone?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node safety/verify_coverage.cjs</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="394" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  100% cannot COLLAPSE (a shrinking denominator) or REDUCE (work moved into exclusions),</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  because both keep the percentage at 1.0 and neither is visible to the table above.</text>
+  <text x="136" y="554" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  · AMENDMENT 2026-08-01 — Lowered floors pages_total (292 -&gt; 291) and corpora_pages.workbench</text>
+  <text x="136" y="584" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">(2 -&gt; 1).: A forensic pass held all 292 published pages against the commit each citation names</text>
+  <text x="136" y="614" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">and found ONE whose published bytes were an uncommitted working-tree edit published under a</text>
+  <text x="136" y="644" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">commit sha that does not contain them (workbench/living-science-walkthrough). The ingest now</text>
+  <text x="136" y="674" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">fences any document whose own bytes are uncommitted, per path, so it cannot assert a provenance</text>
+  <text x="136" y="704" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">it does not have. The page count falls by one because a page that was making a false claim</text>
+  <text x="136" y="734" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">stopped being published. This is a REDUCTION IN COUNT AND AN INCREASE IN CORRECTNESS, which is</text>
+  <text x="136" y="764" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">why the floor is lowered deliberately rather than the fence being weakened to preserve a number.</text>
+  <text x="136" y="794" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">The remaining four fenced documents return the moment the workbench worktree is committed.</text>
+  <text x="136" y="824" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">COVERAGE 100%.</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">UNI.Public safety/verify_coverage.cjs — the declared universe of pages and subsystems, and the floors under each</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">A floor that can only be lowered deliberately is a floor somebody has to sign for.</text>
+</svg>

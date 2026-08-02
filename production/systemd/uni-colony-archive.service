@@ -1,0 +1,32 @@
+# uni-colony-archive.service — D-D1 in the UNI OS+MIND Deepening Plan.
+# Triggered by uni-colony-archive.timer (daily 03:30 UTC).
+# Runs the colony snapshot; extends production/scripts/backup.sh (which handles retention).
+
+[Unit]
+Description=UNI colony daily archive (kin .bin + Minecraft world snapshot)
+Documentation=file:///var/lib/uni/broadcast-src/production/scripts/colony_archive.sh
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=uni
+Group=uni
+ExecStart=/var/lib/uni/broadcast-src/production/scripts/colony_archive.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=5
+
+# Bounded runtime; the archive should always complete inside 20 minutes even for large worlds.
+TimeoutStartSec=1200
+
+# Never restart on failure — a fail is captured data in heartbeat.ndjson, not a crash-loop trigger.
+Restart=no
+
+# Sandbox
+ProtectSystem=strict
+ReadWritePaths=/var/lib/uni/backups /var/lib/uni/broadcast/audit
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

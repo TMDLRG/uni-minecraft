@@ -1,0 +1,21 @@
+PHASE 9 STEP 4.6 BUILD L1
+captured 2026-07-28  ·  HEAD 81feb53
+
+CAPTURED LATE, AND SAYING SO IS THE POINT. Builds L0-L3 shipped green with NO RECEIPT:
+the convention only started at L4, and nothing noticed because the anti-silence guard read
+steps and never builds. Step 4.6 is IN_PROGRESS, so its six DONE builds were filtered out
+entirely -- the Phase 5 failure mode reappearing one level down, inside the guard built to
+prevent it. This receipt is the gate re-run at the commit above, not a reconstruction of
+the original run.
+
+  ok  the page's own render contract is extractable and runnable - materialOf() and liveness() are taken FROM l1.html, not re-typed here — a copy that agrees with another copy I wrote proves nothing
+  ok  M2: every node renders what SP.ControlPlane.Scene says it renders - 9 nodes, cross-checked against the Elixir itself — a node drawn SOLID where the contract says FOG is a claim the evidence does not support, drawn convincingly
+  ok  all FIVE materials appear - lit_solid · seamed_solid · translucent · staged · fog
+  ok  F24: no receipt, blank receipt, UNKNOWN and unreadable all render FOG - a node CLAIMING to be observed with no receipt is fog — the claim does not survive the missing receipt, and the render is where that becomes visible without reading a word
+  ok  F25: fog gets no desk, and the absence IS the refusal - the fog branch returns before any desk is drawn — you cannot stand at a desk that is not there, and nothing has to say no
+  ok  F26: liveness is drawn only where a probe answered - not_probed draws NOTHING, and that silence is the point — absence of a probe is not evidence of health
+  ok  the five differ in FORM, not only in colour - fog has no edge and no floor contact · staged is an outline on a plinth · translucent shows the grid through it · seamed is solid but visibly joined · lit is solid and crisp. Colour alone would fail a greyscale screenshot and a colour-blind reader both.
+  ok  SOCKET-FREE: it reads a fixture and its own identity, nothing else - /api/lab/fixture, /api/identity — the projection is L3's build, and reaching for real gates before anything can say what a fogged one looks like would be showing a claim it had not earned
+
+GATE: PASS - lab-l1, 8/8 checks
+  Walk it: node viewer/lab/lab_server.cjs  ->  http://127.0.0.1:8103/lab/l1

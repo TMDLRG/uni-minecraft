@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#0b0e14"/>
+  <text x="120" y="120" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="52" font-weight="bold" fill="#e6edf3">Does pressure make weight?</text>
+  <text x="120" y="172" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="30" fill="#9aa7b4">Tune g = k&#183;P on Earth alone, then predict every other world. (Source: NASA NSSDCA / JPL)</text>
+
+  <!-- header row -->
+  <g font-family="ui-monospace,Consolas,monospace" font-size="27">
+    <text x="120"  y="270" fill="#6c7393">BODY</text>
+    <text x="470"  y="270" fill="#6c7393" text-anchor="end">SURFACE PRESSURE</text>
+    <text x="800"  y="270" fill="#6c7393" text-anchor="end">MEASURED g</text>
+    <text x="1230" y="270" fill="#6c7393" text-anchor="end">PRESSURE MODEL PREDICTS</text>
+    <text x="1800" y="270" fill="#6c7393" text-anchor="end">RESULT</text>
+  </g>
+  <line x1="120" y1="292" x2="1800" y2="292" stroke="#30363d" stroke-width="2"/>
+
+  <g font-family="ui-monospace,Consolas,monospace" font-size="30">
+    <!-- Earth (calibration) -->
+    <text x="120"  y="352" fill="#cdd6f4">Earth</text>
+    <text x="470"  y="352" fill="#cdd6f4" text-anchor="end">1.014 bar</text>
+    <text x="800"  y="352" fill="#cdd6f4" text-anchor="end">9.82</text>
+    <text x="1230" y="352" fill="#9aa7b4" text-anchor="end">9.82  (tuned here)</text>
+    <text x="1800" y="352" fill="#9aa7b4" text-anchor="end">&#8212;</text>
+    <!-- Venus -->
+    <text x="120"  y="412" fill="#cdd6f4">Venus</text>
+    <text x="470"  y="412" fill="#cdd6f4" text-anchor="end">92 bar</text>
+    <text x="800"  y="412" fill="#cdd6f4" text-anchor="end">8.87</text>
+    <text x="1230" y="412" fill="#f38ba8" text-anchor="end">~891  (100&#215; too high)</text>
+    <text x="1800" y="412" fill="#f85149" text-anchor="end">FAILS</text>
+    <!-- Titan -->
+    <text x="120"  y="472" fill="#cdd6f4">Titan</text>
+    <text x="470"  y="472" fill="#cdd6f4" text-anchor="end">1.467 bar</text>
+    <text x="800"  y="472" fill="#cdd6f4" text-anchor="end">1.354</text>
+    <text x="1230" y="472" fill="#f38ba8" text-anchor="end">~14.2  (10.5&#215; too high)</text>
+    <text x="1800" y="472" fill="#f85149" text-anchor="end">FAILS</text>
+    <!-- Mars -->
+    <text x="120"  y="532" fill="#cdd6f4">Mars</text>
+    <text x="470"  y="532" fill="#cdd6f4" text-anchor="end">6.36 mbar</text>
+    <text x="800"  y="532" fill="#cdd6f4" text-anchor="end">3.73</text>
+    <text x="1230" y="532" fill="#f38ba8" text-anchor="end">~0.06  (60&#215; too low)</text>
+    <text x="1800" y="532" fill="#f85149" text-anchor="end">FAILS</text>
+    <!-- Mercury -->
+    <text x="120"  y="592" fill="#cdd6f4">Mercury</text>
+    <text x="470"  y="592" fill="#cdd6f4" text-anchor="end">~5&#215;10&#8315;&#185;&#8309; bar</text>
+    <text x="800"  y="592" fill="#cdd6f4" text-anchor="end">3.70</text>
+    <text x="1230" y="592" fill="#f38ba8" text-anchor="end">~0  (vacuum)</text>
+    <text x="1800" y="592" fill="#f85149" text-anchor="end">FAILS</text>
+    <!-- Moon -->
+    <text x="120"  y="652" fill="#cdd6f4">Moon</text>
+    <text x="470"  y="652" fill="#cdd6f4" text-anchor="end">~3&#215;10&#8315;&#185;&#8309; bar</text>
+    <text x="800"  y="652" fill="#cdd6f4" text-anchor="end">1.62</text>
+    <text x="1230" y="652" fill="#f38ba8" text-anchor="end">~0  (vacuum)</text>
+    <text x="1800" y="652" fill="#f85149" text-anchor="end">FAILS</text>
+  </g>
+  <line x1="120" y1="688" x2="1800" y2="688" stroke="#30363d" stroke-width="2"/>
+
+  <text x="120" y="770" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="34" fill="#a6e3a1">Newtonian g = GM/R&#178; reproduces all seven worlds to &#8804;0.36% &#8212; with no per-world tuning.</text>
+  <text x="120" y="828" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="34" fill="#f38ba8">The pressure model misses by up to ~14 orders of magnitude.</text>
+
+  <rect x="120" y="900" width="430" height="64" rx="10" fill="#1c2128" stroke="#f85149" stroke-width="2"/>
+  <text x="150" y="941" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="30" fill="#f85149" font-weight="bold">CONTRADICTED &#183; Class X</text>
+  <text x="600" y="941" font-family="ui-monospace,Consolas,monospace" font-size="24" fill="#6c7393">verify: mix sp.lab.validate &#183; lab/evidence/claim_ledger.json</text>
+</svg>

@@ -1,0 +1,38 @@
+PHASE 9 STEP 4.6 BUILD L4 - ROOMS, AIRLOCKS, PORTALS
+captured 2026-07-28  ·  HEAD be29baa
+
+  ok  three kinds of closed, not one - the-gate-floor=open · the-sealed-room=sealed_by_rule · the-airlock-to-air=no_door — sealed waits on a DECISION, no-door waits on something BEING BUILT, and they are not the same fact wearing different words
+  ok  the three doors are drawn by three different code paths - a GAP with a lit threshold and no wall above it · a FRAMED panel with a bar across it · UNBROKEN WALL with no frame and no panel. Three objects, not three colours — a colour is read as a mood and a missing doorway is read as a fact.
+  ok  NO DOOR IS COMPUTED, NOT ASSERTED - scanned viewer/ for anything that can mint a presence token: none. F31's guard refuses all 7 paths to air for want of a token, and nothing in this repository can produce one. If a minter ever lands, the scan finds it and the room changes state with nothing edited.
+  ok  MUTATION: plant a minter and the wall becomes a door - a file that writes the presence token is found and the airlock stops reading no_door — so today's `no_door` is a measurement of this tree, not a sentence about it
+  ok  every spared file is named on every run - golive_guard.cjs, lab/rooms.cjs, lab/verify_lab_l4.cjs, verify_golive_refuses_agents.cjs — spared BY NAME, printed here, never by a clever rule about which mentions are innocent. THIS SCAN CONVICTED ITS OWN SOURCE on its first run: rooms.cjs names the token only inside the regex hunting for it. Use versus mention, again.
+  ok  the seal quotes the plan by id - S10: "running any of the nine PENDING science gates" — read from the plan at render time. If the rule is ever lifted there, the room opens here, and nobody has to remember to come back and edit a page.
+  ok  A STOP CONDITION THAT NAMES A COUNT AND NO MEMBERS CANNOT BE ENFORCED - S10 says nine; the ledger has 12 unique PENDING gate names and undefined pending rows, and S10 names no members. A guard cannot check a list it was never given, so the room holds ALL of them — over-sealing, stated, rather than choosing nine and presenting the choice as a finding.
+  ok  you cannot walk into a room that will not open - collision, not narration. A page that says CLOSED and then lets you through has taught you its words are decoration, and you will read the next one that way.
+  ok  liveness comes only from a real probe, and the probe is GET on loopback - F26. Every answer is stamped with the moment it was observed, and anything not probed says not_probed — never down, because 'I did not look' and 'I looked and it was dark' are different facts. A surface that can be pointed at an arbitrary URL is a request forwarder wearing a floor plan.
+  ok  nothing here can open anything - the module touches guard.{mayGoLive, CLAIM_LEVEL} and nothing else — every one of them is a READ. spend() and requireHumanOrThrow() are not reachable from this surface, no request here is anything but GET, and the page has no POST and no route to :8098. A surface that draws a door must not be able to walk through it, or the drawing becomes the deciding.
+  ok  the building writes nothing - it opens the plan, the ledger, the sidecar and the guard, and returns
+  ok  every room's population is measured, not decorated - 109 on the floor · 12 sealed · 7 paths to air, all refused (NO_PRESENCE_TOKEN). The sealed room holds the gates PENDING NOW, not the 59 that have ever been pending — 47 of those were decided later and are not waiting on anything.
+  ok  the airlock carries its own claim level and its own limit - presence_evident, NOT unforgeable — and the OBS WebSocket on 127.0.0.1:4455 has no auth, so any process on the box reaches the same actuator without passing any of the seven. A guard that overstates itself is worse than none, because it is trusted further than it can carry.
+
+GATE: PASS - lab-l4, 13/13 checks
+  THE GATE FLOOR [open]  ·  THE PENDING GATES [sealed_by_rule]  ·  THE AIRLOCK TO AIR [no_door]
+  Walk it: node viewer/lab/lab_server.cjs  ->  http://127.0.0.1:8103/lab/l4
+
+--- the sidecar corrected in the same breath (step 4.2) ---
+  ok  the sidecar is byte-identical to a fresh classification - 12 pending now of 59 ever pending, 24697 bytes
+  ok  the backlog and the history of the backlog are reported separately - 12 PENDING NOW (the last row for each still says it) · 59 EVER PENDING (47 were decided afterwards and wait on nothing). One number under one name is how a queue looks 5x longer than it is.
+  ok  PENDING no longer collapses into one word - 1 HAS_RESULT_DOCUMENT · 3 NO_RUNNER · 8 RUNNER_REFUSES
+  ok  'never attempted' and 'attempted and blocked' are now different states - 3 have no runner at all (waiting on WORK); 8 have a runner that refuses by construction (waiting on the WORLD)
+  ok  said out loud: gates reading PENDING that name a result document - 1 RIGHT NOW — something was produced and the verdict was never moved. 23 have been in that position at some point, and this sidecar reported that larger number as the live count until 2026-07-28. Most of them WERE resolved; saying otherwise made the instrument look more neglected than it is, which is its own kind of dishonesty.
+  ok  evidence/gates.ndjson is untouched (S4) - 964ea25cfe8666ca… — the sidecar wrote nothing here
+  ok  M5 historical replay: the classification is STABLE across history - at 62dc97d6 there were 8 PENDING gates and ALL of them were RUNNER_REFUSES. Every one is still RUNNER_REFUSES today — read from the record, not invented. The other 51 arrived AFTERWARDS, every one with no runner at all.
+  ok  MUTATION: the state follows the runner, all three ways - refuses → RUNNER_REFUSES · stops refusing → RUNNABLE_NEVER_RUN · deleted → NO_RUNNER
+  ok  NEGATIVE CONTROL: only gates recorded PENDING are classified - 59 rows, every one recorded PENDING at the time — and 12 of them still are. Both facts are on every entry now (current_verdict, pending_now), so neither number can be read as the other.
+
+GATE: PASS - gate-attempts, 9/9 checks
+
+--- the runner ---
+
+GATE RUNNER: PASS — law holds for 21/21 run · 0 law violation(s) · registry complete. Verdict tally: 19 PASS · 2 FAIL.
+(This runner asserts the exit⟺verdict LAW and its own completeness. A gate's own FAIL is law-consistent and does not fail the runner — it fails that gate.)

@@ -1,0 +1,602 @@
+[
+  {
+    "domain": "Ozone photochemistry (Chapman mechanism) and ozone as a planetary UV shield, with abiotic-ozone controls (Venus, Mars), and the decomposed \"Ozone = Life\" thesis.",
+    "overclaims_found": [
+      "NONE in the body of the finding — the finding is itself an anti-overclaim document and its fences are sound. The items below are the overclaims the finding correctly PRE-EMPTS, recorded here to confirm the red-team agrees they are out of bounds: (a) 'Ozone = Life' as literal identity — correctly fenced U/X, contradicted-by-test by abiotic O3 on Venus/Mars; (b) 'ozone is a definitive biosignature' — correctly demoted to conditional Class C; the cited Kozakis/Cooke et al. (arXiv 2208.09415) explicitly concludes ozone is NOT a reliable proxy and that inferring precise O2 from O3 is 'extremely difficult (or impossible)', so Class C is, if anything, slightly generous — a U-leaning C is defensible; (c) 'ozone necessary for ALL life' — correctly fenced U/X (Archean anoxic biosphere pre-GOE); (d) 'ozone alone makes water' — correctly outside-model-scope; (e) Chapman as a complete quantitative model — correctly fenced (pure-O2 Chapman overpredicts by ~2x; independently confirmed by the Columbia kinetics source: 'Estimates ... based on the Chapman mechanism turn out to be higher than the measured concentration'); (f) cross-domain 'atmospheric pressure replaces gravity' — correctly X, and I re-confirmed the falsifier numerically (Venus 92 bar yet g=8.87<Earth; Titan >Earth pressure yet lowest g; Moon near-vacuum yet g=1.62).",
+      "DOCUMENTATION/SOURCING overclaim (minor): two constants are labeled evidence_class B with a direct JPL URL but I could not load the live JPL table to confirm the EXACT edition values at the cited URLs (jpldataeval.jpl.nasa.gov refused connection / 403 during this audit). The k2 and k4 functional forms are corroborated by secondary academic sources, but the precise JPL-edition exponent for k2 is internally inconsistent in the finding itself (see dimensional_problems / corrections) and should not be presented as a single pinned B value without naming the edition.",
+      "PRECISION overclaim (minor): the carried gravity-guard claim 'g=GM/R^2 reproduces all seven bodies to <=0.26%' is NOT reproducible from the rounded reference-table values supplied — recomputing the Moon from M=7.35e22 kg, R=1737 km gives 1.626 m/s^2, a 0.36% error vs the table's 1.62. The <=0.26% envelope only holds against full-precision NSSDCA masses (Moon 7.342e22 kg -> ~0.25%). The qualitative conclusion (pressure does not set gravity) is unaffected and remains X-contradicted."
+    ],
+    "corrections": [
+      {
+        "item": "k4 spot-check value in constant k4_O_O3 notes: 'k4 ~1.8e-15 at 220 K'",
+        "fix": "ARITHMETIC ERROR. The Arrhenius form 8.0e-12*exp(-2060/T) gives k4(220 K)=6.86e-16, NOT 1.8e-15. (The 298 K spot-check '~8e-15' is correct: 7.96e-15.) Either the 220 K value is wrong, or it was copied from a different/older A-factor. Replace '~1.8e-15 at 220 K' with '~6.9e-16 at 220 K' for the stated form. The k4 used in the R4 worked example (1.03e-15 at 230 K) is itself correct and self-consistent.",
+        "new_class": "B"
+      },
+      {
+        "item": "k2 termolecular exponent: finding oscillates between (T/300)^-2.4 (constant value + equations) and (T/300)^-2.3 (constant notes: 'web-confirmed search value was 6e-34 (T/300)^-2.3')",
+        "fix": "INTERNAL INCONSISTENCY / UNPINNED. State ONE value and name the JPL edition. JPL evaluations have published both n=2.3 (older, Lin & Leu basis) and n=2.4; the difference at 230 K is <4% (1.86 vs 1.89 multiplier) and immaterial to every order-of-magnitude conclusion here, but the finding must not carry both as if settled. Recommend: '6.0e-34*(T/300)^-2.4 per JPL 15-10 (Sander et al. 2015); earlier editions give -2.3' — and demote the pinned numeric to B-with-named-edition. I could NOT independently load the live JPL PDF (server refused), so the exact current-edition exponent is left as requires-stronger-source.",
+        "new_class": "B"
+      },
+      {
+        "item": "Constant ozone_peak_altitude '~32 km' and the cross-fact in fact-2 ('peak number density ~20-25 km' vs 'NASA peak mixing ratio 30-35 km')",
+        "fix": "NOT an error but a MISLABEL HAZARD that the finding already flags and must keep flagged. ~32 km is the peak MIXING-RATIO altitude (correct per NASA Ozone Watch ~8 ppm at 30-35 km); the peak NUMBER-DENSITY altitude is lower (~20-25 km). The two must never be conflated under a bare 'ozone peak at 32 km.' The finding handles this correctly; retain the explicit distinction. No class change — B stands.",
+        "new_class": "B"
+      },
+      {
+        "item": "Gravity-guard claim '<=0.26% across all seven bodies' (carried cross-domain in earth_surface_g notes and g_from_GM_R2_crosscheck)",
+        "fix": "PRECISION-SOURCING fix. Not reproducible from the supplied ROUNDED table (Moon recomputes to 0.36%). Either (a) cite full-precision NSSDCA masses (Moon 7.342e22 kg) under which <=0.26% holds, or (b) restate the envelope as '<=~0.4% from the rounded factsheet values.' The load-bearing qualitative result (g is set by GM/R^2, not by surface pressure) is unchanged and stays Class A / X-for-the-pressure-law. This is a carried guard, not ozone chemistry; flagged only for tidiness.",
+        "new_class": "A"
+      },
+      {
+        "item": "Fact 6 biosignature reliability, evidence_class C",
+        "fix": "CLASS IS DEFENSIBLE — no change required, but note for calibration: the cited primary modeling (Kozakis, Mendonca & Buchhave / 'Is ozone a reliable proxy for molecular oxygen? I', arXiv 2208.09415) concludes O3 is NOT a reliable quantitative proxy for O2 and the O2->O3 mapping is non-monotonic and stellar-UV-dependent. This makes 'conditional, false-positive-prone Class C' fully supported; a reviewer could even argue the QUANTITATIVE inference is U. Keep C for the qualitative 'context-dependent hypothesis' reading; do not upgrade toward B.",
+        "new_class": "C"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "k2_O_O2_M",
+        "value": "6.0e-34 (T/300)^-2.4",
+        "units": "cm^6 molecule^-2 s^-1",
+        "ok": true,
+        "note": "Form corroborated (k0=6.0e-34 at 300 K matches JPL secondary refs; Columbia kinetics gives k2~2e-33 order-of-magnitude consistent at low strat T). Worked example RE-RAN EXACTLY: k2(230K)=1.135e-33 (claim ~1.12e-33), R2 rate=3.02e9 cm^-3 s^-1 (claim ~3.0e9). CAVEAT: exponent -2.3 vs -2.4 unpinned across JPL editions (see corrections); live JPL URL refused connection during audit -> the precise edition value is requires-stronger-source. Dimensions OK."
+      },
+      {
+        "id": "k4_O_O3",
+        "value": "8.0e-12 exp(-2060/T)",
+        "units": "cm^3 molecule^-1 s^-1",
+        "ok": true,
+        "note": "Form corroborated (matches Columbia k4~1e-15 order-of-magnitude). 230 K worked example RE-RAN EXACTLY: exp(-2060/230)=1.289e-4, k4=1.031e-15, R4 rate=5.16e5 cm^-3 s^-1 (all claims match). 298 K note (~8e-15) correct (7.96e-15). BUT the 220 K note value '~1.8e-15' is WRONG -> recomputes to 6.86e-16 (see corrections). Ea/R=2060 K and the negative sign (slower when colder) are physically correct. Dimensions OK."
+      },
+      {
+        "id": "J1_O2_photolysis",
+        "value": "175-242 nm; J1 ~1e-11 to 1e-9 s^-1",
+        "units": "s^-1",
+        "ok": true,
+        "note": "Correctly self-labeled is_assumption=true on the magnitude. J1 is an actinic-flux x cross-section x quantum-yield integral, not a constant; the bracket is order-of-magnitude. Columbia source's k1~1e-12 s^-1 sits just below this bracket (lower altitude / column-attenuated), consistent. Window 175-242 nm (Schumann-Runge/Herzberg) standard. Keep as bracketed assumption."
+      },
+      {
+        "id": "J3_O3_photolysis",
+        "value": "240-320 nm shield-relevant, up to ~1140 nm; J3 ~1e-4 to 1e-2 s^-1",
+        "units": "s^-1",
+        "ok": true,
+        "note": "Correctly self-labeled is_assumption=true. Columbia gives k3~1e-3 s^-1, squarely inside the bracket. J3 >> J1 (fast null cycle) is correct and is what couples O<->O3. Hartley peak ~255 nm as the shielding channel is standard. Daytime O3 photolytic lifetime ~1/J3 ~10^3 s ~17 min (worked example) is right."
+      },
+      {
+        "id": "ozone_strat_fraction",
+        "value": "~90",
+        "units": "% of column in stratosphere (~10% tropospheric)",
+        "ok": true,
+        "note": "Standard NASA/NOAA value. B. No issue."
+      },
+      {
+        "id": "ozone_peak_altitude",
+        "value": "~32 km (peak mixing ratio 30-35 km); peak number density lower ~20-25 km",
+        "units": "km",
+        "ok": true,
+        "note": "Correct AS LABELED. The ~32 km figure is the peak-mixing-ratio altitude; peak number density is lower because air density falls with height. The finding keeps the two distinct — that distinction is mandatory and must be retained (mislabel hazard, not an error)."
+      },
+      {
+        "id": "ozone_total_column",
+        "value": "~300 DU typical; ~220 DU = ozone-hole threshold; 1 DU = 2.69e16 molecules/cm^2",
+        "units": "Dobson Units",
+        "ok": true,
+        "note": "DU conversion RE-RAN: 300 DU = 8.07e18 molecules/cm^2 (matches the Beer-Lambert worked example exactly). 220 DU hole threshold standard. B."
+      },
+      {
+        "id": "venus_ozone",
+        "value": "mean altitude ~100 km; ~1e7-1e8 molecules/cm^3; up to ~1000x less dense than Earth's layer",
+        "units": "km / cm^-3",
+        "ok": true,
+        "note": "VERIFIED against ESA/Montmessin et al. 2011 (Icarus 216:82-85): vertically confined nightside layer at mean ~100 km, 1e7-1e8 cm^-3, up to ~1000x less dense than Earth's stratospheric layer, source = CO2 photolysis O atoms swept to nightside, consistent with chlorine-catalyzed destruction. Abiotic. B confirmed. Load-bearing control fact for the 'ozone != life' verdict."
+      },
+      {
+        "id": "mars_ozone",
+        "value": "~0.4-4 DU column; seasonal S-polar-night layer ~40-60 km",
+        "units": "DU / km",
+        "ok": true,
+        "note": "VERIFIED against SPICAM/Mars Express literature (Perrier 2006; Lefevre 2021; Open U. vertical-structure study): column 0.4-4 DU (4-40 um-atm), anti-correlated with water vapor via HOx destruction, seasonal high-altitude ozone layer forming ~50 km from transport of O-rich air. Abiotic. B confirmed. Second dead-planet control."
+      },
+      {
+        "id": "earth_surface_g",
+        "value": "9.82",
+        "units": "m s^-2",
+        "ok": true,
+        "note": "Reproduces g=GM/R^2 exactly (9.820). Carried only as the cross-domain hard-boundary anchor. Note: the '<=0.26% across all 7' envelope is not reproducible from the ROUNDED table (Moon recomputes to 0.36%); holds only at full NSSDCA precision (see corrections). Qualitative pressure!=gravity falsification CONFIRMED numerically and stands as X."
+      }
+    ],
+    "dimensional_problems": [
+      "No genuine dimensional errors found. All five Chapman/shield equations re-checked and PASS: R1 J1*[O2] = [s^-1][cm^-3]=[cm^-3 s^-1]; R2 k2*[O][O2][M] = [cm^6 s^-1][cm^-9]=[cm^-3 s^-1]; R3 J3*[O3]=[cm^-3 s^-1]; R4 k4*[O][O3]=[cm^3 s^-1][cm^-6]=[cm^-3 s^-1]; Beer-Lambert exponent sigma*N*sec(theta)=[cm^2][cm^-2][1]=dimensionless. All OK.",
+      "Steady-state ozone formula [O3] = [O2]*sqrt(J1*k2[M]/(J3*k4)) INDEPENDENTLY RE-DERIVED from the Ox production=loss balance (2*J1[O2] = 2*k4[O][O3]) plus the fast-cycle partitioning [O]/[O3] = J3/(k2[O2][M]); the finding's expression is reproduced exactly. Dimensional check of the sqrt argument: numerator (s^-1 * cm^6 s^-1 * cm^-3 = cm^3 s^-2) / denominator (s^-1 * cm^3 s^-1 = cm^3 s^-2) = dimensionless, so [O3] correctly inherits [O2] units (cm^-3). Plugging illustrative mid-stratosphere values yields [O3]~1.4e13 cm^-3, a physically sane number. The finding's own dimensional_check prose for this equation is hand-wavy ('reduces so that...', 'algebra in Jacob confirms') but the RESULT is correct — recommend replacing the prose with the explicit reduction above so it is not merely asserted.",
+      "Beer-Lambert worked example RE-RAN EXACTLY: tau = 1.1e-17 cm^2 * 8.07e18 cm^-2 = 88.8 (~89); transmittance e^-88.8 = 2.8e-39 (~1e-39). The 'UV-C at 255 nm attenuated to essentially zero at the surface' conclusion is quantitatively sound for the representative Hartley cross-section used (correctly flagged as a single-wavelength illustration, not a band integral)."
+    ]
+  },
+  {
+    "domain": "UV attenuation (Beer-Lambert law) and ozone (O3) UV absorption cross-sections — the radiative-transfer SHIELD component of the decomposed \"Ozone = Life\" thesis. Establishes attenuation physics ONLY; does not establish ozone is alive, creates life, or proves any broad life thesis.",
+    "overclaims_found": [
+      "NONE in the claim line itself — the FENCE (fact #7, class D) and hard_boundary_notes are correctly and conservatively scoped: 'ozone provides UV attenuation, supported-within-model' with explicit refusals of is-alive / makes-life / life-force / proves-thesis. This is a model citizen of the decomposition discipline; no leap from 'shields UV' to 'is life' is made.",
+      "Minor precision overstatement (not a thesis overclaim): fact #6 / equation worked examples present 'transmission ~3e-39' as if a single exact figure. The fence itself already corrects this ('correct to state surface UV-C is essentially zero, NOT to claim an exact transmission figure as if the full scattering radiative transfer were solved') — so the overclaim is self-flagged and neutralized. The monochromatic single-absorber idealization is honestly labeled A-by-arithmetic, not A-for-real-atmosphere.",
+      "Source-attribution overstatement: constant sigma_O3_Hartley_255 and fact #3 assert '1.127e-17 ... Hodges et al. 2019 consensus value (Metrologia)'. Calling 1.127e-17 the Hodges consensus overstates source pedigree — the actual Hodges 2019 consensus is 1.1329e-17. This inflates the authority/precision of the cited number even though it does not change any conclusion."
+    ],
+    "corrections": [
+      {
+        "item": "sigma_O3_Hartley_255 value+source: finding lists '1.127e-17 at 253.65 nm' as the 'Hodges et al. 2019 consensus (Metrologia)'. VERIFIED WRONG ATTRIBUTION. The Hodges et al. 2019 Metrologia consensus value at 253.65 nm is 1.1329(35)e-17 cm^2/molecule (relative standard uncertainty 0.31%), per the paper itself. The 1.127e-17 (=11.27e-18) value with 0.86% EXPANDED uncertainty is the Janssen/Viallon AMT 2015 (amt-8-1245-2015) single-laboratory determination at the 253.65 nm Hg line, NOT the Hodges consensus. FIX: cite the value as 1.1329e-17 (Hodges 2019 consensus) OR keep 1.127e-17 but re-attribute it to AMT 2015 (Janssen et al.) and stop calling it the Hodges consensus. Either way the source label as printed is incorrect.",
+        "new_class": "B"
+      },
+      {
+        "item": "fact #3 / sigma constant secondary value: '11.26e-18 cm^2 at 257.34 nm'. VERIFIED WRONG NUMBER. The AMT 2015 Hartley-band paper reports 11.07e-18 cm^2 at 257.34 nm (relative expanded uncertainty <0.7%), not 11.26e-18. FIX: change 11.26e-18 -> 11.07e-18 at 257.34 nm, or drop the second data point. (Impact on physics: none — both are ~1.1e-17 magnitude.)",
+        "new_class": "B"
+      },
+      {
+        "item": "UV-band constants (UVA/UVB/UVC) source URL: cited to opsytec.com, a calibration-lab vendor page. Values (UVA 315-400, UVB 280-315, UVC 100-280 nm) are CORRECT and confirmed against ICNIRP directly. FIX: re-source to the authoritative primary (ICNIRP https://www.icnirp.org/en/frequencies/uv/index.html or CIE), keeping class B. The numbers stand; only the source pedigree needs upgrading.",
+        "new_class": "B"
+      },
+      {
+        "item": "fact #6 / equations transmission figure '~3e-39' and tau '~88.8': re-derived independently and CONFIRMED EXACT (tau=88.77, exp(-88.77)=2.80e-39; band-edge sigma=1e-18 gives tau=8.07, T=3.13e-4; slant-path AMF checks pass). No correction to arithmetic. Note: using the verified peak sigma=1.13e-17 instead of 1.1e-17 RAISES tau to ~91 and lowers transmission to ~3e-40 — strengthening, not weakening, the 'surface UV-C essentially zero' conclusion. Recommend stating the result as a bound ('transmission < 1e-38, effectively zero') rather than a pinned 3e-39, consistent with the fence.",
+        "new_class": "A"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "DU_to_column_density",
+        "value": "2.69e16",
+        "units": "molecules/cm^2 per DU",
+        "ok": true,
+        "note": "Confirmed against NASA Ozone Watch (2.69e16 molec/cm^2 per DU; 0.01 mm pure-O3 layer at 0 C, 1 atm). Internally consistent: 2.69e16 over a 0.01 mm (0.001 cm) layer implies 2.69e19/cm^3, matching the Loschmidt number 2.687e19/cm^3 to 0.1%. Class B correct."
+      },
+      {
+        "id": "Earth_ozone_column",
+        "value": "~300",
+        "units": "DU (=> 8.07e18 molecules/cm^2, ~3 mm at STP)",
+        "ok": true,
+        "note": "Confirmed NASA: ~300 DU global average = 3 mm. 300 x 2.69e16 = 8.07e18 (re-computed exact). Variability note (230 tropics to 400+ high-lat spring; hole <220) is accurate. Class B correct."
+      },
+      {
+        "id": "tau_UVC_vertical",
+        "value": "~88.8",
+        "units": "dimensionless (optical depth)",
+        "ok": true,
+        "note": "Re-derived: 1.1e-17 x 8.07e18 = 88.77. exp(-88.77)=2.80e-39. Robust: band-edge sigma=1e-18 -> tau=8.07, T=3.1e-4; slant AMF(60deg)=2 -> tau=178. Class A-by-arithmetic correct. With verified peak sigma 1.13e-17, tau=91, T=3e-40 (even stronger)."
+      },
+      {
+        "id": "UVC_band",
+        "value": "100-280",
+        "units": "nm",
+        "ok": true,
+        "note": "Confirmed ICNIRP/CIE. Value correct; source URL is a vendor page, recommend re-sourcing to ICNIRP. Class B."
+      },
+      {
+        "id": "UVB_band",
+        "value": "280-315",
+        "units": "nm",
+        "ok": true,
+        "note": "Confirmed ICNIRP/CIE (UVB 315-280). Value correct; re-source URL to ICNIRP. Class B."
+      },
+      {
+        "id": "UVA_band",
+        "value": "315-400",
+        "units": "nm",
+        "ok": true,
+        "note": "Confirmed ICNIRP/CIE (UVA 400-315; 400 nm upper limit used by ICNIRP/ACGIH/WHO as stated). Value correct; re-source URL. Class B."
+      },
+      {
+        "id": "sigma_O3_Huggins",
+        "value": "~1e-19 to ~1e-18",
+        "units": "cm^2/molecule",
+        "ok": true,
+        "note": "Order-of-magnitude only, correctly labeled as representative/temperature-dependent, not over-pinned. Consistent with Hartley(310-)->Huggins(310-350) steep falloff. Class B acceptable as a magnitude range; the finding's own note ('do not over-pin') is the right discipline."
+      },
+      {
+        "id": "sigma_O3_Hartley_255",
+        "value": "~1.1e-17 (peak) is OK as magnitude; the pinned '1.127e-17 at 253.65 nm as Hodges 2019 consensus' is NOT OK",
+        "units": "cm^2/molecule",
+        "ok": false,
+        "note": "Magnitude ~1.1e-17 at Hartley peak (~255 nm) is correct (B). DEFECT: the specific value 1.127e-17 is mis-attributed to the Hodges 2019 Metrologia consensus — the real Hodges consensus is 1.1329(35)e-17. 1.127e-17 (0.86% expanded unc.) is the AMT 2015 single-lab determination at 253.65 nm. Also the '11.26e-18 at 257.34 nm' is wrong (AMT 2015 gives 11.07e-18 there). Re-attribute/correct the secondary values; the headline magnitude and all downstream physics are unaffected."
+      }
+    ],
+    "dimensional_problems": []
+  },
+  {
+    "domain": "Water photolysis, hydrogen escape, and multivariate habitability — escape physics (gravity/escape velocity), stellar XUV history, volatile inventory, and the cold trap govern water loss, NOT ozone. Adversarially verified this session.",
+    "overclaims_found": [
+      "NONE that breach the hard boundaries. The finding is correctly fenced: it explicitly does NOT claim ozone makes/retains water, does NOT claim pressure sets gravity, does NOT claim active inference proves physics, and does NOT touch literal-life/biosignature/metaphor readings. The allowed conclusion language ('contradicted-by-test', 'not-yet-shown', 'downstream') is used correctly throughout.",
+      "MINOR — Fact #7 (the ozone-fencing statement) is labeled evidence_class D (interpretive), which is appropriate, BUT its sub-claims are NOT uniform in class: 'ozone is a photochemical product of O2 via the Chapman cycle and absorbs UV-B/UV-C' is established textbook photochemistry (class A/B, Chapman 1930), while 'O3 is causally downstream of water and not a cause of it' is the interpretive/synthesis part (class D). Bundling an A/B mechanism statement under a single D label slightly under-credits the hard part and over-attaches interpretation to the settled part. Recommend splitting. This is a labeling refinement, not an overclaim.",
+      "MINOR — Several quantitative claims in facts/constants are stated as 'verified by computation this session' and carry evidence_class A. The escape-velocity/gravity reproduction across 7 bodies IS class A (derivable + reproduced this session, max residual 0.360% on the Moon, confirmed). But the diffusion-limited flux 'recomputed 4.7e8 this session' should stay class B (it depends on canonical b, f_H, T, g inputs from Hunten/Catling-Kasting, not a first-principles derivation) — the JSON already correctly labels these B, so no demotion needed; flagged only to confirm the A-vs-B line is drawn correctly.",
+      "HARD-BOUNDARY CHECK PASSED — claim that the pressure-weight law g=k*P is 'contradicted-by-test (class X)' is justified: independently reproduced. g=k*P with k=9.684 predicts 891 m/s^2 for Venus (actual 8.87), 2.9e-14 for Moon and 4.8e-14 for Mercury (actual 1.62, 3.70), 14.2 for Titan (actual 1.354). Failure spans ~15 orders of magnitude. Class X is correct."
+    ],
+    "corrections": [
+      {
+        "item": "Fact #2 / Equation g_surface worked_example: the pressure-law prediction values are mis-paired between Moon and Mercury. The finding says 'g~3e-14 for the Moon and ~2.9e-14 for Mercury'. Recomputed: Moon (P=3e-15 bar) -> k*P = 2.9e-14; Mercury (P=5e-15 bar) -> k*P = 4.8e-14. So 2.9e-14 belongs to the MOON, not Mercury, and Mercury's value is ~4.8e-14, not ~2.9e-14. The qualitative point (near-vacuum bodies with nonzero real g) is unaffected.",
+        "fix": "Restate as: 'predicts ~2.9e-14 m/s^2 for the Moon (P=3e-15 bar) and ~4.8e-14 for Mercury (P=5e-15 bar)' — i.e. swap the body labels / correct Mercury's value.",
+        "new_class": "A"
+      },
+      {
+        "item": "Internal inconsistency between the finding and the provided VERIFIED PLANETARY REFERENCE block: the finding's Fact #1 correctly states the g=GM/R^2 reproduction is good to '<=0.36%' (binding residual = Moon, calc 1.6258 vs ref 1.62 = 0.360%), but the reference block's summary line says '<=0.26%'. The 0.26% figure understates the actual max residual.",
+        "fix": "Use <=0.36% (the finding's own number is correct; the reference-block 0.26% is the error). Residual is rounding in the ref g for the Moon, exactly as Fact #1 states.",
+        "new_class": "A"
+      },
+      {
+        "item": "Fact #7 conflates an established mechanism (Chapman cycle O3 photochemistry, UV-B/UV-C absorption — class A/B) with an interpretive causal-ordering claim (O3 downstream of water/O2, not a cause — class D) under a single class-D label.",
+        "fix": "Split into two statements: (a) 'O3 is a Chapman-cycle photochemical product of O2 that absorbs UV-B/UV-C' [class A/B, Chapman 1930]; (b) 'therefore O3 is causally downstream of water inventory and escape, not a cause of water presence' [class D, interpretive fence]. Keep the overall fence as not-yet-shown-otherwise, not proof.",
+        "new_class": "D"
+      },
+      {
+        "item": "Equation diffusion_limited_flux dimensional_check string mixes CGS and SI tokens: '[cm^-1 s^-1]*[cm s^-2 * kg]/[J]'. The exponent structure is correct (g*(m_a-m_i)/(kT) has units of inverse length, verified: [m/s^2 * kg]/[J] = 1/m), but writing g in cm/s^2 alongside J (SI) is internally inconsistent notation.",
+        "fix": "Cosmetic only — pick one unit system in the check string (e.g. all SI, then convert b and the result to cm-based at the end). The physics and the result (cm^-2 s^-1) are correct; this is presentation, not a real dimensional error.",
+        "new_class": "B"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "G_grav",
+        "value": "6.674e-11",
+        "units": "m^3 kg^-1 s^-2",
+        "ok": true,
+        "note": "CODATA 2018 (6.67430e-11). Used in g=GM/R^2 and v_esc=sqrt(2GM/R); reproduces 7 bodies. Class A confirmed."
+      },
+      {
+        "id": "Titan_GM",
+        "value": "8978.13710",
+        "units": "km^3 s^-2",
+        "ok": true,
+        "note": "Yields g=GM/R^2=1.3543 m/s^2 and v_esc=sqrt(2GM/R)=2.6408 km/s at R=2574.76 km. Both match reference (g=1.354, v_esc~2.64). Independently reproduced this session. Class B (JPL/Cassini gravity field) confirmed."
+      },
+      {
+        "id": "Titan_R",
+        "value": "2574.76",
+        "units": "km",
+        "ok": true,
+        "note": "Cassini RADAR mean radius ~2575 km confirmed via web. With Titan_GM gives v_esc=2.6408 km/s, g=1.3543 m/s^2. Class B confirmed."
+      },
+      {
+        "id": "b_H_air",
+        "value": "1.8e19",
+        "units": "cm^-1 s^-1",
+        "ok": true,
+        "note": "Confirmed against Wikipedia 'Diffusion-limited escape': b_12=1.8e19 (weighted), b_H=2.73e19, b_H2=1.46e19, and 1.46e19<1.8e19<2.73e19. With T~208K, g~9.45 gives C=b(1/Ha-1/Hi)=2.75e13 cm^-2 s^-1 (canonical ~2.5e13). Class B confirmed."
+      },
+      {
+        "id": "Earth_H_limiting_flux",
+        "value": "~4.3e8 (canonical); 4.7e8 (this session)",
+        "units": "H atoms cm^-2 s^-1",
+        "ok": true,
+        "note": "Canonical 4.3e8 confirmed on source page (Phi_l=4.3e8). My recompute: C*f_H=2.75e13*1.7e-5=4.7e8; the canonical 2.5e13*1.7e-5=4.25e8~4.3e8. Both within order-of-magnitude tolerance. Class B confirmed."
+      },
+      {
+        "id": "f_H_Earth",
+        "value": "1.7e-5",
+        "units": "dimensionless",
+        "ok": true,
+        "note": "Confirmed: source page gives f_T(H)~1.7e-5 from 1.8 ppmv CH4 + 3 ppmv H2O + 0.55 ppmv H2 above tropopause. Correctly flagged is_assumption=true (varies with tropospheric water/methane). Class B confirmed."
+      },
+      {
+        "id": "Earth_cold_trap_T",
+        "value": "~190-200",
+        "units": "K",
+        "ok": true,
+        "note": "Earth tropopause/cold-trap temperature; standard value. Note Fact uses ~190-200K for the cold trap while the flux worked-example uses T~208K at the homopause (a HIGHER, different altitude) — these are two distinct altitudes, not a contradiction, but worth keeping distinct. Class B confirmed."
+      },
+      {
+        "id": "g=GM/R^2 reproduction (7 bodies)",
+        "value": "max residual 0.360%",
+        "units": "percent",
+        "ok": true,
+        "note": "Independently reproduced: Earth 0.005%, Mercury 0.019%, Mars 0.043%, Venus 0.045%, Jupiter 0.095%, Moon 0.360% (calc 1.6258 vs ref 1.62, rounding), Titan exact. Binding residual = Moon = 0.360%, matching Fact #1's '<=0.36%'. The reference block's '<=0.26%' is the inconsistent figure, not the finding."
+      }
+    ],
+    "dimensional_problems": [
+      "v_esc = sqrt(2GM/R): [m^3 kg^-1 s^-2 * kg / m]^(1/2) = [m^2 s^-2]^(1/2) = m/s. CORRECT.",
+      "g = GM/R^2: [m^3 kg^-1 s^-2 * kg / m^2] = m/s^2. CORRECT.",
+      "diffusion_limited_flux Phi = b*f*(1/Ha - 1/Hi): [cm^-1 s^-1]*[1]*[cm^-1] = cm^-2 s^-1. CORRECT. Alt form b*f*g*(m_a-m_i)/(kT) verified IDENTICAL to within machine precision this session (both = 1.5278e-6 cm^-1 for the 1/H-difference factor), confirming g*(m_a-m_i)/(kT) carries units of inverse length. CORRECT.",
+      "MINOR (presentation, not a true dimensional fault): the written dimensional_check string for the flux mixes CGS (cm for g) and SI (J) tokens; the exponent bookkeeping is nonetheless correct and the result units (atoms cm^-2 s^-1) are right.",
+      "No genuine dimensional errors found. All three equations are dimensionally sound and the two algebraic forms of the diffusion-limited flux are provably equivalent."
+    ]
+  },
+  {
+    "domain": "BIOENERGETICS — chemiosmosis, proton-motive force, oxygen as terminal electron acceptor, anaerobic alternatives",
+    "overclaims_found": [
+      "NONE that the finding asserts — the finding is unusually disciplined and itself FENCES the parent thesis. The following are residual nits, not finding-level overclaims: (1) eq_pmf worked_example presentation: the text writes 'Delta_p = 160 - (59.16 * (-0.75))?' with a question mark and then resolves to ~204 mV. The arithmetic and final value are correct, but stuffing the sign ambiguity into the worked example reads as uncertainty about the result. The convention should be stated up front (sign of the Delta_pH term depends on the pH-difference convention), then the example computed cleanly. Re-derived: 160 + 59.16*0.75 = 204.4 mV — correct. (2) E0_O2_H2O is given as '+0.82' with body text '+0.815 to +0.82'; primary sources give the 4e- O2/2H2O couple at E0' ~ +0.815-0.816 V (web-confirmed +0.8147 to +0.816 V). '+0.82' is a legitimate rounded textbook value, but it is the high end; '~+0.815 V' is the more precise figure. Not an overclaim, a rounding choice that should be labeled as the conventional rounded value. (3) fact #6 (chemiosmosis is oxygen-independent) is labeled evidence_class D (interpretive synthesis) but its core content — that the proton gradient -> ATP synthase mechanism operates identically regardless of terminal acceptor — is established textbook bioenergetics (B), not interpretation. The D label UNDER-claims; the only genuinely interpretive move is the rhetorical bridge to 'proton gradients, not O2/O3, are the invariant,' which is fair to call D. Splitting the established mechanism (B) from the thesis-bridge (D) would be cleaner."
+    ],
+    "corrections": [
+      {
+        "item": "fact #6 evidence_class — the OXYGEN-INDEPENDENCE of the chemiosmotic mechanism (proton gradient -> ATP synthase runs identically on O2/sulfate/nitrate/fumarate/CO2/light) is established textbook bioenergetics, not interpretive synthesis. Only the rhetorical bridge to 'proton gradients are THE bioenergetic invariant' is interpretive.",
+        "fix": "Split fact #6: the mechanistic claim (O2-independent chemiosmosis) is Class B; the synthesis/framing bridge ('therefore proton gradients, not O2/O3, are the near-universal invariant') remains Class D. As written the single D label under-claims the established mechanism.",
+        "new_class": "B"
+      },
+      {
+        "item": "E0_O2_H2O value '+0.82 V' — primary sources (web-confirmed) put the 4-electron O2 + 4H+ + 4e- -> 2H2O couple at E0' ~ +0.815 to +0.816 V at pH 7; +0.82 is the rounded high-end textbook value.",
+        "fix": "Keep +0.82 V as the conventional rounded value but note the precise figure is ~+0.815 V; the body text already states '+0.815 to +0.82' so this is a label-precision nit, not an error. Class B is correct.",
+        "new_class": "B"
+      },
+      {
+        "item": "T_ref convention — the ~59 mV/pH factor is quoted at 298.15 K (25 C), but PHYSIOLOGICAL mammalian temperature is ~310 K (37 C), where the factor is ~61.5 mV/pH (re-derived: 61.51 mV/pH).",
+        "fix": "Already correctly flagged as is_assumption=true / Class C in the JSON. Confirmed adequate — the finding states T must always be declared. No change needed beyond ensuring any downstream use of '59 mV' carries the explicit '@298 K' qualifier (physiological pmf magnitudes are computed at 310 K).",
+        "new_class": "C"
+      },
+      {
+        "item": "n_protons_per_ATP '~3 to 4' and eq_dG_atp_proxy worked example fixing n=3 — H+/ATP is c-ring-size and transport-coupling dependent (c8-c15), NOT a universal constant; using a single n risks an implied universal ATP yield.",
+        "fix": "Already correctly flagged is_assumption=true / Class C, and eq_dG_atp_proxy.limitations explicitly forbids claiming a fixed universal ATP yield. Confirmed adequate. The 'do NOT use it to claim a fixed universal ATP yield' fence is the right guard.",
+        "new_class": "C"
+      },
+      {
+        "item": "eq_pmf worked_example sign presentation — the example writes the Delta_pH term with a trailing '?' and an inline sign-resolution, which reads as uncertainty about the final value (it is not: 160 + 59.16*0.75 = 204.4 mV, re-derived).",
+        "fix": "State the sign convention BEFORE the example (matrix-alkaline => Delta_pH term adds to inside-negative Delta_psi), then present the clean computation Delta_p = 160 + 44.4 = ~204 mV. Equation and value are correct; only the presentation invites doubt. Dimensional check (both terms in volts) verified CONSISTENT.",
+        "new_class": "B"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "F_faraday",
+        "value": "96485.33212331",
+        "units": "C/mol",
+        "ok": true,
+        "note": "Re-derived F = e*N_A = (1.602176634e-19)*(6.02214076e23) = 96485.33212331001 C/mol. EXACT since 2019 SI redefinition. Task value 96485 is the correct integer rounding. Class A confirmed."
+      },
+      {
+        "id": "R_gas",
+        "value": "8.31446261815324",
+        "units": "J/(mol*K)",
+        "ok": true,
+        "note": "Re-derived R = k_B*N_A = (1.380649e-23)*(6.02214076e23) = 8.31446261815324. EXACT post-2019 SI. Class A confirmed."
+      },
+      {
+        "id": "T_ref",
+        "value": "298.15",
+        "units": "K",
+        "ok": true,
+        "note": "Convention (25 C), correctly flagged is_assumption=true / Class C. CAVEAT STANDS: physiological pmf is at 310 K where the Nernst factor = 61.51 mV/pH, not 59.16. Always declare T."
+      },
+      {
+        "id": "nernst_factor_59mV",
+        "value": "59.16",
+        "units": "mV per pH unit",
+        "ok": true,
+        "note": "Re-derived 2.303*R*T/F at 298.15 K: using ln(10)=2.302585 -> 59.159 mV/pH; using literal 2.303 -> 59.17 mV/pH. Task '~59 mV @ 298 K' CONFIRMED. At 310 K = 61.51 mV/pH (also confirmed). Class A confirmed."
+      },
+      {
+        "id": "E0_O2_H2O",
+        "value": "+0.82",
+        "units": "V (E0' at pH 7)",
+        "ok": true,
+        "note": "Web-confirmed: O2/H2O couple E0' ~ +0.815 to +0.816 V (precise: +0.8147-0.816 V); +0.82 is the conventional rounded textbook value. NAD+/NADH = -0.320 V confirmed; span = 1.14 V re-derived. Class B confirmed. Thermodynamic-ADVANTAGE figure, NOT a necessity claim — correctly scoped."
+      },
+      {
+        "id": "GOE_age",
+        "value": "~2.4",
+        "units": "Ga",
+        "ok": true,
+        "note": "Web-confirmed: GOE ~2.4 Ga (O2 rose shortly after ~2.45 Ga); earliest life ~3.5-3.8 Ga (anaerobic). Life predates atmospheric O2/O3 by ~1-1.4 Gyr. Class B confirmed. Temporal fence against 'O2/O3 precondition for life' is sound."
+      },
+      {
+        "id": "n_protons_per_ATP",
+        "value": "~3 to 4",
+        "units": "H+ per ATP (dimensionless)",
+        "ok": true,
+        "note": "Correctly flagged is_assumption=true / Class C. System-dependent (c-ring 8-15, plus transport coupling). dG proxy re-derived: n=3 @ dp=0.20 V -> 57.89 kJ/mol (matches ATP cost ~50-60 kJ/mol); n=4 -> 77.19 kJ/mol. The 'never quote a single universal ATP yield' fence is correct and necessary."
+      }
+    ],
+    "dimensional_problems": [
+      "NONE. Both equations are dimensionally consistent (independently verified). eq_pmf: Delta_psi [V=J/C]; second term (2.303RT/F)*Delta_pH = [J/(mol*K) * K / (C/mol)] * [dimensionless] = J/C = V. Both terms volts, sum volts. CONSISTENT. eq_dG_atp_proxy: n[dimensionless] * F[C/mol] * Delta_p[V=J/C] = J/mol. CONSISTENT (energy per mole). Sign conventions are correctly flagged as convention-dependent and must be declared (the finding says so explicitly). The only sign caution is presentational, in eq_pmf's worked example, not a dimensional defect."
+    ]
+  },
+  {
+    "domain": "Solar energy collection/conversion under vacuum or controlled atmosphere — steady-state radiative-convective heat balance, evacuated-tube collectors, single-junction PV (Shockley-Queisser) limit, plus a gravity-vs-pressure falsification cross-check on a verified planetary table.",
+    "overclaims_found": [
+      "Moon Newtonian tolerance overstated: the finding/table claims 'g=GM/R^2 reproduces all seven verified bodies to <=0.26%', but re-running with the table's OWN Moon values (g_true=1.62, R=1737 km, M=7.35e22 kg) gives g_pred=1.6258 -> +0.360% error, which EXCEEDS the stated 0.26% bound. The <=0.26% claim only holds if g_true is taken as 1.625 (yielding 0.05%) or R is enlarged to ~1738 km. The bound as written is contradicted by the table's own numbers (Class A -> the correct statement is '<=0.36% with these reference values', or fix the Moon g to 1.625).",
+      "Pressure-span claim overstated: 'Pressure spans ~21 orders of magnitude'. Using the table's own extrema (Venus 92 bar max, Moon/Mercury 5e-15 bar min) the actual span is log10(92/5e-15) = ~16.5 orders of magnitude, not 21. To reach ~21 the minimum would need to be ~1e-19 bar. The qualitative point (huge pressure range, tiny gravity range) survives, but the specific '~21' is not derivable from the cited table (should read ~16-17 orders).",
+      "Shockley-Queisser figure conflation: the finding sets the headline single-junction limit at 33.7% at 1.34 eV AND says '~33.16% with an added back-surface mirror'. Per the finding's own cited Wikipedia source, the back-surface-mirror calculation gives 33.16% at 1.34 eV; the 33.7% figure comes from a DIFFERENT tabulation (different spectrum/assumptions). Presenting 33.16% as the 'with mirror' increment under a 33.7% headline implies 33.16 and 33.7 are a without/with-mirror pair from one lineage, which they are not. Both are legitimate published single-junction SQ values (~33.1-33.7% spread); the conflation is a sourcing imprecision, not a physics error. The cap claim itself (single junction cannot exceed ~34%; cooling = incremental only) is correct.",
+      "Minor label nuance: 'IAU 2015 Resolution B3 AND NASA SORCE both adopt ~1361 W/m^2' — IAU B3 adopts 1361 W/m^2 as a NOMINAL (defined, exact-SI) conversion constant explicitly NOT a current-best-estimate; SORCE is a measurement series (~1360.8 W/m^2 TIM). Grouping them as jointly 'adopting' the same value slightly overstates their equivalence, though both land at ~1361. Not load-bearing."
+    ],
+    "corrections": [
+      {
+        "item": "Falsification cross-check claim 'g=GM/R^2 reproduces all seven verified bodies to <=0.26%'",
+        "fix": "Recompute with the reference table's own values: the Moon comes out at +0.360% (g_pred=1.6258 vs g_true=1.62), which exceeds 0.26%. State the bound as '<=0.36% for all seven bodies with these reference values', OR correct the Moon g_true to 1.625 m/s^2 (then 0.05%). All other six bodies are within <=0.10% (Jupiter 0.095% is the next largest). The falsification verdict — pressure-proportional g=k*P fails by up to ~14 orders (Moon ratio 1.79e-14) while g=GM/R^2 holds to sub-percent — is fully reproduced and stands.",
+        "new_class": "A"
+      },
+      {
+        "item": "'Pressure spans ~21 orders of magnitude' (planetary reference summary)",
+        "fix": "Correct to ~16-17 orders of magnitude: log10(92 bar / 5e-15 bar) = 16.5. The contrast (pressure varies ~16 orders, gravity only a factor ~19) is the real and intact point.",
+        "new_class": "A"
+      },
+      {
+        "item": "SQ single-junction limit presentation (headline 33.7% vs '~33.16% with mirror')",
+        "fix": "Keep the limit as ~33% and note the published single-junction SQ values cluster at ~33.16% (Wikipedia, AM1.5G + back-surface mirror, 1.34 eV) to ~33.7% (alternate tabulation/spectrum), with the original 1961 paper at ~30% (1.1 eV). Do not present 33.16% as the 'mirror' increment beneath a 33.7% headline — they are from different calculations. The bound (single junction <~34%; PV cooling incremental, not a loophole) is unchanged.",
+        "new_class": "B"
+      },
+      {
+        "item": "Convective coefficient h=10 W/m^2/K in the worked example",
+        "fix": "Correctly already flagged is_assumption=true, Class C. No change — this is exemplary labeling. Retained as a stated order-of-magnitude assumption, not a measured device value.",
+        "new_class": "C"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "solar_constant",
+        "value": "1361",
+        "units": "W/m^2",
+        "ok": true,
+        "note": "Verified: IAU 2015 Resolution B3 adopts nominal TSI 1361 W/m^2 (defined exact-SI conversion constant, averaged over solar cycle 23; ~0.1% variation over the 11-year cycle correctly noted). Class B confirmed. Surface AM1.5G ~1000 W/m^2 distinction is correctly maintained."
+      },
+      {
+        "id": "sigma_stefan_boltzmann",
+        "value": "5.670374419e-8",
+        "units": "W m^-2 K^-4",
+        "ok": true,
+        "note": "Verified against NIST CODATA 2022 (exact in 2019 SI). Independently re-derived from sigma=2*pi^5*kB^4/(15*h^3*c^2) using defining constants -> 5.6703744191844e-8, matches to all quoted digits. Class A confirmed. Note: the value is Class A (defined-exact); a derived radiative loss USING it inherits the model's assumptions but the constant itself is exact."
+      },
+      {
+        "id": "sq_single_junction_limit",
+        "value": "33.7 (also 33.16)",
+        "units": "% (fraction 0.337 / 0.3316)",
+        "ok": true,
+        "note": "Verified as a real single-junction detailed-balance ceiling, but the precise figure depends on spectrum/assumptions: Wikipedia (cited source) gives 33.16% at 1.34 eV with back-surface mirror under AM1.5G; 33.7% is a separate published tabulation; original 1961 = 30% at 1.1 eV. Class B confirmed. The bound (single junction <~34%) is robust; the two specific percentages are from different calculations and should not be presented as a mirror/no-mirror pair."
+      },
+      {
+        "id": "am15g_surface_irradiance",
+        "value": "1000",
+        "units": "W/m^2",
+        "ok": true,
+        "note": "Verified as the standard AM1.5G reference rating spectrum (IEC 60904-3 / ASTM G173 ~1000 W/m^2). Correctly distinguished from the 1361 W/m^2 extraterrestrial constant. Class B confirmed. 0.337*1000 = 337 W/m^2 max electrical at the SQ limit re-checks out."
+      },
+      {
+        "id": "evac_tube_pressure",
+        "value": "~1e-5",
+        "units": "mbar (~1e-3 Pa)",
+        "ok": true,
+        "note": "Plausible typical evacuated-tube internal pressure; at this level gas convection/conduction are effectively eliminated and radiation dominates the remaining loss, as claimed. Class B accepted (manufacturer/engineering range; not a fundamental constant). The physical conclusion is the load-bearing part and is sound."
+      },
+      {
+        "id": "convective_coefficient_example",
+        "value": "5-25 (example 10)",
+        "units": "W m^-2 K^-1",
+        "ok": true,
+        "note": "Correctly labeled Class C, is_assumption=true. Order-of-magnitude natural-convection air coefficient used only to contrast vacuum (h~0) vs air-exposed (h~10). Exemplary honest labeling; no change."
+      },
+      {
+        "id": "heat_balance_worked_example",
+        "value": "P_abs=1224.9; P_rad=893.1; P_net_vac=331.8; Teq_vac=423.3K; Teq_h10=369.1K",
+        "units": "W and K",
+        "ok": true,
+        "note": "Fully re-run and reproduced to the quoted precision: P_abs=1224.9 W, P_rad=893.084 W, P_net(vacuum)=331.82 W, equilibrium T vacuum=423.28 K (150.1 C), equilibrium T at h=10=369.10 K (95.95 C). Class A computation confirmed. Dimensional check on all three terms (W, W, W) is correct; vacuum_radiative_floor lim h->0 = 893.1 W > 0 is correct and is the genuine irreducible loss term."
+      },
+      {
+        "id": "gravity_falsifier_numbers",
+        "value": "g=GM/R^2 sub-percent; kP/true: Moon 1.79e-14, Mars 1.65e-2, Venus 100.4x, Titan 10.49x",
+        "units": "ratio / m/s^2",
+        "ok": true,
+        "note": "Re-run and reproduced: g=GM/R^2 gives Earth -0.005%, Mars -0.043%, Venus +0.045%, Mercury -0.019%, Jupiter +0.095%, Titan 1.354 m/s^2, v_esc 2.641 km/s — all match. Pressure-proportional g=k*P fails as claimed (Moon 1.79e-14, Mars 0.0165, Venus 100.4x overshoot, Titan 10.49x overshoot). Class A. ONE correction: the Moon Newtonian error is 0.360%, exceeding the stated '<=0.26%' bound when the table's own g=1.62 is used (see corrections)."
+      }
+    ],
+    "dimensional_problems": [
+      "No true dimensional ERRORS found. All checks pass: heat-balance Term1 [-][W/m^2][m^2]=W, Term2 [-][W m^-2 K^-4][m^2][K^4]=W, Term3 [W m^-2 K^-1][m^2][K]=W — consistent. Gravity: GM/R^2 = [N m^2 kg^-2][kg]/[m^2] = N/kg = m/s^2 — consistent (verified N/kg = kg*m/s^2/kg = m/s^2). Vacuum radiative floor [-][W m^-2 K^-4][m^2][K^4]=W — consistent.",
+      "Note (not an error, a labeling caveat the finding already states): k*P = [m/s^2/Pa][Pa] = m/s^2 is dimensionally valid but EMPIRICALLY false off-Earth. The finding correctly flags this ('dimensionally OK but EMPIRICALLY false'). The falsification rests on the empirical ratios, not on dimensions — which is the correct epistemic framing. No fix needed; just confirming the dimensional pass does not rescue the pressure law.",
+      "Caveat on stagnation-temperature interpretation (dimensionally fine, physically scoped): the lumped single-node model treats the absorber as radiating to an environment at T_env=300 K with effective emissivity 0.90 and no view-factor/multi-surface exchange. The finding states this limitation. The 423.3 K vacuum stagnation figure is model-internal (supported-within-model), not a device spec — correctly bounded."
+    ]
+  },
+  {
+    "domain": "Exoplanet biosignatures — oxygen/ozone false positives & false negatives, atmospheric disequilibrium, and the decomposition of \"ozone => life\"",
+    "overclaims_found": [
+      "FACT #5 / constant framing: the finding's note on earth_disequilibrium implies modern Earth has 'the largest disequilibrium' as a general statement. This is TRUE only for the atmosphere-OCEAN (full-fluid) quantity (2326 J/mol). For the GAS-PHASE-ONLY quantity (1.5 J/mol), Krissansen-Totton 2018 explicitly states it is 'not large compared to the abiogenic disequilibrium calculated for other solar system bodies' — the biosignature weight comes from the SPECIFIC kinetically-maintained O2-CH4 pair, NOT from Earth having the largest gas-phase magnitude. Risk: reading the 1.5 J/mol constant as 'biggest gas-phase Phi => life'. Class B with this clarification added; without it, the implied 'largest gas-phase disequilibrium' is U/contradicted.",
+      "constant o3_degeneracy_sun_analog ('~10% and ~100% PAL O2 give similar O3 column'): the specific dual-value (10% vs 100%) degeneracy could NOT be confirmed at the abstract/source level I could access. The general non-monotonic, host-star-dependent O2->O3 mapping IS confirmed (Kozakis 2022), but this exact paired-value claim is currently a more-precise statement than the verified text supports — it should be demoted to U / 'requires confirmation against the paper body/figures' until the specific figure is cited, OR softened to the verified general non-monotonicity.",
+      "DISEQUILIBRIUM-AS-PROOF (already fenced by the finding, restated for emphasis): disequilibrium magnitude is necessary-not-sufficient. The finding correctly fences 'this Phi proves life' as U/X; this is NOT an overclaim in the finding, but it is the single most likely downstream misuse of the 1.5/2326 J/mol constants and the Phi equation, so it must stay loud. Some abiotic settings (volcanic, photochemical) sustain modest disequilibria.",
+      "The thermodynamic-disequilibrium logic does NOT rescue 'ozone = life'. O3/O2 contribute to Phi only as one term; the finding's decomposition (only sub-claims c and d survive, both conditional) is correct and must not be softened toward 'disequilibrium confirms the ozone biosignature'."
+    ],
+    "corrections": [
+      {
+        "item": "FACT #5 + earth_disequilibrium constants: distinguish gas-phase-only (1.5 J/mol, NOT the largest in the solar system) from atmosphere-ocean (2326 J/mol, the largest, life-driven). Add the verbatim Krissansen-Totton caveat that the gas-phase magnitude 'is not large compared to the abiogenic disequilibrium calculated for other solar system bodies' and that the biosignature weight comes from the kinetically-maintained O2-CH4 pair, not raw magnitude.",
+        "fix": "Edit the constant notes and fact #5 to scope 'largest disequilibrium' explicitly to the atmosphere-ocean (full-fluid) value. State that gas-phase Phi=1.5 J/mol is modest and that the O2-CH4 PAIR (kinetics + co-presence), not the magnitude, carries the signature. Keep class B with this scoping.",
+        "new_class": "B"
+      },
+      {
+        "item": "constant o3_degeneracy_sun_analog ('~10% and ~100% PAL O2 give similar O3 column')",
+        "fix": "Demote to U (or mark is_assumption=true) pending a direct citation to the specific figure/passage in Kozakis et al. 2022 that shows the same O3 column at ~10% and ~100% PAL for an Earth-Sun analog. The general non-monotonic, host-star-dependent O2->O3 relationship IS verified (B); the specific dual-value degeneracy is not yet verified at the level I could access and should be sourced precisely or softened to the general non-monotonicity.",
+        "new_class": "U"
+      },
+      {
+        "item": "constant bayesian_confidence_levels: finding states '<10%' for the 'very unlikely' band; Catling et al. 2018 abstract states '<=10%' (less-than-or-equal).",
+        "fix": "Change '<10%' to '<=10%' to match the source exactly. Minor but it is a sourced numeric boundary; keep class B.",
+        "new_class": "B"
+      },
+      {
+        "item": "Sub-claim (d) UV-shield decomposition: the finding correctly labels it B/supported-within-model as a HABITABILITY factor (not a detection of life). One precision add: an O3 UV shield is itself a CONSEQUENCE of abundant O2, so it cannot independently corroborate life beyond what the O2 already (weakly) implies — it is not an independent line of evidence.",
+        "fix": "Add a note to sub-claim (d): the O3 shield is downstream of O2 and therefore not an independent corroborator of biology; it speaks to surface habitability, not to detection. Keep class B.",
+        "new_class": "B"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "earth_disequilibrium_gasphase",
+        "value": "1.5",
+        "units": "J/mol of atmosphere",
+        "ok": true,
+        "note": "VERIFIED verbatim against Krissansen-Totton et al. 2018 (PMC5787383): 'Earth's purely gas-phase disequilibrium, as measured by available Gibbs free energy, is 1.5 J/mol of atmosphere,' O2-CH4 dominated. Class B correct. CAVEAT: source also states this gas-phase magnitude is NOT large vs other solar-system bodies' abiogenic disequilibrium — signature is the kinetically-maintained O2-CH4 pair, not the magnitude. Do not read as 'largest gas-phase Phi'."
+      },
+      {
+        "id": "earth_disequilibrium_full_fluid",
+        "value": "2326",
+        "units": "J/mol of atmosphere",
+        "ok": true,
+        "note": "VERIFIED verbatim (Krissansen-Totton 2018): atmosphere-ocean fluid envelope = 2326 J/mol, dominated by O2+N2+liquid-H2O (should react to nitric acid). This IS the largest among solar-system substantial-atmosphere bodies and is life-driven. Ratio note '~1550x' re-derived: 2326/1.5 = 1550.7. OK. Class B correct."
+      },
+      {
+        "id": "o3_peak_o2_hotter_stars",
+        "value": "25-55",
+        "units": "% PAL O2",
+        "ok": true,
+        "note": "VERIFIED verbatim against Kozakis, Mendonca & Buchhave 2022 (arXiv:2208.09415) abstract: for hotter hosts O3 'counter-intuitively' increases as O2 drops from 100% PAL, with maximum O3 at 25-55% PAL O2. Nonlinear, host-UV-dependent. Class B correct. This is the load-bearing number against treating O3 as a clean O2/life proxy and it holds."
+      },
+      {
+        "id": "bayesian_confidence_levels",
+        "value": "5 levels: very likely (90-100%) to very unlikely (<=10%) inhabited",
+        "units": "posterior probability bands",
+        "ok": true,
+        "note": "VERIFIED against Catling et al. 2018 (arXiv:1705.06381): five confidence levels, 'very likely' 90-100% to 'very unlikely' <=10%. MINOR FIX: source uses '<=10%' not the finding's '<10%'. Four-component framework (stellar/system char; habitability/internal char; biosignature-in-context; false-positive exclusion) also verified. Class B correct."
+      },
+      {
+        "id": "o3_degeneracy_sun_analog",
+        "value": "~10% and ~100% PAL O2 give similar O3 column",
+        "units": "% PAL O2 (two values, same O3)",
+        "ok": false,
+        "note": "DEMOTE. General non-monotonic O2->O3 mapping is verified (Kozakis 2022, B), but the SPECIFIC dual-value (10% vs 100% PAL same O3 for Earth-Sun analog) was NOT confirmable from the abstract-level source I accessed. Mark U / requires direct figure citation from the paper body, or soften to the verified general non-monotonicity. Not contradicted, just under-sourced as stated."
+      }
+    ],
+    "dimensional_problems": [
+      "NONE found — both equations are dimensionally consistent (re-checked). (1) disequilibrium_gibbs Phi = sum_i n_i * mu_i: [mol]*[J/mol] = [J], normalized per total moles -> [J/mol of atmosphere]. Consistent; the finding's own dimensional_check is correct. (2) bayes_biosignature: all terms are dimensionless probabilities/likelihoods; posterior in [0,1]. Re-ran the degenerate case (equal likelihoods P(D|life)=P(D|not-life), prior 0.5) -> posterior 0.5 = prior, confirming the finding's worked-example logic that a finite false-positive likelihood keeps O3 below the top confidence band. Likelihood-ratio sanity: LR=1.2/2/5 -> posterior 0.545/0.667/0.833, all below 90% from a 0.5 prior, consistent with 'O3 alone cannot reach very-likely.'"
+    ]
+  },
+  {
+    "domain": "Active Inference bound discipline (simulation agent layer only — variational free energy / ELBO bound + expected free energy decomposition governing model selection and policy scoring). NOT a physics proof, NOT a clinical claim. Fences verified and held.",
+    "overclaims_found": [
+      "None of the AIF facts overclaim — the finding is unusually disciplined: every fact is correctly fenced to model-comparison / policy-scoring math, and the four hard-boundary FENCE facts (thermo, model/process, parked-loop, trauma-analogy) are correctly scoped and class-labelled. No 'proves', no 'AGI', no physics claim is asserted.",
+      "MINOR (worked-example display, not a claim overreach): in AIF.VFE/AIF.ELBO worked example the intermediate term values are mislabeled — the finding writes '0.5*ln(0.5/0.8) = -0.470' and '0.5*ln(0.5/0.2) = 0.916', but -0.470 and +0.916 are the UNWEIGHTED logs ln(0.5/0.8) and ln(0.5/0.2); the actual 0.5-weighted contributions are -0.235 and +0.458. The final KL = 0.223 nats is CORRECT (the 0.5* multipliers are present in the written expression and reconstruct the right sum), so this is a display/labeling slip in the intermediate, not a wrong result. Re-ran: KL(q=0.5||p=0.8)=0.223144 nats exactly.",
+      "MINOR (boundary-notes prose, not an AIF domain constant): hard_boundary_notes states pressure 'spans ~21 orders of magnitude'. With the supplied planetary table (Venus 92 bar, Mercury/Moon ~3-5e-15 bar) the span computes to ~16.5 orders of magnitude, not 21. The gravity 'factor ~19' is correct (19.1). The qualitative point (pressure law fails) is unaffected; the '~21' figure is an unsourced loose estimate and should be softened or sourced.",
+      "REPRESENTATIONAL (not an error in the finding's favor): the AIF.EFE main fact writes policy selection as Q(pi)=softmax(-gamma*G(pi)) '(with habit/prior E)', folding E into a parenthetical. The canonical repo form (CLAUDE.md §2/§3) keeps it inside the softmax argument additively: Q(pi)=softmax(ln E - gamma*G). The finding's worked example DOES write the full additive form, so the two are consistent; flagged only because the headline fact drops ln E from the exponent. Separately, the actual source docs/MATH_DERIVATIONS.md line 122 carries an ADDITIONAL term, Q(pi)=sigma(ln E - gamma*G_pi - F_pi); neither the finding nor CLAUDE.md §3 mentions the -F_pi (VFE-of-policy) term. The finding's simplified form is the standard scoring form and is not wrong, but it is an incomplete transcription of the repo's own derivation."
+    ],
+    "corrections": [
+      {
+        "item": "AIF.VFE / AIF.ELBO worked-example intermediate terms: '0.5*ln(0.5/0.8) = ... -0.470' and '0.5*ln(0.5/0.2) = ... 0.916'",
+        "fix": "Relabel the intermediate values: ln(0.5/0.8) = -0.470 and ln(0.5/0.2) = +0.916 are the UNWEIGHTED logs; the 0.5-weighted contributions are -0.235 and +0.458, summing to the correct KL gap = 0.223 nats. State it as KL = 0.5*(-0.470) + 0.5*(+0.916) = 0.223144 nats to avoid implying the -0.470/+0.916 are the weighted terms. Final number CONFIRMED, class A stands.",
+        "new_class": "A"
+      },
+      {
+        "item": "hard_boundary_notes: 'Pressure spans ~21 orders of magnitude'",
+        "fix": "Correct to ~16-17 orders of magnitude using the supplied table (Venus 92 bar to Moon/Mercury ~3-5e-15 bar => log10(92/3e-15) = 16.5), or cite the source body for whatever extreme bounds the '21' figure (e.g. a gas-giant interior). Mark as an explicit assumption/estimate until sourced. The X-contradiction verdict on g=k*P is unaffected and reproduces.",
+        "new_class": "C"
+      },
+      {
+        "item": "AIF.EFE fact statement: Q(pi)=softmax(-gamma*G(pi)) with E parenthetical; omission of the -F_pi term present in docs/MATH_DERIVATIONS.md line 122",
+        "fix": "Write the canonical scoring form with E additive inside the softmax: Q(pi)=softmax(ln E - gamma*G(pi)) (matching CLAUDE.md §3 and the finding's own worked example). Optionally note that the repo's full variational policy posterior (MATH_DERIVATIONS.md L122) also subtracts F_pi (the VFE of each policy); the pure-EFE scoring form is the standard simplification and remains correctly class B.",
+        "new_class": "B"
+      }
+    ],
+    "confirmed_constants": [
+      {
+        "id": "AIF.gamma_policy_precision",
+        "ok": true,
+        "value": "model parameter (no universal numeric value)",
+        "units": "dimensionless (inverse-temperature on the EFE softmax)",
+        "note": "Correctly marked is_assumption=true, class C. Role verified: Q(pi)=softmax(ln E - gamma*G); higher gamma => more exploitative, gamma->0 => habit-dominated. No fabricated numeric value. Trauma-locked = analogy for pathological gamma / likelihood precision, correctly class D, not clinical."
+      },
+      {
+        "id": "AIF.KL_gap",
+        "ok": true,
+        "value": "F[q] + ln p(y|m) = D_KL(q(eta|r) || p(eta|y,m)) >= 0",
+        "units": "nats",
+        "note": "Class A confirmed against docs/MATH_DERIVATIONS.md lines 19-43. Non-negativity from Gibbs' inequality; equals 0 iff q = posterior-under-model. Worked toy reproduced exactly: gap = 0.223144 nats at q=0.5,p=0.8. Dimensionally nats throughout. The 'model-internal posterior, not the world' fence is correct (CLAUDE.md §2)."
+      },
+      {
+        "id": "AIF.bound_tightness_threshold",
+        "ok": true,
+        "value": "1e-10",
+        "units": "max|q_BP - q_enumerated| residual (dimensionless probabilities)",
+        "note": "Class A as an ACCEPTANCE/regression threshold confirmed against CLAUDE.md §1. Correctly fenced: it is a THEOREM-grade exactness certificate ONLY on tree/junction-tree (singly-connected) structure; on loopy graphs the same residual is a regression check, NOT an exactness proof. Units nit: the note says 'nats-scale densities' but the residual is on q (probabilities/densities), not nats — harmless. Threshold value itself is an engineering acceptance bound (so arguably class C as a choice), but as the repo's declared standard it is correctly recorded; not load-bearing scientifically."
+      }
+    ],
+    "dimensional_problems": [
+      "AIF.VFE: PASS. All terms in nats (KL divergence in nats + (-ln p(y|m)) surprisal in nats). F[q] in nats. Bound F[q] >= -ln p(y|m) dimensionally consistent. Source doc lines 8/20-22 confirm the Bayes decomposition.",
+      "AIF.ELBO: PASS. ELBO = E_q[ln p(y,eta|m)] + H[q], expected log-joint (nats) + entropy (nats) <= log-evidence (nats). Inequality direction correct (ELBO <= ln p(y|m)); never inverted. = -F[q] confirmed.",
+      "AIF.EFE: PASS. risk (KL, nats) + ambiguity (likelihood entropy E_q[H[p(o|s)]], nats) - info-gain (Bayesian surprise, nats). All three components re-derived on toys: risk 0.082 nats >=0, ambiguity 0.464 nats >=0, info-gain subtracted lowers G (epistemic drive) — sign convention matches CLAUDE.md §2/§4. G in nats. NOTE: the repo's own G form (MATH_DERIVATIONS.md line 107) uses the risk representation o.(ln o - ln C), which is an exact KL only when C is normalized; this is a representational choice, dimensionally still nats, not a dimensional error.",
+      "Minor units label nit (AIF.bound_tightness_threshold): residual is on probabilities/densities, the note calls it 'nats-scale' — cosmetic only, the 1e-10 value is dimensionless. No dimensional fault."
+    ]
+  }
+]

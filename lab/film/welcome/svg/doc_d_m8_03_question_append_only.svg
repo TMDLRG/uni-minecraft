@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">If you ask a question here, can it be quietly removed later?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node -e const fs=require('fs'),c=require('crypto');const L=fs.readFileSync('evidence/control_plane/ledger.ndjson','utf8').split(/\r?\n/).filter(Boolean).map(JSON.parse);let broken=0,prev=null;for(const e of L){ if(prev&amp;&amp;e.prev_hash!==prev) broken++; prev=e.hash; }const a=JSON.parse(fs.readFileSync('evidence/control_plane/anchor.json','utf8'));console.log('entries='+L.length);console.log('broken_links='+broken);console.log('anchor_length='+a.length+' anchor_head='+String(a.head).slice(0,16)+'...');console.log('tip_hash='+String(L[L.length-1].hash).slice(0,16)+'...');console.log('anchor_agrees='+(a.length===L.length&amp;&amp;a.head===L[L.length-1].hash));</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="154" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">broken_links=0</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">anchor_length=32 anchor_head=b90b74980f47b93a...</text>
+  <text x="136" y="554" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">tip_hash=b90b74980f47b93a...</text>
+  <text x="136" y="584" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">anchor_agrees=true</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">evidence/control_plane/ledger.ndjson — each entry naming the digest of the one before it, walked now</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">Comments posted to the project surface are appended to a version-controlled file and never edited.</text>
+</svg>

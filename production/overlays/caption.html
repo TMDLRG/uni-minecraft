@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - Caption overlay</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* Live caption / subtitle band, lower-centre, transparent. */
+      .cap-wrap {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 120px;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+      }
+      .cap {
+        max-width: 72vw;
+        padding: 12px 26px;
+        border-radius: var(--radius);
+        background: rgba(6, 12, 22, 0.74);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        text-align: center;
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1.28;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+      }
+      .cap .lang {
+        display: inline-block;
+        margin-right: 12px;
+        padding: 1px 9px;
+        border-radius: 6px;
+        background: var(--accent);
+        color: #06121b;
+        font-family: var(--mono);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        vertical-align: middle;
+      }
+      .cap .body {
+        vertical-align: middle;
+      }
+      .cap.missing .body {
+        color: var(--ink-faint);
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cap-wrap">
+      <div class="cap view" id="cap">
+        <span class="lang" id="lang" hidden></span><span class="body" id="body"></span>
+      </div>
+    </div>
+
+    <script>
+      // ---- Caption overlay ----
+      // Renders state.caption {visible,lang,text,translations}. Language is chosen
+      // by the ?lang= URL override, else state.caption.lang. If translations[lang]
+      // exists it is shown; otherwise the primary text (when that IS the requested
+      // language) or a muted placeholder (never a fabricated translation).
+
+      var STALE_MS = 8000;
+
+      var params = new URLSearchParams(location.search);
+      var forcedLang = (params.get('lang') || '').trim() || null;
+
+      var el = {
+        cap: document.getElementById('cap'),
+        lang: document.getElementById('lang'),
+        body: document.getElementById('body'),
+      };
+
+      function fresh(updatedUtc) {
+        var t = updatedUtc ? Date.parse(updatedUtc) : NaN;
+        return isFinite(t) && Date.now() - t < STALE_MS;
+      }
+
+      // Decide what to show for the requested language.
+      // Returns {lang, text, missing} or null to hide.
+      function resolveLine(cap) {
+        var primaryLang = cap.lang || null;
+        var want = forcedLang || primaryLang;
+        var translations = cap.translations && typeof cap.translations === 'object' ? cap.translations : {};
+
+        // Requested language is the primary -> use primary text.
+        if (want && primaryLang && want === primaryLang) {
+          var pt = cap.text == null ? '' : String(cap.text);
+          if (pt.trim() === '') return null;
+          return { lang: want, text: pt, missing: false };
+        }
+        // Requested language has a translation -> use it.
+        if (want && Object.prototype.hasOwnProperty.call(translations, want)) {
+          var tt = translations[want] == null ? '' : String(translations[want]);
+          if (tt.trim() === '') return null;
+          return { lang: want, text: tt, missing: false };
+        }
+        // No forced lang and no primary lang declared -> fall back to primary text as-is.
+        if (!want) {
+          var ft = cap.text == null ? '' : String(cap.text);
+          if (ft.trim() === '') return null;
+          return { lang: null, text: ft, missing: false };
+        }
+        // Requested a language we do not have. Be honest: show a muted placeholder.
+        return { lang: want, text: 'no ' + want + ' caption available', missing: true };
+      }
+
+      function render(state) {
+        var cap = (state && state.caption) || null;
+        var visible = !!cap && cap.visible === true && fresh(state.updatedUtc);
+        if (!visible) {
+          el.cap.classList.remove('on');
+          return;
+        }
+        var line = resolveLine(cap);
+        if (!line) {
+          el.cap.classList.remove('on');
+          return;
+        }
+        if (line.lang) {
+          el.lang.hidden = false;
+          el.lang.textContent = line.lang;
+        } else {
+          el.lang.hidden = true;
+        }
+        el.body.textContent = line.text;
+        el.cap.classList.toggle('missing', !!line.missing);
+        el.cap.classList.add('on');
+      }
+
+      function tick() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(render)
+          .catch(function () {
+            el.cap.classList.remove('on');
+          });
+      }
+
+      tick();
+      // Captions move fast; poll on the snappy end of the documented 500-1000ms loop.
+      setInterval(tick, 500);
+    </script>
+  </body>
+</html>

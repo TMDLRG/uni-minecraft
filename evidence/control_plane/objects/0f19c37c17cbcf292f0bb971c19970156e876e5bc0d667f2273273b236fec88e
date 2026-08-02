@@ -1,0 +1,14 @@
+PHASE 9 STEP 3.5 - LIMITATIONS.md derived from @limitation annotations. GREEN RECEIPT, 2026-07-27.
+
+$ node viewer/verify_limitations_doc.cjs
+  ok  no duplicate limitation ids - 7 ids, all distinct
+  ok  every limitation states what, why and claim - a limitation with no claim level is a worry, not a statement
+  ok  the committed doc is byte-identical to a fresh generation - 7 limitations, 5537 bytes
+  ok  Phase 5's closure of the anchor residual is recorded as VOID - cp.anchor.phase5-closure-void — required by the remediation plan, step 3.5
+  ok  MUTATION caught: a new annotation with no regeneration - the doc no longer matches the source
+  ok  MUTATION caught: a doc edited by hand - a limitation nothing declares does not survive
+  ok  NEGATIVE CONTROL: an untouched tree matches - the gate is comparing, not merely refusing
+  ok  USE vs MENTION: prose about the marker is not a declaration - limitations.cjs discusses @limitation throughout and declares exactly one
+
+GATE: PASS - limitations-doc, 8/8 checks
+exit=0

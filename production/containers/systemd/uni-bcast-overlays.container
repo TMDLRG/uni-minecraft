@@ -1,0 +1,38 @@
+# /etc/containers/systemd/uni-bcast-overlays.container
+# UNI Production Platform - unit #3 uni-bcast-overlays.
+# STATUS: AS-DEPLOYED CANONICAL (deployed 2026-07-11 to uni-lab-79740c via uni-lab MCP,
+# P1-BRINGUP Phase E, verified serving). This file IS what runs; if you change it here,
+# re-apply on the node (podman_quadlet_apply) or the node drifts.
+#
+# Static server (caddy:alpine) for the TRANSPARENT 2D-canvas/CSS overlay pages (ADR-PROD-005) +
+# the LiveKit guest 'stage' page. Serves the overlay package from a READ-ONLY bind, and aliases
+# /overlays/state.json -> the producer's broadcast.json with Cache-Control: no-store.
+# No WebGL => no black-in-capture. OBS captures these as browser-sources.
+#
+# Loopback only (127.0.0.1:8099): OBS on the same node captures them; not a public surface.
+# Image digest at deploy (recorded, box never auto-pulls): caddy:alpine config af555904a096.
+[Unit]
+Description=UNI Broadcast Overlays (caddy static server - transparent 2D-canvas overlays + stage page)
+After=podman.socket network-online.target
+Wants=podman.socket
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Container]
+Image=docker.io/library/caddy:alpine
+ContainerName=uni-bcast-overlays
+# Loopback only - captured locally by OBS, never a public surface.
+PublishPort=127.0.0.1:8099:8099
+# The overlay package, read-only on the node.
+Volume=/var/lib/uni/broadcast/overlays:/var/lib/uni/broadcast/overlays:ro
+# The live overlay state, read-only. Caddy aliases /overlays/state.json -> this file with no-store.
+Volume=/var/lib/uni/broadcast/broadcast.json:/var/lib/uni/broadcast/broadcast.json:ro
+# Caddyfile wires the :8099 site root + the state.json alias + no-store header.
+Volume=/var/lib/uni/broadcast/overlays/Caddyfile:/etc/caddy/Caddyfile:ro
+
+[Service]
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target default.target

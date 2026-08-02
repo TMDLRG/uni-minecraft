@@ -1,0 +1,212 @@
+[
+  {
+    "n": 1,
+    "id": "seg3_01_s01",
+    "en": "We come now to the second of the three bold claims — and this one, I will tell you, is the one the universe has given us the cleanest tools to settle. It is the claim that the weight you are feeling right now does not come from the mass of the Earth pulling on you. It comes, instead, from the air pressing down on you.",
+    "mr": "आता आपण तीन धाडसी दाव्यांपैकी दुसऱ्याकडे येतो — आणि हा, मी तुम्हाला सांगतो, असा आहे ज्याची सोडवणूक करण्यासाठी विश्वाने आपल्याला सर्वात स्वच्छ साधने दिली आहेत. हा दावा आहे की तुम्हाला आत्ता जाणवणारे वजन पृथ्वीच्या वस्तुमानाच्या तुम्हावरील ओढीतून येत नाही. तो येतो हवेच्या तुम्हावरील दाबातून."
+  },
+  {
+    "n": 2,
+    "id": "seg3_02_s02",
+    "en": "And we honor it before we test it, as we always must. There is something honest in this idea. We really do live at the bottom of an ocean of air. You can feel it on a mountain road when your ears pop. You can feel it in a storm. It is a real thing pressing on you. The question is only whether it is also the only thing pressing on you.",
+    "mr": "आणि आपण नेहमीप्रमाणे, चाचणीआधी त्याचा सन्मान करतो. या कल्पनेत काहीतरी प्रामाणिक आहे. आपण खरोखर हवेच्या महासागराच्या तळाशी राहतो. डोंगरी रस्त्यावर तुमचे कान फुटतात तेव्हा तुम्हाला ते जाणवते. वादळात तुम्हाला ते जाणवते. ती तुम्हावर दाबणारी एक खरी गोष्ट आहे. प्रश्न फक्त एवढाच आहे की तुम्हावर दाबणारी ती एकमेव गोष्ट आहे का."
+  },
+  {
+    "n": 3,
+    "id": "seg3_03_s03",
+    "en": "Before we hear the challenger, let us hear the champion. The current champion in this corner is Isaac Newton, whose simple, beautiful equation has reigned over the description of falling things for three hundred and forty years.",
+    "mr": "आव्हानवीराला ऐकण्यापूर्वी, चॅम्पियनला ऐकू. या कोपऱ्यातील सध्याचा चॅम्पियन आहे आयझॅक न्यूटन, ज्याचे साधे, सुंदर समीकरण पडणाऱ्या गोष्टींच्या वर्णनावर तीनशे चाळीस वर्षांपासून राज्य करत आहे."
+  },
+  {
+    "n": 4,
+    "id": "seg3_04_s04",
+    "en": "Here is Newton's claim, in a single line. Surface gravity equals a universal constant — G — multiplied by the body's mass, divided by its radius squared. Nothing about air. Nothing about pressure. Nothing about what gases happen to be hanging above the surface. Only mass and radius. That is the whole story.",
+    "mr": "इथे आहे न्यूटनचा दावा, एका ओळीत. पृष्ठभागावरील गुरुत्वाकर्षण म्हणजे एक सार्वत्रिक स्थिरांक — G — गुणिले शरीराचे वस्तुमान, भागिले त्रिज्येचा वर्ग. हवेबद्दल काहीही नाही. दाबाबद्दल काहीही नाही. पृष्ठभागावर कोणते वायू असतात याबद्दल काहीही नाही. फक्त वस्तुमान आणि त्रिज्या. हीच सर्व कहाणी आहे."
+  },
+  {
+    "n": 5,
+    "id": "seg3_05_s05",
+    "en": "And here, in the other corner, is the challenger. A simpler claim — and in a way a more human one, because it says that the thing you can actually feel is the thing that does the work.",
+    "mr": "आणि इथे, दुसऱ्या कोपऱ्यात, आहे आव्हानवीर. एक साधा दावा — आणि एका अर्थाने अधिक मानवी, कारण तो म्हणतो की तुम्हाला खरोखर जाणवणारी गोष्टच काम करते."
+  },
+  {
+    "n": 6,
+    "id": "seg3_06_s06",
+    "en": "Here is the challenger's claim, also in a single line. Surface gravity equals some constant — call it k — multiplied by the air pressure. There is no mass term in this equation. No radius term. Only the air on your shoulders. If this is right, every world's gravity is just the weight of its sky.",
+    "mr": "इथे आहे आव्हानवीराचा दावा, एका ओळीत. पृष्ठभागावरील गुरुत्वाकर्षण म्हणजे काही स्थिरांक — त्याला k म्हणू — गुणिले हवेचा दाब. या समीकरणात वस्तुमान नाही. त्रिज्या नाही. फक्त तुमच्या खांद्यांवरील हवा. हे बरोबर असेल, तर प्रत्येक जगाचे गुरुत्वाकर्षण म्हणजे फक्त त्याच्या आकाशाचे वजन आहे."
+  },
+  {
+    "n": 7,
+    "id": "seg3_07_s07",
+    "en": "Now here is where we are very deliberately fair. Before the test, we let the challenger pick its own k from its strongest case — Earth. Take Earth's gravity, nine-point-eight-two metres per second squared, divide by Earth's surface pressure, one-point-zero-one-four bar. Solve for k. The number comes out to about nine-point-seven. Our challenger now fits Earth perfectly, exactly as it wants to. By construction.",
+    "mr": "आता इथे आपण अगदी मुद्दाम न्याय्य आहोत. चाचणीपूर्वी, आपण आव्हानवीराला त्याच्या सर्वात मजबूत प्रसंगातून — पृथ्वीवरून — स्वतःचा k निवडू देतो. पृथ्वीचे गुरुत्वाकर्षण, नऊ-पूर्णांक-आठ-दशांश-दोन मीटर प्रति सेकंदाचा वर्ग, पृथ्वीच्या पृष्ठभागावरील दाब, एक-पूर्णांक-शून्य-दशांश-एक-चार बार ने भागा. k साठी सोडवा. आकडा अंदाजे नऊ-पूर्णांक-सात येतो. आता आपला आव्हानवीर पृथ्वीशी अगदी पूर्णपणे जुळतो, हुबेहूब त्याला हवे तसे. रचनेने."
+  },
+  {
+    "n": 8,
+    "id": "seg3_08_s08",
+    "en": "And that is the only freedom it gets. From this point on, the challenger must walk into six other worlds with no further tuning whatsoever, and predict the gravity it would feel there. If it gets close on those six worlds — anywhere close — it wins. If it does not, it does not. And we owe it the same fairness we would owe any of our own beloved ideas.",
+    "mr": "आणि एवढीच स्वातंत्र्य त्याला मिळते. या क्षणापासून, आव्हानवीराने इतर सहा जगांत कोणत्याही पुढील जुळवणीशिवाय जायचे आहे, आणि तेथे जाणवेल ते गुरुत्वाकर्षण भाकीत करायचे आहे. त्या सहा जगांत तो जवळ पोहोचला — कोणत्याही बाजूने — तर तो जिंकतो. नसेल, तर नाही. आणि आपण त्याला तीच न्याय्यता देणे लागतो जी आपण आपल्याच कोणत्याही प्रिय कल्पनेला देऊ."
+  },
+  {
+    "n": 9,
+    "id": "seg3_09_s09",
+    "en": "Here is the test bench. Seven worlds, all of which we have visited with spacecraft, all of whose masses and radii we know to several decimal places, and whose surface pressures and gravities are recorded in plain numbers on NASA's public planetary fact sheets. No mystery. No interpretation. Just the data.",
+    "mr": "इथे आहे चाचणीचा बेंच. सात जगे, ज्यांना आपण अवकाशयानांनी भेट दिली आहे, ज्यांचे वस्तुमान आणि त्रिज्या आपल्याला अनेक दशांश स्थानांपर्यंत माहीत आहेत, आणि ज्यांचे पृष्ठीय दाब आणि गुरुत्वाकर्षण नासाच्या सार्वजनिक ग्रहीय माहितीपत्रकांत साध्या आकड्यांत नोंदवले आहेत. कोणतेही रहस्य नाही. कोणताही अर्थ नाही. फक्त माहिती."
+  },
+  {
+    "n": 10,
+    "id": "seg3_10_s10",
+    "en": "Let us look at the bench together. There is Earth, at one bar of pressure and nine-point-eight of gravity. There is the airless Moon and the airless Mercury, with essentially zero atmosphere. There is Mars, with a thin breath of carbon dioxide at six millibars. There is Venus, with a crushing ninety-two bars. There is mighty Jupiter. And there is Titan — Saturn's moon — with an atmosphere thicker than ours, but the gentle gravity of a small world.",
+    "mr": "बेंचकडे एकत्र पाहू. तिथे आहे पृथ्वी, एक बार दाबावर आणि नऊ-पूर्णांक-आठ गुरुत्वाकर्षणावर. तिथे आहे हवारहित चंद्र आणि हवारहित बुध, जवळजवळ शून्य वातावरणासह. तिथे आहे मंगळ, सहा मिलिबारवर कार्बन डायऑक्साइडच्या पातळ श्वासासह. तिथे आहे शुक्र, चिरडणाऱ्या ब्याऐंशी बारांसह. तिथे आहे पराक्रमी गुरू. आणि तिथे आहे टायटन — शनीचा चंद्र — आपल्यापेक्षा जाडसर वातावरणासह, पण एका छोट्या जगाच्या सौम्य गुरुत्वाकर्षणासह."
+  },
+  {
+    "n": 11,
+    "id": "seg3_11_s11",
+    "en": "Before we run the test, look at the range our test bench gives us. From the Moon's near-vacuum to the crush of Venus, the surface pressure across these seven worlds spans about ten thousand trillion to one. Sixteen orders of magnitude. Meanwhile, the surface gravity across the same seven worlds spans only a factor of about nineteen. The pressure varies by a factor of ten quadrillion. The gravity varies by a factor of nineteen.",
+    "mr": "चाचणी चालवण्याआधी, आपल्या चाचणी बेंचने आपल्याला दिलेली श्रेणी पहा. चंद्राच्या जवळ-शून्य पासून शुक्राच्या चिरडण्यापर्यंत, या सात जगांवरील पृष्ठीय दाब साधारण दहा-हजार-कोटी-कोटी ते एक इतका पसरतो. सोळा परिमाण-कोटी. दरम्यान, त्याच सात जगांवरील पृष्ठीय गुरुत्वाकर्षण फक्त सुमारे एकोणीसच्या घटकाने पसरते. दाब दहा-कोटी-कोटी-कोटीच्या घटकाने बदलतो. गुरुत्वाकर्षण एकोणीसच्या घटकाने बदलते."
+  },
+  {
+    "n": 12,
+    "id": "seg3_12_s12",
+    "en": "Already, without doing a single multiplication, the shape of the answer is showing through. If gravity were just rescaled pressure, we would expect them to vary roughly together. They do not. The driver is wild, and the thing it is supposed to be driving is calm. Something in the proposal is going to break. The only honest question is: where, and how badly?",
+    "mr": "आधीच, एकही गुणाकार न करता, उत्तराचा आकार दिसू लागला आहे. जर गुरुत्वाकर्षण म्हणजे फक्त पुनर्मापन केलेला दाब असता, तर आपण अपेक्षा करू की ते साधारण एकत्र बदलतील. ते बदलत नाहीत. चालक जंगली आहे, आणि जे त्याने चालवायचे आहे ते शांत आहे. प्रस्तावात काहीतरी मोडणार. प्रामाणिक प्रश्न एकच आहे: कुठे, आणि किती वाईट?"
+  },
+  {
+    "n": 13,
+    "id": "seg3_13_s13",
+    "en": "Let us run it. We take the challenger, with its Earth-calibrated k of nine-point-seven, and we ask it to predict the gravity on each of the other six worlds. We are not allowed to adjust anything else. We are not allowed to invent a separate constant for each planet. That would not be a theory. That would be a list of numbers wearing a mask. So we feed it the pressures, one by one, and we listen.",
+    "mr": "त्याला चालवू. आपण आव्हानवीर घेतो, त्याच्या पृथ्वी-कॅलिब्रेट केलेल्या k = नऊ-दशांश-सात सह, आणि आपण त्याला इतर सहा जगांपैकी प्रत्येकावरील गुरुत्वाकर्षण भाकीत करायला सांगतो. आपल्याला बाकी काहीही समायोजित करण्याची परवानगी नाही. आपल्याला प्रत्येक ग्रहासाठी वेगळा स्थिरांक निर्माण करण्याची परवानगी नाही. तो सिद्धांत नसेल. ती मुखवटा घातलेली आकड्यांची यादी असेल. म्हणून आपण त्याला दाब देतो, एक एक करून, आणि आपण ऐकतो."
+  },
+  {
+    "n": 14,
+    "id": "seg3_14_s14",
+    "en": "Here is what the challenger predicts. On Venus, with ninety-two bars of atmosphere, the model predicts about eight hundred and ninety-one. The real answer is eight-point-eight-seven. One hundred times too high. On Titan, with one-point-five bars, the model predicts about fourteen. The real answer is one-point-three-five. Ten times too high. On Mars, with its thin atmosphere, the model predicts almost nothing. Real Mars gravity is three-point-seven. Sixty times too low.",
+    "mr": "इथे आहे आव्हानवीराचे भाकीत. शुक्रावर, ब्याऐंशी बार वातावरणासह, मॉडेल सुमारे आठशे एकाहत्तर भाकीत करते. खरे उत्तर आहे आठ-दशांश-आठ-सात. शंभर पट जास्त. टायटनवर, एक-दशांश-पाच बार सह, मॉडेल सुमारे चौदा भाकीत करते. खरे उत्तर आहे एक-दशांश-तीन-पाच. दहा पट जास्त. मंगळावर, पातळ वातावरणासह, मॉडेल जवळजवळ शून्य भाकीत करते. खरे मंगळाचे गुरुत्वाकर्षण आहे तीन-दशांश-सात. साठ पट कमी."
+  },
+  {
+    "n": 15,
+    "id": "seg3_15_s15",
+    "en": "And then we come to the case that ends the conversation. On the Moon, with essentially zero atmospheric pressure — no air, no breath, no sky — the pressure model is forced to predict, by its own equation, a gravity of essentially zero. And the real answer? The Moon's gravity is one-point-six-two metres per second squared. Enough to drop a hammer and a feather at the same speed in vacuum, which Apollo 15 astronauts did, on camera, for all of us.",
+    "mr": "आणि मग आपण त्या प्रसंगाकडे येतो जो संभाषण संपवतो. चंद्रावर, अत्यंत शून्य वातावरणीय दाबासह — हवा नाही, श्वास नाही, आकाश नाही — दाब मॉडेलला त्याच्या स्वतःच्या समीकरणाने, अत्यंत शून्य गुरुत्वाकर्षण भाकीत करायला भाग पाडले जाते. आणि खरे उत्तर? चंद्राचे गुरुत्वाकर्षण आहे एक-दशांश-सहा-दोन मीटर प्रति सेकंदाचा वर्ग. व्हॅक्यूममध्ये हातोडा आणि पीस एकाच वेगाने टाकण्यासाठी पुरेसे, जे अपोलो १५ अंतराळवीरांनी, कॅमेऱ्यावर, आपल्या सर्वांसाठी केले."
+  },
+  {
+    "n": 16,
+    "id": "seg3_16_s16",
+    "en": "Look at the size of the failure. Not a sloppy fit. Not a slightly miscalibrated graph. The pressure model is off by a factor of one hundred on Venus, ten on Titan, sixty on Mars, and on the Moon and Mercury it is off by something like ten trillion. A factor of ten trillion is not a rounding error. It is not a near miss. It is two different worlds, sitting in two different rooms.",
+    "mr": "अपयशाचा आकार पहा. ढिल्ले जुळवण नाही. किंचित चुकीचे कॅलिब्रेट केलेले आलेख नाही. दाब मॉडेल शुक्रावर शंभर, टायटनवर दहा, मंगळावर साठ पटीने चुकते, आणि चंद्र व बुधावर ते दहा-कोटी-कोटीच्या क्रमाने चुकते. दहा-कोटी-कोटीचा घटक म्हणजे गोलाकार त्रुटी नाही. तो जवळचा चुक नाही. ती दोन वेगवेगळी जगे आहेत, दोन वेगवेगळ्या खोल्यांत बसलेली."
+  },
+  {
+    "n": 17,
+    "id": "seg3_17_s17",
+    "en": "Pause here for one moment. This is what a falsification looks like in real science. It is not a clever argument. It is not someone shouting. It is just public numbers, fed through a public equation, producing answers that no honest person can call correct. The discipline is doing what the discipline does. The math has said no, in seven different rooms, six different times.",
+    "mr": "इथे क्षणभर थांबू. खऱ्या विज्ञानात खंडन असेच दिसते. ते हुशार युक्तिवाद नाही. ती कोणीतरी ओरडणारी व्यक्ती नाही. ती फक्त सार्वजनिक आकडे आहेत, सार्वजनिक समीकरणातून पाठवलेले, अशी उत्तरे निर्माण करत आहेत जी कोणीही प्रामाणिक व्यक्ती बरोबर म्हणू शकत नाही. शिस्त जे करते ते करत आहे. गणिताने नाही म्हटले आहे, सात वेगवेगळ्या खोल्यांत, सहा वेगवेगळ्या वेळा."
+  },
+  {
+    "n": 18,
+    "id": "seg3_18_s18",
+    "en": "Now let us be perfectly fair. Maybe Newton's equation has its own problems. Maybe its long reign is just inertia, and at the test bench it would do no better. So we line it up against the same seven worlds, with no special tuning for any of them, and we run the same arithmetic.",
+    "mr": "आता आपण पूर्णपणे न्याय्य असू. कदाचित न्यूटनच्या समीकरणाचेही स्वतःचे प्रश्न असतील. कदाचित त्याचे दीर्घ राज्य फक्त जडत्व आहे, आणि चाचणी बेंचवर ते अधिक चांगले करणार नाही. म्हणून आपण त्याला त्याच सात जगांविरुद्ध, कोणत्याहीसाठी विशेष जुळवणीशिवाय, उभा करतो आणि तेच गणित चालवतो."
+  },
+  {
+    "n": 19,
+    "id": "seg3_19_s19",
+    "en": "And here is what Newton's GM-over-R-squared predicts. Earth gravity? Nine-point-eight-two. Match. Moon? One-point-six-three. The real answer is one-point-six-two. A four-tenths-of-one-percent error. Mars — match. Venus — match. Mercury — match. Jupiter, off by less than one percent. Titan — match. Across all seven worlds, with no per-planet tuning, the worst miss is one-point-zero percent and most of the others are essentially exact.",
+    "mr": "आणि इथे आहे न्यूटनच्या GM/R² चे भाकीत. पृथ्वीचे गुरुत्वाकर्षण? नऊ-पूर्णांक-आठ-दोन. जुळते. चंद्र? एक-दशांश-सहा-तीन. खरे उत्तर एक-दशांश-सहा-दोन. चार-दशांश-एक-टक्का त्रुटी. मंगळ — जुळते. शुक्र — जुळते. बुध — जुळते. गुरू, एक टक्क्यापेक्षा कमी चुकतो. टायटन — जुळते. सर्व सात जगांवर, प्रत्येक ग्रहासाठी जुळवणीशिवाय, सर्वात वाईट चूक एक-दशांश-शून्य टक्के आहे आणि बाकीच्या जवळजवळ अचूक आहेत."
+  },
+  {
+    "n": 20,
+    "id": "seg3_20_s20",
+    "en": "There is, frankly, no contest. The champion fits all seven worlds to within a fraction of a percent. The challenger gets exactly one right — the world it was bribed with — and is wrong on every other by factors of ten, of a hundred, of ten trillion. Both equations are simple. Both can be checked by a child with a calculator. One of them describes the universe.",
+    "mr": "स्पष्टपणे सांगायचे तर, स्पर्धाच नाही. चॅम्पियन सर्व सात जगांना एक टक्क्याच्या अंशात बसवतो. आव्हानवीर नेमका एक बरोबर मिळवतो — ज्या जगाने त्याला लाच दिली होती ते — आणि बाकी प्रत्येकावर दहा, शंभर, दहा-कोटी-कोटीच्या घटकांनी चुकीचा आहे. दोन्ही समीकरणे साधी आहेत. दोन्ही गणकयंत्र असलेले मूल तपासू शकते. एक त्यांच्यापैकी विश्वाचे वर्णन करते."
+  },
+  {
+    "n": 21,
+    "id": "seg3_21_s21",
+    "en": "So we write down the verdict. With the discipline we promised ourselves we would keep, and with no joy in the announcement, because we always honor the dream before we test it. The claim that the weight you feel comes from air pressure rather than mass and gravity is — by the planets themselves, by their own pressures and their own gravities — contradicted by test. Class X in our six honest labels.",
+    "mr": "म्हणून आपण निर्णय लिहितो. आपण स्वतःशी पाळण्याचे वचन दिलेल्या शिस्तीने, आणि घोषणेत कोणताही आनंद न घेता, कारण आपण नेहमीच चाचणीआधी स्वप्नाचा सन्मान करतो. तुम्हाला जाणवणारे वजन वस्तुमान आणि गुरुत्वाकर्षणातून नव्हे तर हवेच्या दाबातून येते हा दावा — ग्रहांनी स्वतःच, त्यांच्या स्वतःच्या दाबांनी आणि त्यांच्या स्वतःच्या गुरुत्वाकर्षणांनी — चाचणीने खोडलेला आहे. आपल्या सहा प्रामाणिक खुणांतील वर्ग X."
+  },
+  {
+    "n": 22,
+    "id": "seg3_22_s22",
+    "en": "And it is important to say what this is, and what it is not. It is not an insult to the person who proposed the idea. It is not a victory lap for established physics. It is a measurement. We let the proposal pick its own anchor, we let it walk across six other worlds with the dignity it asked for, and on every one of them the universe, in plain numbers, said no. That is what a real test feels like.",
+    "mr": "आणि हे काय आहे आणि काय नाही हे सांगणे महत्त्वाचे आहे. ती कल्पना मांडणाऱ्या व्यक्तीचा अपमान नाही. हे स्थापित भौतिकशास्त्राचा विजय फेरा नाही. हे मोजमाप आहे. आपण प्रस्तावाला त्याचा स्वतःचा आधार निवडू दिला, आपण त्याला त्याने मागितलेल्या प्रतिष्ठेने इतर सहा जगांत चालू दिले, आणि प्रत्येकावर विश्वाने, साध्या आकड्यांत, नाही म्हटले. खऱ्या चाचणीची हीच जाणीव असते."
+  },
+  {
+    "n": 23,
+    "id": "seg3_23_s23",
+    "en": "Now I want to spend a minute on something kinder than the verdict — because the verdict alone is not the whole story. Why did this idea feel true to so many people? Why does it still feel true? Because the air really does press on you. That part was not wrong. It was just attached to the wrong cause.",
+    "mr": "आता मला निर्णयापेक्षा अधिक दयाळू गोष्टीवर एक मिनिट खर्च करायचा आहे — कारण फक्त निर्णय ही संपूर्ण कहाणी नाही. ही कल्पना अनेक लोकांना खरी का वाटली? ती अजूनही खरी का वाटते? कारण हवा खरोखर तुम्हावर दाबते. तो भाग चुकीचा नव्हता. तो फक्त चुकीच्या कारणाशी जोडलेला होता."
+  },
+  {
+    "n": 24,
+    "id": "seg3_24_s24",
+    "en": "Atmospheric pressure is utterly real. It is fourteen-point-seven pounds per square inch on every square inch of your skin, right now, holding you in a steady embrace from every direction. It really does pop your ears on a mountain road. It really does drive the weather. But it does all of those things sideways — it does not, on its own, hold you to the ground. Gravity does that, quietly, in the background, every second.",
+    "mr": "वातावरणीय दाब पूर्णपणे खरा आहे. तो तुमच्या त्वचेच्या प्रत्येक चौरस इंचावर साडे-चौदा पौंड प्रति चौरस इंच आहे, आत्ता, प्रत्येक दिशेने स्थिर मिठीत तुम्हाला धरून. तो डोंगरी रस्त्यावर तुमचे कान फुटवतो. तो खरोखर हवामान चालवतो. पण तो हे सर्व बाजूने करतो — तो स्वतः तुम्हाला जमिनीवर धरत नाही. ते गुरुत्वाकर्षण करते, शांतपणे, पार्श्वभूमीत, प्रत्येक सेकंदाला."
+  },
+  {
+    "n": 25,
+    "id": "seg3_25_s25",
+    "en": "And so the mistake the bold claim made was not in noticing the air. The mistake was in attributing weight to it. Two real things were sitting side by side in your everyday experience — pressure and weight — and the proposal merged them into one. The discipline's gentle gift is just to pull them apart again, with no scorn, and to ask each one what it really does.",
+    "mr": "आणि म्हणून धाडसी दाव्याने केलेली चूक हवेला लक्षात घेण्यात नव्हती. चूक होती तिला वजन देण्यात. दोन खऱ्या गोष्टी तुमच्या रोजच्या अनुभवात बाजूबाजूला बसल्या होत्या — दाब आणि वजन — आणि प्रस्तावाने त्यांना एकात विलीन केले. शिस्तीची सौम्य भेट म्हणजे फक्त त्यांना तिरस्काराशिवाय पुन्हा वेगळे काढणे, आणि प्रत्येकाला तो खरोखर काय करतो ते विचारणे."
+  },
+  {
+    "n": 26,
+    "id": "seg3_26_s26",
+    "en": "There is one more piece worth knowing — the deeper reason the pressure model could never have worked. Atmospheres do not sit on planets by accident. They are not painted on the surface. They are held in place by gravity itself. The air is a consequence of weight; it is not the cause of it.",
+    "mr": "आणखी एक तुकडा जाणण्यासारखा आहे — दाब मॉडेल कधीच कार्य करू शकले नसते याचे खोल कारण. वातावरण ग्रहांवर अपघाताने बसत नाहीत. ते पृष्ठभागावर रंगवलेले नाहीत. ते स्वतः गुरुत्वाकर्षणाने जागी धरले जातात. हवा वजनाचा परिणाम आहे; तिचे कारण नाही."
+  },
+  {
+    "n": 27,
+    "id": "seg3_27_s27",
+    "en": "Bodies with weak gravity cannot hold their air. That is why the Moon has no atmosphere — its escape velocity is too low, and over billions of years any gases it had simply drifted off into space. That is why little Mercury is a near-vacuum, while heavy Venus traps a crushing ninety-two-bar furnace of carbon dioxide. The pressure is downstream of the gravity. Saying the pressure causes the gravity is, in the deepest sense, getting cause and effect exactly backwards.",
+    "mr": "कमकुवत गुरुत्वाकर्षण असलेले शरीर त्यांची हवा धरू शकत नाहीत. म्हणून चंद्राला वातावरण नाही — त्याचा सुटका वेग खूप कमी आहे, आणि अब्जावधी वर्षांत त्याच्याकडे असलेले कोणतेही वायू फक्त अवकाशात निघून गेले. म्हणूनच लहान बुध जवळ-शून्य आहे, तर जड शुक्र ब्याऐंशी-बार कार्बन डायऑक्साइडची चिरडणारी भट्टी अडकवतो. दाब गुरुत्वाकर्षणाच्या खाली प्रवाहात आहे. दाब गुरुत्वाकर्षण निर्माण करतो असे म्हणणे म्हणजे, खोल अर्थाने, कारण आणि परिणाम बरोबर उलट करणे."
+  },
+  {
+    "n": 28,
+    "id": "seg3_28_s28",
+    "en": "Gravity holds the air. Not the other way around. The intuition was reading the same equation backwards. That is also why the discipline matters. Because intuitions are good at noticing real correlations — and almost always bad at guessing which direction the arrow of causation actually runs.",
+    "mr": "गुरुत्वाकर्षण हवा धरते. उलट नाही. अंतर्ज्ञान तेच समीकरण उलट वाचत होते. म्हणूनच शिस्त महत्त्वाची आहे. कारण अंतर्ज्ञाने खरे संबंध लक्षात घेण्यात चांगली असतात — आणि कारणाचा बाण नेमका कोणत्या दिशेने जातो याचा अंदाज लावण्यात जवळजवळ नेहमीच वाईट."
+  },
+  {
+    "n": 29,
+    "id": "seg3_29_s29",
+    "en": "And here, as in the last segment, I want to take a quiet moment to honor the person who reached for this idea. Because I think the reaching itself was the right kind of bravery, even if the destination turned out to be in a different room.",
+    "mr": "आणि इथे, मागील भागाप्रमाणे, मला या कल्पनेकडे पोहोचणाऱ्या व्यक्तीचा सन्मान करण्यासाठी एक शांत क्षण घ्यायचा आहे. कारण मला वाटते की पोहोचणे हीच योग्य प्रकारची शूरता होती, गंतव्यस्थान वेगळ्या खोलीत निघाले तरीही."
+  },
+  {
+    "n": 30,
+    "id": "seg3_30_s30",
+    "en": "To question the most established force in physics — to look up at three hundred and forty years of Newton and say I think this might be missing something — that is not foolishness. That is the act of a free mind. The discipline disagrees with the answer, but it stands up for the right to ask the question. The two things are not the same, and we should never let the world confuse them.",
+    "mr": "भौतिकशास्त्रातील सर्वात स्थापित बलावर प्रश्न विचारणे — न्यूटनच्या तीनशे चाळीस वर्षांकडे वर पाहणे आणि म्हणणे मला वाटते यात काहीतरी सुटले आहे — हा मूर्खपणा नाही. ही एका स्वतंत्र मनाची कृती आहे. शिस्त उत्तराशी असहमत आहे, पण ती प्रश्न विचारण्याच्या अधिकारासाठी उभी आहे. या दोन गोष्टी एकच नाहीत, आणि आपण कधीही जगाला त्यांच्यात गल्लत करू देऊ नये."
+  },
+  {
+    "n": 31,
+    "id": "seg3_31_s31",
+    "en": "The dream said look at the air. The discipline said yes, you are right to look. But the answer you are after is not above you, in the sky. It is below you, in the mass. Same act of attention. Different room. And the same person, if they keep that act of attention going, can walk through the wrong room into the right one. That is what science is built to do.",
+    "mr": "स्वप्न म्हणाले हवेकडे पहा. शिस्तीने उत्तर दिले होय, तुम्ही पाहण्यात बरोबर आहात. पण तुम्ही जे शोधत आहात ते वर तुमच्यावर, आकाशात नाही. ते तुमच्या खाली, वस्तुमानात आहे. लक्ष देण्याची तीच कृती. वेगळी खोली. आणि तीच व्यक्ती, जर ती ती लक्ष देण्याची कृती चालू ठेवते, तर चुकीच्या खोलीतून बरोबरच्या खोलीत जाऊ शकते. विज्ञान हेच करण्यासाठी बांधले आहे."
+  },
+  {
+    "n": 32,
+    "id": "seg3_32_s32",
+    "en": "Two of the three bold claims have now had their hearing. Ozone-as-life: most readings contradicted, the modest shield reading kept and the metaphor preserved. Pressure-as-weight: contradicted, on seven worlds, by their own numbers. One claim remains. The third one is the strangest of all three, and in some ways the most beautiful.",
+    "mr": "तीन धाडसी दाव्यांपैकी दोन आता ऐकले गेले आहेत. ओझोन-म्हणजे-जीवन: बहुतेक वाचने खोडली, माफक कवच वाचन ठेवले आणि रूपक जपले. दाब-म्हणजे-वजन: सात जगांवर, त्यांच्या स्वतःच्या आकड्यांनी, खोडलेला. एक दावा शिल्लक आहे. तिसरा तिन्हीतला सर्वात विचित्र आहे, आणि काही प्रकारे सर्वात सुंदर."
+  },
+  {
+    "n": 33,
+    "id": "seg3_33_s33",
+    "en": "And it is the one about you, and me, and the one cell that became a thousand and then a trillion and then us. It is the claim about life itself — about what runs you, what holds you together, what answers when something hurts and what reaches when something calls. It is the claim of a deeper unity — a single force, a single substance, a single thread running through all living things.",
+    "mr": "आणि तो तुमच्याबद्दल, माझ्याबद्दल, आणि एका पेशीबद्दल आहे जी हजार झाली आणि मग एक कोटी आणि मग आपण. तो जीवनाबद्दलचा दावा आहे — तुम्हाला काय चालवते, तुम्हाला काय एकत्र धरते, काहीतरी दुखवते तेव्हा काय उत्तर देते आणि काहीतरी हाक मारते तेव्हा काय पोहोचते. तो खोल एकत्वाचा दावा आहे — एकच बल, एकच पदार्थ, सर्व जिवंत गोष्टींतून जाणारा एकच धागा."
+  },
+  {
+    "n": 34,
+    "id": "seg3_34_s34",
+    "en": "It is called The Breath of Life. We will walk it through the same discipline. And like the other two, parts of it — some genuinely beautiful parts — will survive, and parts will not. We will keep what is real, with both hands, and let the rest go, gently, as honest travelers do.",
+    "mr": "त्याचे नाव आहे जीवनाचा श्वास. आपण त्याला त्याच शिस्तीतून चालवू. आणि इतर दोघांप्रमाणे, त्याचे काही भाग — काही खरोखर सुंदर भाग — टिकतील, आणि काही टिकणार नाहीत. आपण जे खरे आहे ते दोन्ही हातांनी ठेवू, आणि बाकीचे, सौम्यपणे, प्रामाणिक प्रवासी जसे करतात तसे जाऊ देऊ."
+  },
+  {
+    "n": 35,
+    "id": "seg3_35_s35",
+    "en": "People must see to learn, and learn to see. The second claim has had its hearing. May the last one find as fair a one.",
+    "mr": "शिकण्यासाठी माणसाने पाहिले पाहिजे, आणि पाहण्यासाठी शिकले पाहिजे. दुसऱ्या दाव्याची सुनावणी झाली. शेवटच्यालाही तितकीच न्याय्य सुनावणी मिळो."
+  }
+]

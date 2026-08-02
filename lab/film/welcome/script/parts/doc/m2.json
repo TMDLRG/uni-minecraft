@@ -1,0 +1,138 @@
+[
+  {
+    "id": "d_m2_title",
+    "plate": "title",
+    "kicker": "THE ESTATE — FIVE BODIES",
+    "line1": "Five bodies, kept apart on purpose.",
+    "line2": "Each one is shown in its own source, then tested.",
+    "narration": "Five bodies. A colony that acts inside a world, a producer that would direct a broadcast, a laboratory that models a bacterial motor, a control plane that records what the others did, and a public record. They are kept apart on purpose. Each one is about to be shown in its own source.",
+    "tail_silence": 1.2
+  },
+  {
+    "id": "d_m2_colony_boundary",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/bridge.ex",
+    "from": 7,
+    "to": 14,
+    "why": "Body one, the colony — the two messages that cross between brain and body, and nothing else",
+    "narration": "Body one is a colony acting inside a world. This is its boundary, in the file that enforces it. Senses go in on one line, one action comes back, and the code puts the word ONLY in capitals. The brain never sees raw world state. The body never sees beliefs.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m2_colony_gate",
+    "plate": "measurement",
+    "probe": "pureworld.scaffold",
+    "asks": "Does that colony's science gate actually run?",
+    "source": "runs/pureworld_qa_gate.exs — the runner's own line number and the block it raises, printed as it is written",
+    "note": "The colony's forage claim is blocked on this file. It has never produced a result.",
+    "narration": "Here is what that body has not done. The gate that would test the colony's foraging claim raises before it reaches the colony. On screen is the line number and the block it raises. It is a named shape with a contract and no result, and the file says that about itself.",
+    "tail_silence": 1.5
+  },
+  {
+    "id": "d_m2_producer",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/producer/brain.ex",
+    "from": 5,
+    "to": 7,
+    "why": "Body two, the producer — the header of the module that would choose every shot",
+    "narration": "Body two would direct a broadcast: which shot, which cut, when to hold. Read what it runs on. Expected free energy minimisation, no scripted rules, no reward. The thing that would point the camera runs the same mathematics as the thing it would broadcast. That is the sentence on screen, not a summary of it.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m2_producer_door",
+    "plate": "measurement",
+    "probe": "golive.refuses_me",
+    "asks": "Can that producer put itself on air?",
+    "source": "viewer/prove_golive_refuses_me.cjs — an agent taking every path to air in this codebase, and recording what stops it",
+    "note": "Paths tried: @n.golive.paths · allowed right now: @n.golive.allowed_now · claim level: @n.golive.claim_level",
+    "narration": "It cannot. This program takes every path to air in this codebase and records what refuses it. Of those paths, @n.golive.allowed_now are allowed right now, and the reason is the least flattering one available: the door has no key. There are @n.golive.minters presence-token minters anywhere in the tree. The claim level under the frame is the guard's own word.",
+    "tail_silence": 1.6,
+    "prints_tail": 1,
+    "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+  },
+  {
+    "id": "d_m2_one_engine",
+    "plate": "measurement",
+    "probe": "engine.zero_deps",
+    "asks": "How many third-party dependencies does the engine those two bodies share carry?",
+    "source": "mix.exs — the dependency declaration itself, printed rather than described",
+    "note": "Hex dependencies declared: @n.engine.hex_deps",
+    "narration": "Both of those bodies run one engine, and this is its dependency list. Nothing between the brackets. It declares @n.engine.hex_deps hex dependencies. That is not offered here as a virtue. It is what makes the no-language-model claim checkable in one command instead of by trust, because there is no library an inference call could hide inside.",
+    "tail_silence": 1.3
+  },
+  {
+    "id": "d_m2_lab_scope",
+    "plate": "quotation",
+    "root": "flagellum",
+    "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+    "from": 566,
+    "to": 567,
+    "why": "Body three, the flagellar-motor laboratory — the scope its strongest result writes for itself",
+    "narration": "Body three models a bacterial flagellar motor. This is the boundary its strongest result states in the file that computes it: held-out duration prediction, one frozen cohort, one scoring rule, seconds scale. Escherichia coli behavioural evidence, and nothing else. The scope is on screen instead of a summary of the scope.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m2_lab_ladder",
+    "plate": "quotation",
+    "root": "flagellum",
+    "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+    "from": 573,
+    "to": 575,
+    "why": "The same result, in the same function, naming every level it does not reach",
+    "narration": "The same function states what that result does not reach. @n.pladder.unclosed rungs above duration-only are untouched in either direction. Three of them cannot be closed from inside this estate at all: transfer needs another dataset, intervention needs an apparatus, independent replication needs somebody who is not us. No verdict has yet been authored about a real scientific claim.",
+    "tail_silence": 1.7
+  },
+  {
+    "id": "d_m2_control_plane",
+    "plate": "measurement",
+    "probe": "ledger.chain",
+    "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+    "source": "evidence/control_plane/ledger.ndjson and anchor.json — each entry naming the hash of the entry before it",
+    "narration": "Body four records what the other four did, including what they got wrong. Every entry names the hash of the entry before it. The command counted @n.cp.entries entries, no broken links, and an anchor whose declared length and head match the chain it anchors. Watch the next frame before you carry that agreement anywhere.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m2_witness",
+    "plate": "measurement",
+    "probe": "witness.blocked",
+    "asks": "Is there an independent party corroborating that chain?",
+    "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from the capture itself",
+    "note": "Independent custodians: @n.witness.independent_custodians · qualifying as a witness: @n.witness.qualifying · claim level: @n.witness.claim_level",
+    "narration": "Here is what that agreement is worth. Independent custodians corroborating the record number @n.witness.independent_custodians, and that is the whole finding. The off-box machine accepts the writer's own key, so a second domain the writer can reach is not a second domain. Tamper-evident, and not unforgeable.",
+    "tail_silence": 1.7
+  },
+  {
+    "id": "d_m2_public_record",
+    "plate": "measurement",
+    "probe": "gap.registry_ledger",
+    "asks": "How many registered gates have a row in the permanent record?",
+    "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, never cached",
+    "note": "Absent from the canonical ledger: @n.gap.absent of @n.gap.registered registered gates",
+    "narration": "Body five is the public record, and this is the hole in it. @n.gap.in_ledger of @n.gap.registered registered gates have a row. Writing those rows is a stop condition, the operator's, and not work an agent may do. So the instrument prints the exact missing line and then stops.",
+    "tail_silence": 1.6
+  },
+  {
+    "id": "d_m2_record_schema",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "production/schemas/gate_row.schema.json",
+    "from": 5,
+    "to": 5,
+    "why": "The rule that record is failing, in the schema that states it",
+    "narration": "That number was measured against this sentence, which is not ours. It is the record's own schema, with the digest of those bytes. Every gate the project claims must be represented there, keyed to a real receipt on disk. The record holds no register of scientific verdicts to count, which is why that figure is declared rather than measured.",
+    "tail_silence": 1.5
+  },
+  {
+    "id": "d_m2_separation",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/control_plane/scene.ex",
+    "from": 33,
+    "to": 37,
+    "why": "Why the five stay five — the rule the renderer states about itself",
+    "narration": "This is why the bodies are kept apart, and why nothing here is quietly left out. A node the renderer cannot draw fails the whole picture rather than vanishing from it. A hole is invisible. You cannot notice what was never rendered, and that sentence is the reason this movement showed you the gaps.",
+    "tail_silence": 2
+  }
+]

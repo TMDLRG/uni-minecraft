@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - Title / bumper overlay</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* Full-screen title / bumper card. Transparent backdrop so the program /
+         music-video shows through the soft vignette; the card is the message. */
+      .stage {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .scrim {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(6, 12, 22, 0.32) 0%,
+          rgba(6, 12, 22, 0.66) 100%
+        );
+      }
+      .card {
+        position: relative;
+        text-align: center;
+        max-width: 78vw;
+        padding: 48px 64px;
+      }
+      .accent-rule {
+        width: 84px;
+        height: 4px;
+        margin: 0 auto 22px;
+        border-radius: 3px;
+        background: var(--accent);
+      }
+      .card .kicker {
+        font-size: 22px;
+        letter-spacing: 0.22em;
+        margin-bottom: 18px;
+      }
+      .card .text {
+        font-size: 76px;
+        font-weight: 800;
+        line-height: 1.04;
+        letter-spacing: 0.005em;
+        text-shadow: 0 6px 40px rgba(0, 0, 0, 0.55);
+      }
+      .card .subtitle {
+        margin-top: 24px;
+        font-size: 30px;
+        font-weight: 500;
+        color: var(--ink-dim);
+      }
+      .tone-ok .accent-rule {
+        background: var(--ok);
+      }
+      .tone-warn .accent-rule {
+        background: var(--warn);
+      }
+      .tone-crit .accent-rule {
+        background: var(--crit);
+      }
+      .tone-ok .kicker {
+        color: var(--ok);
+      }
+      .tone-warn .kicker {
+        color: var(--warn);
+      }
+      .tone-crit .kicker {
+        color: var(--crit);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage view" id="stage">
+      <div class="scrim"></div>
+      <div class="card" id="card">
+        <div class="accent-rule"></div>
+        <div class="kicker" id="kicker"></div>
+        <div class="text" id="text"></div>
+        <div class="subtitle" id="subtitle"></div>
+      </div>
+    </div>
+
+    <script>
+      // ---- Title / bumper overlay ----
+      // Renders state.title {visible,kicker,text,subtitle,tone} full-screen.
+      // Crossfades in on visible with content; out otherwise. Honest: a stale /
+      // missing feed hides the card.
+
+      var STALE_MS = 8000;
+      var TONES = ['ok', 'warn', 'crit', 'unknown'];
+
+      var el = {
+        stage: document.getElementById('stage'),
+        card: document.getElementById('card'),
+        kicker: document.getElementById('kicker'),
+        text: document.getElementById('text'),
+        subtitle: document.getElementById('subtitle'),
+      };
+
+      function setText(node, value) {
+        var v = value == null ? '' : String(value);
+        if (node.textContent !== v) node.textContent = v;
+        node.style.display = v.trim() === '' ? 'none' : '';
+      }
+
+      function setTone(tone) {
+        TONES.concat(['accent']).forEach(function (t) {
+          el.card.classList.remove('tone-' + t);
+        });
+        el.card.classList.add('tone-' + (TONES.indexOf(tone) >= 0 ? tone : 'accent'));
+      }
+
+      function fresh(updatedUtc) {
+        var t = updatedUtc ? Date.parse(updatedUtc) : NaN;
+        return isFinite(t) && Date.now() - t < STALE_MS;
+      }
+
+      function render(state) {
+        var ti = (state && state.title) || null;
+        var ok = !!ti && ti.visible === true && fresh(state.updatedUtc);
+        var hasContent =
+          ok && ((ti.text && String(ti.text).trim()) || (ti.kicker && String(ti.kicker).trim()));
+
+        if (!hasContent) {
+          el.stage.classList.remove('on');
+          return;
+        }
+        setText(el.kicker, ti.kicker);
+        setText(el.text, ti.text);
+        setText(el.subtitle, ti.subtitle);
+        setTone(ti.tone);
+        el.stage.classList.add('on');
+      }
+
+      function tick() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(render)
+          .catch(function () {
+            el.stage.classList.remove('on');
+          });
+      }
+
+      tick();
+      setInterval(tick, 600);
+    </script>
+  </body>
+</html>

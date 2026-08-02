@@ -1,0 +1,164 @@
+[
+  {
+    "id": "ozone_eq_life_literal",
+    "text": "'Ozone = Life' as a LITERAL identity ('ozone IS life / ozone is alive').",
+    "category": "ozone_eq_life_decomposition",
+    "evidence_class": "U/X",
+    "result": "contradicted-by-test",
+    "verify_with": "Check whether O3 (triatomic oxygen, a strong oxidant, toxic to tissue at ground level) satisfies any life criterion (metabolism, reproduction, homeostasis); check abiotic-ozone control planets.",
+    "falsify_with": "Abiotic ozone exists on Venus (SPICAV ~100 km nightside layer, ~1e7-1e8 cm^-3) and Mars (SPICAM ~0.4-4 DU, seasonal polar layer) — both biologically sterile. Ozone forms in any UV-irradiated O/O2-bearing atmosphere, biotic or not. No mechanism makes O3 alive."
+  },
+  {
+    "id": "ozone_eq_life_shield",
+    "text": "SHIELD reading: 'an ozone layer protects modern Earth-surface complex life from lethal UV (UV-C/UV-B) by physical Hartley-band absorption.'",
+    "category": "ozone_eq_life_decomposition",
+    "evidence_class": "B",
+    "result": "supported-within-model",
+    "verify_with": "Beer-Lambert at Hartley peak: tau = sigma*N = 1.1e-17 * 8.07e18 = 88.8 -> transmission ~3e-39 (UV-C essentially fully extinguished). NASA/ESA empirical shielding (UV-C all, UV-B most, UV-A little).",
+    "falsify_with": "Scoped to MODERN COMPLEX SURFACE life only. NOT universal necessity: anaerobic/subsurface/deep-sea/Archean pre-ozone-column life existed without it (GOE ~2.4 Ga, life ~3.5-3.8 Ga). The shield is itself downstream of O2 (not an independent corroborator of biology); speaks to habitability, not detection."
+  },
+  {
+    "id": "ozone_eq_life_biosignature",
+    "text": "BIOSIGNATURE reading: 'ozone, within full stellar+atmospheric context and disequilibrium analysis, raises the posterior probability of (oxygenic) life.'",
+    "category": "ozone_eq_life_decomposition",
+    "evidence_class": "C",
+    "result": "survives-as-narrowed-hypothesis",
+    "verify_with": "Bayesian Exo-Earth-System framework (Catling et al. 2018): O3 is a proxy for O2, itself a proxy for oxygenic photosynthesis, ONLY after excluding abiotic false-positive pathways. Five graded confidence bands; no single molecule reaches the top band.",
+    "falsify_with": "Abiotic O2/O3 false positives (CO2 photolysis; water photolysis + H escape on active M dwarfs; runaway-greenhouse ocean loss) AND biotic false negatives (Earth's own anoxic Archean/weakly-oxic Proterozoic). O2->O3 mapping is non-monotonic/host-UV-dependent (O3 peaks at 25-55% PAL O2 for hotter stars), so O3 is not a clean O2 proxy. Quantitative O2-from-O3 inference is U-leaning."
+  },
+  {
+    "id": "ozone_eq_life_bioenergetic",
+    "text": "BIOENERGETIC reading: 'ozone powers or constitutes living processes / ozone is a metabolic energy source.'",
+    "category": "ozone_eq_life_decomposition",
+    "evidence_class": "U/X",
+    "result": "outside-model-scope",
+    "verify_with": "Search chemiosmotic bioenergetics (Mitchell, Nobel 1978) for any role of O3 in electron transport / ATP synthesis / proton-motive force.",
+    "falsify_with": "O3 plays NO role in any known cellular bioenergetic pathway; it is an atmospheric UV-shield molecule and a strong oxidant toxic to tissue at ground level. The near-universal energy currency is the proton-motive force, which is oxygen-INDEPENDENT (runs on light, sulfate, nitrate, fumarate, CO2). Ozone is absent from bioenergetics entirely."
+  },
+  {
+    "id": "ozone_eq_life_metaphor",
+    "text": "METAPHOR reading: 'ozone as a symbol/shorthand for the protective envelope or breath of a living world.'",
+    "category": "ozone_eq_life_decomposition",
+    "evidence_class": "D",
+    "result": "metaphor-preserved",
+    "verify_with": "Confirm the statement is used as imagery carrying zero physical-identity claim.",
+    "falsify_with": "Valid only as non-empirical imagery; the moment it is read as a physical-identity or causal claim it collapses into the literal reading (contradicted-by-test). Explicitly non-empirical."
+  },
+  {
+    "id": "ozone_necessary_all_life",
+    "text": "'Ozone is necessary for ALL life.'",
+    "category": "ozone_overclaim",
+    "evidence_class": "U/X",
+    "result": "contradicted-by-test",
+    "verify_with": "Geologic/biological record of life without an ozone column.",
+    "falsify_with": "Anoxic Archean biosphere predates the GOE (~2.4 Ga) by ~1-1.4 Gyr (earliest life ~3.5-3.8 Ga); anaerobic, subsurface, and deep-sea life exist now without a UV shield. Necessity holds at most for modern complex surface life."
+  },
+  {
+    "id": "ozone_makes_water",
+    "text": "'Ozone alone makes/creates water' or 'ozone retains water.'",
+    "category": "ozone_overclaim",
+    "evidence_class": "U",
+    "result": "outside-model-scope",
+    "verify_with": "Check Chapman photochemistry for any net H2O production; check the controls on planetary water inventory and stratospheric water.",
+    "falsify_with": "Nothing in Chapman photochemistry produces H2O. Stratospheric water is gated by the COLD TRAP (~190-200 K saturation); long-term retention by ESCAPE PHYSICS (gravity/escape velocity, Hunten diffusion limit), integrated stellar XUV history, and initial volatile inventory. O3 is causally downstream of O2 and water, not a cause."
+  },
+  {
+    "id": "pressure_replaces_gravity",
+    "text": "'Atmospheric pressure replaces gravity' / 'surface gravity is proportional to atmospheric pressure (g = k*P).'",
+    "category": "hard_boundary_cross_domain",
+    "evidence_class": "X",
+    "result": "contradicted-by-test",
+    "verify_with": "g = GM/R^2 vs g = k*P (k = g_Earth/P_Earth) across the 7-body reference table.",
+    "falsify_with": "g=GM/R^2 reproduces all 7 bodies to <=0.36% (binding residual Moon 0.360%; NOT the '<=0.26%' some text claims). The pressure law fails by ~14-15 orders: Moon ~2.9e-14 vs real 1.62; Mercury ~4.8e-14 vs real 3.70; Venus 100.4x overshoot (91x pressure yet g<Earth); Titan 10.49x overshoot (thicker atmosphere yet lowest g). Gravity is set by M and R."
+  },
+  {
+    "id": "oxygen_required_for_life",
+    "text": "'Life requires oxygen / oxygen = life itself.'",
+    "category": "bioenergetic_overclaim",
+    "evidence_class": "U/X",
+    "result": "contradicted-by-test",
+    "verify_with": "Anaerobic respiration (sulfate/nitrate/Fe(III)/Mn(IV)/CO2/fumarate reducers), fermentation, and the geologic timing of life vs O2.",
+    "falsify_with": "Anaerobic metabolisms and fermentation sustain entire ecosystems with no O2; life predated atmospheric O2 by ~1-1.4 Gyr (earliest ~3.5-3.8 Ga vs GOE ~2.4 Ga). O2's +0.82 V reduction potential is a thermodynamic-ADVANTAGE (more energy per substrate), NOT a necessity. The universal-requirement claim is U at best, X as stated."
+  },
+  {
+    "id": "proton_gradients_foundational",
+    "text": "'Proton electrochemical gradients (the proton-motive force) are the foundational, near-universal energy-coupling currency of cellular life.'",
+    "category": "bioenergetic_support",
+    "evidence_class": "B",
+    "result": "supported-within-model",
+    "verify_with": "Mitchell chemiosmotic theory (Nobel 1978); the dp = dpsi - (2.303RT/F)dpH relation; ATP synthase driven by the gradient across bacteria/archaea/mitochondria/chloroplasts.",
+    "falsify_with": "'Foundational' is NOT 'is life itself'; the mechanism is oxygen-INDEPENDENT (runs on light/sulfate/nitrate/etc.). This is a far narrower, oxygen-agnostic claim than 'oxygen=life' or 'ozone=life' and offers NO support for either. The bridge to 'proton gradients ARE the invariant' is interpretive (D). NOTE: a proton GRADIENT is an electrochemical concept — never equivocated with 'protons are the soul' (category error, U/X)."
+  },
+  {
+    "id": "chapman_complete_model",
+    "text": "'The pure-oxygen Chapman 4-reaction mechanism is a complete quantitative model of the stratospheric ozone budget.'",
+    "category": "ozone_model_scope",
+    "evidence_class": "B",
+    "result": "contradicted-by-test",
+    "verify_with": "Compare pure-Chapman steady-state ozone to measured stratospheric ozone; check the role of catalytic loss cycles.",
+    "falsify_with": "Pure-oxygen Chapman OVERPREDICTS ozone by ~2x (independently noted by Columbia kinetics: estimates exceed measured concentration). The real budget needs catalytic HOx/NOx/ClOx/BrOx cycles plus transport (Brewer-Dobson). Chapman is the correct BACKBONE (explains the layer's existence and approximate altitude) but a toy with fixed J1/J3 is order-of-magnitude, not predictive."
+  },
+  {
+    "id": "vacuum_unlimited_energy",
+    "text": "'A vacuum (evacuated-tube) collector erases thermodynamic loss / yields unlimited or free energy.'",
+    "category": "solar_overclaim",
+    "evidence_class": "X",
+    "result": "contradicted-by-test",
+    "verify_with": "Steady-state heat balance with h->0; the irreducible radiative floor eps*sigma*A*(T^4-T_env^4).",
+    "falsify_with": "As h->0 (perfect vacuum) loss does NOT vanish — it asymptotes to the strictly-positive radiative term (893.1 W at T=400 K, T_env=300 K, eps=0.9, A=1 m^2). Vacuum raises stagnation temperature incrementally (369 K -> 423 K) but creates no energy; every configuration obeys energy conservation. Evacuated tubes still need selective low-emissivity coatings."
+  },
+  {
+    "id": "sq_limit_breach",
+    "text": "'A single-junction PV cell can exceed the ~33-34% Shockley-Queisser detailed-balance limit (e.g. via cooling).'",
+    "category": "solar_overclaim",
+    "evidence_class": "B",
+    "result": "contradicted-by-test",
+    "verify_with": "Shockley-Queisser detailed balance under AM1.5G (33.16% with mirror at 1.34 eV; up to ~33.7% alternate tabulation; original 1961 ~30% at 1.1 eV).",
+    "falsify_with": "PV cooling gives only incremental gains (cells lose efficiency as they heat); it does NOT breach detailed balance. Exceeding ~34% requires multi-junction/concentrator devices — different physics, not a single-junction loophole."
+  },
+  {
+    "id": "disequilibrium_proves_life",
+    "text": "'Atmospheric thermodynamic disequilibrium (large Phi) proves life.'",
+    "category": "biosignature_overclaim",
+    "evidence_class": "U/X",
+    "result": "not-yet-shown",
+    "verify_with": "Disequilibrium Gibbs energy Phi and the Bayesian biosignature framework; the specific out-of-equilibrium gas pair.",
+    "falsify_with": "Disequilibrium is necessary-not-sufficient: abiotic settings (volcanic, photochemical) sustain modest disequilibria. Earth's gas-phase Phi (1.5 J/mol) is NOT large vs other solar-system bodies; the signature is the kinetically-maintained O2-CH4 PAIR, not raw magnitude. The full-fluid 2326 J/mol is the largest and life-driven, but harder to infer remotely. 'This Phi proves life' is U/X."
+  },
+  {
+    "id": "single_molecule_decisive",
+    "text": "'Ozone (or any single molecule) detected remotely is a decisive/definitive biosignature.'",
+    "category": "biosignature_overclaim",
+    "evidence_class": "U/X",
+    "result": "not-yet-shown",
+    "verify_with": "Catling et al. 2018 four-component framework; the graded 5-level posterior.",
+    "falsify_with": "No single molecule is decisive; O3's finite abiotic likelihood keeps its Bayesian likelihood ratio modest, so 'O3 => life' cannot reach the top confidence band absent disequilibrium + context + false-positive exclusion. The field's own framework forbids the claim."
+  },
+  {
+    "id": "aif_proves_physics",
+    "text": "'Active inference / free-energy minimization / the simulation PROVES a physical mechanism or reality (gravity, ozone chemistry, origin of life, etc.).'",
+    "category": "hard_boundary_aif",
+    "evidence_class": "X",
+    "result": "outside-model-scope",
+    "verify_with": "What VFE/ELBO/EFE actually compute (model comparison + policy scoring within an assumed generative model).",
+    "falsify_with": "ELBO/VFE rank models WITHIN an assumed hypothesis space (surrogates for intractable log-evidence), not truth certificates; free energy here is information-theoretic, not literal thermodynamics (no pV, no Helmholtz/Gibbs identity). A bounded simulation shows supported-within-model or contradicted-by-test; it cannot prove a broad physical/metaphysical framework. 'A simulation proves reality' is forbidden."
+  },
+  {
+    "id": "live_system_active_inference",
+    "text": "'The live Rust deep-reader is a strong-sense active-inference agent.'",
+    "category": "hard_boundary_aif",
+    "evidence_class": "A",
+    "result": "not-yet-shown",
+    "verify_with": "CLAUDE.md §0.7; whether a live perceive->EFE->act->learn loop where ACTIONS change FUTURE OBSERVATIONS exists in the crate.",
+    "falsify_with": "No such loop exists — core.py EFE/VFE is PARKED. The running system is exact closed-set Bayesian model selection + count/cache prediction. 'Active inference' language is permitted ONLY for the model-comparison/policy-scoring math, not for running-system behavior claims, until such a loop is built and bar-passed."
+  },
+  {
+    "id": "trauma_locked_clinical",
+    "text": "'Trauma-locked agents' describes a clinical/psychiatric condition.",
+    "category": "hard_boundary_aif",
+    "evidence_class": "D",
+    "result": "metaphor-preserved",
+    "verify_with": "The intended referent (a computational parameter regime: maladaptive priors and/or miscalibrated precision, e.g. pathological policy precision gamma).",
+    "falsify_with": "It is a COMPUTATIONAL ANALOGY about agent-layer parameters, NOT a diagnostic claim about any human or animal. Used clinically it is U/X and a category error."
+  }
+]

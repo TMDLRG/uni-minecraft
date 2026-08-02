@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="UNI.Hud.Service.Tests/UNI.Hud.Service.Tests.csproj" />
+  <Project Path="UNI.Hud.Service/UNI.Hud.Service.csproj" />
+  <Project Path="UNI.Hud.Widget/UNI.Hud.Widget.csproj" />
+</Solution>

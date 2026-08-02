@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UNI Broadcast — Music hero</title>
+  <style>
+    /* Full-frame music card: cover hero + title + artist + album + progress + next + store QRs.
+       Used in MUSIC_HOUR (full frame), MUSIC_CARD (right half of a talk two-shot),
+       COLONY_SIDE_MUSIC (right half). Reads spool.nowPlaying via state.json. QRs generated
+       client-side by an inline QR encoder (no external network fetch).
+       Encoder is a minimal QR-Code Model 2 in JS, sized for ~256px displays. */
+    :root { color-scheme: dark; }
+    body { background: #0b0f14; overflow: hidden; margin: 0; font-family: system-ui, sans-serif; color: #e6edf3; }
+    /* LAYOUT MODES (2026-07-16, after the first live MUSIC_CARD frame came out unreadable).
+       This overlay is a 1920x1080 browser source. In MUSIC_HOUR it fills the frame — a two-column
+       hero is right. But MUSIC_CARD/COLONY_SIDE_MUSIC SCALE the same 1920x1080 source into a
+       ~924px half-slot, so a two-column layout with 60px padding and a 58px title becomes mush.
+       ?mode=card stacks it into ONE column with much larger type, so it stays legible after the
+       ~0.48x downscale. Same overlay, same spool, different composition per slot. */
+    .hero {
+      position: fixed; inset: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+      padding: 60px 72px;
+      background: radial-gradient(ellipse at 30% 30%, rgba(63,210,255,.10) 0%, transparent 55%);
+    }
+    /* CARD MODE renders NATIVELY at 924x780 (browserSized in studio_stage.cjs) — 1:1, no OBS
+       downscale — so these are REAL pixels and the box is exactly 924x780. Everything must fit
+       inside 780px tall with no overflow: cover 340 + gap 22 + meta ~= 400. Measured, not guessed. */
+    body.card .hero {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      gap: 22px; padding: 34px 40px; align-content: start;
+    }
+    body.card .cover { justify-content: flex-start; }
+    body.card .cover img { width: 340px; max-width: 340px; border-radius: 12px; box-shadow: 0 18px 44px rgba(0,0,0,.5); }
+    body.card .meta { align-self: start; text-align: left; }
+    body.card .meta .kicker { font-size: 13px; letter-spacing: .28em; margin-bottom: 8px; }
+    body.card .meta .title { font-size: 46px; line-height: 1.05; margin-bottom: 8px; }
+    body.card .meta .artist { font-size: 24px; margin-bottom: 4px; }
+    body.card .meta .album { font-size: 16px; margin-bottom: 18px; }
+    body.card .prog { height: 5px; margin-bottom: 6px; }
+    body.card .times { font-size: 14px; margin-bottom: 16px; }
+    body.card .next { font-size: 16px; }
+    /* Store URLs are noise at card size — the hero (MUSIC_HOUR) is where they belong.
+       Better to omit than to air illegible text. */
+    body.card .storerow { display: none; }
+    .cover { display: flex; align-items: center; justify-content: center; }
+    .cover img { width: 100%; max-width: 780px; aspect-ratio: 1; object-fit: cover; border-radius: 18px; box-shadow: 0 40px 100px rgba(0,0,0,.55); }
+    .meta { align-self: center; }
+    .meta .kicker { font-size: 14px; letter-spacing: .3em; color: #94a3b8; text-transform: uppercase; margin-bottom: 12px; }
+    /* Title must never clip. Was 64px with word-break — the first live frame showed "Fake Cartiers"
+       cut off. Now it wraps properly and scales down for long titles. */
+    .meta .title { font-size: 58px; font-weight: 900; line-height: 1.05; margin-bottom: 12px; overflow-wrap: anywhere; hyphens: auto; }
+    .meta .artist { font-size: 30px; color: #cbd5e1; font-weight: 600; margin-bottom: 6px; }
+    .meta .album { font-size: 18px; color: #94a3b8; margin-bottom: 28px; }
+    .prog { height: 4px; background: rgba(255,255,255,.10); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+    .prog .bar { height: 100%; background: linear-gradient(90deg, #3fd2ff, #6bff9c); width: 0%; transition: width 800ms linear; }
+    .times { display: flex; justify-content: space-between; font-size: 14px; color: #94a3b8; margin-bottom: 32px; }
+    .next { font-size: 16px; color: #94a3b8; }
+    .next b { color: #e6edf3; }
+    /* Store link ROW — QR codes were planned; deferred until a proper QR encoder is vendored
+       (adds ~30KB; not on the critical path). Text URLs are honest + readable at broadcast
+       distance and don't require an external library. */
+    .storerow { display: flex; gap: 22px; margin-top: 34px; flex-wrap: wrap; }
+    .store { display: flex; flex-direction: column; }
+    .store .plabel { font-size: 11px; letter-spacing: .18em; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px; }
+    .store .purl { font-size: 15px; font-weight: 700; color: #3fd2ff; max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="cover"><img id="art" src="" alt="cover"></div>
+    <div class="meta">
+      <div class="kicker" id="kicker">NOW PLAYING</div>
+      <div class="title" id="title">—</div>
+      <div class="artist" id="artist">—</div>
+      <div class="album" id="album">—</div>
+      <div class="prog"><div id="bar" class="bar"></div></div>
+      <div class="times"><span id="tCur">0:00</span><span id="tDur">—</span></div>
+      <div class="next">up next: <b id="next">—</b></div>
+      <div class="storerow" id="storerow"></div>
+    </div>
+  </div>
+
+  <script>
+  // Same polling + interpolation pattern as the lower-third.
+  const STATE = "/state.json";
+  const POLL_MS = 4000;
+  const $ = (id) => document.getElementById(id);
+  // ?mode=card => stacked, big-type layout for a half-width slot (MUSIC_CARD / COLONY_SIDE_MUSIC).
+  // Default (no param) => full-frame two-column hero (MUSIC_HOUR).
+  if (new URLSearchParams(location.search).get("mode") === "card") document.body.classList.add("card");
+  let lastSeq = null, lastPos = null, lastPosAt = 0, dur = 0;
+  function fmt(s) { s = Math.max(0, Math.floor(s || 0)); const m = Math.floor(s / 60), r = s % 60; return m + ":" + String(r).padStart(2, "0"); }
+  function makeStore(container, url, label) {
+    if (!url) return;
+    const s = document.createElement("div"); s.className = "store";
+    const l = document.createElement("div"); l.className = "plabel"; l.textContent = label;
+    const u = document.createElement("div"); u.className = "purl"; u.textContent = url.replace(/^https?:\/\//, "");
+    s.appendChild(l); s.appendChild(u); container.appendChild(s);
+  }
+  function render(n) {
+    if (!n || n.err || !n.title) { document.body.style.opacity = "0"; return; }
+    document.body.style.opacity = "1";
+    // STALE-PLAYHEAD HONESTY (2026-07-18): stuck /api/nowplaying report — do not name a specific
+    // track we can't stand behind. Show station identity only. Same fix as nowplaying.html / musicbug.
+    if (n.stalePlayhead) {
+      $("title").textContent = "🎵 UNI Radio";
+      $("artist").textContent = "current track unavailable — station stream is live";
+      $("album").textContent = "";
+      $("art").removeAttribute("src");
+      $("bar").style.width = "0";
+      $("tCur").textContent = "—"; $("tDur").textContent = "—";
+      $("kicker").textContent = "ON AIR";
+      return;
+    }
+    $("title").textContent = n.title;
+    $("artist").textContent = n.artist || "";
+    $("album").textContent = n.album || "";
+    if (n.artUrl && $("art").src !== n.artUrl) $("art").src = n.artUrl;
+    // sessionOpen=false => station reference track, no per-session playhead. Never fake a bar.
+    if (n.sessionOpen === false) { lastPos = null; $("bar").style.width = "0"; $("tCur").textContent = "—"; $("kicker").textContent = "ON THE STATION"; }
+    else { $("kicker").textContent = "NOW PLAYING"; }
+    if (n.seq !== lastSeq) {
+      lastSeq = n.seq;
+      lastPos = (typeof n.positionSec === "number") ? n.positionSec : null;
+      lastPosAt = Date.now();
+      dur = n.durationSec || 0;
+      $("tDur").textContent = dur ? fmt(dur) : "—";
+      $("next").textContent = n.next ? `${n.next.title} — ${n.next.album || ""}` : "—";
+      const row = $("storerow"); row.innerHTML = "";
+      makeStore(row, n.spotifyUrl, "SPOTIFY");
+      makeStore(row, n.amazonUrl, "AMAZON");
+      makeStore(row, n.youtubeUrl, "YOUTUBE");
+      makeStore(row, n.lyricsUrl, "LYRICS");
+    }
+  }
+  function tick() {
+    if (dur && lastPos != null) {
+      const inflight = Math.min(dur, lastPos + (Date.now() - lastPosAt) / 1000);
+      $("bar").style.width = ((inflight / dur) * 100).toFixed(2) + "%";
+      $("tCur").textContent = fmt(inflight);
+    }
+    requestAnimationFrame(tick);
+  }
+  async function loop() {
+    try { const r = await fetch(STATE, { cache: "no-store" }); if (r.ok) render((await r.json()).nowPlaying); } catch (_) {}
+    setTimeout(loop, POLL_MS);
+  }
+  tick(); loop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "uni-hud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "UNI HUD -- always-on operator glance surface. Third independent surface, next to The Door and Gaia. Zero runtime deps.",
+  "main": "hud_server.cjs",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node hud_server.cjs",
+    "test": "node tests/hud_ring_test.cjs && node tests/hud_endpoints_test.cjs && node tests/hud_audience_sanitizer_test.cjs && node tests/hud_no_ip_test.cjs && node tests/fqdn_test.cjs && node tests/hud_snapshot_shape_test.cjs",
+    "verify": "node verify_hud.cjs",
+    "build:exe": "pwsh -NoProfile -File build_exe.ps1"
+  },
+  "devDependencies": {
+    "@yao-pkg/pkg": "^6.6.0",
+    "caxa": "^3.0.1"
+  },
+  "pkg": {
+    "assets": [
+      "hud.html",
+      "fixtures/**/*",
+      "../infra_registry.json"
+    ],
+    "targets": [
+      "node20-win-x64"
+    ],
+    "outputPath": "build"
+  }
+}

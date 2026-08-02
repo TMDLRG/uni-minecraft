@@ -1,0 +1,40 @@
+{
+  "$schema": "https://uni-lab/schemas/claim_fence.v1.json",
+  "schema_version": 1,
+  "version": "1.0.0",
+  "case_insensitive": true,
+  "word_boundary": true,
+  "classes": {
+    "proof": [
+      "prov(e[sd]?|en|ing)",
+      "proof"
+    ],
+    "consciousness_family": [
+      "conscious\\w*",
+      "sentien\\w*",
+      "self.?aware\\w*",
+      "aware(ness)?"
+    ],
+    "life_family": [
+      "alive",
+      "living",
+      "life.?form\\w*",
+      "digital\\s+life",
+      "new\\s+life"
+    ],
+    "experience_family": [
+      "experienc\\w*",
+      "feel(s|ings?)?",
+      "felt",
+      "suffer\\w*"
+    ],
+    "over_claim_family": [
+      "first.?ever",
+      "world.?s?.?first",
+      "breakthrough",
+      "agi",
+      "human.?level"
+    ]
+  },
+  "notes": "This is the versioned union of the two prior divergent copies (viewer/command_center.cjs:139 which banned 'agi' + lib/sp/brain/fence.ex:17 which did not). The union takes 'agi' — the more conservative (bans more) reading. A flagged line is DROPPED honestly, never reworded into a subtly-different claim (the studio-bridge discipline). Any change to this list requires /lab-team-review. On PATCH bump: no fence-behaviour change. On MINOR bump: token added. On MAJOR bump: token removed or reclassified — a claim-shape change and needs review. The regex built from this JSON MUST be case-insensitive AND anchored with word-boundary (\\b). See test/sp/brain/fence_snapshot_test.exs for the JS/Elixir agreement guard."
+}

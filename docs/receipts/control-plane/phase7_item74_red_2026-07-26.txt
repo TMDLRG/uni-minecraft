@@ -1,0 +1,129 @@
+Running ExUnit with seed: 878166, max_cases: 32
+Excluding tags: [:skip]
+
+.
+
+  1) test F26 — a bare boolean is refused; `live` must carry that a probe HAPPENED (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:122
+     ** (MatchError) no match of right hand side value:
+
+         {:ok,
+          %{
+            id: "gate:x",
+            truth_class: :OBSERVED,
+            receipt_ref: "docs/GATES.md",
+            evidence_class: "A",
+            captured_at: "2026-07-26T09:00:00Z"
+          }}
+
+     code: for bad <- [true, false, "up", :up, %{}, %{status: true}, %{up: "yes"}, %{up: 1}] do
+     stacktrace:
+       test/sp/control_plane/liveness_only_from_probe_test.exs:124: anonymous fn/2 in SP.ControlPlane.LivenessOnlyFromProbeTest."test F26 — a bare boolean is refused; `live` must carry that a probe HAPPENED"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/liveness_only_from_probe_test.exs:123: (test)
+
+
+
+  2) test the three valid shapes are accepted, and nothing else is (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:138
+     ** (KeyError) key :live not found in:
+
+         %{
+           id: "gate:x",
+           truth_class: :OBSERVED,
+           receipt_ref: "docs/GATES.md",
+           evidence_class: "A",
+           captured_at: "2026-07-26T09:00:00Z"
+         }
+
+     code: for good <- [%{up: true}, %{up: false}, %{up: nil}] do
+     stacktrace:
+       test/sp/control_plane/liveness_only_from_probe_test.exs:149: anonymous fn/2 in SP.ControlPlane.LivenessOnlyFromProbeTest."test the three valid shapes are accepted, and nothing else is"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/liveness_only_from_probe_test.exs:139: (test)
+
+
+
+  3) test a probe that saw reads as what it saw (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:79
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness/1 is undefined or private
+     code: assert Scene.liveness(node!(%{live: %{up: true}})) == :up
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:80: (test)
+
+
+
+  4) test liveness/1 is a pure read and never raises, for every shape a node can have (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:208
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness/1 is undefined or private
+     code: for live <- [nil, %{up: true}, %{up: false}, %{up: nil}] do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:211: anonymous fn/2 in SP.ControlPlane.LivenessOnlyFromProbeTest."test liveness/1 is a pure read and never raises, for every shape a node can have"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/liveness_only_from_probe_test.exs:209: (test)
+
+
+
+  5) test F26 — liveness is NOT inferred from recency; a fresh capture of a dead thing is still dead (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness/1 is undefined or private
+     code: assert Scene.liveness(fresh) == :not_probed
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:105: (test)
+
+
+
+  6) test F26 — a node with NO live field reads as :not_probed, not as up (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness/1 is undefined or private
+     code: assert Scene.liveness(node!(%{})) == :not_probed
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:69: (test)
+
+
+
+  7) test the liveness vocabulary is closed — four readings, and none of them is a default (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness_states/0 is undefined or private
+     code: assert Enum.sort(Scene.liveness_states()) == Enum.sort([:up, :down, :unknown, :not_probed])
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness_states()
+       test/sp/control_plane/liveness_only_from_probe_test.exs:85: (test)
+
+
+
+  8) test F26 — a probe that could not tell reads as :unknown, and is NOT the same as :not_probed (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness/1 is undefined or private
+     code: assert Scene.liveness(node!(%{live: %{up: nil}})) == :unknown
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:73: (test)
+
+.
+
+  9) test a node built without `live` does not silently gain one (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:153
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.liveness/1 is undefined or private
+     code: assert Scene.liveness(n) == :not_probed
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.liveness(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:156: (test)
+
+
+
+ 10) test the scene can report what was probed, without deriving a summary of it (SP.ControlPlane.LivenessOnlyFromProbeTest)
+     test/sp/control_plane/liveness_only_from_probe_test.exs:179
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.probed/1 is undefined or private
+     code: probed = Scene.probed(scene)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.probed(%SP.ControlPlane.Scene{nodes: [%{id: "gate:a", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"}, %{id: "gate:b", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/liveness_only_from_probe_test.exs:202: (test)
+
+..
+Finished in 0.2 seconds (0.2s async, 0.00s sync)
+14 tests, 10 failures

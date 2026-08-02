@@ -1,0 +1,229 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>RUN OF SHOW &mdash; first show</title>
+<!--
+  THE RUNDOWN, WIRED. Served from command_center at :8098/rundown so it is same-origin; the CSRF
+  fence forces a CORS preflight and there is no OPTIONS handler, so a cross-origin page could not
+  drive this console at all. That fence is correct and is not weakened here.
+
+  WHAT THIS CAN DO:  /api/preview  ->  /api/take  ->  /api/overlay  ->  /api/back
+  WHAT IT CANNOT DO: start a stream. There is no /api/golive control on this page, and there never
+                     will be. Going to air passes through viewer/golive_guard.cjs, which refuses all
+                     seven paths for want of a presence token nothing in this repository mints.
+
+  AND IT NEVER USES /api/cut. Measured: /api/cut (command_center.cjs:1600) takes ANY string and puts
+  it straight on air with NO validation, while /api/preview (:1585) validates against allTemplates()
+  and 400s on an unknown scene. The safe route is fenced and the dangerous one is not. So: ARM, look,
+  TAKE. Never cut.
+
+  THE ONE RULE OF THIS PAGE: you cannot TAKE a row you have not ARMED. The take button stays dead
+  until the studio's own preview reports the scene this row asks for. That is not a UI nicety -- the
+  operator has said he needs to see what will happen before it does, and this is that, mechanically.
+-->
+<style>
+  :root{--ink:#e9eef2;--dim:#8394a1;--bg:#0b1014;--card:#141b21;--line:#22303a;
+        --live:#e0574f;--armed:#e8b54a;--ok:#63c8a4;--say:#7fd1c4;--never:#e0574f}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  header{position:sticky;top:0;background:#0b1014ee;border-bottom:1px solid var(--line);padding:10px 16px;backdrop-filter:blur(6px);z-index:5}
+  h1{margin:0;font-size:14px;letter-spacing:.14em;font-weight:600}
+  .sub{color:var(--dim);font-size:12px;margin-top:2px}
+  .bar{display:flex;gap:18px;align-items:baseline;margin-top:8px;flex-wrap:wrap}
+  .chip{font:12px ui-monospace,Menlo,Consolas,monospace;padding:3px 9px;border:1px solid var(--line);border-radius:3px}
+  .chip b{color:var(--ink)}
+  .prog{border-color:var(--live);color:var(--live)}
+  .prev{border-color:var(--armed);color:var(--armed)}
+  .cannot{color:var(--dim);font-size:11px;border:1px dashed var(--line);padding:3px 9px;border-radius:3px}
+  main{display:grid;grid-template-columns:340px 1fr;gap:0;min-height:calc(100vh - 92px)}
+  #list{border-right:1px solid var(--line);overflow-y:auto;max-height:calc(100vh - 92px)}
+  .row{padding:9px 14px;border-bottom:1px solid #1a2429;cursor:pointer;display:grid;grid-template-columns:64px 1fr;gap:10px}
+  .row:hover{background:#101820}
+  .row.sel{background:#16222b;box-shadow:inset 3px 0 0 var(--say)}
+  .row .t{font:11px ui-monospace,monospace;color:var(--dim)}
+  .row .n{font-weight:600}
+  .row .s{font:11px ui-monospace,monospace;color:var(--say)}
+  .row.brk .n{color:var(--dim);font-weight:400;font-style:italic}
+  #pane{padding:18px 22px;overflow-y:auto;max-height:calc(100vh - 92px)}
+  h2{margin:0 0 2px;font-size:19px}
+  .meta{color:var(--dim);font:12px ui-monospace,monospace;margin-bottom:14px}
+  .acts{display:flex;gap:10px;align-items:center;margin:14px 0 18px;flex-wrap:wrap}
+  button{font:600 13px inherit;padding:9px 16px;border-radius:4px;border:1px solid var(--line);background:#1b242c;color:var(--ink);cursor:pointer}
+  button:hover:not(:disabled){border-color:var(--say)}
+  button:disabled{opacity:.32;cursor:not-allowed}
+  button.arm{border-color:var(--armed);color:var(--armed)}
+  button.take{border-color:var(--live);color:var(--live)}
+  button.take:disabled{border-color:var(--line);color:var(--dim)}
+  .why{color:var(--dim);font-size:12px}
+  section{margin:0 0 18px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:5px}
+  section h3{margin:0 0 8px;font-size:11px;letter-spacing:.12em;color:var(--dim);font-weight:600}
+  ul{margin:0;padding-left:20px}
+  li{margin:5px 0}
+  .say{border-left:3px solid var(--say)}
+  .say p{margin:0;font-size:17px;line-height:1.45}
+  .never{border-left:3px solid var(--never);color:#f0a9a4}
+  .gap{border-left:3px solid var(--armed);color:#e8cf9a}
+  .warn{border-left:3px solid var(--armed);color:#e8cf9a;font-size:13px}
+  code{font:12px ui-monospace,monospace;color:var(--say)}
+  #err{color:var(--never);font:12px ui-monospace,monospace;min-height:16px;padding:0 22px}
+</style>
+
+<header>
+  <h1>RUN OF SHOW &middot; FIRST SHOW</h1>
+  <div class="sub" id="src">loading&hellip;</div>
+  <div class="bar">
+    <span class="chip prog">PROGRAM <b id="prog">?</b></span>
+    <span class="chip prev">PREVIEW <b id="prev">?</b></span>
+    <span class="chip">STREAM <b id="stream">?</b></span>
+    <span class="chip">CLOCK <b id="clock">0:00</b> / <b id="planned">4:00</b></span>
+    <span class="cannot">this page cannot start a stream</span>
+  </div>
+</header>
+<div id="err"></div>
+<main>
+  <div id="list"></div>
+  <div id="pane"></div>
+</main>
+
+<script>
+"use strict";
+const H = { "Content-Type": "application/json", "x-uni-cc": "1" };
+let R = null, sel = 0, S = {};
+
+const el = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const err = (m) => { el("err").textContent = m || ""; };
+
+async function post(path, body) {
+  err("");
+  try {
+    const r = await fetch(path, { method: "POST", headers: H, body: JSON.stringify(body || {}) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.err) { err(path + " -> " + (j.err || r.status)); return null; }
+    return j;
+  } catch (e) { err(path + " -> " + e.message); return null; }
+}
+
+async function poll() {
+  try {
+    const r = await fetch("/api/state");
+    S = await r.json();
+    el("prog").textContent = S.program || (S.air && S.air.program) || "?";
+    el("prev").textContent = S.preview || "?";
+    const st = S.air && S.air.streaming;
+    el("stream").textContent = st ? "ON AIR" : "off";
+    el("stream").style.color = st ? "var(--live)" : "var(--dim)";
+    draw();
+  } catch (e) { err("/api/state -> " + e.message); }
+}
+
+// A row is ARMED when the STUDIO'S OWN preview reports the scene the row asks for. Not when a
+// button was clicked -- when the studio agrees. The difference is the whole point.
+const armed = (row) => !!row && S.preview === row.scene;
+
+function drawList() {
+  el("list").innerHTML = R.rows.map((r, i) => {
+    const brk = /^BR-/.test(r.id) ? " brk" : "";
+    return '<div class="row' + (i === sel ? " sel" : "") + brk + '" data-i="' + i + '">' +
+      '<div class="t">' + esc(r.start) + "</div><div><div class=\"n\">" + esc(r.id) + " &middot; " + esc(r.title) +
+      '</div><div class="s">' + esc(r.scene) + (r.then_scene ? " &rarr; " + esc(r.then_scene) : "") + "</div></div></div>";
+  }).join("");
+  [...document.querySelectorAll(".row")].forEach((d) =>
+    d.addEventListener("click", () => { sel = +d.dataset.i; draw(); }));
+}
+
+function draw() {
+  if (!R) return;
+  drawList();
+  const r = R.rows[sel];
+  const L = R.lower_thirds || {};
+  const strap = r.super ? L[r.super] : null;
+  const refused = strap && /REFUSED/i.test(String(strap.fence || ""));
+  const isArmed = armed(r);
+
+  const P = [];
+  P.push("<h2>" + esc(r.id) + " &middot; " + esc(r.title) + "</h2>");
+  P.push('<div class="meta">' + esc(r.start) + " &ndash; " + esc(r.end) + " &middot; " + r.minutes + " min &middot; scene <code>" +
+    esc(r.scene) + "</code>" + (r.then_scene ? " then <code>" + esc(r.then_scene) + "</code>" : "") +
+    (r.flex ? " &middot; FLEX" : "") + "</div>");
+
+  P.push('<div class="acts">');
+  P.push('<button class="arm" id="bArm">ARM PREVIEW &rarr; ' + esc(r.scene) + "</button>");
+  P.push('<button class="take" id="bTake"' + (isArmed ? "" : " disabled") + ">TAKE TO PROGRAM</button>");
+  if (r.then_scene) P.push('<button id="bArm2">ARM ' + esc(r.then_scene) + "</button>");
+  P.push('<button id="bBack">BACK (undo)</button>');
+  P.push("</div>");
+  P.push('<div class="why">' + (isArmed
+    ? "Armed &mdash; the studio's own preview reports <code>" + esc(r.scene) + "</code>. Look at it, then take it."
+    : "TAKE is dead until the studio's preview reports <code>" + esc(r.scene) + "</code>. Arm it and look first.") + "</div>");
+
+  if (r.scene_why) P.push("<section><h3>WHY THIS SCENE</h3>" + esc(r.scene_why) + "</section>");
+  if (r.on_screen) P.push("<section><h3>ON SCREEN</h3>" + esc(r.on_screen) + "</section>");
+
+  if (r.spoken_fence) {
+    P.push('<section class="say"><h3>SAY THIS OUT LOUD &mdash; NOT A SUPER</h3><p>&ldquo;' + esc(r.spoken_fence) + "&rdquo;</p>" +
+      '<div class="why" style="margin-top:8px">The overlay fence refuses this sentence on the word it contains, because ' +
+      "it cannot tell a claim from a denial. It is spoken, exactly as the source document instructs, and not one word is changed.</div></section>");
+  }
+
+  if (r.host_beats && r.host_beats.length) {
+    P.push("<section><h3>HOST BEATS &mdash; verbatim</h3><ul>" + r.host_beats.map((b) => "<li>" + esc(b) + "</li>").join("") + "</ul></section>");
+  }
+
+  P.push("<section><h3>SUPER</h3>");
+  if (!r.super) P.push('<span class="why">none for this row.</span>');
+  else if (refused) {
+    P.push('<div class="warn">' + esc(r.super) + " is REFUSED by the studio's overlay fence &mdash; " + esc(strap.fence) +
+      ". No button is offered, because offering one that 403s on air is worse than offering none.</div>");
+  } else {
+    P.push('<div style="margin-bottom:8px"><code>' + esc(r.super) + "</code> &mdash; " + esc(strap ? strap.text : "") + "</div>");
+    P.push('<button id="bSuper">PUT ' + esc(r.super) + " ON SCREEN</button>");
+    if (r.super_substituted_for) P.push('<div class="why" style="margin-top:8px">Standing in for ' +
+      esc(r.super_substituted_for) + ", which the fence refuses. That line is spoken above.</div>");
+  }
+  if (r.then_super) P.push('<div class="why" style="margin-top:8px">Then ' + esc(r.then_super) + " later in the row.</div>");
+  P.push("</section>");
+
+  if (r.cta) P.push("<section><h3>CTA</h3>" + esc(r.cta) + "</section>");
+  if (r.never_say) P.push('<section class="never"><h3>NEVER SAY</h3>' + esc(r.never_say) + "</section>");
+  if (r.route_warning) P.push('<section class="gap"><h3>ROUTE NAME</h3>' + esc(r.route_warning) + "</section>");
+  if (r.gap) P.push('<section class="gap"><h3>KNOWN GAP</h3>' + esc(r.gap) + "</section>");
+  if (r.contingency) {
+    P.push('<section class="gap"><h3>CONTINGENCY</h3>' + esc(r.contingency));
+    if (r.contingency_asset_status) P.push("<div class=\"why\" style=\"margin-top:8px\">" + esc(r.contingency_asset_status) + "</div>");
+    if (r.contingency_scene) P.push('<div style="margin-top:8px"><button id="bCont">ARM ' + esc(r.contingency_scene) + "</button></div>");
+    P.push("</section>");
+  }
+  if (r.live_status_2026_07_29) P.push('<section class="warn"><h3>MEASURED STATUS</h3>' + esc(r.live_status_2026_07_29) + "</section>");
+  if (r.verbatim_warning) P.push('<section class="warn"><h3>VERBATIM</h3>' + esc(r.verbatim_warning) + "</section>");
+  if (r.note) P.push("<section><h3>NOTE</h3>" + esc(r.note) + "</section>");
+  if (r.asset) P.push("<section><h3>ASSET</h3>" + esc(r.asset) + "</section>");
+
+  el("pane").innerHTML = P.join("");
+
+  const on = (id, fn) => { const b = el(id); if (b) b.addEventListener("click", fn); };
+  on("bArm", async () => { await post("/api/preview", { scene: r.scene }); poll(); });
+  on("bArm2", async () => { await post("/api/preview", { scene: r.then_scene }); poll(); });
+  on("bCont", async () => { await post("/api/preview", { scene: r.contingency_scene }); poll(); });
+  on("bTake", async () => { if (!armed(r)) return err("not armed"); await post("/api/take", {}); poll(); });
+  on("bBack", async () => { await post("/api/back", {}); poll(); });
+  on("bSuper", async () => {
+    if (!strap || refused) return err("that strap is fence-refused; it is spoken, not supered");
+    await post("/api/overlay", { kicker: "", title: strap.text, subtitle: "" });
+  });
+}
+
+(async function boot() {
+  try {
+    const r = await fetch("/api/rundown");
+    if (!r.ok) { const e = await r.json().catch(() => ({})); err("/api/rundown -> " + (e.err || r.status)); return; }
+    R = await r.json();
+  } catch (e) { err("/api/rundown -> " + e.message); return; }
+  el("src").innerHTML = esc(R.rows.length) + " rows &middot; " + esc((R.arithmetic || {}).declared_minutes_sum || "?") +
+    " min &middot; words verbatim from <code>" + esc((R.source || {}).document || "?") + "@" + esc((R.source || {}).commit || "?") + "</code>";
+  el("planned").textContent = Math.floor(((R.arithmetic || {}).declared_minutes_sum || 240) / 60) + ":" +
+    String(((R.arithmetic || {}).declared_minutes_sum || 240) % 60).padStart(2, "0");
+  draw();
+  poll();
+  setInterval(poll, 2000);
+})();
+</script>

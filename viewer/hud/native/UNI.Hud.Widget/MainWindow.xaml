@@ -1,0 +1,347 @@
+<Window x:Class="UNI.Hud.Widget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="UNI HUD"
+        Width="600" Height="900"
+        MinWidth="360" MinHeight="180"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        Background="#0B0F14"
+        Topmost="True"
+        ShowInTaskbar="True"
+        ResizeMode="CanResize"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        StateChanged="OnStateChanged"
+        Loaded="OnLoaded">
+    <!-- WindowChrome gives this custom-titlebar window REAL native behaviour:
+         resize borders, maximize-to-workarea (not over the taskbar), Windows
+         Snap (drag-to-edge / Win+Arrow), and double-click-title-to-maximize.
+         AllowsTransparency MUST be False for any of that to work. -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="34"
+                      ResizeBorderThickness="6"
+                      CornerRadius="0"
+                      GlassFrameThickness="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <SolidColorBrush x:Key="BgFill" Color="#0B0F14"/>
+        <SolidColorBrush x:Key="Panel"  Color="#141B24"/>
+        <SolidColorBrush x:Key="Line"   Color="#1E2A37"/>
+        <SolidColorBrush x:Key="Ink"    Color="#DBE6F1"/>
+        <SolidColorBrush x:Key="Dim"    Color="#94A3B8"/>
+        <SolidColorBrush x:Key="Mute"   Color="#64748B"/>
+        <SolidColorBrush x:Key="Ok"     Color="#2ECC71"/>
+        <SolidColorBrush x:Key="Warn"   Color="#F1B40F"/>
+        <SolidColorBrush x:Key="Bad"    Color="#E5484D"/>
+        <SolidColorBrush x:Key="Nv"     Color="#6B7A8D"/>
+        <SolidColorBrush x:Key="Acc"    Color="#3FD2FF"/>
+        <!-- Title-bar caption button: flat, hover-highlight, hit-testable through the chrome. -->
+        <Style x:Key="CapBtn" TargetType="Button">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource Dim}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="#1E2A37"/>
+                                <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{StaticResource BgFill}" BorderBrush="{StaticResource Line}" BorderThickness="1">
+        <!-- LAYOUT LAW (2026-07-16, gate hud-nothing-clipped): exactly THREE rows —
+             title bar (fixed) / ONE scrolling body (elastic) / footer (fixed).
+             The old layout was 6 rows of which only ONE (`*`) could yield, so the Auto rows
+             (hero, doors, sparklines) never gave up a pixel and the gate ladder, sight and
+             audience were squeezed to nothing — at small heights even the footer was pushed
+             off-screen with no way to scroll to it. Now the BODY scrolls as one, and every
+             section renders its full content. No section is collapsed by default and no inner
+             ScrollViewer/MaxHeight truncates anything (that was the other half of the bug: a
+             MaxHeight="160" nested scroller showed ~11 of 65 gates). You scroll the HUD, not
+             five little boxes. -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"/>
+                <RowDefinition Height="Auto"/>  <!-- THE AIR ALARM banner (0px when not firing) -->
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title bar. The bar itself is the WindowChrome caption (drag + double-click-maximize
+                 handled natively); the buttons opt back INTO hit-testing via the CapBtn style. -->
+            <Border Grid.Row="0" Background="#0B1220">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="UNI HUD" FontWeight="Bold" FontSize="18"
+                               Foreground="{StaticResource Acc}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,4,0" VerticalAlignment="Center">
+                        <Button Style="{StaticResource CapBtn}" Content="⤢" Click="OnCycleDock"  ToolTip="Cycle dock: Right → Left → Top → Bottom → Float (or right-click for the menu)"/>
+                        <Button Style="{StaticResource CapBtn}" Content="—" Click="OnMinimize"   ToolTip="Minimize to taskbar"/>
+                        <Button Style="{StaticResource CapBtn}" x:Name="MaxBtn" Content="▢" Click="OnMaxRestore" ToolTip="Maximize / Restore (or double-click the title bar)"/>
+                        <Button Style="{StaticResource CapBtn}" Content="🗕" Click="OnHide"       ToolTip="Hide to tray (Ctrl+Shift+H brings it back)"/>
+                        <Button Style="{StaticResource CapBtn}" Content="✕" Click="OnQuit"        ToolTip="Quit"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ============ THE AIR ALARM (THE ONE CHANGE, 2026-07-17) ============
+                 Always-visible row (its own grid row, not in the scroller) so a firing alarm cannot be
+                 scrolled away. Collapsed to 0px when nothing is firing — silent unless the world went
+                 dark WHILE we are measurably on the air. The OFF-SCREEN legs (sound + taskbar flash +
+                 tray balloon) are what reach a human not reading pixels; this banner is the on-screen
+                 detail + the ACK buttons. Fired purely from AlarmEngine (unit-tested). -->
+            <Border Grid.Row="1" x:Name="AlarmBanner" Background="#3A0D12" BorderBrush="{StaticResource Bad}"
+                    BorderThickness="0,2,0,2" Padding="12,8" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock x:Name="AlarmText" Text="" FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource Bad}" TextWrapping="Wrap"/>
+                    <StackPanel x:Name="AlarmAckRow" Orientation="Horizontal" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ============ THE BODY: one scroller, everything expanded ============ -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                          PanningMode="VerticalOnly">
+              <StackPanel>
+
+                <!-- == AIR hero == -->
+                <Border Padding="12,10" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <!-- Default text is SYNCING, not "OFF AIR". The widget must never assert an air
+                             state it has not received; the first paint before any snapshot arrives is
+                             exactly a moment of not-knowing. (gate: hud-air-honest-unknown) -->
+                        <TextBlock Name="AirBadge" Text="SYNCING" FontSize="32" FontWeight="Bold" Foreground="{StaticResource Nv}" TextAlignment="Center"/>
+                        <TextBlock Name="AirDetail" Text="—" FontSize="16" Foreground="{StaticResource Mute}" TextAlignment="Center" Margin="0,2,0,0"/>
+                        <TextBlock Name="StackLine" Text="STACK: —" FontSize="18" Foreground="{StaticResource Ink}" TextAlignment="Center" Margin="0,4,0,0"/>
+                        <TextBlock Name="JourneyLine" Text="journey: —" FontSize="16" Foreground="{StaticResource Mute}" TextAlignment="Center" Margin="0,2,0,0"/>
+
+                        <!-- Fan-out ARM/DISARM (2026-07-16): a short PIN unwraps the SAME encrypted stream-key
+                             passphrase (a separate secret set up once in the console) and turns fan-out ON in
+                             one step. This is NOT the public go-live cut — StartStream + the typed CONFIRM stay
+                             the operator's separate, deliberate action in the command center (G-PA, unchanged).
+                             DISARM needs no PIN — stopping is always a single click, no barrier, ever. -->
+                        <Border Margin="0,8,0,0" Padding="8,6" CornerRadius="4" Background="#0F1620" BorderBrush="{StaticResource Line}" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Name="ArmStatus" Text="fan-out: —" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,4"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <PasswordBox Name="ArmPinBox" Grid.Column="0" Margin="0,0,4,0" MaxLength="8" FontSize="18"
+                                                 Background="{StaticResource Panel}" Foreground="{StaticResource Ink}" BorderBrush="{StaticResource Line}"
+                                                 ToolTip="4-8 digit PIN (set once in the command center's Streaming Endpoints panel)"/>
+                                    <Button Name="ArmBtn" Grid.Column="1" Content="ARM" Padding="8,3" Margin="0,0,4,0" Click="OnArm"
+                                            Background="Transparent" Foreground="{StaticResource Ok}" BorderBrush="{StaticResource Ok}" BorderThickness="1" Cursor="Hand"/>
+                                    <Button Name="DisarmBtn" Grid.Column="2" Content="DISARM" Padding="8,3" Click="OnDisarm"
+                                            Background="Transparent" Foreground="{StaticResource Dim}" BorderBrush="{StaticResource Line}" BorderThickness="1" Cursor="Hand"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- == MIXER STRIP (replaces "FEEDS & SPEEDS") ==
+                     Every value here traces to a named upstream field, and every sparkline is a
+                     CONTINUOUS MAGNITUDE. Binaries render as pills, never as line charts.
+                     (gate: hud-speeds-meaningful) -->
+                <Border Padding="10,10" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="MIXER — EGRESS / ENCODER / COLONY" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,6"/>
+
+                        <!-- EGRESS: is the WORLD actually being reached. THE number that matters at go-live. -->
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Width="150">
+                                <TextBlock Text="EGRESS readers" FontSize="15" Foreground="{StaticResource Dim}"/>
+                                <TextBlock Name="EgressValue" Text="—" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Nv}"/>
+                                <TextBlock Name="EgressNote" Text="not measured" FontSize="15" Foreground="{StaticResource Mute}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Canvas Grid.Column="1" Name="EgressSpark" Height="34" Background="#0F1620" Margin="6,12,0,0"/>
+                        </Grid>
+
+                        <!-- ENCODER -->
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Width="150">
+                                <TextBlock Text="ENCODER fps" FontSize="15" Foreground="{StaticResource Dim}"/>
+                                <TextBlock Name="FpsValue" Text="—" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Nv}"/>
+                                <TextBlock Name="EncoderNote" Text="—" FontSize="15" Foreground="{StaticResource Mute}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Canvas Grid.Column="1" Name="FpsSpark" Height="34" Background="#0F1620" Margin="6,12,0,0"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Width="150">
+                                <TextBlock Text="congestion / dropped" FontSize="15" Foreground="{StaticResource Dim}"/>
+                                <TextBlock Name="CongestionValue" Text="—" FontSize="18" FontWeight="Bold" Foreground="{StaticResource Nv}"/>
+                            </StackPanel>
+                            <Canvas Grid.Column="1" Name="CongestionSpark" Height="24" Background="#0F1620" Margin="6,8,0,0"/>
+                        </Grid>
+
+                        <!-- COLONY: the frame-advance line is THE honest "the mind is running" proof. -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Width="150">
+                                <TextBlock Text="COLONY frames/s" FontSize="15" Foreground="{StaticResource Dim}"/>
+                                <TextBlock Name="ColonyRateValue" Text="—" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Nv}"/>
+                                <TextBlock Name="ColonyNote" Text="—" FontSize="15" Foreground="{StaticResource Mute}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Canvas Grid.Column="1" Name="ColonySpark" Height="34" Background="#0F1620" Margin="6,12,0,0"/>
+                        </Grid>
+                        <TextBlock Name="ColonyDetail" Text="—" FontSize="16" Foreground="{StaticResource Ink}" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == HEALTH board (the console's /api/health checks) ==
+                     FOLD ORDER IS A SAFETY PROPERTY (2026-07-17, 88-agent HUD sweep, defect #5).
+                     This panel used to sit FIFTH — behind 14 door cards and 9 Gaia seats — roughly
+                     600px below a 600x1016 dock. It is the ONLY panel on the entire surface that
+                     can name a broadcast fault: it carries the per-endpoint fan-out rows, so
+                     "YouTube is dark right now" lived here and here alone, unreachable without a
+                     deliberate scroll. Everything that WAS above it — the badge, ARMED (N), EGRESS,
+                     STACK: UP — is invariant to a dark platform, so nothing above the fold even
+                     cued the scroll. Meanwhile the panel that outranked it (NOC) is static prose
+                     (door_lifecycle.cjs:150 predict() is a string lookup, probed by nothing).
+                     Unmeasured reassurance was outranking measured fault. It now sits directly
+                     under the mixer: the first thing below the hero is the thing that can hurt you.
+                     Do NOT add an inner MaxHeight/ScrollViewer here — see the layout law at :72-81;
+                     that re-arms the silent-truncation class. -->
+                <Border Padding="10,10" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Name="HealthHeader" Text="BROADCAST HEALTH" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,6"/>
+                        <!-- IsSharedSizeScope lets each health row's own Grid agree on one id-column
+                             width (see RenderHealth) so names align and never clip. -->
+                        <StackPanel Name="HealthList" Grid.IsSharedSizeScope="True"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == DOORS (all of them, from the data) == -->
+                <Border Padding="10,10" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <!-- Header text is COMPUTED from the snapshot. It used to read a hardcoded
+                             "NOC — 13 DOORS" while the data carried 14. (gate: hud-all-doors-rendered) -->
+                        <TextBlock Name="DoorsHeader" Text="NOC — DOORS" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,6"/>
+                        <UniformGrid Name="DoorsGrid" Columns="3"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == GAIA == -->
+                <Border Padding="10,10" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Name="GaiaHeader" Text="GAIA — world mirror" FontSize="16" Foreground="{StaticResource Mute}" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Name="OpenGaiaBtn" Content="OPEN GAIA" Padding="8,2" Click="OnOpenGaia"
+                                    Background="Transparent" Foreground="{StaticResource Acc}" BorderBrush="{StaticResource Acc}" BorderThickness="1"
+                                    Cursor="Hand" FontSize="16" ToolTip="Open Gaia's live signal surface"/>
+                        </Grid>
+                        <StackPanel Name="GaiaSeatsList"/>
+                        <TextBlock Text="DRIFT — documented vs observed" FontSize="15" Foreground="{StaticResource Mute}" Margin="0,8,0,4"/>
+                        <StackPanel Name="DriftList"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == GATES (all of them, non-PASS first) == -->
+                <Border Padding="10,10" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Name="GatesHeader" Text="SOC — GATE LADDER" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,6"/>
+                        <!-- No MaxHeight, no inner ScrollViewer: all gates render, non-PASS first, and
+                             the OUTER scroller reaches them. (gate: hud-gates-all-seeable) -->
+                        <StackPanel Name="GatesList"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == SIGHT == -->
+                <Border Padding="10,8" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Name="SightHeader" Text="SIGHT — 0 findings" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,4"/>
+                        <StackPanel Name="SightList"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == AUDIENCE == -->
+                <Border Padding="10,8" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="AUDIENCE FEED (staged)" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,4"/>
+                        <StackPanel Name="AudienceList"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- == ACCESS: top-level reach to every surface == -->
+                <Border Padding="10,10">
+                    <StackPanel>
+                        <TextBlock Text="ACCESS" FontSize="16" Foreground="{StaticResource Mute}" Margin="0,0,0,6"/>
+                        <!-- Populated from the snapshot's door hrefs — the server owns every address,
+                             so no IP literal is ever hardcoded here. -->
+                        <WrapPanel Name="AccessRow"/>
+                    </StackPanel>
+                </Border>
+
+              </StackPanel>
+            </ScrollViewer>
+
+            <!-- Provenance footer -->
+            <Border Grid.Row="3" Background="#080B10" Padding="10,6"
+                    BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Name="ProvText" Text="starting…" FontFamily="Cascadia Code, Consolas, monospace" FontSize="15" Foreground="{StaticResource Mute}"/>
+                    <TextBlock Grid.Column="1" Name="ClockText" Text="--:--" FontFamily="Cascadia Code, Consolas, monospace" FontSize="16" Foreground="{StaticResource Acc}"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Dock Right"  Click="OnDockRight"/>
+            <MenuItem Header="Dock Left"   Click="OnDockLeft"/>
+            <MenuItem Header="Dock Top"    Click="OnDockTop"/>
+            <MenuItem Header="Dock Bottom" Click="OnDockBottom"/>
+            <MenuItem Header="Float (undock)" Click="OnUndock"/>
+            <Separator/>
+            <MenuItem Header="Maximize / Restore" Click="OnMaxRestore"/>
+            <MenuItem Header="Minimize" Click="OnMinimize"/>
+            <MenuItem Header="Hide to tray (Ctrl+Shift+H)" Click="OnHide"/>
+            <MenuItem Header="Quit" Click="OnQuit"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+</Window>

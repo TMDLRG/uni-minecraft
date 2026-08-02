@@ -1,0 +1,313 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>UNI TRACK — answer a question the plan is waiting on</title>
+<!--
+  decide.html — WHERE THE OPERATOR ANSWERS.
+
+  A SEPARATE PAGE, AND THAT IS NOT A STYLE CHOICE. track.html rewrites app.innerHTML wholesale every
+  ten seconds (its tick() at the foot of that file). A form living inside that would have whatever he
+  was typing erased mid-sentence, every ten seconds, with no warning and nothing recoverable. He is
+  answering things like "the writer's key on node2" and "go-live" — considered answers, typed slowly.
+  Nothing on this page polls, so nothing on this page can take his words away.
+
+  IT RECORDS. IT NEVER ACTS. This page talks to exactly two endpoints: GET /api/decisions to read,
+  POST /api/decision to append. It cannot go live, cannot mint presence, cannot write the gate ledger.
+  /lab/l6 deliberately has no button for Checkpoint E because a page that could cross that threshold
+  would be crossing it — that reasoning holds here and is not weakened: answering "yes" to a stop
+  RECORDS that he said yes. It does not do the thing.
+
+  NOTHING IS WRITTEN UNTIL HE PRESSES THE BUTTON. No autosave, no draft POST, no beacon on unload.
+  Close the tab mid-sentence and the ledger is untouched.
+-->
+<style>
+:root{--bg:#0d1017;--pan:#141923;--pan2:#1a2029;--ln:#242c3a;--tx:#dfe5ee;--dim:#8b97a8;--ok:#3fae8c;--warn:#d9a441;--bad:#e0645f;--acc:#7f77dd;--mono:ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.55 ui-sans-serif,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:9;background:#0d1017ee;backdrop-filter:blur(6px);border-bottom:1px solid var(--ln);padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.4px}
+.links a{color:var(--dim);text-decoration:none;font-size:12px;margin-right:12px;border-bottom:1px dotted var(--ln)}
+.links a:hover{color:var(--acc)}
+.stamp{margin-left:auto;font:11px var(--mono);color:var(--dim)}
+main{padding:16px 18px;max-width:1100px}
+section{background:var(--pan);border:1px solid var(--ln);border-radius:9px;padding:14px 16px;margin-bottom:14px}
+h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--dim);margin:0 0 10px;font-weight:600}
+.small{font-size:11.5px;color:var(--dim)}
+.note{font-size:11.5px;color:var(--dim);border-left:2px solid var(--ln);padding-left:9px;margin:8px 0}
+.caveat{border-left:2px solid var(--warn);background:#241f1210;padding:8px 11px;margin:10px 0;font-size:12px;color:#d9c9a4}
+.q{padding:9px 11px;border:1px solid var(--ln);border-radius:6px;background:var(--pan2);margin:6px 0;cursor:pointer;display:block}
+.q:hover{border-color:var(--acc)}
+.q.sel{border-color:var(--acc);background:#1b1a2c}
+.q .id{font:11px var(--mono);color:var(--acc)}
+.q .kind{font:10px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-left:8px}
+.q .t{font-size:13px;margin-top:3px}
+.q .answered{font:10.5px var(--mono);color:var(--ok);margin-left:8px}
+textarea{width:100%;min-height:110px;background:#111722;color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:10px;font:13px/1.5 ui-sans-serif,Segoe UI,sans-serif;resize:vertical}
+textarea:focus{outline:none;border-color:var(--acc)}
+button{background:#1b1a2c;color:var(--tx);border:1px solid var(--acc);border-radius:6px;padding:9px 16px;font:13px ui-sans-serif,Segoe UI,sans-serif;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed;border-color:var(--ln)}
+button:not(:disabled):hover{background:#241f3c}
+.review{background:#111722;border:1px dashed var(--ln);border-radius:6px;padding:10px 12px;margin:10px 0;font-size:12.5px}
+.review .lab{font:10px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.6px}
+.rowr{padding:9px 0;border-bottom:1px solid #1c232e}
+.rowr:last-child{border:0}
+.rowr .h{font:10.5px var(--mono);color:var(--dim)}
+.rowr .d{font-size:13px;margin:3px 0}
+code{font:11.5px var(--mono);color:#9fb4d0;background:#111722;padding:1px 5px;border-radius:3px}
+a{color:var(--acc)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+#msg{margin-top:10px;font-size:12.5px}
+</style>
+<header>
+  <h1>UNI&nbsp;TRACK — answer a question the plan is waiting on</h1>
+  <span class="links">
+    <a href="/">&#8592; back to TRACK</a>
+    <a href="/api/decisions" target="_blank">raw JSON</a>
+  </span>
+  <span class="stamp" id="stamp">loading…</span>
+</header>
+<main>
+
+<section>
+  <h2>What this is</h2>
+  <div class="small">
+    This records <b>your answer</b> to a question the plan actually asks, into
+    <code>evidence/decisions.ndjson</code> — append-only and hash-chained. Until this page existed,
+    every one of the 85 rows in the comment ledger and every co-sign in the control-plane ledger was
+    written by an agent. Your answers lived in a chat window, which is not an artifact.
+  </div>
+  <!--
+    THE CLAIM LEVEL IS STATED STATICALLY AS WELL AS FETCHED. The line below is the server's own
+    caveat, read live from /api/decisions so the two can never disagree. But a page whose entire
+    safety caveat depends on one server field is one rename away from silently dropping it, and the
+    reader would never know. So the level is also written here, in the page, and
+    verify_decide_page.cjs asserts this literal still matches decisions.cjs's CLAIM_LEVEL — a drift
+    between them fails the gate rather than quietly weakening what he is told.
+  -->
+  <div class="caveat">
+    <b>Claim level: <code>presence_evident</code> — this does not prove it was you.</b>
+    The endpoint checks that the request came from this box, as a loopback name, with a header a
+    cross-site page cannot forge. None of that is a human: an agent running on this machine satisfies
+    every one of those checks and could write the same row. What the ledger does give you is that a
+    row cannot be quietly changed or removed later. Tamper-evident, not authenticated — and no gate
+    anywhere is allowed to read this file as permission to act.
+  </div>
+  <div class="caveat" id="caveat">loading the server's own caveat…</div>
+  <div class="note">
+    <b>It records. It never acts.</b> Answering &ldquo;go ahead&rdquo; to a stop writes down that you
+    said go ahead. It does not do the thing. Nothing on this page can go live, mint presence, or write
+    the gate ledger.
+  </div>
+  <div class="note">
+    <b>If this page is gone:</b> a watchdog restarts TRACK within about five seconds of it dying —
+    <code>viewer\track\track_watchdog.ps1</code>, supervised from your Startup folder. That is
+    <b>crash-restart, and it is proven.</b> <b>Reboot-survival is NOT proven</b> — the Startup entry
+    exists but this machine has not been restarted since it was installed, and an entry that exists is
+    not an entry that fired. If TRACK is ever down and stays down, start it with
+    <code>node viewer\track\track_server.cjs</code> from the repository root. Your answers are in
+    <code>evidence/decisions.ndjson</code> either way; this page is a way in, not where they live.
+  </div>
+</section>
+
+<section>
+  <h2>1 &nbsp;·&nbsp; Which question are you answering?</h2>
+  <div id="subjects" class="small">loading…</div>
+</section>
+
+<section>
+  <h2>2 &nbsp;·&nbsp; Your answer, in your words</h2>
+  <textarea id="text" placeholder="Type your answer. Nothing is written until you press the button."></textarea>
+  <div class="review" id="supersede" style="display:none"></div>
+  <div class="review" id="review"><span class="lab">nothing selected yet</span></div>
+  <div class="caveat">
+    <b>This cannot be edited or deleted afterwards.</b> The ledger is append-only and hash-chained —
+    that is what makes it evidence. If you get it wrong, the repair is another row saying so, and both
+    will be in the record. Read it back before you press.
+  </div>
+  <button id="send" disabled>Record this answer</button>
+  <div id="msg"></div>
+</section>
+
+<section>
+  <h2>Already answered</h2>
+  <div id="rows" class="small">loading…</div>
+</section>
+
+</main>
+<script>
+// ONE FETCH, ON DEMAND. No polling: a timer here would fight the textarea for the operator's words.
+let STATE = null, SELECTED = null;
+
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+async function load(){
+  const r = await fetch('/api/decisions', {cache:'no-store'});
+  STATE = await r.json();
+  document.getElementById('caveat').textContent = STATE.caveat || '(the server sent no caveat — that itself is a defect)';
+  // The server says what the chain state IS, including "nothing to verify yet" for an empty file.
+  // A chain of zero rows verifies trivially, and printing "chain verifies" over it would be a green
+  // nobody earned.
+  document.getElementById('stamp').textContent = STATE.count + ' recorded · ' + (STATE.chain_says || 'chain state unknown');
+
+  const answered = {};
+  for (const row of (STATE.rows || [])) (answered[row.subject] = answered[row.subject] || []).push(row);
+
+  document.getElementById('subjects').innerHTML = (STATE.decidable || []).map((s) => {
+    const n = (answered[s.id] || []).length;
+    return '<label class="q" data-id="' + esc(s.id) + '">' +
+      '<input type="radio" name="subj" value="' + esc(s.id) + '" style="margin-right:8px">' +
+      '<span class="id">' + esc(s.id) + '</span><span class="kind">' + esc(s.kind) + '</span>' +
+      (n ? '<span class="answered">' + n + ' answer' + (n > 1 ? 's' : '') + ' already</span>' : '') +
+      '<div class="t">' + esc(s.text) + '</div></label>';
+  }).join('') || '<div class="bad">the server offered nothing to decide — check the plan file</div>';
+
+  for (const el of document.querySelectorAll('.q')) {
+    el.addEventListener('click', () => {
+      SELECTED = (STATE.decidable || []).find((s) => s.id === el.dataset.id) || null;
+      for (const o of document.querySelectorAll('.q')) o.classList.toggle('sel', o === el);
+      const input = el.querySelector('input'); if (input) input.checked = true;
+      renderSupersede();
+      refresh();
+    });
+  }
+
+  // Each row says whether it STILL STANDS. `stands` and `superseded_by` are computed by the server
+  // from the chain itself, never stored — the append-only file is never rewritten to record them.
+  document.getElementById('rows').innerHTML = (STATE.rows || []).length
+    ? (STATE.rows || []).slice().reverse().map((row) =>
+        '<div class="rowr" style="' + (row.stands ? '' : 'opacity:.55') + '"><div class="h">seq ' + esc(row.seq) + ' · ' + esc(row.utc) + ' · ' +
+        esc(row.actor) + '/' + esc(row.role) + ' · <span class="warn">' + esc(row.claim_level) + '</span>' +
+        (row.stands
+          ? ' · <span class="ok">STANDS</span>'
+          : ' · <span class="bad">SUPERSEDED by seq ' + esc((row.superseded_by || []).join(', ')) + '</span>') +
+        (row.supersedes != null ? ' · <span class="small">replaces seq ' + esc(row.supersedes) + '</span>' : '') +
+        '</div>' +
+        '<div class="d"><span class="id">' + esc(row.subject) + '</span> — ' + esc(row.subject_text) + '</div>' +
+        '<div class="d">&ldquo;' + esc(row.decision) + '&rdquo;</div>' +
+        '<div class="h">hash ' + esc(String(row.hash).slice(0, 24)) + '…</div></div>').join('')
+    : '<span class="small">Nothing has been answered yet. This file does not exist until you answer ' +
+      'something — an agent must not seed it, because a row written by an agent is exactly what this ' +
+      'design refuses.</span>';
+
+  // THE CORRECTION CONTROL. Only offered when the selected question already has a standing answer,
+  // because offering it otherwise invites a correction to something that was never said.
+  renderSupersede(answered);
+  refresh();
+}
+
+// Which standing rows answer the currently-selected question.
+function standingFor(id){
+  return (STATE && STATE.rows || []).filter((r) => r.subject === id && r.stands);
+}
+
+function renderSupersede(){
+  const box = document.getElementById('supersede');
+  const prior = SELECTED ? standingFor(SELECTED.id) : [];
+  if (!prior.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML =
+    '<div class="lab">this question already has ' + prior.length + ' standing answer' + (prior.length > 1 ? 's' : '') + '</div>' +
+    '<label style="display:block;margin-top:6px"><input type="checkbox" id="sup" style="margin-right:8px">' +
+    'This <b>replaces</b> the answer at seq ' + esc(prior[prior.length - 1].seq) + '</label>' +
+    '<div class="small" style="margin-top:4px">Both rows stay in the ledger — nothing is ever deleted. ' +
+    'Ticking this marks the older one SUPERSEDED so a later reader can tell which one stands. Leave it ' +
+    'unticked and both will read as current, which is how a record becomes ambiguous.</div>';
+  document.getElementById('sup').addEventListener('change', refresh);
+}
+
+// The button is disabled until BOTH a question and words exist, and the review shows exactly what
+// will be written — because the write cannot be undone and a tired reader deserves to see the whole
+// sentence before committing it, not a summary of it.
+function refresh(){
+  const text = document.getElementById('text').value.trim();
+  const ready = !!SELECTED && text.length > 0;
+  document.getElementById('send').disabled = !ready;
+  document.getElementById('review').innerHTML = !SELECTED
+    ? '<span class="lab">nothing selected yet</span>'
+    : '<span class="lab">this exact row will be appended</span>' +
+      '<div style="margin-top:6px"><span class="id">' + esc(SELECTED.id) + '</span> — ' + esc(SELECTED.text) + '</div>' +
+      '<div style="margin-top:6px">&ldquo;' + (text ? esc(text) : '<span class="dim">…your answer…</span>') + '&rdquo;</div>';
+}
+document.getElementById('text').addEventListener('input', refresh);
+
+// The seq this answer replaces, or null. Read at send time, not remembered, so it cannot go stale.
+function supersedingSeq(){
+  const box = document.getElementById('sup');
+  if (!box || !box.checked || !SELECTED) return null;
+  const prior = standingFor(SELECTED.id);
+  return prior.length ? prior[prior.length - 1].seq : null;
+}
+
+// STALE LIST, FIXED WITHOUT A TIMER. The "already answered" list was a snapshot from page load: a tab
+// open since hour zero would tell him nothing had been answered at hour three, and he could answer
+// the same question twice without the page ever mentioning it.
+//
+// A timer is the obvious fix and it is the WRONG one — it is the exact thing that made this a
+// separate page, because a periodic re-render eats a half-typed answer. `focus` fires when he comes
+// BACK to the window, which is precisely when the list might be stale and precisely when he is not
+// mid-sentence. The textarea and the selection are never touched; only the read-only regions are
+// re-rendered, and only if the row count actually changed.
+window.addEventListener('focus', async () => {
+  try {
+    const r = await fetch('/api/decisions', {cache:'no-store'});
+    const fresh = await r.json();
+    if (!STATE || fresh.count === STATE.count) return;    // nothing moved: leave the DOM alone
+    const keptText = document.getElementById('text').value;
+    const keptId = SELECTED && SELECTED.id;
+    await load();
+    document.getElementById('text').value = keptText;      // HIS WORDS SURVIVE THE REFRESH
+    if (keptId) { const el = document.querySelector('.q[data-id="' + CSS.escape(keptId) + '"]'); if (el) el.click(); }
+    refresh();
+  } catch (e) { /* offline: the page keeps what it has rather than blanking */ }
+});
+
+document.getElementById('send').addEventListener('click', async () => {
+  const btn = document.getElementById('send'), msg = document.getElementById('msg');
+  const text = document.getElementById('text').value.trim();
+  if (!SELECTED || !text) return;
+  btn.disabled = true; msg.textContent = 'recording…';
+  try {
+    const r = await fetch('/api/decision', {
+      method: 'POST',
+      headers: {'content-type': 'application/json', 'x-uni-cc': '1'},
+      body: JSON.stringify({
+        subject: SELECTED.id, decision: text, actor: 'michael', role: 'operator',
+        supersedes: supersedingSeq(),
+      }),
+    });
+    const j = await r.json();
+    if (!r.ok || !j.ok) {
+      // THE TEXT IS NOT CLEARED ON FAILURE. Losing a considered answer to a failed request would be
+      // the page destroying the very thing it exists to capture.
+      msg.innerHTML = '<span class="bad">NOT recorded — ' + esc(j.error || ('HTTP ' + r.status)) +
+        '</span><div class="small">' + esc(j.why || '') + '</div><div class="small">Your words are still in the box above.</div>';
+      btn.disabled = false;
+      return;
+    }
+    // THE RECEIPT — AND THE FIRST LINE OF IT IS "NOTHING HAPPENED".
+    //
+    // The earlier version led with a green "Recorded." and then said "it does not prove it was you",
+    // which is about IDENTITY. It never said the other thing, and the other thing is the dangerous
+    // one. Answer S6 — "go-live, in any form" — with "yes, go ahead", see green at hour three, and
+    // the reasonable reading is that go-live is now authorised or under way. The sentence that
+    // corrects that ("It records. It never acts.") sat at the top of the page, scrolled off screen
+    // by the time the receipt appears. The moment of maximum ambiguity carried the least
+    // information. It says it here now, first, before the seq and the hash.
+    msg.innerHTML =
+      '<span class="ok">Recorded — and NOTHING WAS DONE.</span>' +
+      '<div style="margin-top:4px">This wrote your answer down. It did <b>not</b> carry it out. ' +
+      'Nothing was started, nothing went live, nothing was authorised — a person still has to do the thing.</div>' +
+      '<div class="small" style="margin-top:6px">seq ' + esc(j.row.seq) +
+      ' · hash <code>' + esc(String(j.row.hash).slice(0, 24)) + '…</code> · appended to <code>evidence/decisions.ndjson</code> · ' +
+      esc(j.claim_level) + ', so it records that you said it and does not prove it was you.</div>';
+    document.getElementById('text').value = '';
+    SELECTED = null;
+    await load();
+  } catch (e) {
+    msg.innerHTML = '<span class="bad">NOT recorded — ' + esc(e.message) + '</span>' +
+      '<div class="small">Your words are still in the box above.</div>';
+    btn.disabled = false;
+  }
+});
+
+load().catch((e) => { document.getElementById('stamp').textContent = 'track server unreachable'; });
+</script>

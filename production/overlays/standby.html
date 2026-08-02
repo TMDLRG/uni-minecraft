@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - Standby card</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* Full-screen 'standby / technical difficulties' card used by the playout
+         fallback. This page is meant to FILL frame (the playout cuts to it as a
+         dedicated scene), so unlike the other overlays it paints an opaque scrim.
+         The accent is a slow 2D-canvas sweep - NO WebGL (software-raster safe). */
+      body {
+        background: #06101c; /* opaque: this is a fill card, not a transparent overlay */
+      }
+      #bg {
+        position: fixed;
+        inset: 0;
+        display: block;
+      }
+      .center {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 18px;
+      }
+      .mark {
+        font-size: 24px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .head {
+        font-size: 58px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-shadow: 0 6px 40px rgba(0, 0, 0, 0.5);
+      }
+      .sub {
+        font-size: 24px;
+        color: var(--ink-dim);
+        max-width: 60vw;
+      }
+      .dots {
+        margin-top: 10px;
+        font-family: var(--mono);
+        font-size: 20px;
+        color: var(--warn);
+        letter-spacing: 0.3em;
+      }
+      .clock {
+        margin-top: 26px;
+        font-family: var(--mono);
+        font-size: 18px;
+        color: var(--ink-faint);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="bg"></canvas>
+    <div class="center">
+      <div class="mark">EducateWright &bull; UNI</div>
+      <div class="head" id="head">Please stand by</div>
+      <div class="sub" id="sub">
+        We are experiencing a brief technical interruption. The science feed
+        returns shortly.
+      </div>
+      <div class="dots" id="dots">&bull; &bull; &bull;</div>
+      <div class="clock tnum" id="clock"></div>
+    </div>
+
+    <script>
+      // ---- Standby card ----
+      // A slow 2D-canvas accent sweep (software-raster safe; never WebGL). Optional:
+      // if state.json is reachable AND carries a title with text, use it to override
+      // the standby copy (so the producer can post a specific notice); otherwise the
+      // honest default stands. Also shows a live UTC clock so the card never looks frozen.
+
+      var canvas = document.getElementById('bg');
+      var ctx = canvas.getContext('2d');
+      var W = 0,
+        H = 0,
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      function resize() {
+        W = canvas.clientWidth = window.innerWidth;
+        H = canvas.clientHeight = window.innerHeight;
+        canvas.width = Math.floor(W * dpr);
+        canvas.height = Math.floor(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // A slow diagonal band of faint accent lines that drifts across the card.
+      var t0 = performance.now();
+      function frame(now) {
+        var t = (now - t0) / 1000;
+        ctx.clearRect(0, 0, W, H);
+
+        // Soft radial vignette.
+        var g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.7);
+        g.addColorStop(0, 'rgba(16,28,46,0.0)');
+        g.addColorStop(1, 'rgba(2,6,14,0.6)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+
+        // Drifting diagonal hairlines in the glass accent colour.
+        var spacing = 64;
+        var drift = (t * 18) % spacing; // slow drift
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(63,210,255,0.06)';
+        ctx.beginPath();
+        for (var x = -H; x < W + H; x += spacing) {
+          var px = x + drift;
+          ctx.moveTo(px, 0);
+          ctx.lineTo(px - H, H);
+        }
+        ctx.stroke();
+
+        // One brighter sweeping band.
+        var bandX = ((t * 0.08) % 1.4 - 0.2) * (W + 2 * H) - H;
+        var grad = ctx.createLinearGradient(bandX, 0, bandX + 220, H);
+        grad.addColorStop(0, 'rgba(63,210,255,0.0)');
+        grad.addColorStop(0.5, 'rgba(63,210,255,0.10)');
+        grad.addColorStop(1, 'rgba(63,210,255,0.0)');
+        ctx.fillStyle = grad;
+        ctx.save();
+        ctx.translate(bandX, 0);
+        ctx.transform(1, 0, -H / H, 1, 0, 0); // shear to match the hairline angle
+        ctx.fillRect(0, 0, 220, H);
+        ctx.restore();
+
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+
+      // Live UTC clock so the card visibly ticks.
+      var clockEl = document.getElementById('clock');
+      var utcFmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      });
+      function tickClock() {
+        clockEl.textContent = utcFmt.format(new Date()) + ' UTC';
+      }
+      tickClock();
+      setInterval(tickClock, 250);
+
+      // Optional copy override from state.title (honest: only if explicitly present).
+      var headEl = document.getElementById('head');
+      var subEl = document.getElementById('sub');
+      function pollCopy() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(function (state) {
+            var ti = state && state.title;
+            if (ti && typeof ti.text === 'string' && ti.text.trim() && ti.visible === true) {
+              headEl.textContent = ti.text;
+              if (typeof ti.subtitle === 'string' && ti.subtitle.trim()) {
+                subEl.textContent = ti.subtitle;
+              }
+            }
+          })
+          .catch(function () {
+            /* keep the honest default standby copy */
+          });
+      }
+      pollCopy();
+      setInterval(pollCopy, 3000);
+    </script>
+  </body>
+</html>

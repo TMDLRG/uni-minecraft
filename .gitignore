@@ -1,0 +1,92 @@
+# Build artifacts
+/_build/
+/cover/
+/deps/
+/doc/
+/.elixir_ls/
+erl_crash.dump
+*.ez
+*.beam
+/tmp/
+
+# The Jido reference repo is cloned for study only; it is not a build dependency
+# of the zero-dependency pure core. See docs/runtime/jido_alignment.md.
+/vendor/
+
+# Recorded blanket evidence logs (regenerate with scripts/record_run.exs).
+# A small reference run may be committed under config/golden/ instead.
+# Pattern uses /runs/* (not /runs/) so re-includes below work — git cannot re-include
+# children of an excluded parent DIR, but /runs/* lists contents, which /runs/README.md
+# and the tracked scaffolds can override.
+/runs/*
+# Preserve the previously force-tracked launchers + analyzers.
+!/runs/*.py
+!/runs/analyze_*.py
+!/runs/broadcast_bridge.exs
+!/runs/curiosity_lineage.exs
+!/runs/diag_buildchain.exs
+!/runs/ease_survival.exs
+# UNI OS+MIND Deepening Plan authored scaffolds (kept committed).
+!/runs/lab_team_review.exs
+!/runs/pureworld_qa_gate.exs
+!/runs/motor_shuffle_live_ablation.exs
+!/runs/depth_red.exs
+!/runs/homeostat_colony_red.exs
+!/runs/spine_red.exs
+!/runs/hemispheres_red.exs
+!/runs/glands_red.exs
+!/runs/consummation_run3.exs
+!/runs/red_team_cross_box.exs
+!/runs/forage_fenced_observe.exs
+!/runs/nursery_fenced_red.exs
+
+# Phoenix overlooker UI app build artifacts (the ui/ app has its own deps).
+/ui/_build/
+/ui/deps/
+/ui/.elixir_ls/
+/ui/priv/static/assets/
+# Regenerable Phoenix runtime artifact (producer_reader.bin re-writes every run — was tracked+dirty).
+/ui/runs/
+
+# Local Minecraft (Paper) server for the sp.minecraft bridge
+/mcserver/
+
+# Node dependencies for the mineflayer bodies + prismarine-viewer camera (viewer/)
+node_modules/
+
+# Logs and crash dumps
+*.log
+
+# Python oracle bytecode + saved arrays
+__pycache__/
+*.pyc
+*.npz
+
+# Self-signed TLS certs the publisher gateway regenerates (gen_auto_cert.ps1) — NEVER commit the
+# private key. (viewer/.gitignore covers viewer/; these appear at the root when the script runs there.)
+auto.crt
+auto.key
+
+# scratch
+/test_merge.exs
+
+# Studio runtime cruft (2026-07-12 finalize): Chrome --user-data-dir, run logs, and the
+# regenerable live spool (broadcast.json / templates.json). viewer/assets/ (bars_tone.mp4) is NOT ignored.
+chrome-profiles/
+logs/
+viewer/runtime/
+
+# Litigation-hold: the high-cadence STREAM tier of colony-mind captures is preserved as a local WORM store
+# (never pruned) + off-box replication — NOT committed (it would bloat the repo unboundedly as minds tick).
+# The custody ledger (evidence/colony_minds/custody.ndjson) IS committed — the tamper-evident chain of what
+# existed. Anchor + pre-redeploy captures (evidence/colony_minds/minds/**) ARE committed (distributed).
+evidence/colony_minds/stream/
+
+evidence/colony_minds/stream_custody.ndjson
+
+evidence/colony_minds/.replicated.ndjson
+
+# F31 presence tokens (Phase 9 step 3.3) — a presence token is a live claim that a human is at
+# this desk RIGHT NOW. It is machine-local, single-use and 120s-lived; committing one would make it
+# a shared secret, which is the opposite of what it attests.
+viewer/.presence/

@@ -1,0 +1,1 @@
+{"schema_version":1,"name":"control-plane-ledger-appendable","receipt_path":"docs/GATES.md","verdict":"MOSTLY_PASS","evidence_class":"pending","last_updated":"2026-07-25","notes":"FIXTURE ONLY — the verdict is outside the enum on purpose. Accepting this row is the falsifier for F5."}

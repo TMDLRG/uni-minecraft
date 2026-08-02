@@ -1,0 +1,12 @@
+{
+  "name": "starter",
+  "seed": 101,
+  "regions": 2,
+  "w": 6,
+  "h": 6,
+  "max_ticks": 400,
+  "micro_per_decision": 3,
+  "dev_interval": 5,
+  "agent": "homeostatic",
+  "scramble": true
+}

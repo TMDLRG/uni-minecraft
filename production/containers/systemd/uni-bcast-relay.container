@@ -1,0 +1,46 @@
+# /etc/containers/systemd/uni-bcast-relay.container
+# UNI Production Platform - unit #2 uni-bcast-relay.
+# STATUS: AS-DEPLOYED CANONICAL (deployed 2026-07-11 to uni-lab-79740c via uni-lab MCP,
+# P1-BRINGUP Phase E, verified: API answers, uni/program configured). Changes here must be
+# re-applied on the node or the node drifts.
+# Deviations vs the original design, found on REAL bring-up:
+#  1. Image :latest-ffmpeg - the plain mediamtx image ships NO ffmpeg; the mediamtx.yml
+#     runOnReady copy-fan-out would silently fail at go-live.
+#  2. EnvironmentFile WITHOUT the '-' optional prefix - this node's quadlet generator rejects
+#     the dash and parses it as a relative path. /etc/uni/runtime.env exists for real; stream
+#     keys are injected THERE at go-live, never in git.
+# Image digest at deploy (recorded, box never auto-pulls): mediamtx:latest-ffmpeg config 92b88836e05d.
+#
+# Restreamer (ADR-PROD-008). Ingests the mixer's SINGLE program stream (SRT preferred, RTMP
+# accepted) and COPY-fans-out (no re-encode) to YouTube + Twitch + others.
+[Unit]
+Description=UNI Broadcast Relay (MediaMTX restreamer - single ingest, copy-fan-out to YouTube/Twitch)
+After=podman.socket network-online.target
+Wants=podman.socket
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Container]
+Image=docker.io/bluenviron/mediamtx:latest-ffmpeg
+ContainerName=uni-bcast-relay
+# RTMP + SRT ingest reachable on the node's LAN (the mixer publishes to them);
+# the API stays loopback-only. 8889/tcp (https WHIP publish page for remote cameras)
+# + 8189/udp (WebRTC ICE) added 2026-07-12 for browser camera publishing (cam1..cam3
+# paths only - mediamtx.yml auth locks uni/program publish to loopback+container net).
+PublishPort=1935:1935
+PublishPort=8890:8890/udp
+PublishPort=127.0.0.1:9997:9997
+PublishPort=8889:8889
+PublishPort=8189:8189/udp
+Volume=/var/lib/uni/broadcast/mediamtx.yml:/mediamtx.yml:ro
+# Self-signed TLS for the WebRTC publish page (getUserMedia needs a secure context).
+Volume=/var/lib/uni/broadcast/certs:/certs:ro
+# Per-target stream keys (YouTube/Twitch) are injected from the node's runtime env, NEVER baked here.
+EnvironmentFile=/etc/uni/runtime.env
+
+[Service]
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target default.target

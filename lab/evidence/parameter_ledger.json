@@ -1,0 +1,472 @@
+[
+  {
+    "id": "k2_O_O2_M",
+    "value": "6.0e-34 * (T/300)^-2.4",
+    "units": "cm^6 molecule^-2 s^-1",
+    "evidence_class": "B",
+    "source": "JPL Chemical Kinetics and Photochemical Data evaluation (termolecular reactions); Lin & Leu basis. Exponent -2.3 (older) to -2.4 (newer) across JPL editions; name the edition. Live JPL PDF refused connection during audit -> precise current-edition exponent is requires-stronger-source.",
+    "url": "https://jpldataeval.jpl.nasa.gov/pdf/JPL_02-25_3_termolec_rev01.pdf",
+    "is_assumption": false,
+    "body": "Termolecular rate constant for O + O2 + M -> O3 + M (the fast ozone source). Worked example re-ran exactly: k2(230K)=1.135e-33; R2 rate=3.02e9 cm^-3 s^-1. CAVEAT: exponent -2.3 vs -2.4 unpinned across JPL editions; difference <4% at strat T, immaterial to order-of-magnitude conclusions but must not carry both as settled."
+  },
+  {
+    "id": "k4_O_O3",
+    "value": "8.0e-12 * exp(-2060/T)",
+    "units": "cm^3 molecule^-1 s^-1",
+    "evidence_class": "B",
+    "source": "JPL Chemical Kinetics and Photochemical Data evaluation (bimolecular reactions), O + O3 -> 2 O2",
+    "url": "https://jpldataeval.jpl.nasa.gov/pdf/JPL_15_AllInOne.pdf",
+    "is_assumption": false,
+    "body": "Slow odd-oxygen sink in pure-oxygen Chapman; Ea/R=2060 K. CORRECTED spot-check: k4(220K)=6.86e-16 NOT 1.8e-15 (the original 1.8e-15 was an arithmetic error). k4(230K)=1.031e-15 (self-consistent, used in R4 worked example); k4(298K)=7.96e-15 (~8e-15, correct). Negative T-dependence (slower when colder) physically correct."
+  },
+  {
+    "id": "J1_O2_photolysis",
+    "value": "175-242 nm window; J1 ~ 1e-11 to 1e-9 (order-of-magnitude bracket)",
+    "units": "s^-1",
+    "evidence_class": "B",
+    "source": "Harvard ACMG Atmospheric Chemistry Ch. 10 (Jacob); Chapman cycle wavelength windows",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "is_assumption": true,
+    "body": "O2 photolysis frequency (O2 + hv -> 2O). NOT a constant: actinic-flux x cross-section x quantum-yield integral over Schumann-Runge/Herzberg; varies orders of magnitude with altitude/solar-zenith-angle/overhead column. Bracket only; a real run computes J(z) from a radiative-transfer model. Correctly self-labeled assumption on magnitude."
+  },
+  {
+    "id": "J3_O3_photolysis",
+    "value": "240-320 nm shield-relevant (up to ~1140 nm); J3 ~ 1e-4 to 1e-2 (order-of-magnitude bracket)",
+    "units": "s^-1",
+    "evidence_class": "B",
+    "source": "Harvard ACMG Atmospheric Chemistry Ch. 10 (Jacob); O3 Hartley/Huggins/Chappuis bands",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "is_assumption": true,
+    "body": "O3 photolysis frequency (O3 + hv -> O2 + O). J3 >> J1 (Hartley cross-section large) -> short daytime O3 lifetime ~1/J3 ~17 min -> fast R2<->R3 null cycle. Flux-weighted integral, not a fixed constant; bracket only. Correctly self-labeled assumption on magnitude."
+  },
+  {
+    "id": "ozone_strat_fraction",
+    "value": "~90 (stratosphere ~10-50 km); ~10 tropospheric",
+    "units": "percent of total atmospheric ozone",
+    "evidence_class": "B",
+    "source": "NASA Ozone Watch — Ozone facts",
+    "url": "https://ozonewatch.gsfc.nasa.gov/facts/SH.html",
+    "is_assumption": false,
+    "body": "Earth, modern atmosphere. Standard NASA/NOAA value."
+  },
+  {
+    "id": "ozone_peak_altitude",
+    "value": "~32 (peak mixing ratio 30-35 km); peak number density lower ~20-25 km",
+    "units": "km altitude",
+    "evidence_class": "B",
+    "source": "NASA Ozone Watch — Ozone facts",
+    "url": "https://ozonewatch.gsfc.nasa.gov/facts/SH.html",
+    "is_assumption": false,
+    "body": "MISLABEL HAZARD (must keep flagged): ~32 km is the peak MIXING-RATIO altitude (~8 ppm at 30-35 km); the peak NUMBER-DENSITY altitude is LOWER (~20-25 km) because air density falls with height. Never conflate under a bare 'ozone peak at 32 km'."
+  },
+  {
+    "id": "ozone_total_column",
+    "value": "~300 (typical); ~220 = ozone-hole threshold",
+    "units": "Dobson Units (DU)",
+    "evidence_class": "B",
+    "source": "NASA Ozone Watch",
+    "url": "https://ozonewatch.gsfc.nasa.gov/",
+    "is_assumption": false,
+    "body": "Earth global-mean ~300 DU. 1 DU = 2.69e16 molecules/cm^2 = 0.01 mm pure O3 at STP. 300 DU = 8.07e18 molecules/cm^2 (re-ran exact). Mars ~0.4-4 DU; Venus is a tenuous high-altitude layer, not a comparable column."
+  },
+  {
+    "id": "venus_ozone",
+    "value": "mean altitude ~100 km; ~1e7-1e8 molecules/cm^3; up to ~1000x less dense than Earth's layer",
+    "units": "km / molecules cm^-3",
+    "evidence_class": "B",
+    "source": "ESA Venus Express / SPICAV — Montmessin et al. (2011), Icarus 216:82-85",
+    "url": "https://sci.esa.int/web/venus-express/-/49383-montmessin-f-et-al-2011",
+    "is_assumption": false,
+    "body": "VERIFIED. Abiotic nightside layer; source = CO2-photolysis O atoms swept to nightside, chlorine-catalyzed destruction. LOAD-BEARING dead-planet control for the 'ozone != life' verdict (ozone on a planet with no known biosphere)."
+  },
+  {
+    "id": "mars_ozone",
+    "value": "~0.4-4 DU column; seasonal S-polar-night layer ~40-60 km",
+    "units": "Dobson Units / km",
+    "evidence_class": "B",
+    "source": "ESA Mars Express / SPICAM (Perrier 2006; Lefevre 2021); Nature Geoscience polar-ozone study",
+    "url": "https://sci.esa.int/web/mars-express/-/52881-a-seasonal-ozone-layer-over-the-martian-south-pole",
+    "is_assumption": false,
+    "body": "VERIFIED. Abiotic; anti-correlates with water vapor (HOx destroys O3); forms by three-body recombination of transport-supplied O. Second dead-planet control on the literal 'ozone = life' claim."
+  },
+  {
+    "id": "sigma_O3_Hartley_255",
+    "value": "~1.1e-17 (peak magnitude OK); Hodges 2019 consensus at 253.65 nm = 1.1329e-17 (rel std unc 0.31%); AMT 2015 (Janssen) single-lab = 1.127e-17 (0.86% expanded unc)",
+    "units": "cm^2/molecule",
+    "evidence_class": "B",
+    "source": "Hodges et al. 2019 consensus (Metrologia); Janssen et al. AMT 2015 (amt-8-1245-2015)",
+    "url": "https://iopscience.iop.org/article/10.1088/1681-7575/ab0bdd",
+    "is_assumption": false,
+    "body": "CORRECTED ATTRIBUTION: the 1.127e-17 value is NOT the Hodges consensus (that is 1.1329e-17); 1.127e-17 is the AMT 2015 single-lab determination. Headline magnitude ~1.1e-17 at Hartley peak (~255 nm) is correct (B). Using verified peak 1.13e-17 RAISES tau and STRENGTHENS the surface-UV-C-zero conclusion."
+  },
+  {
+    "id": "sigma_O3_257nm",
+    "value": "11.07e-18 at 257.34 nm (CORRECTED from 11.26e-18)",
+    "units": "cm^2/molecule",
+    "evidence_class": "B",
+    "source": "Janssen et al. AMT 2015 (amt-8-1245-2015), Hartley-band determination",
+    "url": "https://amt.copernicus.org/articles/7/609/2014/amt-7-609-2014.pdf",
+    "is_assumption": false,
+    "body": "CORRECTED: AMT 2015 reports 11.07e-18 (rel expanded unc <0.7%) at 257.34 nm, not 11.26e-18. Physics impact: none (both ~1.1e-17 magnitude)."
+  },
+  {
+    "id": "sigma_O3_Huggins",
+    "value": "~1e-19 to ~1e-18 (declining sharply 310-350 nm, vibrationally structured, T-dependent)",
+    "units": "cm^2/molecule",
+    "evidence_class": "B",
+    "source": "O3 cross-section reviews (Orphal 2003; Gorshelev et al. 2014, AMT)",
+    "url": "https://amt.copernicus.org/articles/7/609/2014/amt-7-609-2014.pdf",
+    "is_assumption": false,
+    "body": "Order-of-magnitude range only; do NOT over-pin. Cross-section drops steeply with wavelength across Huggins and is strongly temperature-dependent."
+  },
+  {
+    "id": "DU_to_column_density",
+    "value": "2.69e16",
+    "units": "molecules/cm^2 per DU",
+    "evidence_class": "B",
+    "source": "NASA Ozone Watch — Dobson Unit facts",
+    "url": "https://ozonewatch.gsfc.nasa.gov/facts/dobson_SH.html",
+    "is_assumption": false,
+    "body": "1 DU = 0.01 mm pure O3 at 0 C, 1 atm. Internally consistent with Loschmidt number 2.687e19/cm^3 to 0.1%."
+  },
+  {
+    "id": "Earth_ozone_column",
+    "value": "~300 (=> 8.07e18 molecules/cm^2, ~3 mm at STP)",
+    "units": "DU",
+    "evidence_class": "B",
+    "source": "NASA Ozone Watch",
+    "url": "https://ozonewatch.gsfc.nasa.gov/facts/dobson_SH.html",
+    "is_assumption": false,
+    "body": "Global mean; ~230 DU tropics to ~400+ high-lat spring; ozone hole <~220 DU. 300 x 2.69e16 = 8.07e18 (re-ran exact)."
+  },
+  {
+    "id": "UVC_band",
+    "value": "100-280",
+    "units": "nm",
+    "evidence_class": "B",
+    "source": "CIE / WHO / ICNIRP (re-source URL to ICNIRP preferred over vendor page)",
+    "url": "https://www.icnirp.org/en/frequencies/uv/index.html",
+    "is_assumption": false,
+    "body": "Most energetic; fully absorbed by O3/O2 column. Value confirmed against ICNIRP."
+  },
+  {
+    "id": "UVB_band",
+    "value": "280-315",
+    "units": "nm",
+    "evidence_class": "B",
+    "source": "CIE / WHO / ICNIRP",
+    "url": "https://www.icnirp.org/en/frequencies/uv/index.html",
+    "is_assumption": false,
+    "body": "Sunburn/DNA-damage band; strongly attenuated, partially transmitted; ozone column strongly modulates surface UV-B. Confirmed against ICNIRP."
+  },
+  {
+    "id": "UVA_band",
+    "value": "315-400",
+    "units": "nm",
+    "evidence_class": "B",
+    "source": "CIE / WHO / ICNIRP (400 nm upper limit used by ICNIRP/ACGIH/WHO)",
+    "url": "https://www.icnirp.org/en/frequencies/uv/index.html",
+    "is_assumption": false,
+    "body": "Weakly absorbed by O3; largely reaches surface. Confirmed against ICNIRP."
+  },
+  {
+    "id": "tau_UVC_vertical",
+    "value": "~88.8 (88.77 computed); transmission exp(-88.77)=2.80e-39",
+    "units": "dimensionless (optical depth)",
+    "evidence_class": "A",
+    "source": "Computed: sigma*N = 1.1e-17 * 8.07e18",
+    "url": "",
+    "is_assumption": false,
+    "body": "Re-derived exact. Robust: band-edge sigma=1e-18 -> tau=8.07, T=3.1e-4; slant AMF(60deg)=2 -> tau~178. With verified peak sigma 1.13e-17, tau=91, T=3e-40. State result as a BOUND ('transmission < 1e-38, effectively zero'), not a pinned 3e-39 figure (single-wavelength monochromatic single-absorber idealization, not full scattering RT)."
+  },
+  {
+    "id": "G_grav",
+    "value": "6.674e-11 (CODATA 6.67430e-11)",
+    "units": "m^3 kg^-1 s^-2",
+    "evidence_class": "A",
+    "source": "CODATA 2018 Newtonian constant of gravitation",
+    "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+    "is_assumption": false,
+    "body": "Used in g=GM/R^2 and v_esc=sqrt(2GM/R)."
+  },
+  {
+    "id": "earth_surface_g",
+    "value": "9.82",
+    "units": "m s^-2",
+    "evidence_class": "A",
+    "source": "NSSDCA/JPL Earth fact sheet",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+    "is_assumption": false,
+    "body": "Cross-domain anchor for g=GM/R^2. Reproduces 9.820 exactly. NOTE: the '<=0.26%' envelope is NOT reproducible from rounded table values (Moon recomputes to 0.360%, g_pred=1.6258 vs g_true=1.62); use '<=0.36% with these reference values' or full-precision NSSDCA masses (Moon 7.342e22 kg -> ~0.25%). Qualitative pressure!=gravity falsification stands as X."
+  },
+  {
+    "id": "Titan_GM",
+    "value": "8978.13710",
+    "units": "km^3 s^-2",
+    "evidence_class": "B",
+    "source": "JPL/Cassini Titan gravity field",
+    "url": "https://ssd.jpl.nasa.gov/",
+    "is_assumption": false,
+    "body": "Yields g=GM/R^2=1.3543 m/s^2 and v_esc=2.6408 km/s at R=2574.76 km. Both match reference. Independently reproduced."
+  },
+  {
+    "id": "Titan_R",
+    "value": "2574.76",
+    "units": "km",
+    "evidence_class": "B",
+    "source": "Cassini RADAR mean radius",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "is_assumption": false,
+    "body": "Confirmed ~2575 km. With Titan_GM gives v_esc=2.6408 km/s, g=1.3543 m/s^2."
+  },
+  {
+    "id": "b_H_air",
+    "value": "1.8e19 (weighted; b_H=2.73e19, b_H2=1.46e19)",
+    "units": "cm^-1 s^-1",
+    "evidence_class": "B",
+    "source": "Hunten 1973 / Banks & Kockarts; Wikipedia 'Diffusion-limited escape'",
+    "url": "https://en.wikipedia.org/wiki/Diffusion-limited_escape",
+    "is_assumption": false,
+    "body": "Binary diffusion parameter b=D*n for H/H2 in air. Gives C=b*(1/Ha-1/Hi)~2.75e13 cm^-2 s^-1 (canonical ~2.5e13). Confirmed."
+  },
+  {
+    "id": "Earth_H_limiting_flux",
+    "value": "~4.3e8 (canonical); 4.7e8 (recompute)",
+    "units": "H atoms cm^-2 s^-1",
+    "evidence_class": "B",
+    "source": "Hunten 1974 / Catling & Kasting; Wikipedia 'Diffusion-limited escape'",
+    "url": "https://en.wikipedia.org/wiki/Diffusion-limited_escape",
+    "is_assumption": false,
+    "body": "= C * f_H. Canonical 2.5e13*1.7e-5=4.25e8~4.3e8; recompute 2.75e13*1.7e-5=4.7e8. Both within order-of-magnitude tolerance. Depends on canonical b/f_H/T/g inputs (B), not first-principles, so stays B not A."
+  },
+  {
+    "id": "f_H_Earth",
+    "value": "1.7e-5",
+    "units": "dimensionless (mixing ratio, H atoms)",
+    "evidence_class": "B",
+    "source": "Catling & Kasting; Wikipedia 'Diffusion-limited escape' (1.8 ppmv CH4 + 3 ppmv H2O + 0.55 ppmv H2 above tropopause)",
+    "url": "https://en.wikipedia.org/wiki/Diffusion-limited_escape",
+    "is_assumption": true,
+    "body": "Total hydrogen mixing ratio (H2O + 2*CH4 + H2). Order-of-magnitude; varies with tropospheric water/methane. Correctly flagged assumption."
+  },
+  {
+    "id": "Earth_cold_trap_T",
+    "value": "~190-200",
+    "units": "K",
+    "evidence_class": "B",
+    "source": "Earth tropopause/cold-trap temperature; Wordsworth & Pierrehumbert 2013",
+    "url": "https://iopscience.iop.org/article/10.1088/0004-637X/778/2/154",
+    "is_assumption": false,
+    "body": "Sets the very low stratospheric H2O mixing ratio (~few ppmv) gating water loss. NOTE distinct from the ~208 K homopause T used in the flux worked-example (different altitude, not a contradiction)."
+  },
+  {
+    "id": "F_faraday",
+    "value": "96485.33212331 (task rounding 96485)",
+    "units": "C/mol",
+    "evidence_class": "A",
+    "source": "CODATA / 2019 SI redefinition (F = e x N_A, exact)",
+    "url": "https://en.wikipedia.org/wiki/Faraday_constant",
+    "is_assumption": false,
+    "body": "Re-derived F = (1.602176634e-19)*(6.02214076e23) = 96485.33212331001 C/mol. EXACT post-2019-SI. Load-bearing in dG = nF*dp and 2.303RT/F."
+  },
+  {
+    "id": "R_gas",
+    "value": "8.31446261815324",
+    "units": "J/(mol*K)",
+    "evidence_class": "A",
+    "source": "CODATA 2018 (exact post-2019 SI: R = N_A * k_B)",
+    "url": "https://physics.nist.gov/cgi-bin/cuu/Value?r",
+    "is_assumption": false,
+    "body": "Re-derived R = (1.380649e-23)*(6.02214076e23) = 8.31446261815324. EXACT."
+  },
+  {
+    "id": "T_ref",
+    "value": "298.15",
+    "units": "K (25 C)",
+    "evidence_class": "C",
+    "source": "Standard reference temperature convention",
+    "url": "https://en.wikipedia.org/wiki/Standard_conditions_for_temperature_and_pressure",
+    "is_assumption": true,
+    "body": "Convention to match ~59 mV/pH @ 298 K. CAVEAT STANDS: physiological mammalian T ~310 K (37 C) gives ~61.5 mV/pH. Always declare T."
+  },
+  {
+    "id": "nernst_factor_59mV",
+    "value": "59.16 (298.15 K); 61.51 (310 K)",
+    "units": "mV per pH unit",
+    "evidence_class": "A",
+    "source": "Derived: 2.303 * R * T / F",
+    "url": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/proton-motive-force",
+    "is_assumption": false,
+    "body": "Re-derived at 298.15 K: ln(10)=2.302585 -> 59.159 mV/pH (literal 2.303 -> 59.17). At 310 K -> 61.51 mV/pH. Lets dpH be expressed in mV alongside dpsi."
+  },
+  {
+    "id": "E0_O2_H2O",
+    "value": "+0.82 (rounded textbook); precise ~+0.815 V",
+    "units": "V (standard reduction potential E0' at pH 7)",
+    "evidence_class": "B",
+    "source": "Standard biochemistry redox tower (Voet, Lehninger; Biology LibreTexts)",
+    "url": "https://bio.libretexts.org/Courses/University_of_California_Davis/BIS_2A%3A_Introductory_Biology_-_Molecules_to_Cell/BIS_2A%3A_Introductory_Biology_(Britt)/01%3A_Readings/1.15%3A_Respiration",
+    "is_assumption": false,
+    "body": "O2 + 4H+ + 4e- -> 2 H2O. Web-confirmed precise ~+0.8147 to +0.816 V; +0.82 is the conventional rounded high-end value. NAD+/NADH = -0.320 V; span ~1.14 V. THERMODYNAMIC-ADVANTAGE figure, NOT a necessity claim."
+  },
+  {
+    "id": "GOE_age",
+    "value": "~2.4",
+    "units": "Ga (billion years ago)",
+    "evidence_class": "B",
+    "source": "Geobiology consensus — Great Oxidation Event",
+    "url": "https://en.wikipedia.org/wiki/Great_Oxidation_Event",
+    "is_assumption": false,
+    "body": "Atmospheric O2 first accumulated persistently ~2.4 Ga; earliest life ~3.5-3.8 Ga (anaerobic). Life predates O2/O3 by ~1-1.4 Gyr. Temporal fence against 'O2/O3 precondition for life'."
+  },
+  {
+    "id": "n_protons_per_ATP",
+    "value": "~3 to 4",
+    "units": "H+ translocated per ATP (dimensionless ratio)",
+    "evidence_class": "C",
+    "source": "Bioenergetics literature (ATP synthase c-ring stoichiometry, c8-c15; species-dependent)",
+    "url": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/proton-motive-force",
+    "is_assumption": true,
+    "body": "NOT a universal constant: depends on c-ring size and transport coupling. dG proxy: n=3 @ dp=0.20 V -> 57.89 kJ/mol (matches ATP cost ~50-60 kJ/mol); n=4 -> 77.19 kJ/mol. NEVER quote a single universal ATP yield."
+  },
+  {
+    "id": "solar_constant",
+    "value": "1361",
+    "units": "W/m^2",
+    "evidence_class": "B",
+    "source": "IAU 2015 Resolution B3 (nominal, defined exact-SI) / NASA SORCE TIM (~1360.8 W/m^2 measured)",
+    "url": "https://en.wikipedia.org/wiki/Solar_constant",
+    "is_assumption": false,
+    "body": "Top-of-atmosphere TSI at 1 AU. Varies ~0.1% over 11-year cycle ('constant' is nominal). IAU B3 is a defined nominal conversion constant, NOT a current-best-estimate; SORCE is a measurement series — they land at ~1361 but are not jointly 'adopting'. Surface AM1.5G ~1000 W/m^2."
+  },
+  {
+    "id": "sigma_stefan_boltzmann",
+    "value": "5.670374419e-8",
+    "units": "W m^-2 K^-4",
+    "evidence_class": "A",
+    "source": "CODATA 2022 / NIST (exact in 2019 SI: sigma = 2 pi^5 kB^4 / (15 h^3 c^2))",
+    "url": "https://physics.nist.gov/cgi-bin/cuu/Value?sigma",
+    "is_assumption": false,
+    "body": "Re-derived from defining constants -> 5.6703744191844e-8, matches all quoted digits. DEFINED-EXACT (a derived radiative loss using it inherits the model's assumptions, but the constant itself is exact)."
+  },
+  {
+    "id": "sq_single_junction_limit",
+    "value": "33.16 (AM1.5G, back-surface mirror, 1.34 eV) to 33.7 (alternate tabulation); original 1961 = 30 at 1.1 eV; Si ~32",
+    "units": "percent",
+    "evidence_class": "B",
+    "source": "Shockley & Queisser (1961) J. Appl. Phys. 32:510; Wikipedia 'Shockley-Queisser limit'",
+    "url": "https://en.wikipedia.org/wiki/Shockley%E2%80%93Queisser_limit",
+    "is_assumption": false,
+    "body": "CONFLATION FENCE: 33.16% (with mirror) and 33.7% are from DIFFERENT calculations (spectrum/assumptions), NOT a without/with-mirror pair from one lineage. The bound (single junction <~34%; PV cooling incremental, not a loophole) is robust. Multi-junction/concentrator cells exceed this but are different devices, not a violation."
+  },
+  {
+    "id": "am15g_surface_irradiance",
+    "value": "1000",
+    "units": "W/m^2",
+    "evidence_class": "B",
+    "source": "AM1.5G standard test condition, IEC 60904-3 / ASTM G173",
+    "url": "https://en.wikipedia.org/wiki/Air_mass_(solar_energy)",
+    "is_assumption": false,
+    "body": "Reference terrestrial spectrum for rating PV; the SQ ~33% efficiency is defined against this, NOT against 1361 W/m^2 extraterrestrial. 0.337*1000 = 337 W/m^2 max electrical at the SQ limit."
+  },
+  {
+    "id": "evac_tube_pressure",
+    "value": "~1e-5 (~1e-3 Pa)",
+    "units": "mbar",
+    "evidence_class": "B",
+    "source": "Evacuated-tube collector typical internal pressure (engineering)",
+    "url": "https://www.sciencedirect.com/topics/engineering/evacuated-tube-solar-collector",
+    "is_assumption": false,
+    "body": "At this pressure gas convection/conduction effectively eliminated; radiation unaffected and dominates remaining loss. Manufacturer/engineering range, not a fundamental constant."
+  },
+  {
+    "id": "convective_coefficient_example",
+    "value": "5-25 (example 10)",
+    "units": "W m^-2 K^-1",
+    "evidence_class": "C",
+    "source": "Typical natural-convection air coefficient range (engineering)",
+    "url": "https://en.wikipedia.org/wiki/Heat_transfer_coefficient",
+    "is_assumption": true,
+    "body": "Order-of-magnitude assumption used ONLY in the worked example to contrast vacuum (h~0) vs air-exposed (h~10). Actual h depends on geometry/wind/orientation. Exemplary honest labeling."
+  },
+  {
+    "id": "earth_disequilibrium_gasphase",
+    "value": "1.5",
+    "units": "J/mol of atmosphere",
+    "evidence_class": "B",
+    "source": "Krissansen-Totton et al. 2018, Science Advances 4:eaao5747",
+    "url": "https://www.science.org/doi/10.1126/sciadv.aao5747",
+    "is_assumption": false,
+    "body": "VERIFIED verbatim (PMC5787383). O2-CH4 dominated. CAVEAT: source states this gas-phase magnitude is NOT large vs other solar-system bodies' abiogenic disequilibrium — the biosignature weight comes from the kinetically-maintained O2-CH4 PAIR, not raw magnitude. Do NOT read as 'largest gas-phase Phi => life'."
+  },
+  {
+    "id": "earth_disequilibrium_full_fluid",
+    "value": "2326",
+    "units": "J/mol of atmosphere",
+    "evidence_class": "B",
+    "source": "Krissansen-Totton et al. 2018, Science Advances 4:eaao5747",
+    "url": "https://www.science.org/doi/10.1126/sciadv.aao5747",
+    "is_assumption": false,
+    "body": "VERIFIED verbatim. Atmosphere-ocean fluid envelope; dominated by O2+N2+liquid-H2O. THIS is the largest among solar-system substantial-atmosphere bodies and is life-driven. Ratio 2326/1.5 = 1550.7 (~1550x). The 'largest disequilibrium' claim is scoped to THIS full-fluid value only."
+  },
+  {
+    "id": "o3_peak_o2_hotter_stars",
+    "value": "25-55",
+    "units": "% PAL O2 (present atmospheric level)",
+    "evidence_class": "B",
+    "source": "Kozakis, Mendonca & Buchhave 2022, A&A 665:A156",
+    "url": "https://arxiv.org/abs/2208.09415",
+    "is_assumption": false,
+    "body": "VERIFIED verbatim. For hotter hosts (G0V-K2V) O3 counter-intuitively INCREASES as O2 drops from 100% PAL, max O3 at 25-55% PAL O2. Nonlinear, host-UV-dependent. LOAD-BEARING number against treating O3 as a clean O2/life proxy."
+  },
+  {
+    "id": "o3_degeneracy_sun_analog",
+    "value": "~10% and ~100% PAL O2 give similar O3 column (UNDER-SOURCED)",
+    "units": "% PAL O2 (two values, same O3)",
+    "evidence_class": "U",
+    "source": "Kozakis et al. 2022, A&A 665:A156 — specific dual-value not confirmable at abstract level",
+    "url": "https://arxiv.org/abs/2208.09415",
+    "is_assumption": true,
+    "body": "DEMOTED to U. The general non-monotonic, host-star-dependent O2->O3 mapping IS verified (B); the SPECIFIC 10%-vs-100% same-O3 dual value requires a direct figure/passage citation from the paper body, OR soften to the verified general non-monotonicity. Not contradicted, just under-sourced as stated."
+  },
+  {
+    "id": "bayesian_confidence_levels",
+    "value": "5 levels: very likely (90-100%) to very unlikely (<=10%) inhabited",
+    "units": "posterior probability bands",
+    "evidence_class": "B",
+    "source": "Catling et al. 2018, Astrobiology 18:709-738",
+    "url": "https://arxiv.org/abs/1705.06381",
+    "is_assumption": false,
+    "body": "VERIFIED. CORRECTED: source uses '<=10%' not '<10%' for the 'very unlikely' band. Four-component framework (stellar/system char; habitability/internal char; biosignature-in-context; false-positive exclusion). Output is a graded posterior, never binary; no O2/O3 detection alone reaches the top band."
+  },
+  {
+    "id": "AIF_gamma_policy_precision",
+    "value": "model parameter (no universal numeric value)",
+    "units": "dimensionless (inverse-temperature on the EFE softmax)",
+    "evidence_class": "C",
+    "source": "CLAUDE.md §3 Q(pi)=softmax(ln E - gamma*G); §2 canonical sign convention",
+    "url": "",
+    "is_assumption": true,
+    "body": "Higher gamma => more exploitative; gamma->0 => habit-dominated. 'Trauma-locked' = analogy for pathological gamma / likelihood precision, a COMPUTATIONAL parameter regime — NEVER a clinical/diagnostic claim (D analogy)."
+  },
+  {
+    "id": "AIF_KL_gap",
+    "value": "F[q] + ln p(y|m) = D_KL(q(eta|r) || p(eta|y,m)) >= 0",
+    "units": "nats",
+    "evidence_class": "A",
+    "source": "docs/MATH_DERIVATIONS.md lines 19-43; Gibbs' inequality",
+    "url": "https://www.nature.com/articles/nrn2787",
+    "is_assumption": false,
+    "body": "Non-negative gap between VFE and surprisal; = 0 iff q = posterior-under-model. Worked toy reproduced exactly: gap = 0.223144 nats at q=0.5,p=0.8. Model-INTERNAL posterior, not the world."
+  },
+  {
+    "id": "AIF_bound_tightness_threshold",
+    "value": "1e-10",
+    "units": "max|q_BP - q_enumerated| residual (dimensionless probabilities)",
+    "evidence_class": "A",
+    "source": "CLAUDE.md §1 EXACTNESS FENCE; docs/EVIDENCE.md exactness tiers",
+    "url": "",
+    "is_assumption": false,
+    "body": "Acceptance/regression threshold. THEOREM-grade exactness certificate ONLY on tree/junction-tree (singly-connected) structure; on loopy graphs the same residual is a regression check, NOT an exactness proof. As an engineering acceptance bound it is arguably a Class-C choice, but recorded as the repo's declared standard. Units nit: residual is on probabilities/densities, not nats."
+  }
+]

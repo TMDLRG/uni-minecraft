@@ -1,0 +1,12 @@
+# generated broadcast artifacts (machine-specific titles / screenshots)
+channels.json
+runtime/
+verify_*.png
+program_*.png
+*_check*.png
+req_*.json
+
+# WS1-F: self-signed cert used by publisher.cjs (HTTPS gateway) and mediamtx (webrtc).
+# Regenerated on demand by viewer/gen_auto_cert.ps1; per-machine, never checked in.
+auto.crt
+auto.key

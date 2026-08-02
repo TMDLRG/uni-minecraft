@@ -1,0 +1,104 @@
+# mediamtx_local.yml — local restreamer + LAN camera ingest for the dev-box studio.
+# NO KEYS IN THIS FILE.
+#
+# Roles (mirrors production/containers/systemd/mediamtx.yml, ADR-PROD-008):
+#   1. program ingest: OBS encodes ONCE -> rtmp://127.0.0.1:1935 key "uni" -> viewer/restream.ps1
+#      runs one supervised ffmpeg copy fan-out PER PLATFORM (YouTube/Twitch independent).
+#   2. remote cameras/mics: the second computer publishes its webcams + good mics from a plain
+#      browser page (WHIP, HTTPS, device pickers built in):
+#         https://10.190.245.196:8889/cam1/publish   (and /cam2/publish for the second camera)
+#      Self-signed cert (viewer/auto.crt) -> accept the browser warning once per machine.
+#      OBS consumes them locally as rtsp://127.0.0.1:8554/cam1|cam2 (RemoteCam1/RemoteCam2).
+logLevel: info
+logDestinations: [stdout]
+
+api: yes
+apiAddress: 127.0.0.1:9997
+
+# program ingest (OBS) + fan-out readers (ffmpeg) — loopback ONLY
+rtmp: yes
+rtmpAddress: 127.0.0.1:1935
+
+# local re-serve of the remote cams for OBS media sources — loopback ONLY
+rtsp: yes
+rtspAddress: 127.0.0.1:8554
+rtspTransports: [tcp]
+
+# everything we do not use stays OFF (no stray listeners)
+hls: no
+srt: no
+moq: no
+
+# LAN/mesh camera+mic ingest: browser WHIP publish over HTTPS (getUserMedia needs a secure
+# context, hence the self-signed cert). LOOPBACK-BOUND 2026-07-16 — publisher.cjs has no PIN
+# gate (claim retracted from CLAUDE.md + WORKING_LOGIC.md; publisher is unauthenticated). Binding
+# :8889 to 127.0.0.1 closes the direct-WHIP bypass so the ONLY reachable path is through the
+# proxy at viewer/publisher.cjs :8443 (LAN/tailnet). This is the posture defense that survives
+# retracting the PIN claim.
+webrtc: yes
+webrtcAddress: 127.0.0.1:8889
+webrtcEncryption: yes
+webrtcServerKey: C:/Users/mpolz/Documents/UNI.Minecraft/viewer/auto.key
+webrtcServerCert: C:/Users/mpolz/Documents/UNI.Minecraft/viewer/auto.crt
+webrtcLocalUDPAddress: :8189
+webrtcIPsFromInterfaces: yes
+
+# a slot in use cannot be stolen by a second publisher (each cam is a stable source)
+pathDefaults:
+  overridePublisher: no
+
+# auth: loopback may do everything (OBS publish "uni", fan-out read, API, rtsp cam reads);
+# anything off-box may ONLY publish the ten camera paths cam1..cam10. The program path "uni"
+# can never be published from the LAN — the platform fan-out cannot be hijacked.
+#
+# WS1-J opt-in LAN read: to let a LAN device (e.g. a tablet or a monitor script) WHEP-subscribe
+# to the program preview, uncomment the LAN READ block below AND restart mediamtx. This is OFF
+# by default. Camera slots stay LAN-publishable regardless.
+authInternalUsers:
+  - user: any
+    ips: ['127.0.0.1', '::1']
+    permissions:
+      - action: publish
+      - action: read
+      - action: api
+  - user: any
+    permissions:
+      - { action: publish, path: cam1 }
+      - { action: publish, path: cam2 }
+      - { action: publish, path: cam3 }
+      - { action: publish, path: cam4 }
+      - { action: publish, path: cam5 }
+      - { action: publish, path: cam6 }
+      - { action: publish, path: cam7 }
+      - { action: publish, path: cam8 }
+      - { action: publish, path: cam9 }
+      - { action: publish, path: cam10 }
+  # >>> BEGIN WS1-J LAN READ (uncomment to enable LAN preview of the program via WHEP/HLS)
+  # - user: any
+  #   ips: ['10.190.245.0/24']    # your LAN CIDR; add mesh subnets as needed
+  #   permissions:
+  #     - { action: read, path: uni }
+  #     - { action: read, path: cam1 }
+  #     - { action: read, path: cam2 }
+  #     - { action: read, path: cam3 }
+  #     - { action: read, path: cam4 }
+  #     - { action: read, path: cam5 }
+  #     - { action: read, path: cam6 }
+  #     - { action: read, path: cam7 }
+  #     - { action: read, path: cam8 }
+  #     - { action: read, path: cam9 }
+  #     - { action: read, path: cam10 }
+  # <<< END WS1-J LAN READ
+
+paths:
+  uni:
+  cam1:
+  cam2:
+  cam3:
+  cam4:
+  cam5:
+  cam6:
+  cam7:
+  cam8:
+  cam9:
+  cam10:

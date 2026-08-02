@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI — Live Infra</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#121821;--edge:#1f2937;--ink:#e5eef7;--dim:#8296ab;--acc:#3fd2ff;
+        --ok:#2ecc71;--warn:#f1b40f;--live:#e5484d;--gold:#f9e2af;--nv:#6b7a8d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",system-ui,sans-serif;padding:16px;max-width:1180px;margin:0 auto}
+  h1{font-size:22px;letter-spacing:.04em} h1 .u{color:var(--acc)}
+  .sub{color:var(--dim);font-size:13px;margin:2px 0 14px}
+  .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .pill{padding:4px 12px;border-radius:999px;border:1px solid var(--edge);font-weight:800;letter-spacing:.08em;font-size:12px}
+  .pill.ok{color:var(--ok);border-color:var(--ok);background:#0f2318}
+  .pill.warn{color:var(--warn);border-color:var(--warn);background:#241d0b}
+  .pill.live{color:var(--live);border-color:var(--live);background:#2a1215}
+  .pill.nv{color:var(--nv);border-color:var(--nv);background:#161b22}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:14px}
+  h3{font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+  h3 .n{color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--dim);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--edge)}
+  td{padding:6px 8px;border-bottom:1px solid #131a24;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .name{font-weight:700;color:var(--ink)} .fqdn{color:var(--acc)}
+  .mono{font-family:"Cascadia Code",Consolas,monospace;font-size:12px;color:var(--dim)}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .dot.fresh{background:var(--ok)} .dot.stale{background:var(--warn)} .dot.unreachable{background:var(--live)}
+  .dot.not_verified{background:var(--nv)} .dot.drift{background:var(--gold)} .dot.denied{background:var(--live)}
+  .st{font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+  .st.fresh{color:var(--ok)} .st.stale{color:var(--warn)} .st.unreachable{color:var(--live)}
+  .st.not_verified{color:var(--nv)} .st.drift{color:var(--gold)} .st.denied{color:var(--live)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+  .card{background:#0e141c;border:1px solid var(--edge);border-radius:10px;padding:12px;border-left-width:4px}
+  .card.fresh{border-left-color:var(--ok)} .card.stale{border-left-color:var(--warn)}
+  .card.unreachable{border-left-color:var(--live)} .card.not_verified{border-left-color:var(--nv)}
+  .card .bn{font-weight:800;letter-spacing:.04em;font-size:15px} .card .br{color:var(--dim);font-size:12px;margin:3px 0 8px}
+  .kv{font-size:12px;margin:3px 0} .kv .k{color:var(--dim)} .kv .v{color:var(--ink)}
+  .clist{margin-top:6px;font-size:12px} .clist .row{display:flex;justify-content:space-between;gap:8px;padding:2px 0}
+  .badge{font-size:10px;padding:1px 6px;border-radius:6px;border:1px solid var(--edge);color:var(--dim)}
+  .foot{color:var(--dim);font-size:12px;margin-top:6px}
+  .gate{border:1px solid var(--live);background:#2a1215;border-radius:10px;padding:8px 12px;color:#ffd7d9;font-size:13px;font-weight:600}
+  .gate.ok{border-color:var(--ok);background:#0f2318;color:#c8f0d6}
+  .tabs a{color:var(--acc);text-decoration:none;font-size:12px;margin-right:14px}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-top:8px}
+  .legend span{display:flex;align-items:center}
+  /* gate ladder + fleet liveness (Producer contracts) */
+  .gladder{display:grid;grid-template-columns:120px 1fr auto;gap:6px;align-items:center;font-size:12px}
+  .gladder .verd{font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;text-align:center}
+  .gladder .verd.PASS{color:var(--ok);background:#0f2318;border:1px solid var(--ok)}
+  .gladder .verd.PARTIAL{color:var(--warn);background:#241d0b;border:1px solid var(--warn)}
+  .gladder .verd.PENDING{color:var(--nv);background:#161b22;border:1px solid var(--nv)}
+  .gladder .verd.FAIL{color:var(--live);background:#2a1215;border:1px solid var(--live)}
+  .gladder .verd.WITHHELD{color:var(--nv);background:#161b22;border:1px solid var(--nv);text-decoration:line-through}
+  .gladder .gname{font-weight:700;color:var(--ink);word-break:break-word}
+  .gladder .gph{color:var(--dim);font-size:11px}
+  .gladder .gcls{color:var(--dim);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid var(--edge);border-radius:5px}
+  .gcounts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .gcounts .c{padding:3px 10px;border-radius:6px;font-weight:800;letter-spacing:.06em;font-size:11px;border:1px solid var(--edge)}
+  .peer{background:#0e141c;border:1px solid var(--edge);border-radius:10px;padding:10px 12px;border-left-width:4px}
+  .peer.fresh{border-left-color:var(--ok)} .peer.stale{border-left-color:var(--warn)} .peer.unreachable{border-left-color:var(--live)} .peer.not_verified{border-left-color:var(--nv)}
+  .peer .pn{font-weight:800;letter-spacing:.04em}
+  .peer .pd{color:var(--dim);font-size:11px}
+  .peer .pj{font-family:"Cascadia Code",Consolas,monospace;font-size:11px;color:var(--ink);white-space:pre-wrap;background:#0b0f14;border:1px solid var(--edge);border-radius:6px;padding:6px;margin-top:6px;max-height:100px;overflow:auto}
+  /* show-runner: ladder + teleprompter + rundown + pop-out button */
+  .popbtn{float:right;background:none;color:var(--acc);border:1px solid var(--edge);border-radius:6px;font-size:11px;padding:2px 8px;cursor:pointer;text-decoration:none;font-weight:600}
+  .popbtn:hover{border-color:var(--acc)}
+  .ladder{display:grid;grid-template-columns:120px 1fr auto;gap:6px;align-items:center}
+  .ladder .step{display:contents}
+  .ladder .stage{font-weight:800;letter-spacing:.06em;font-size:11px;text-transform:uppercase;padding:4px 10px;border-radius:6px;text-align:center;border:1px solid var(--edge)}
+  .ladder .stage.ready{color:var(--ok);border-color:var(--ok);background:#0f2318}
+  .ladder .stage.warn{color:var(--warn);border-color:var(--warn);background:#241d0b}
+  .ladder .stage.hold{color:var(--live);border-color:var(--live);background:#2a1215}
+  .ladder .stage.nv{color:var(--nv);border-color:var(--nv);background:#161b22}
+  .ladder .stagename{font-weight:700}
+  .ladder .stagenote{color:var(--dim);font-size:11px}
+  .ladder .stagebadge{font-size:11px;padding:1px 8px;border-radius:5px;border:1px solid var(--edge);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+  #tp-out{background:#0b0f14;border:1px solid var(--edge);border-radius:8px;padding:16px;min-height:240px;max-height:480px;overflow:auto;font-size:26px;line-height:1.5;color:var(--ink)}
+  #tp-in{width:100%;background:#0e141c;color:var(--ink);border:1px solid var(--edge);border-radius:6px;padding:8px;font:14px/1.4 "Segoe UI",sans-serif;min-height:100px;resize:vertical}
+  .tp-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+  .tp-ctl button{background:#1b2532;color:var(--ink);border:1px solid var(--edge);border-radius:6px;padding:6px 12px;font:12px "Segoe UI";cursor:pointer;font-weight:700}
+  .tp-ctl button:hover{border-color:var(--acc)}
+  .tp-ctl input[type=range]{flex:1;min-width:120px}
+  .rundown{width:100%;border-collapse:collapse;font-size:13px}
+  .rundown th{text-align:left;color:var(--dim);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--edge)}
+  .rundown td{padding:6px 8px;border-bottom:1px solid #131a24;vertical-align:top}
+  .rundown tr.cur{background:#0f2318;box-shadow:inset 3px 0 0 var(--ok)}
+  .rundown tr:hover{background:#0e141c}
+  .rundown .cue{font-family:"Cascadia Code",Consolas,monospace;color:var(--acc)}
+  .rundown-ctl{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+  .rundown-ctl button{background:#1b2532;color:var(--ink);border:1px solid var(--edge);border-radius:6px;padding:6px 14px;font:12px "Segoe UI";cursor:pointer;font-weight:700}
+  .rundown-ctl button.big{background:#12301f;border-color:var(--ok);font-size:14px}
+  .rundown-ctl button:hover{border-color:var(--acc)}
+  /* pre-flight checklist */
+  .ck-banner{border:1px solid var(--warn);background:#241d0b;border-radius:10px;padding:9px 12px;color:var(--gold);font-size:13px;font-weight:600;margin-bottom:12px}
+  .ck-dots{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:5px 14px;margin-bottom:12px;font-size:13px}
+  .ck-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px 14px}
+  .ck-list label{display:flex;align-items:flex-start;gap:7px;font-size:13px;padding:3px 0;color:var(--ink);cursor:pointer;line-height:1.35}
+  .ck-list input{margin-top:2px;flex:none}
+  .ck-pin{display:block;background:#0b0f14;border:1px solid var(--edge);border-radius:6px;padding:8px;margin-top:4px;font-size:12px;color:var(--ink);white-space:pre-wrap;user-select:all}
+  .ck-reset{background:#1b2532;color:var(--ink);border:1px solid var(--edge);border-radius:6px;padding:6px 14px;font:12px "Segoe UI";cursor:pointer;font-weight:700;margin-top:12px}
+  .ck-reset:hover{border-color:var(--acc)}
+  /* host honesty card — extends .rundown table styling; SAY tinted --ok, NEVER tinted --warn */
+  .honesty-tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .honesty-tbl th{text-align:left;font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--edge)}
+  .honesty-tbl td{padding:7px 8px;border-bottom:1px solid #131a24;vertical-align:top;line-height:1.45}
+  .honesty-tbl th.say,.honesty-tbl td.say{color:var(--ok)}
+  .honesty-tbl th.never,.honesty-tbl td.never{color:var(--warn)}
+  .honesty-tbl tr:last-child td{border-bottom:none}
+  .honesty-rule{border:1px solid var(--acc);background:#0d2530;border-radius:8px;padding:10px 12px;color:var(--ink);font-size:13px;margin-bottom:10px}
+  .honesty-facts{margin-top:10px} .honesty-facts ul{list-style:disc;padding-left:20px} .honesty-facts li{margin:3px 0;color:var(--dim);font-size:12px;line-height:1.4}
+  /* single-panel (popout) mode */
+  body.single .panel:not(.solo){display:none}
+  body.single{max-width:none;padding:8px}
+</style>
+</head>
+<body>
+<h1><span class="u">UNI</span> — Live Infra <span class="foot" style="font-size:13px">the real fleet, read live</span></h1>
+<div class="sub">Every value below is a live read (SSH to the chip, local host, git, tcp/http probes) with an honest state. Nothing is green from process existence. <span class="tabs" style="margin-left:8px"><a href="/">◂ Mission Control</a></span></div>
+
+<div class="bar">
+  <span id="fleetpill" class="pill nv">— reading fleet…</span>
+  <span class="foot" id="genat"></span>
+  <span class="foot mono" id="zone"></span>
+</div>
+
+<div class="panel">
+  <div id="gate" class="gate">…</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:8px;margin-top:8px">
+    <div id="gate-plumb" class="gate">…</div>
+    <div id="gate-colony" class="gate">…</div>
+  </div>
+  <div class="legend">
+    <span><span class="dot fresh"></span>fresh — live-verified</span>
+    <span><span class="dot stale"></span>stale — cache aged out</span>
+    <span><span class="dot unreachable"></span>unreachable — probe failed</span>
+    <span><span class="dot not_verified"></span>not-verified — declared, never probed green</span>
+    <span><span class="dot drift"></span>drift — resolves to unexpected IP</span>
+  </div>
+</div>
+
+<div class="panel" data-panel="namemap">
+  <h3>Name map <span class="n">uni-lab.local — declared name ↔ live health</span> <a class="popbtn" href="?panel=namemap" target="_blank">⧉ pop out</a></h3>
+  <div style="overflow-x:auto"><table id="names"><thead><tr>
+    <th>Health</th><th>Name</th><th>Box</th><th>IP(s)</th><th>Port</th><th>Proto</th><th>What</th>
+  </tr></thead><tbody></tbody></table></div>
+</div>
+
+<div class="panel" data-panel="boxes">
+  <h3>Boxes <span class="n">live reads per host</span> <a class="popbtn" href="?panel=boxes" target="_blank">⧉ pop out</a></h3>
+  <div class="cards" id="boxes"></div>
+</div>
+
+<div class="panel">
+  <h3>DNS <span class="n">resolver + name-resolution drift <span id="dnssetup-pill" class="pill nv" style="margin-left:8px">— setup</span></span></h3>
+  <div id="dnssetup" class="foot"></div>
+  <div id="dns" style="margin-top:6px"></div>
+  <div class="foot" style="margin-top:8px">Drift table queries <code>10.190.245.122</code> (chip's dnsmasq) directly — a real check of the resolver, not of THINKER's own DNS chain. All names should resolve to the declared IPs on the LAN plane per <code>localise-queries</code>.</div>
+  <div style="overflow-x:auto;margin-top:8px"><table id="drift"><thead><tr>
+    <th>State</th><th>Name</th><th>Resolves to</th><th>Expected</th>
+  </tr></thead><tbody></tbody></table></div>
+</div>
+
+<div class="panel" data-panel="gates">
+  <h3>Gate ladder <span class="n">verdict + evidence class per <code>evidence/gates.ndjson</code> (schema <code>gate_row.v1</code>)</span> <a class="popbtn" href="?panel=gates" target="_blank">⧉ pop out</a></h3>
+  <div class="gcounts" id="gcounts"></div>
+  <div class="gladder" id="ladder"></div>
+  <div class="foot" id="gfoot"></div>
+</div>
+
+<div class="panel" data-panel="fleet">
+  <h3>Fleet liveness <span class="n">newest sensorium row per peer from <code>/var/lib/uni/fleet_status.ndjson</code> (schema <code>sensorium_envelope.v1</code>)</span> <a class="popbtn" href="?panel=fleet" target="_blank">⧉ pop out</a></h3>
+  <div class="cards" id="fleet"></div>
+  <div class="foot" id="ffoot"></div>
+</div>
+
+<div class="panel" data-panel="ladder">
+  <h3>Broadcast readiness ladder <span class="n">pre-flight → live show, LIVE gates</span> <a class="popbtn" href="?panel=ladder" target="_blank">⧉ pop out</a></h3>
+  <div class="ladder" id="ladder-body"></div>
+</div>
+
+<div class="panel" data-panel="teleprompter">
+  <h3>Teleprompter <span class="n">operator-driven; big font; autoscroll · rundown-linked</span> <a class="popbtn" href="?panel=teleprompter" target="_blank">⧉ pop out</a></h3>
+  <div id="tp-out"></div>
+  <div id="tp-neversay" style="display:none;margin-top:8px;padding:6px 10px;border:1px solid var(--warn);border-radius:6px;color:var(--warn);font-weight:800;font-size:13px;letter-spacing:.02em"></div>
+  <div class="tp-ctl">
+    <button id="tp-play">▶ play</button>
+    <button id="tp-pause">⏸ pause</button>
+    <button id="tp-reset">⤴ reset</button>
+    <label style="color:var(--dim);font-size:12px">speed <input type="range" id="tp-speed" min="10" max="120" value="40"></label>
+    <label style="color:var(--dim);font-size:12px">font <input type="range" id="tp-font" min="16" max="60" value="26"></label>
+  </div>
+  <div class="foot" style="margin-top:8px">Edit the script below — output above updates as you type.</div>
+  <textarea id="tp-in" placeholder="Enter your script here… Press ▶ to autoscroll the output above."></textarea>
+</div>
+
+<div class="panel" data-panel="rundown">
+  <h3>Rundown <span class="n">planned camera cuts + cues</span> <a class="popbtn" href="?panel=rundown" target="_blank">⧉ pop out</a></h3>
+  <div style="overflow-x:auto"><table class="rundown" id="rd-tbl"><thead><tr>
+    <th style="width:80px">Cue</th><th style="width:120px">Scene</th><th style="width:120px">Camera</th><th>Line / Notes</th>
+  </tr></thead><tbody></tbody></table></div>
+  <div class="rundown-ctl">
+    <button id="rd-prev">◀ prev</button>
+    <button id="rd-next" class="big">▶ next</button>
+    <button id="rd-reset">reset to top</button>
+    <button id="rd-edit">edit rundown</button>
+    <label style="color:var(--dim);font-size:12px;display:flex;align-items:center;gap:5px;margin-left:4px"><input type="checkbox" id="rd-sync" checked> sync teleprompter</label>
+  </div>
+  <textarea id="rd-in" style="display:none;width:100%;background:#0e141c;color:var(--ink);border:1px solid var(--edge);border-radius:6px;padding:8px;font:12px/1.4 'Cascadia Code',Consolas,monospace;min-height:200px;margin-top:8px" placeholder="Format: cue | scene | camera | line/notes (one row per line)"></textarea>
+  <div class="foot" style="margin-top:6px">Rundown is stored in localStorage. Cue format free-form: <code>0:00</code>, <code>+30s</code>, <code>Act I</code>, etc.</div>
+</div>
+
+<div class="panel" data-panel="checklist">
+  <h3>Pre-flight checklist <span class="n">verify before air — one panel, all sections</span> <a class="popbtn" href="?panel=checklist" target="_blank">⧉ pop out</a></h3>
+  <div class="ck-banner">⚠ UNCONFIRMED whether this launch routes through the node2 RTMP relay, or is a standalone screen-share. launch-run-of-show.md never mentions OBS / RTMP / node2 anywhere. Confirm the actual transport before go-live.</div>
+
+  <h3 style="margin-top:4px">node2 pipeline status <span class="n">if in use — live from the same /api/infra poll</span></h3>
+  <div class="ck-dots">
+    <div><span id="ck-colony" class="dot not_verified"></span>colony service <span id="ck-colony-lbl" class="foot"></span></div>
+    <div><span id="ck-studio" class="dot not_verified"></span>studio service <span id="ck-studio-lbl" class="foot"></span></div>
+    <div><span id="ck-dns" class="dot not_verified"></span>DNS closure <span id="ck-dns-lbl" class="foot"></span></div>
+    <div><span id="ck-plumb" class="dot not_verified"></span>plumbing gate <span id="ck-plumb-lbl" class="foot"></span></div>
+    <div><span id="ck-colprog" class="dot not_verified"></span>colony_on_program <span id="ck-colprog-lbl" class="foot"></span></div>
+  </div>
+
+  <h3 style="margin-top:4px">Technical bring-up <span class="n">manual — NOT auto-derived (no matching gate rows exist yet, a live dot here would lie about readiness)</span></h3>
+  <div id="ck-tech" class="ck-list"></div>
+
+  <h3 style="margin-top:14px">Colony-on-air decision <span class="n">specific to rundown row 1.3</span></h3>
+  <div id="ck-colonyair" class="ck-list"></div>
+  <div class="foot" style="margin-top:3px">When checked, rundown row 1.3's camera flips from <b>COLONY-CLIP</b> to <b>COLONY-LIVE</b>. Check ONLY after the owner has explicitly exempted this one-time launch demo from the persistent colony_on_program fence.</div>
+
+  <h3 style="margin-top:14px">Content readiness <span class="n">run-of-show Section 1 — manual</span></h3>
+  <div id="ck-content" class="ck-list"></div>
+  <div class="foot" style="margin-top:10px">Pinned comment (set at start, keep pinned — copy-paste):</div>
+  <code id="ck-pinned" class="ck-pin"></code>
+
+  <div><button id="ck-reset" class="ck-reset">reset checklist</button></div>
+</div>
+
+<div class="panel" data-panel="honesty">
+  <h3>Host honesty card <span class="n">say-this / never-say fence + canonical facts — keep this on the second monitor</span> <a class="popbtn" href="?panel=honesty" target="_blank">⧉ pop out</a></h3>
+  <div id="honesty-rule" class="honesty-rule"></div>
+  <div style="overflow-x:auto"><table class="honesty-tbl" id="honesty-tbl"><thead><tr>
+    <th class="say" style="width:50%">Say this</th><th class="never" style="width:50%">Never say this</th>
+  </tr></thead><tbody></tbody></table></div>
+  <div id="honesty-facts" class="honesty-facts"><h3 style="margin-top:14px">Canonical facts — say them exactly</h3><ul></ul></div>
+</div>
+
+<div class="foot" id="env"></div>
+<div class="foot" id="err"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (x) => String(x==null?"":x).replace(/[&<>]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function dot(state){ return `<span class="dot ${state}"></span>`; }
+function stTxt(state){ return `<span class="st ${state}">${state.replace("_","-")}</span>`; }
+
+function boxCard(name, b){
+  // choose a representative state for the card border from its first live field
+  const f = b.interfaces || b.reachable || b.liveness || {};
+  const st = (f.state) || (b.reachable && b.reachable.value && b.reachable.value.reachable ? "fresh" : "not_verified");
+  let body = `<div class="bn">${esc(name)}</div><div class="br">${esc(b.role||"")}</div>`;
+  if(b.interfaces){
+    const ii = b.interfaces;
+    body += `<div class="kv"><span class="k">${dot(ii.state)}interfaces:</span> <span class="v mono">${(ii.value||[]).map(x=>esc(x.dev)+" "+esc(x.cidr)).join(" · ")||"—"}</span></div>`;
+  }
+  if(b.release){
+    const r=b.release; const v=r.value||{};
+    body += `<div class="kv"><span class="k">${dot(r.state)}release:</span> <span class="v mono">${esc(v.head||"?")} ${v.ahead?("(+"+v.ahead+" of "+esc(v.latestTag)+")"):("("+esc(v.describe||"")+")")}</span></div>`;
+  }
+  if(b.reachable){
+    const r=b.reachable; body += `<div class="kv"><span class="k">${dot(r.state)}reachable:</span> <span class="v">${esc(r.detail)}</span></div>`;
+  }
+  if(b.liveness){
+    const r=b.liveness; body += `<div class="kv"><span class="k">${dot(r.state)}liveness:</span> <span class="v">${esc(r.detail)}</span></div>`;
+  }
+  if(b.rootful){
+    const r=b.rootful; body += `<div class="kv"><span class="k">${dot(r.state)}rootful:</span> <span class="v">${esc(r.detail)}</span></div>`;
+  }
+  if(b.containers){
+    const c=b.containers; const rows=(c.value||[]);
+    body += `<div class="kv"><span class="k">${dot(c.state)}containers:</span> <span class="v">${esc(c.detail)}</span></div>`;
+    body += `<div class="clist">`+rows.map(x=>`<div class="row"><span>${x.up?dot("fresh"):dot("unreachable")}${esc(x.name)}</span><span class="badge">${esc(x.status)}</span></div>`).join("")+`</div>`;
+    if(!rows.length && c.state==="unreachable") body += `<div class="foot">${esc(c.detail)}</div>`;
+  }
+  return `<div class="card ${st}">${body}</div>`;
+}
+
+function fmtAge(ms){
+  if (ms==null || !isFinite(ms)) return "?";
+  const s = Math.round(ms/1000);
+  if (s < 60) return s+"s ago";
+  if (s < 3600) return Math.round(s/60)+"m ago";
+  return Math.round(s/3600)+"h ago";
+}
+
+async function refresh(){
+  let env; try{ env=await (await fetch("/api/infra")).json(); }catch(e){ $("#err").textContent="fetch failed: "+e.message; return; }
+  $("#err").textContent="";
+  // Envelope-wrapped per production/schemas/envelope.v1.json — unwrap:
+  const m = (env && env.result) ? env.result : env;
+  const ev = env && env.envelope;
+  if (ev) $("#env").textContent = `envelope: ${esc(ev.server)} v${esc(env.schema_version)} · ${esc(ev.instrument_version)} · commit ${esc(ev.git_commit||"?")} · class ${esc(ev.evidence_class)}`;
+  $("#genat").textContent = "read "+esc(m.generatedAt);
+  $("#zone").textContent = esc(m.zone);
+
+  // fleet pill = worst live state across named health
+  const health = m.health||[];
+  const down = health.filter(h=>h.up===false).length;
+  const up = health.filter(h=>h.up===true).length;
+  const fp=$("#fleetpill");
+  if(down>0){ fp.className="pill warn"; fp.textContent=`◐ ${up} up · ${down} down`; }
+  else { fp.className="pill ok"; fp.textContent=`● ${up} services live`; }
+
+  // go-live gate (static fallback) + LIVE-derived pair (plumbing + colony_on_program)
+  const g=$("#gate");
+  if(m.goLiveGate && m.goLiveGate.blocked){ g.className="gate"; g.innerHTML=`⛔ <b>PUBLIC GO-LIVE BLOCKED</b> — ${esc(m.goLiveGate.reason)}`; }
+  else { g.className="gate ok"; g.innerHTML=`✔ go-live gate clear`; }
+  const gg=m.goLiveGates||{};
+  const gp=$("#gate-plumb"); const gc=$("#gate-colony");
+  if(gg.plumbing){
+    gp.className = "gate " + (gg.plumbing.blocked?"":"ok");
+    gp.innerHTML = `<b>PLUMBING</b> — ${gg.plumbing.blocked?"⛔ blocked":"✔ green"}<div style="font-weight:400;font-size:12px;margin-top:4px">${esc(gg.plumbing.reason)}</div>`;
+  }
+  if(gg.colony_on_program){
+    gc.className = "gate " + (gg.colony_on_program.blocked?"":"ok");
+    gc.innerHTML = `<b>COLONY ON PROGRAM</b> — ${gg.colony_on_program.blocked?"⛔ off":"✔ ON"}<div style="font-weight:400;font-size:12px;margin-top:4px">${esc(gg.colony_on_program.reason)}</div>`;
+  }
+
+  // name map (join declared names with live health)
+  const hByName = Object.fromEntries(health.map(h=>[h.name,h]));
+  $("#names tbody").innerHTML = (m.names||[]).map(n=>{
+    const short=n.name.split(".")[0];
+    const h=hByName[short];
+    const state = h ? h.state : (n.nv?"not_verified":"not_verified");
+    const hd = h ? h.detail : "no live probe (declared only)";
+    return `<tr>
+      <td>${dot(state)}${stTxt(state)}</td>
+      <td class="name"><span class="fqdn">${esc(n.name)}</span></td>
+      <td>${esc(n.box)}</td>
+      <td class="mono">${(n.ips||[]).map(esc).join("<br>")}</td>
+      <td class="mono">${esc(n.port)}</td>
+      <td>${esc(n.proto)}</td>
+      <td>${esc(n.what)}<div class="foot">${esc(hd)}</div></td>
+    </tr>`;
+  }).join("");
+
+  // boxes
+  $("#boxes").innerHTML = Object.entries(m.boxes||{}).map(([k,v])=>boxCard(k,v)).join("");
+
+  // dns — resolver info + closure pill
+  const d=m.dns||{}; const dv=d.value||{};
+  const setup=m.dnsSetup||{}; const sv=setup.value||{};
+  const setupPill=$("#dnssetup-pill");
+  if (sv.closed) {
+    setupPill.className = "pill ok"; setupPill.textContent = "● DNS CLOSED";
+  } else {
+    setupPill.className = "pill nv"; setupPill.textContent = "○ setup incomplete";
+  }
+  $("#dnssetup").innerHTML = `${dot(setup.state||"not_verified")}<b>${esc(sv.resolves||"?")}</b>${sv.components?` · ${esc(sv.components)}`:""}${sv.reasons&&sv.reasons.length?` · <span style="color:var(--warn)">${sv.reasons.map(esc).join(" · ")}</span>`:""}`;
+  $("#dns").innerHTML = `<div class="kv">${dot(d.state||"not_verified")}<span class="k">resolver:</span> <span class="v">${esc((dv.dnsmasq)||"?")} · avahi ${esc(dv.avahi||"?")} · nameservers ${(dv.nameservers||[]).map(esc).join(", ")||"—"}</span></div>
+    <div class="foot">${esc(d.detail||"")} — target: dnsmasq authoritative for <b>${esc(m.zone)}</b></div>`;
+  const driftRows = Array.isArray(m.drift) ? m.drift : (m.drift && Array.isArray(m.drift.value) ? m.drift.value : []);
+  $("#drift tbody").innerHTML = driftRows.map(r=>`<tr>
+    <td>${dot(r.state)}${stTxt(r.state)}</td>
+    <td class="fqdn">${esc(r.name)}${r.detail?`<div class="foot">${esc(r.detail)}</div>`:""}</td>
+    <td class="mono">${(r.resolved||[]).map(esc).join(", ")||"—"}</td>
+    <td class="mono">${(r.expected||[]).map(esc).join(", ")||"—"}</td>
+  </tr>`).join("");
+
+  // Gate ladder (Producer's evidence/gates.ndjson, envelope-wrapped as Field<T>)
+  const gates = m.gates;
+  if (gates && gates.value && Array.isArray(gates.value.rows)) {
+    const cs = gates.value.counts || {};
+    $("#gcounts").innerHTML = ["PASS","PARTIAL","PENDING","FAIL","WITHHELD"]
+      .filter(v => (cs[v]||0) > 0)
+      .map(v => `<span class="c verd ${v}" style="border-color:currentColor">${esc(v)} · ${esc(cs[v])}</span>`).join("");
+    $("#ladder").innerHTML = gates.value.rows.map(g => `
+      <div class="verd ${esc(g.verdict)}">${esc(g.verdict)}</div>
+      <div><div class="gname">${esc(g.name)}</div>
+        <div class="gph">${esc(g.phase||"")}${g.notes?` · ${esc(g.notes)}`:""}</div>
+      </div>
+      <div class="gcls">${esc(g.evidence_class||"?")}</div>`).join("");
+    $("#gfoot").textContent = gates.detail || "";
+  } else {
+    $("#gcounts").innerHTML = "";
+    $("#ladder").innerHTML = "";
+    $("#gfoot").textContent = (gates && gates.detail) || "gate ladder not available";
+  }
+
+  // Fleet liveness (Producer's fleet_status.ndjson, sensorium_envelope v1)
+  const fleet = m.fleet;
+  if (fleet && fleet.value && Array.isArray(fleet.value.peers) && fleet.value.peers.length > 0) {
+    $("#fleet").innerHTML = fleet.value.peers.map(p => {
+      const pay = JSON.stringify(p.payload, null, 2);
+      return `<div class="peer ${esc(p.state)}">
+        <div class="pn">${dot(p.state)}${esc(p.peer)}</div>
+        <div class="pd">${esc(p.kind||"row")} · ${esc(fmtAge(p.ageMs))} · commit ${esc((p.git_commit||"?").slice(0,7))} · class ${esc(p.evidence_class)}</div>
+        <div class="pj">${esc(pay)}</div>
+      </div>`;
+    }).join("");
+    $("#ffoot").textContent = fleet.detail || "";
+  } else {
+    $("#fleet").innerHTML = "";
+    $("#ffoot").textContent = (fleet && fleet.detail) || "fleet liveness spool not available";
+  }
+}
+// ---- Broadcast readiness ladder — derived LIVE from /api/infra + /api/mission -------------------------
+function renderLadder(m){
+  const dnsClosed = m.dnsSetup && m.dnsSetup.value && m.dnsSetup.value.closed;
+  const plumbGate = (m.goLiveGates && m.goLiveGates.plumbing) || {};
+  const colonyGate = (m.goLiveGates && m.goLiveGates.colony_on_program) || {};
+  const svc = (n) => (m.health || []).find(h => h.name === n) || {};
+  const boxes = m.boxes || {};
+
+  // The six ladder stages, each with a live-derived state + note + badge
+  const stages = [
+    {
+      stage: "pre-flight", when: "before touching studio",
+      state: dnsClosed && (svc("relay").up === true) && (svc("launcher").up === true) ? "ready" : "warn",
+      note: dnsClosed
+        ? `DNS closed · relay ${svc("relay").up?"reachable":"UNREACHABLE"} · launcher up`
+        : "DNS not fully closed — check drift table",
+      badge: dnsClosed && svc("relay").up === true ? "OK" : "HOLD"
+    },
+    {
+      stage: "prep", when: "bring studio + colony up",
+      state: (svc("mediamtx").up && svc("obs").up && svc("overlays").up && svc("cams").up && svc("studio").up) ? "ready" : "hold",
+      note: (svc("mediamtx").up && svc("obs").up && svc("overlays").up && svc("cams").up && svc("studio").up)
+        ? "studio surfaces up — obs / overlays / mediamtx / cams / console"
+        : `waiting for: ${["mediamtx","obs","overlays","cams","studio"].filter(n=>!svc(n).up).join(", ")||"(none)"}`,
+      badge: (svc("mediamtx").up && svc("obs").up) ? "OK" : "HOLD"
+    },
+    {
+      stage: "test seq", when: "gates: overlays + colony_count + verdict=LIVE",
+      state: (svc("colony").up && svc("colonycam").up && svc("mc").up) ? "ready" : "hold",
+      note: (svc("colony").up && svc("colonycam").up && svc("mc").up)
+        ? "colony reachable — run verify_overlays.cjs + verify_colony.cjs 10.190.245.122 next"
+        : `colony surfaces DOWN: ${["colony","colonycam","mc"].filter(n=>!svc(n).up).join(", ")}`,
+      badge: (svc("colony").up) ? "READY" : "HOLD"
+    },
+    {
+      stage: "green room", when: "STANDBY scene up + stream keys set on node2",
+      state: !plumbGate.blocked ? "ready" : "hold",
+      note: !plumbGate.blocked
+        ? "plumbing green — set STANDBY, verify stream keys in /etc/uni/runtime.env on node2"
+        : `plumbing blocked: ${plumbGate.reason || ""}`,
+      badge: !plumbGate.blocked ? "OK" : "HOLD"
+    },
+    {
+      stage: "live check", when: "PRIVATE unlisted YouTube smoke test, 60s+",
+      state: !plumbGate.blocked ? "warn" : "nv",
+      note: "operator: push private-unlisted key, run 60s+, verify no black frame, audio present, overlays on program",
+      badge: "OPERATOR"
+    },
+    {
+      stage: "live show", when: "human-typed golive CONFIRM (G-PA)",
+      state: "hold",
+      note: colonyGate.blocked
+        ? `HUMAN-typed golive required (G-PA). Colony scene: OFF program (${colonyGate.forage_verdict}). Standby/rehearsal material only.`
+        : "HUMAN-typed golive required (G-PA). Colony may go ON program.",
+      badge: "HUMAN"
+    }
+  ];
+  $("#ladder-body").innerHTML = stages.map(s => `
+    <div class="stage ${s.state}">${esc(s.stage)}</div>
+    <div><div class="stagename">${esc(s.when)}</div><div class="stagenote">${esc(s.note)}</div></div>
+    <div class="stagebadge">${esc(s.badge)}</div>`).join("");
+}
+
+// ---- Pre-flight checklist — live node2 dots (the rest is manual, persisted in uni_checklist_state) -------
+// Called from the SAME 3s poll dispatcher as renderLadder(m) — no second poller. Only the 5 node2 dots
+// are live-derived; the checkboxes are operator-set (no gate rows back them yet, so a live dot would lie).
+function renderChecklist(m){
+  const svc = (n) => (m.health || []).find(h => h.name === n) || {};
+  const dnsClosed = m.dnsSetup && m.dnsSetup.value && m.dnsSetup.value.closed;
+  const plumb = (m.goLiveGates && m.goLiveGates.plumbing) || {};
+  const colprog = (m.goLiveGates && m.goLiveGates.colony_on_program) || {};
+  const setDot = (id, ok, detail) => {
+    const el = $("#" + id); if (el) el.className = "dot " + (ok ? "fresh" : "unreachable");
+    const lbl = $("#" + id + "-lbl"); if (lbl) lbl.textContent = detail || "";
+  };
+  setDot("ck-colony", svc("colony").up === true, svc("colony").detail);
+  setDot("ck-studio", svc("studio").up === true, svc("studio").detail);
+  setDot("ck-dns", !!dnsClosed, dnsClosed ? "closed" : "not fully closed");
+  setDot("ck-plumb", !plumb.blocked, plumb.reason || "");
+  setDot("ck-colprog", !colprog.blocked, colprog.blocked ? ("off program — " + (colprog.reason || "")) : (colprog.reason || "on program"));
+}
+
+// ---- rdScripts — full HOST BEATS per rundown cue, verbatim from launch-run-of-show.md -------------------
+// Keyed by cue STRING (stable across row add/remove, unlike array index). Operator overrides live in the
+// uni_tp_scripts localStorage key and are merged over these defaults (mirrors uni_rundown / defaultRd).
+const rdScriptsDefault = {
+  "0.0": { text: `- Three slow breaths before you speak. Let the room settle.\n- "Welcome. We are building something in the open, and today we open the doors."\n- Name the frame plainly: this is a working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open.\n- Say what this is NOT: not a product demo, not a hype reel, not a claim that anything is solved. "We are going to show you the work, the tests it could fail, and where it still might."\n- Set the three promises of the next four hours: the science and the tests, why it might matter for being human, and an open invitation to come learn and build.\n- The one rule of the stream: "Do not take anything I say on faith. The record is open, and so is the invitation. Try to break it."`, neverSay: "AI, proven, breakthrough", lowerThird: "L1 (no CTA yet — point to the pinned comment)", contingency: "" },
+  "1.1": { text: `- "UNI is our work in active inference. A lens, not a product."\n- Plain-language mechanism: a system that perceives, learns, and acts by keeping the gap small between what it expects and what the world gives it.\n- The objective is expected free energy, an epistemic term (reduce uncertainty) plus a pragmatic term (move toward preferred outcomes).\n- The honest anchor, say it slowly: "No reward, no reinforcement learning, no backprop. No score, no return, no fitness on any learner-facing path. That is not a slogan. It is a property we checked in code."\n- Cite Parr, Pezzulo and Friston (2022) as the research line this sits in.`, neverSay: "intelligence in the AI sense, thinking, understanding", lowerThird: "L2", contingency: "" },
+  "1.2": { text: `- The Stratified Palimpsest: a hard sandbox with opaque senses and a no-leak monitor, so the agent cannot cheat by reading the answer.\n- Why a benchmark you can fail is the point: "A claim you cannot break is just a slogan. So we wrote ours down, with the test that would prove it wrong."\n- Show the living gate: a bet registered in public before the run. Evidence first, discrete verdicts, receipts.`, neverSay: "proven, guaranteed", lowerThird: "L4", contingency: "" },
+  "1.3": { text: `- "This is a colony agent acting in a real game world, driven by the same engine, no scripted rules and no reward."\n- Narrate what is actually happening on screen in mechanical terms: the inner loop is landing real actions, the body is doing work in the world.\n- State the honest status out loud, do not skip this: "The mechanism is demonstrated and reproducible. Whether a hunger-like drive reliably turns into foraging is the hypothesis we are testing right now. Several behavioural gates are still in flight. I will not tell you that is settled, because it is not."\n- F1 fence, read it: "Passing a gate demonstrates the named behaviour, never experience." The colony does not see, want, or feel. Those are our words for our own comfort, and we keep them out of the math.`, neverSay: "it wants food, it is hungry (as literal claims), it decided, it is alive", lowerThird: "L4, then L2", contingency: `if the live view drops, cut to the recorded colony clip and say "here is a capture from earlier, same engine," then continue` },
+  "1.4": { text: `- "The working paper is on Zenodo. It is an unrefereed working preprint, and peer review is pending. We present it exactly that way."\n- Read the DOI: 10.5281/zenodo.19785799.\n- The lab protocol page shows how a claim is judged: pre-registered gates, discrete verdicts, receipts anyone can check.`, neverSay: "peer-reviewed, published", lowerThird: "L3", contingency: "" },
+  "1.5": { text: `Title card. Three slow breaths. One sentence: "Now, why any of this might matter for a person."`, neverSay: "", lowerThird: "", contingency: "" },
+  "2.1": { text: `- Open with the fence, do not bury it: "What follows is a design and modeling lens, not a clinical or diagnostic tool. Nothing here is medical advice, and nothing here is a diagnosis. If you are in crisis, please reach a professional or a local helpline."\n- The idea, in the gentlest true form: "The same math that keeps an agent's expectations close to the world is a way to think about how a person can lower the fear of the present so the future feels safe to explore."\n- Keep the subject the person, never the company, never a promise to fix anyone.`, neverSay: "treats trauma, heals, therapy, clinical outcome", lowerThird: "L5", contingency: "" },
+  "2.2": { text: `- Introduce Streets Shorts: a trauma-informed short-film series in six languages.\n- The core line, say it and let it sit: "You are not broken. The world around the loop is too small."\n- Frame it as an invitation to a different reading of a hard moment, not a prescription. "Small films for the moment someone decides whether they are the problem. They are not."\n- Watch one short together, in silence, then a slow breath.`, neverSay: "this will help your trauma, guaranteed relief", lowerThird: "L6", contingency: "" },
+  "2.3": { text: `- Belief as one of the oldest tools people have for lowering the fear of the present so the future feels safe to explore.\n- Tie it back to the mechanism without overreaching: a calmer prior is a smaller gap to the world, and a smaller gap is room to move.\n- Reassert the fence once more, briefly: "A lens for thinking, not a clinic."`, neverSay: "measurement of a patient, diagnosis", lowerThird: "L5", contingency: "" },
+  "2.4": { text: `- Short summary: this is why the work is gentle by design, and why we keep it non-clinical on purpose.\n- Hand off to the way in: "If that landed, here is how you actually come and learn."`, neverSay: "", lowerThird: "L6", contingency: "" },
+  "2.5": { text: `Title card. Three slow breaths. One sentence: "Here is the front door, and it is wide open."`, neverSay: "", lowerThird: "", contingency: "" },
+  "3.1": { text: `- "This is the Reading Room. Hundreds of short pieces, in many languages, free."\n- Tour the on-ramps: UNI the vision for the whole picture, How your mind guesses and Bayesian, Not Brain for the science made plain, Reality Theory for the deep end.\n- The gentle entries: the pop-culture story playlists, where a familiar show is a doorway into the same ideas (Gravity Falls, Bluey, Avatar, Star Trek, and the rest). "Start wherever you already love something."`, neverSay: "the AI series (call it the science series or the UNI series)", lowerThird: "L1", contingency: "" },
+  "3.2": { text: `- "You do not have to take my word for the mechanism. Steer it yourself."\n- Drive one lab, narrate the loop: prediction, action, the gap getting smaller.\n- The come-build line, read it: "Do not take the claim on faith. Test the build, inspect the gates, and help us find where it fails."`, neverSay: "it learns like a person, it is smart", lowerThird: "L4", contingency: "" },
+  "3.3": { text: `- "If you want to go from reading about it to building it, the workshop is the hands-on path. Twelve weeks, you ship a model, and you get the gates to check the claim for yourself."\n- State the fact plainly: the workshop is $75,000, and there are grants, $20M for education and $5M for internships, so cost is not the wall.`, neverSay: "certification, credential guarantees", lowerThird: "L1", contingency: "" },
+  "3.4": { text: `- "The simplest way in is one honest hour. We listen to you. No pitch. No catalog. Nothing to prepare and nothing to perform."\n- Walk the three-step intake on screen, slowly.`, neverSay: "free trial, sales call", lowerThird: "L8", contingency: "" },
+  "3.5": { text: `Title card. Three slow breaths. One sentence: "Last hour. This is who it is all for."`, neverSay: "", lowerThird: "", contingency: "" },
+  "4.1": { text: `- The mission in the plain register: grow the world, grow it together, no one left outside.\n- The anti-extraction fact: "$200 leaves outward with every engagement, to the people doing the work. We keep the receipt where you can see it."\n- EducateWright and the grants: name them as facts, not as credit we borrow. "Software does not end violence. We fund the humans who do that work."`, neverSay: "we solve poverty, we end violence", lowerThird: "L9", contingency: "" },
+  "4.2": { text: `- Show that the build itself is in the open: the method (LOOP: Listen, Observe, Orchestrate, Partner, Build, Decide), the receipts, the falsify page.\n- "Every strong claim ships with the test that would prove it wrong."`, neverSay: "the trademarked four-letter method name, flawless, bug-free", lowerThird: "L7", contingency: "" },
+  "4.3": { text: `- Open the floor: "Pick any claim I made today. Bring your source. Let us test it live."\n- Answer in plain words. If something is uncertain, say the evidence class and the gate that is still in flight. Model the honesty.\n- If a hard question has no answer yet, say so, and add it to the open ledger out loud.`, neverSay: "we already proved that, trust me", lowerThird: "L4", contingency: "" },
+  "4.4": { text: `- "We are not doing this alone, and we are not doing it behind glass. Come learn, come build, come help us find where it fails."\n- "The record is open. So is the invitation."`, neverSay: "", lowerThird: "L9", contingency: "" },
+  "5.0": { text: `- Recap the three promises kept: you saw the science and the tests it could fail, you heard why it might matter for a person, and the door is open.\n- Restate the honest frame one last time: "A working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open. Growing evidence, gates still in flight, nothing hidden."\n- The invitation, in the anthem register (do not quote the song lyrics, just carry the calm): grow the world, grow it together, no one left outside.\n- Point them home once more: one honest hour at solutionwright.com/begin, or try to break us at solutionwright.com/falsify.\n- Three slow breaths on screen. Sign off: "breathe in. breathe out."`, neverSay: "", lowerThird: "L9, then L8", contingency: "" }
+};
+// merge operator overrides (uni_tp_scripts) over the defaults — same shape, per-cue
+const rdScripts = (function(){
+  const out = {};
+  for (const k in rdScriptsDefault) out[k] = Object.assign({}, rdScriptsDefault[k]);
+  try { const ov = JSON.parse(localStorage.getItem("uni_tp_scripts") || "{}");
+    for (const k in ov) out[k] = Object.assign({}, out[k] || {}, ov[k]); } catch(_){}
+  return out;
+})();
+
+// ---- Teleprompter — big font, autoscroll, editable, rundown-linked --------------------------------------
+(function(){
+  const out = $("#tp-out"), inp = $("#tp-in");
+  const KEY_TXT = "uni_tp_txt", KEY_SPD = "uni_tp_speed", KEY_FONT = "uni_tp_font";
+  let scrollTimer = null;
+  const speedEl = $("#tp-speed"), fontEl = $("#tp-font");
+  // First-run default = row 0.0's script. But ONLY on a genuine first run (no saved key). If the
+  // operator already has content (e.g. a reload mid-show), restore it unchanged — never clobber
+  // in-progress state.
+  const savedTxt = localStorage.getItem(KEY_TXT);
+  inp.value = (savedTxt !== null) ? savedTxt : ((rdScripts["0.0"] && rdScripts["0.0"].text) || "");
+  speedEl.value = localStorage.getItem(KEY_SPD) || 40;
+  fontEl.value = localStorage.getItem(KEY_FONT) || 26;
+  function paint(){
+    out.innerText = inp.value || "(teleprompter script empty — type below to load)";
+    out.style.fontSize = fontEl.value + "px";
+    localStorage.setItem(KEY_TXT, inp.value);
+    localStorage.setItem(KEY_FONT, fontEl.value);
+  }
+  function play(){
+    if(scrollTimer) clearInterval(scrollTimer);
+    const speed = 130 - Number(speedEl.value); // higher slider = faster
+    scrollTimer = setInterval(() => {
+      out.scrollTop += 1;
+      if (out.scrollTop + out.clientHeight >= out.scrollHeight) { clearInterval(scrollTimer); scrollTimer=null; }
+    }, Math.max(15, speed));
+    localStorage.setItem(KEY_SPD, speedEl.value);
+  }
+  function pause(){ if(scrollTimer){clearInterval(scrollTimer);scrollTimer=null;} }
+  function reset(){ pause(); out.scrollTop = 0; }
+  $("#tp-play").onclick = play; $("#tp-pause").onclick = pause; $("#tp-reset").onclick = reset;
+  inp.oninput = paint; fontEl.oninput = paint;
+  // Rundown → teleprompter bridge. loadScriptFromRundown() (in the rundown IIFE) calls this to swap
+  // the script in; it reuses the existing paint() save-through to uni_tp_txt (no second save path).
+  // A brief border flash signals the swap — no blocking confirm dialog (wrong for a live show).
+  window.__tpLoad = function(text){
+    inp.value = text;
+    paint();
+    const panel = document.querySelector('.panel[data-panel="teleprompter"]');
+    if (panel){ panel.style.transition = "box-shadow .15s"; panel.style.boxShadow = "0 0 0 2px var(--acc)"; setTimeout(() => { panel.style.boxShadow = ""; }, 400); }
+  };
+  paint();
+})();
+
+// ---- Rundown — planned camera cuts + cues, localStorage-persisted --------------------------------------
+(function(){
+  const KEY_RD = "uni_rundown", KEY_CUR = "uni_rundown_cur";
+  let cur = Number(localStorage.getItem(KEY_CUR) || 0);
+  // Real Launch-Broadcast run-of-show — 21 rows transcribed verbatim from
+  // SolutionWrightUniversal.Website/docs/launch-run-of-show.md. Format the existing parser
+  // expects unchanged: cue | scene | camera | notes.  camera vocab: BROWSER / COLONY-LIVE /
+  // COLONY-CLIP / LAB-LIVE / CHAT / TITLE, with A>B for an in-row transition.  Row 1.3 camera
+  // DEFAULTS to COLONY-CLIP (the colony_on_program fence); it flips to COLONY-LIVE at render time
+  // ONLY when the checklist's owner-confirmed colony-on-air decision is set (see Workstream D).
+  const defaultRd = [
+    "0.0|Cold open & welcome|BROWSER>TITLE|3 breaths, frame + rule (try to break it). [L1] no CTA yet.",
+    "1.1|What UNI is|BROWSER|Lens not product; EFE objective; no reward/RL/backprop. Cite Parr/Pezzulo/Friston. [L2] CTA:paper",
+    "1.2|Benchmark built to fail|BROWSER|Stratified Palimpsest sandbox; living gate = pre-registered bet. [L4] CTA:falsify(L7)",
+    "1.3|Colony agent, live|COLONY-CLIP (default - toggle to COLONY-LIVE only after owner confirms, see Honesty panel)|Live colony, real game world; demonstrated+reproducible, gates in flight; F1 fence. [L4>L2] no CTA. CONT:clip if drops",
+    "1.4|Paper & how it's judged|BROWSER|Unrefereed preprint, DOI 10.5281/zenodo.19785799; lab protocol=gates+receipts. [L3] CTA:read/run/break",
+    "1.5|Breath reset|TITLE|3 breaths. \"Now, why this matters for a person.\"",
+    "2.1|The fence first|BROWSER>TITLE|Non-clinical fence up front; not diagnostic; crisis->helpline. [L5] no CTA",
+    "2.2|You are not broken|BROWSER|Streets Shorts intro; core line \"you are not broken.\" Watch one short, breathe. [L6] CTA:films free",
+    "2.3|The map in your head|BROWSER|Belief lowers fear of present; calmer prior = smaller gap. Reassert fence. [L5] CTA:begin(L8)",
+    "2.4|Hold and hand off|BROWSER (carried over - ON-SCREEN unspecified in source, confirm)|Summary: gentle/non-clinical by design. Hand off to \"the way in.\" [L6]",
+    "2.5|Breath reset|TITLE|3 breaths. \"Here is the front door, wide open.\"",
+    "3.1|Reading Room tour|BROWSER|Tour on-ramps + pop-culture playlists. \"Start wherever you love something.\" [L1] CTA:watch. FLEX",
+    "3.2|Steer the agent yourself|LAB-LIVE|Live lab, viewer-steerable; narrate the loop. [L4] CTA:falsify(L7)",
+    "3.3|Hands-on path / workshop|BROWSER|Workshop $75k; grants $20M edu / $5M internship, cost not the wall. [L1] CTA:site details",
+    "3.4|One honest hour|BROWSER|No pitch; 3-step intake walkthrough. [L8] CTA:begin",
+    "3.5|Breath reset|TITLE|3 breaths. \"Last hour, this is who it's for.\"",
+    "4.1|Where the value goes|BROWSER|$200 outward/engagement, receipt visible; EducateWright+grants as fact not credit. [L9] CTA:take the record",
+    "4.2|Built in the open, receipts|BROWSER|LOOP method (do not name it), receipts, falsify page. [L7] CTA:bring a claim",
+    "4.3|Live falsification Q&A|BROWSER>CHAT|Open floor on any claim; if uncertain, state evidence class+gate; log open ledger. [L4] rotate L7/L8. FLEX",
+    "4.4|Come-build call|BROWSER (carried over - ON-SCREEN unspecified in source, confirm)|\"Not alone, not behind glass.\" Invitation to learn/build/break it. [L9] CTA:L8",
+    "5.0|Close|TITLE|Recap 3 promises; restate frame; anthem-register invitation; point to /begin or /falsify; 3 breaths, sign off. [L9>L8]"
+  ];
+  function load(){
+    const s = localStorage.getItem(KEY_RD);
+    return s ? s : defaultRd.join("\n");
+  }
+  function rows(){ return load().split("\n").filter(x=>x.trim()).map(line=>{
+    const parts = line.split("|").map(p=>p.trim());
+    return { cue: parts[0]||"", scene: parts[1]||"", camera: parts[2]||"", note: parts[3]||"" };
+  }); }
+  // Row 1.3's camera default is COLONY-CLIP (the colony_on_program fence). It flips to
+  // COLONY-LIVE ONLY when the operator has, in the checklist panel (Workstream D), recorded
+  // that the owner explicitly exempted this one-time launch demo. Read the same persisted key.
+  function colonyOnAirConfirmed(){
+    try { return !!(JSON.parse(localStorage.getItem("uni_checklist_state")||"{}").colony_on_air_owner_confirmed); }
+    catch(_){ return false; }
+  }
+  function cameraFor(r){
+    if (r.cue === "1.3" && colonyOnAirConfirmed()) return "COLONY-LIVE (owner-confirmed launch demo)";
+    return r.camera;
+  }
+  // Rundown → teleprompter sync. Gated by the uni_rundown_tp_sync toggle (default ON) so an operator
+  // ad-libbing isn't surprised by a row click clobbering their in-progress text.
+  function syncOn(){ const el = $("#rd-sync"); return el ? el.checked : (localStorage.getItem("uni_rundown_tp_sync") !== "0"); }
+  function loadScriptFromRundown(cue){
+    const r = rows().find(x => x.cue === cue) || {};
+    const sc = rdScripts[cue];
+    // fall back to the row's notes so the prompter is never blank
+    const text = (sc && sc.text) ? sc.text : (r.note || "");
+    if (window.__tpLoad) window.__tpLoad(text);
+    // surface the single most time-relevant honesty cue right where the host is looking
+    const ns = $("#tp-neversay");
+    if (ns){
+      const nv = sc && sc.neverSay;
+      if (nv){ ns.style.display = "block"; ns.innerHTML = "NEVER SAY: " + esc(nv); }
+      else { ns.style.display = "none"; ns.innerHTML = ""; }
+    }
+  }
+  function selectAndSync(){
+    paint();
+    if (syncOn()){ const r = rows()[cur]; if (r) loadScriptFromRundown(r.cue); }
+  }
+  function paint(){
+    const rs = rows();
+    if (cur >= rs.length) cur = rs.length - 1;
+    if (cur < 0) cur = 0;
+    $("#rd-tbl tbody").innerHTML = rs.map((r,i) => `<tr class="${i===cur?"cur":""}" data-i="${i}">
+      <td class="cue">${esc(r.cue)}</td><td>${esc(r.scene)}</td><td>${esc(cameraFor(r))}</td><td>${esc(r.note)}</td>
+    </tr>`).join("");
+    localStorage.setItem(KEY_CUR, String(cur));
+    Array.from(document.querySelectorAll("#rd-tbl tbody tr")).forEach(tr => tr.onclick = () => { cur = Number(tr.dataset.i); selectAndSync(); });
+  }
+  // When the checklist's colony-on-air decision toggles (Workstream D), re-render so row 1.3's
+  // camera field reflects it immediately without waiting for the next navigation.
+  window.addEventListener("uni:checklist-changed", paint);
+  // sync toggle: persist state, default ON
+  const syncEl = $("#rd-sync");
+  if (syncEl){
+    syncEl.checked = localStorage.getItem("uni_rundown_tp_sync") !== "0";
+    syncEl.onchange = () => localStorage.setItem("uni_rundown_tp_sync", syncEl.checked ? "1" : "0");
+  }
+  $("#rd-prev").onclick = () => { cur--; selectAndSync(); };
+  $("#rd-next").onclick = () => { cur++; selectAndSync(); };
+  $("#rd-reset").onclick = () => { cur = 0; selectAndSync(); };
+  $("#rd-edit").onclick = () => {
+    const edt = $("#rd-in");
+    if (edt.style.display === "none") { edt.value = load(); edt.style.display = "block"; }
+    else { localStorage.setItem(KEY_RD, edt.value); edt.style.display = "none"; paint(); }
+  };
+  paint();
+})();
+
+// ---- Host honesty card — fetch /honesty_card.json, render; inline fallback if the fetch hiccups ---------
+// A live broadcast tool must NEVER render blank because a static-file fetch failed, so FALLBACK_HONESTY
+// mirrors honesty_card.json (8 rows + 6 facts + rule) and is used only on fetch failure.
+const FALLBACK_HONESTY = {
+  rule: "If a claim starts to feel bigger than the evidence, stop and read the matching fence line out loud. The fence is the story here, not a disclaimer.",
+  rows: [
+    { say: "A working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open.", never: "AI, AGI, artificial intelligence, machine intelligence." },
+    { say: "The mechanism is demonstrated and reproducible. The evidence is growing and evidence-classed. Several behavioural gates are still in flight.", never: "Proven, first, only, breakthrough, solved, human-level." },
+    { say: "Passing a gate demonstrates the named behaviour, never experience.", never: "It sees, wants, feels, understands, is aware, is conscious, is alive." },
+    { say: "A colony agent acting in a real game world.", never: `Minecraft (say "a real game world" instead).` },
+    { say: "An unrefereed working preprint. Peer review is pending. DOI 10.5281/zenodo.19785799.", never: `Peer-reviewed, published, refereed, "unreferenced."` },
+    { say: "It helps people lower the fear of the present so the future feels safe to explore. It is a design and modeling lens, not a clinical or diagnostic tool. Nothing here is medical advice.", never: "Treats, cures, heals, diagnoses trauma. Any medical or clinical claim." },
+    { say: "LOOP: Listen, Observe, Orchestrate, Partner, Build, Decide.", never: "The trademarked four-letter method name." },
+    { say: "Our channel, the Reading Room, the playlists. Link people to solutionwright.com/watch.", never: "The channel @-handle on any lower-third or pinned text." }
+  ],
+  canonical_facts: [
+    "Preprint DOI 10.5281/zenodo.19785799, unrefereed, peer review pending.",
+    "Objective is expected free energy, an epistemic term plus a pragmatic term. No reward, no reinforcement learning, no backprop.",
+    "Workshop is $75,000. Grants are $20M for education and $5M for internships.",
+    "$200 leaves outward with every engagement, to the people doing the work.",
+    "Packages, fixed price, thirty days: Pathfinder $1,000, Scout $3,000, Explorer $5,000, Adventurer $8,000, Odyssey $15,000.",
+    "Cite Parr, Pezzulo and Friston (2022), Active Inference, the Free Energy Principle in Mind, Brain, and Behavior."
+  ]
+};
+function renderHonesty(data){
+  $("#honesty-rule").textContent = data.rule || "";
+  $("#honesty-tbl tbody").innerHTML = (data.rows || []).map(row =>
+    `<tr><td class="say">${esc(row.say)}</td><td class="never">${esc(row.never)}</td></tr>`).join("");
+  $("#honesty-facts ul").innerHTML = (data.canonical_facts || []).map(f => `<li>${esc(f)}</li>`).join("");
+}
+async function loadHonestyCard(){
+  let data;
+  try { const r = await fetch("/honesty_card.json"); if (!r.ok) throw new Error("http " + r.status); data = await r.json(); }
+  catch(_){ data = FALLBACK_HONESTY; }
+  renderHonesty(data);
+}
+loadHonestyCard();
+
+// ---- Pre-flight checklist — manual checkboxes, persisted; colony-on-air drives rundown row 1.3 ----------
+(function(){
+  const KEY = "uni_checklist_state";
+  const state = (() => { try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(_){ return {}; } })();
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  const CHK_TECH = [
+    ["tech_verify_overlays", "verify_overlays.cjs run"],
+    ["tech_verify_colony",   "verify_colony.cjs run"],
+    ["tech_standby",         "STANDBY scene set"],
+    ["tech_private_smoke",   "private smoke test done"],
+    ["tech_panic",           "PANIC rehearsal done"],
+    ["tech_owner_golive",    "owner golive approval given"]
+  ];
+  const CHK_COLONYAIR = [
+    ["colony_on_air_owner_confirmed", "Owner has explicitly confirmed the one-time launch demo (Segment 1.3) is exempt from the persistent colony_on_program fence"]
+  ];
+  const CHK_CONTENT = [
+    ["c1", "1. solutionwright.com"], ["c2", "2. /science"], ["c3", "3. /science/benchmark"],
+    ["c4", "4. /science/the-living-gate"], ["c5", "5. /science/paper (Zenodo)"],
+    ["c6", "6. A UNI lab (steerable)"], ["c7", "7. Live colony agent view"],
+    ["c8", "8. /learn/movement"], ["c9", "9. /watch"], ["c10", "10. /falsify"], ["c11", "11. /begin"],
+    ["src_browser", "Browser window source ready"], ["src_colony", "Live colony-agent window source ready"],
+    ["src_backup", "Backup recorded clip staged"], ["lowerthirds", "L1-L9 lower-thirds ready"],
+    ["pinned_set", "Pinned comment set (see text below)"]
+  ];
+  function mkList(container, items, onChange){
+    const el = $(container); if (!el) return;
+    el.innerHTML = items.map(([id, label]) =>
+      `<label><input type="checkbox" data-ck="${id}"${state[id] ? " checked" : ""}> <span>${esc(label)}</span></label>`).join("");
+    Array.from(el.querySelectorAll("input[data-ck]")).forEach(inp => {
+      inp.onchange = () => { state[inp.dataset.ck] = inp.checked; save(); if (onChange) onChange(); };
+    });
+  }
+  const notifyColonyAir = () => window.dispatchEvent(new Event("uni:checklist-changed"));
+  function build(){
+    mkList("#ck-tech", CHK_TECH);
+    mkList("#ck-colonyair", CHK_COLONYAIR, notifyColonyAir);
+    mkList("#ck-content", CHK_CONTENT);
+  }
+  build();
+  const pin = $("#ck-pinned");
+  if (pin) pin.textContent = "Building in the open. Watch the science, argue with it, and come build with us. Start with one honest hour: solutionwright.com/begin. Try to break our claims: solutionwright.com/falsify. The paper (unrefereed preprint): DOI 10.5281/zenodo.19785799.";
+  const rst = $("#ck-reset");
+  if (rst) rst.onclick = () => { for (const k in state) delete state[k]; save(); build(); notifyColonyAir(); };
+})();
+
+// ---- Pop-out routing: ?panel=<name> renders only that panel ---------------------------------------------
+(function(){
+  const q = new URLSearchParams(location.search);
+  const only = q.get("panel");
+  if (!only) return;
+  document.body.classList.add("single");
+  const target = document.querySelector(`.panel[data-panel="${only}"]`);
+  if (target) target.classList.add("solo");
+  document.title = "UNI — " + only;
+})();
+
+// Extend refresh() to also render the broadcast ladder + pre-flight checklist dots (same fetch, no dup)
+const _origRefresh = refresh;
+refresh = async function(){
+  await _origRefresh();
+  try{ const env = await (await fetch("/api/infra")).json(); const m = env.result || env; renderLadder(m); renderChecklist(m); }catch(_){}
+};
+refresh(); setInterval(refresh, 3000);
+</script>
+</body>
+</html>

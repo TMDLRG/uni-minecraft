@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "note": "Capture record only. Gaia compares canonical.sha256 (read LIVE) against each replica.sha256 (a CAPTURE, with its own timestamp). A stale capture is labelled, never treated as current. Gaia is not an ssh client; an agent runs this and Gaia mirrors it.",
+  "canonical": {
+    "path": "evidence/gates.ndjson",
+    "sha256": "964ea25cfe8666cae89aed23dac55bb483b654730a3259269d5e42d91d8a4c44",
+    "rows": 206,
+    "read_at": "2026-07-26T03:33:44.859Z",
+    "source": "sha256sum evidence/gates.ndjson (on the canonical repo)"
+  },
+  "replicas": [
+    {
+      "name": "chip:build_9e6cee1",
+      "host": "colony.uni-lab.local",
+      "user": "uni",
+      "dir": "/home/uni/build_9e6cee1",
+      "ok": true,
+      "sha256": "8ad063976caef6a4794bc468887b4928737e9a9610bba22cefa6bdfc55cadd96",
+      "rows": 191,
+      "captured_at": "2026-07-26T03:33:45.152Z",
+      "source": "ssh uni@colony.uni-lab.local 'sha256sum /home/uni/build_9e6cee1/evidence/gates.ndjson; wc -l < /home/uni/build_9e6cee1/evidence/gates.ndjson'",
+      "snapshot": "drift.2026-07-26T03-33-45-153Z.f86646ff.json"
+    },
+    {
+      "name": "chip:build_producer_08fa60d",
+      "host": "colony.uni-lab.local",
+      "user": "uni",
+      "dir": "/home/uni/build_producer_08fa60d",
+      "ok": true,
+      "sha256": "d4ef054e4fbae281a04db3becf1ab84613e18bd3c37ba174f5d5a0555e73e6e6",
+      "rows": 184,
+      "captured_at": "2026-07-26T03:33:45.433Z",
+      "source": "ssh uni@colony.uni-lab.local 'sha256sum /home/uni/build_producer_08fa60d/evidence/gates.ndjson; wc -l < /home/uni/build_producer_08fa60d/evidence/gates.ndjson'",
+      "snapshot": "drift.2026-07-26T03-33-45-434Z.b039c8d1.json"
+    },
+    {
+      "name": "chip:build_producer",
+      "host": "colony.uni-lab.local",
+      "user": "uni",
+      "dir": "/home/uni/build_producer",
+      "ok": true,
+      "sha256": "9a4f495095ac350bb5879542e35da09039b3def0a7394c971621f93cf8d32b50",
+      "rows": 53,
+      "captured_at": "2026-07-26T03:33:45.701Z",
+      "source": "ssh uni@colony.uni-lab.local 'sha256sum /home/uni/build_producer/evidence/gates.ndjson; wc -l < /home/uni/build_producer/evidence/gates.ndjson'",
+      "snapshot": "drift.2026-07-26T03-33-45-701Z.d5bac152.json"
+    }
+  ]
+}

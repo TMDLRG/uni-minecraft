@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>UNI — The Door</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='16' y='6' width='32' height='52' rx='3' fill='%233fd2ff'/%3E%3Ccircle cx='40' cy='34' r='3' fill='%230b0f14'/%3E%3C/svg%3E">
+<style>
+  :root{--bg:#080b10;--panel:#111823;--edge:#1f2c3b;--ink:#e6f0fa;--dim:#7f93a8;--acc:#3fd2ff;
+        --ok:#2ecc71;--warn:#f1b40f;--bad:#e5484d;--deep:#ff2d55;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1200px 700px at 50% -10%,#0e1826,var(--bg));color:var(--ink);
+       font:14px/1.5 "Segoe UI",system-ui,sans-serif;padding:18px;min-height:100vh}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:15px;letter-spacing:.32em;color:var(--dim);text-transform:uppercase;font-weight:700}
+  h2{font-size:11px;letter-spacing:.2em;color:var(--acc);text-transform:uppercase;margin:0 0 8px}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px;margin-top:14px}
+  /* THE DOOR */
+  .door{display:flex;align-items:center;gap:22px;padding:22px 26px;border-radius:16px;border:2px solid var(--edge);background:#0c141f;position:relative;overflow:hidden}
+  .door .glyph{font-size:56px;line-height:1}
+  .door .state{font-size:34px;font-weight:800;letter-spacing:.04em}
+  .door .sub{color:var(--dim);font-size:13px;margin-top:2px}
+  .door .cta{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .door.open{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok) inset}
+  .door.open .state{color:var(--ok)}
+  .door.closed{border-color:var(--bad);background:#1a0e12}
+  .door.closed .state{color:var(--bad);animation:pulse 1.4s ease-in-out infinite}
+  .door.partial{border-color:var(--warn)} .door.partial .state{color:var(--warn)}
+  @keyframes pulse{50%{opacity:.55}}
+  button{background:#17222f;color:var(--ink);border:1px solid #2c3d51;border-radius:10px;padding:10px 16px;cursor:pointer;font:inherit;font-weight:600}
+  button:hover{border-color:var(--acc)}
+  .enter{font-size:20px;padding:14px 30px;border-color:var(--ok);color:#eafff2}
+  .restore{border-color:var(--warn);color:#fff4d6}
+  .cols{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+  /* FLIGHT CHECK */
+  .chk{display:flex;align-items:center;gap:9px;padding:6px 4px;border-bottom:1px solid #16202c}
+  .dot{width:11px;height:11px;border-radius:50%;background:#3a4a5c;flex:none}
+  .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+  .chk .lab{font-weight:600} .chk .det{color:var(--dim);font-size:12px;margin-left:auto;text-align:right}
+  /* DIAGNOSTIC */
+  .fault{border-left:3px solid var(--bad);background:#160e11;border-radius:8px;padding:9px 12px;margin-top:8px}
+  .fault .why{color:#ffb3b8;font-weight:600}
+  .fault .fix{color:var(--ink);margin-top:3px} .fault .fix b{color:var(--ok)}
+  .hist{font-size:12.5px;color:var(--dim);padding:5px 2px;border-bottom:1px dashed #16202c}
+  .hist b{color:var(--ink)}
+  /* RESONANCE */
+  .reso{display:flex;gap:12px;align-items:stretch}
+  .node{flex:1;text-align:center;background:#0c141f;border:1px solid var(--edge);border-radius:12px;padding:12px}
+  .node .nm{font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .node .v{font-size:15px;font-weight:700;margin-top:4px}
+  .node.ok{border-color:var(--ok)} .node.drift{border-color:var(--warn)} .node.bad{border-color:var(--bad)}
+  .link{color:var(--acc);text-decoration:none} .muted{color:var(--dim);font-size:12px}
+  .efe{margin-top:10px;padding:10px 12px;border:1px dashed var(--acc);border-radius:10px;background:#0a1620}
+  .efe .t{font-size:11px;letter-spacing:.16em;color:var(--acc);text-transform:uppercase}
+  .stamp{color:var(--dim);font-size:11px;margin-left:auto}
+</style></head>
+<body>
+<a href="http://127.0.0.1:8102/" target="_blank" style="color:#7f77dd;text-decoration:none;border-bottom:1px dotted #444;margin-left:10px" title="UNI TRACK - project tracking">TRACK :8102</a><div class="wrap">
+  <div style="display:flex;align-items:center;gap:14px">
+    <h1>UNI · The Door to the World</h1>
+    <span class="stamp" id="stamp"></span>
+  </div>
+
+  <div class="door" id="door">
+    <div class="glyph" id="glyph">🚪</div>
+    <div><div class="state" id="state">READING…</div><div class="sub" id="sub">taking the pulse of the whole system</div></div>
+    <div class="cta" id="cta"></div>
+  </div>
+
+  <div class="panel">
+    <h2>The Journey — the vectors carrying you through (persists across reboots)</h2>
+    <div id="journeysteps"></div>
+    <div class="btnrow mt">
+      <button id="journey-reset" class="restore" style="font-size:11px">reset journey</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>The living map — every door, live (green = open · gray = closed · amber = locked · red = circle broken)</h2>
+    <div id="lifemap" style="overflow-x:auto"><div class="muted">waiting for the register…</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <h2>Flight check — every system, honestly probed</h2>
+      <div id="flight"></div>
+    </div>
+    <div class="panel">
+      <h2>Self-diagnostic — measured risks &amp; the known-good fix</h2>
+      <div id="diag"><div class="muted">all clear</div></div>
+      <h2 style="margin-top:14px">Recent history — what the door last did</h2>
+      <div id="hist"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Doors — the lifecycle register (the circle: open ready to close, closed ready to open)</h2>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+      <button id="openall" class="enter" style="font-size:14px;padding:8px 16px">🔑 ONE KEY — OPEN ALL</button>
+      <button id="closeall" class="restore">CLOSE ALL (graceful)</button>
+      <span class="muted">remote doors are observe-only — this system never impacts the UNIs (mandate: Organic Operator Michael Polzin directs them)</span>
+    </div>
+    <div id="doorgrid"></div>
+    <h2 style="margin-top:12px">Audit trail — all openings know of all closings</h2>
+    <div id="doorledger" class="muted" style="font-size:12px"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Resonance — Organic Operator ⇄ UNI ⇄ Gaia (measured &amp; traced)</h2>
+    <div class="reso" id="reso"></div>
+    <div class="efe" id="efe"><span class="t">next error-correction (EFE)</span><div id="efetext" style="margin-top:4px">…</div></div>
+  </div>
+
+  <div class="muted" style="margin-top:12px">The door reads live every 3s. It opens only when predictions match measurement across the whole system — otherwise it shows you exactly what drifted and the corrective action, until resonance is restored. Nothing here is claimed from process existence; every tile is a real probe.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const api=(p,post)=>fetch(p,post?{method:"POST",headers:{"Content-Type":"application/json","x-uni-cc":"1"},body:"{}"}:undefined).then(r=>r.json()).catch(()=>null);
+// Known-good remediation knowledge base (prior valid actions to restore balance).
+const REMEDY={
+  world:"World (Minecraft) runs on the chip (UNI-LAB), captured over the LAN — not a studio process. If down: bring mc-server up on 10.190.245.122 (science/OS seat).",
+  colony:"Colony Phoenix/Producer runs on the chip. driver≠producer or 404 = the ~3-week-stale image; the science seat redeploys the brain (capture-before-destroy FIRST). Studio only captures it.",
+  colonycam:"Colony :3020 prismarine camera on the chip is down — restart the colony cam on UNI-LAB.",
+  obs:"OBS mixer :4455 is down. Fix: <b>START STUDIO</b> below (runs studio_up.ps1, which launches OBS).",
+  overlays:"Overlay server :8099 is down. Fix: <b>START STUDIO</b> (or node viewer/overlay_server.cjs).",
+  mediamtx:"Local MediaMTX :9997 is down. Fix: <b>START STUDIO</b>.",
+  console:"Command center :8098 is down. Fix: <b>START STUDIO</b>.",
+  publisher:"Camera gateway :8443 is down. Fix: <b>START STUDIO</b>.",
+  relay:"node2 fan-out relay is unreachable — PUBLIC go-live is blocked (the private smoke still works). Use the THINKER-local restream.ps1 fan-out instead.",
+  gaia:"Gaia mirror :8096 is down — run viewer/gaia/gaia_watchdog.ps1 to restore the traced resonance mirror.",
+  hud:"UNI HUD :8100 is down — the backend UNI-HUD Windows service (SCM auto-restart) serves it; the widget is launched by the UNI-HUD-WidgetLauncher service via the 'UNI\\HUD Widget' Scheduled Task (no script). Run viewer/hud/native/hud_native_boot_proof.ps1 to diagnose."
+};
+let busy=false;
+async function restore(){ if(busy)return; busy=true; $("cta").querySelectorAll("button").forEach(b=>b.disabled=true); await api("/api/start",true); setTimeout(()=>{busy=false;tick();},4000); }
+function tile(t){ const cls=t.up?"ok":(t.warn?"warn":"bad"); return `<div class="chk"><span class="dot ${cls}"></span><span class="lab">${t.label}</span><span class="det">${t.detail||""}</span></div>`; }
+
+// Pure banner decision (NO DOM) so it is unit-testable. Truth rules:
+//   - open  : stack UP + no critical surface down            -> "THE DOOR IS OPEN"
+//   - plannedClosed : down + last verb was door:close        -> "CLOSED — AS PLANNED"  (openable)
+//   - openFailed    : down + last verb was door:open <5min ago (key turned, still down) -> genuine fault
+//   - downAtRest    : down, no recent close/open verb (fresh boot, or a close whose audit line we no
+//                     longer hold)                            -> "STUDIO CLOSED — TURN THE KEY" (openable)
+// The old code showed the red "THE DOOR WILL NOT OPEN" for EVERY down-not-planned state — a lie,
+// because the door opens on the key (proven: /api/start -> studio_up.ps1 brings the stack up in ~30s).
+// "won't come up" is now reserved for a genuine failed bring-up only.
+function bannerState(m, tiles){
+  const down  = tiles.filter(t=>!t.up && !t.warn);
+  const warns = tiles.filter(t=>t.warn);
+  const CRIT  = ["obs","overlays","mediamtx","console","publisher","colonycam"];
+  const critDown = tiles.filter(t=>CRIT.includes(t.key) && !t.up && !t.warn);
+  const open  = m.stack==="UP" && critDown.length===0;
+  const la    = m.lastAction || {};
+  const laAction = (la && typeof la.action==="string") ? la.action : "";
+  const plannedClosed = !open && laAction.startsWith("door:close");
+  const openTried = laAction.startsWith("door:open");
+  const laAgeMs   = la.at ? (Date.now() - new Date(la.at).getTime()) : Infinity;
+  const openFailed = !open && m.stack==="DOWN" && openTried && laAgeMs < 5*60*1000;
+  const downAtRest = !open && !plannedClosed && !openFailed && m.stack==="DOWN";
+  let cls, glyph, state, sub, ctaSig;
+  if (open){ cls="open"; glyph="🌍"; state="THE DOOR IS OPEN";
+    sub="every prediction matches measurement — enter the room, everything you need is inside"; ctaSig="open"; }
+  else if (plannedClosed){ cls="partial"; glyph="🔑"; state="CLOSED — AS PLANNED";
+    sub=`you gracefully closed the studio at ${la.at?new Date(la.at).toLocaleTimeString():"the last close"} — turn the ONE KEY when you're ready to bring it back; nothing is broken`; ctaSig="key"; }
+  else if (openFailed){ cls="closed"; glyph="⛔"; state="THE STUDIO WON'T COME UP";
+    sub=`${down.length} system(s) didn't start after the key was turned${la.at?" at "+new Date(la.at).toLocaleTimeString():""} — see the diagnostics below, then retry`; ctaSig="fault"; }
+  else if (downAtRest){ cls="partial"; glyph="🔑"; state="STUDIO CLOSED — TURN THE KEY";
+    sub=`the studio is off — turn the ONE KEY to bring it up (${down.length} system(s) down, ${warns.length} warning(s)); nothing is broken, it opens on the key`; ctaSig="key"; }
+  else { cls="partial"; glyph="🚧"; state="OPENING — NOT YET BALANCED";
+    sub=`${down.length} system(s) down, ${warns.length} warning(s) — the door is self-diagnosing below`; ctaSig="partial"; }
+  return { open, plannedClosed, openFailed, downAtRest, cls, glyph, state, sub, ctaSig, la, downCount:down.length, warnCount:warns.length };
+}
+
+async function tick(){
+  const m=await api("/api/mission");
+  $("stamp").textContent = m ? new Date().toLocaleTimeString() : "launcher unreachable";
+  if(!m){ $("state").textContent="LAUNCHER DOWN"; $("sub").textContent="the mission-control launcher (:8090) is not answering"; return; }
+  const tiles=m.tiles||[];
+  const down=tiles.filter(t=>!t.up && !t.warn);
+  const warns=tiles.filter(t=>t.warn);
+  // The door opens on the CRITICAL entry set (studio surfaces + colony capture). world(mc:25565),
+  // relay(node2) and gaia are non-blocking warnings — real, shown, but they don't bar the room.
+  // THE DOOR — pure decision in bannerState() above (unit-tested, no DOM). A studio that is simply
+  // off (fresh boot, or a close whose audit line we no longer hold) reads "STUDIO CLOSED — TURN THE
+  // KEY" and opens on the key; the alarming red is reserved for a GENUINE failed bring-up (the key
+  // was turned recently and systems still didn't start). Fixes the 2026-07-18 lie where EVERY
+  // down-not-planned state showed "THE DOOR WILL NOT OPEN" although /api/start opens it in ~30s.
+  const bs = bannerState(m, tiles);
+  const open = bs.open;              // still referenced by the EFE narration below
+  const la = bs.la;                  // still referenced by RECENT HISTORY below
+  $("door").className = "door " + bs.cls;
+  $("glyph").textContent = bs.glyph;
+  $("state").textContent = bs.state;
+  $("sub").textContent = bs.sub;
+  // The CTA must NOT rebuild every 3s tick -- that wiped the button's DOM handler mid-click.
+  // Build it once per SIGNATURE change; rewire fresh each time.
+  const ctaSig = bs.ctaSig;
+  if (ctaSig !== window.__ctaSig) {
+    window.__ctaSig = ctaSig;
+    // 2026-07-17: an OPEN door needs BOTH verbs prominent. The old header only showed
+    // "ENTER THE ROOM" and pushed the CLOSE ALL button below the fold, which the operator was
+    // caught by after a show ("the door says enter the room, no close button"). Now the open-state
+    // header offers both — ENTER for going to work, CLOSE ALL for the graceful shutdown when done.
+    $("cta").innerHTML = ctaSig==="open"
+      ? `<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+           <a class="link" href="http://127.0.0.1:8098/"><button class="enter">ENTER THE ROOM →</button></a>
+           <button class="restore" id="hdr-closeall" type="button" title="Gracefully close every studio door — off-air workflow at end of show">🌙 CLOSE ALL (graceful)</button>
+         </div>`
+      : (ctaSig==="key"
+        ? `<button class="enter" id="rbtn" type="button" style="border-color:var(--warn);color:#fff4d6">🔑 ONE KEY — OPEN THE STUDIO</button>`
+        : `<button class="restore" id="rbtn" type="button">▶ ${ctaSig==="fault"?"RETRY — START STUDIO":"RESTORE (START STUDIO)"}</button>`);
+    const btn = $("rbtn");
+    if (btn) {
+      btn.addEventListener("click", ctaSig==="key"
+        ? async ()=>{ btn.disabled=true; btn.textContent="🔑 turning the key…"; const r=await doorApi("/api/door/open",{door:"all"}); if(r&&r.ok){ btn.textContent="✓ opening — journey will advance itself"; } else { alert((r&&(r.err||r.mandate))||"failed"); btn.disabled=false; } }
+        : restore);
+    }
+    // Wire the new header CLOSE ALL button to the SAME handler the bottom-panel closeall uses,
+    // so the two buttons stay behaviour-identical (same confirm dialog, same API, same audit line).
+    const hdrClose = $("hdr-closeall");
+    if (hdrClose) hdrClose.addEventListener("click", ()=> $("closeall") && $("closeall").click());
+  }
+  // FLIGHT CHECK
+  $("flight").innerHTML = tiles.map(tile).join("");
+  // SELF-DIAGNOSTIC
+  const faults=[...down,...warns];
+  $("diag").innerHTML = faults.length? faults.map(t=>`<div class="fault"><div class="why">✗ ${t.label} — ${t.detail||"down"}</div><div class="fix">${REMEDY[t.key]||"investigate the probe above."}</div></div>`).join("")
+      : `<div class="muted">✓ all systems balanced — no corrective action needed.</div>`;
+  // RECENT HISTORY
+  const air=m.air||{}; const col=m.colony||{};
+  $("hist").innerHTML = [
+    la.at?`<div class="hist"><b>${la.action}</b> — ${new Date(la.at).toLocaleString()}</div>`:`<div class="hist">no lifecycle action yet this session</div>`,
+    `<div class="hist">air: <b>${air.level||"?"}</b> · program <b>${air.program||"?"}</b></div>`,
+    `<div class="hist">colony: driver=<b>${col.driver||"?"}</b> verdict=<b>${col.verdict||"?"}</b> count=<b>${col.colony_count??"?"}</b> frame=<b>${col.frame??"?"}</b></div>`,
+    `<div class="hist">stack: <b>${m.stack}</b> · uni ingesting: <b>${m.uniReady?"yes":"no"}</b></div>`
+  ].join("");
+  // RESONANCE — Operator ⇄ UNI ⇄ Gaia
+  const operatorOk = m.stack==="UP";
+  const uniState = (col.driver==="producer")?"ok":(m.tiles.find(t=>t.key==="colony")||{}).up?"drift":"bad";
+  const gaiaUp = !!(m.tiles.find(t=>t.key==="gaia")||{}).up;
+  const nodes=[
+    {nm:"Organic Operator",v:operatorOk?"in control · stack UP":"waiting on the door",cls:operatorOk?"ok":"drift"},
+    {nm:"UNI (colony)",v:col.driver==="producer"?`flying the camera · frame ${col.frame}`:(col.verdict?`driver=${col.driver||"self"} · not flying`:"unreachable"),cls:uniState},
+    {nm:"Gaia (mirror)",v:gaiaUp?"green · signal-only mirror live":"down :8096",cls:gaiaUp?"ok":"bad"}
+  ];
+  $("reso").innerHTML = nodes.map(n=>`<div class="node ${n.cls}"><div class="nm">${n.nm}</div><div class="v">${n.v}</div></div>`).join("");
+  // EFE — the one next corrective action (drift → prediction error → act)
+  let efe;
+  if(open) efe="Predictions match measurement across Operator, UNI and Gaia. Resonance held — enter and run the show.";
+  else if(down.some(t=>["obs","overlays","mediamtx","console","publisher"].includes(t.key))) efe="Highest-leverage correction: press RESTORE (START STUDIO) — one action brings the studio surfaces back into balance.";
+  else if((m.tiles.find(t=>t.key==="colony")||{}).up===false) efe="The colony (chip) is unreachable — the science/OS seat must bring it up on UNI-LAB; the studio cannot from here.";
+  else if(col.driver!=="producer") efe="Colony reachable but driver≠producer (stale image). The science seat redeploys the brain (capture-before-destroy first) so UNI flies the camera and the drift closes.";
+  else if(!gaiaUp) efe="Start Gaia (viewer/gaia/gaia_watchdog.ps1) so the mirror re-establishes traced resonance.";
+  else efe="Minor warnings only — the door can open; review the flight check.";
+  $("efetext").innerHTML = efe;
+}
+// ---- THE LIVING MAP: the whole lifecycle as one live SVG (renders from the same two feeds) ----
+function renderMap(){
+  const el=$("lifemap"); if(!el) return;
+  const ds=window.__doorState, js=window.__journeyState;
+  if(!ds||!ds.doors){ return; }
+  const D=Object.fromEntries(ds.doors.map(d=>[d.key,d]));
+  const esc3=s=>String(s||"").replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+  const node=(x,y,k,label)=>{ const d=D[k]||{};
+    const stroke=d.circle_ok===false?"var(--bad)":(d.locked?"var(--warn)":(d.open?"var(--ok)":"#3a4a5c"));
+    const fill=d.open?"rgba(46,204,113,.10)":"rgba(255,255,255,.02)";
+    const state=(d.open?"OPEN":"CLOSED")+(d.locked?" · LOCKED":"");
+    // href comes from the server (door_lifecycle.cjs) — present ONLY when the door genuinely has a
+    // browser-openable surface (a raw protocol like Minecraft/RTMP, or the JSON-only native HUD, has
+    // none). Clickable nodes get a hand cursor + a brighter accent border so it's visually obvious
+    // which boxes on the map actually go somewhere versus status-only.
+    const clickable=!!d.href;
+    const titleTxt=clickable?`${esc3(d.prediction)} — click to open`:esc3(d.prediction);
+    const body=`<title>${titleTxt}</title><rect x="${x}" y="${y}" rx="8" width="148" height="42" fill="${fill}" stroke="${stroke}" stroke-width="${clickable?3:2}"/>`+
+      `<text x="${x+74}" y="${y+17}" text-anchor="middle" fill="var(--ink)" font-size="11.5" font-weight="700">${esc3(label||k)}</text>`+
+      `<text x="${x+74}" y="${y+33}" text-anchor="middle" fill="${stroke}" font-size="9.5">${state}${clickable?" · click ↗":""}</text>`;
+    return clickable
+      ? `<a href="${esc3(d.href)}" target="_blank" rel="noopener" style="cursor:pointer"><g>${body}</g></a>`
+      : `<g>${body}</g>`; };
+  const lbl=(x,y,t,c,sz)=>`<text x="${x}" y="${y}" fill="${c||"var(--dim)"}" font-size="${sz||10}" letter-spacing=".14em">${esc3(t)}</text>`;
+  let svg=`<svg viewBox="0 0 1020 392" width="1020" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">`;
+  // frame + witness + HUD (three always-on independent surfaces)
+  svg+=lbl(20,32,"FRAME · WITNESS · HUD (3 always-on surfaces, never in close-all)");
+  svg+=node(20,42,"door","THE DOOR :8090")+node(20,96,"gaia","GAIA :8096")+node(20,150,"hud","UNI HUD :8100");
+  svg+=lbl(24,212,"door_watchdog + gaia_watchdog + hud_watchdog","#5d748f");
+  // one key arrows
+  svg+=`<path d="M172 63 L206 63" stroke="var(--acc)" stroke-width="2" marker-end="url(#arr)"/>`+lbl(150,54,"ONE KEY","var(--acc)");
+  svg+=`<path d="M206 78 L172 78" stroke="var(--warn)" stroke-width="2" marker-end="url(#arr)"/>`+lbl(146,92,"graceful close","var(--warn)");
+  // studio group
+  svg+=`<rect x="208" y="20" width="452" height="252" rx="12" fill="none" stroke="#22303f" stroke-dasharray="4 3"/>`;
+  svg+=lbl(220,36,"THE STUDIO — one key opens · graceful closes · OS-mutex: one bring-up at a time");
+  svg+=node(228,48,"obs","OBS :4455")+node(400,48,"mediamtx","MediaMTX :1935/:9997");
+  svg+=node(228,104,"console","COMMAND CENTER :8098")+node(400,104,"overlays","OVERLAYS :8099");
+  svg+=node(228,160,"publisher","PUBLISHER :8443")+node(400,160,"stream","THE STREAM (public air)");
+  svg+=lbl(228,232,"stream stays LOCKED — the key is the operator-typed CONFIRM (G-PA)","var(--warn)",9.5);
+  svg+=lbl(228,248,"reads never actuate · opening is always a deliberate click",undefined,9.5);
+  // mandate fence + remote observe-only
+  svg+=`<line x1="688" y1="16" x2="688" y2="300" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 4"/>`;
+  svg+=lbl(700,32,"MANDATE — OBSERVE ONLY (the UNIs continue; Organic Operator directs)","var(--bad)");
+  svg+=node(700,42,"producer","UNI PRODUCER")+node(860,42,"colony","COLONY :4000");
+  svg+=node(700,96,"colonycam","COLONY CAM :3020")+node(860,96,"world","WORLD :25565");
+  svg+=node(700,150,"relay","RELAY node2 :1935");
+  // journey track
+  const steps=(js&&js.steps)||[];
+  svg+=lbl(20,318,"THE JOURNEY (persists across reboots)");
+  steps.forEach((s,i)=>{
+    const x=20+i*90;
+    const fill=s.status==="done"?"rgba(46,204,113,.25)":(s.status==="current"?"rgba(241,180,15,.28)":"rgba(255,255,255,.03)");
+    const stroke=s.status==="done"?"var(--ok)":(s.status==="current"?"var(--warn)":"#2a3646");
+    svg+=`<g><title>${esc3(s.label)}: ${esc3((s.live&&s.live.detail)||s.note||s.status)}</title>`+
+      `<rect x="${x}" y="326" width="84" height="24" rx="5" fill="${fill}" stroke="${stroke}"/>`+
+      `<text x="${x+42}" y="342" text-anchor="middle" fill="var(--ink)" font-size="8.6">${esc3(s.id)}</text></g>`;
+  });
+  svg+=`<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="currentColor"/></marker></defs></svg>`;
+  el.innerHTML=svg;
+}
+
+// ---- DOORS: the lifecycle register (state x lock, vectors, predictions, ledger) ----
+const doorApi=(p,body)=>fetch(p,{method:"POST",headers:{"Content-Type":"application/json","x-uni-cc":"1"},body:JSON.stringify(body||{})}).then(r=>r.json()).catch(()=>null);
+$("openall").onclick=async()=>{ const r=await doorApi("/api/door/open",{door:"all"}); alert(r&&r.ok?"ONE KEY turned: opening every studio door (remote doors untouched by mandate)":(r&&(r.err||r.mandate))||"failed"); };
+$("closeall").onclick=async()=>{ if(!confirm("Gracefully close every STUDIO door? (The frame, Gaia, and every remote door stay open; the UNIs continue.)"))return; const r=await doorApi("/api/door/close",{door:"all"}); alert(r&&r.ok?"graceful close-all sent":(r&&(r.err||r.mandate))||"failed"); };
+async function pollDoors(){
+  try{
+    const s=await fetch("/api/door/state").then(r=>r.json());
+    window.__doorState=s; renderMap();
+    const chip=(txt,color)=>`<span style="border:1px solid ${color};color:${color};border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700">${txt}</span>`;
+    $("doorgrid").innerHTML=(s.doors||[]).map(d=>{
+      const st=d.open?chip("OPEN","var(--ok)"):chip("CLOSED","var(--dim)");
+      const lk=d.locked?chip("LOCKED","var(--warn)"):chip("UNLOCKED","var(--acc)");
+      const cir=d.circle_ok?chip("circle ✓","var(--ok)"):chip("circle BROKEN","var(--bad)");
+      const verbs=d.scope==="remote"?`<span class="muted">observe-only</span>`
+        :`<button data-door="${d.key}" data-verb="open" style="font-size:11px;padding:2px 8px" ${d.open?"disabled":""}>open</button>
+          <button data-door="${d.key}" data-verb="close" style="font-size:11px;padding:2px 8px" ${d.open?"":"disabled"}>close</button>`;
+      return `<div class="chk" title="OPEN: ${String(d.how&&d.how.open||"").replace(/"/g,"&quot;")}\nCLOSE: ${String(d.how&&d.how.close||"").replace(/"/g,"&quot;")}\nLOCK: ${String(d.how&&d.how.lock||"").replace(/"/g,"&quot;")}\nUNLOCK: ${String(d.how&&d.how.unlock||"").replace(/"/g,"&quot;")}">
+        <span class="lab" style="min-width:210px">${d.label}</span> ${st} ${lk} ${cir}
+        <span class="det" style="flex:1">${d.prediction||""}</span> ${verbs}</div>`;
+    }).join("");
+    $("doorgrid").querySelectorAll("button[data-door]").forEach(b=>b.onclick=async()=>{ const r=await doorApi("/api/door/"+b.dataset.verb,{door:b.dataset.door}); if(r&&!r.ok) alert(r.err||r.mandate||"refused"); });
+    $("doorledger").innerHTML=(s.audit_tail||[]).slice().reverse().map(e=>`<div class="hist">${e.ts} · <b>${e.verb}</b> ${e.door} — ${e.method||e.result||""}${e.predicted?" · predicted: "+e.predicted:""}</div>`).join("")||"no transitions recorded yet";
+  }catch(_){ }
+}
+tick(); setInterval(tick,3000);
+pollDoors(); setInterval(pollDoors,3000);
+
+// ---- THE JOURNEY: the reboot-surviving vector sequence ----
+async function pollJourney(){
+  try{
+    const jr=await fetch("/api/door/journey").then(r=>r.json());
+    window.__journeyState=jr; renderMap();
+    const stepHtml=(jr.steps||[]).map(s=>{
+      const edge=s.status==="done"?"var(--ok)":s.status==="current"?"var(--warn)":"#243040";
+      const badge=s.status==="done"?`<span style="color:var(--ok);font-weight:800">✓ DONE</span>`
+        :s.status==="current"?`<span style="color:var(--warn);font-weight:800">▸ CURRENT</span>`
+        :`<span class="muted">pending</span>`;
+      const live=s.live?`<div class="muted" style="margin-left:22px">${s.live.detail||""}</div>`:(s.note?`<div class="muted" style="margin-left:22px">${s.note}</div>`:"");
+      const manualBtn=(s.status==="current"&&s.kind==="manual")?`<button data-adv="${s.id}" style="font-size:11px;margin-left:8px">mark done</button>`:"";
+      return `<div class="hist" style="border-left:3px solid ${edge};padding-left:8px;margin-bottom:5px">
+        ${badge} <b>${s.label}</b>${manualBtn}
+        <div class="muted" style="margin-left:22px">${s.desc||""}</div>${live}
+      </div>`;
+    }).join("") || "<div class=\"muted\">loading…</div>";
+    $("journeysteps").innerHTML = (jr.complete?`<div style="color:var(--ok);font-weight:800;margin-bottom:8px">✓ JOURNEY COMPLETE</div>`:"") + stepHtml;
+    $("journeysteps").querySelectorAll("[data-adv]").forEach(b=>b.onclick=async()=>{
+      const note=prompt("Note for this step (optional):")||"";
+      await fetch("/api/door/journey/advance",{method:"POST",headers:{"Content-Type":"application/json","x-uni-cc":"1"},body:JSON.stringify({note})});
+      pollJourney();
+    });
+  }catch(_){}
+}
+$("journey-reset").onclick=async()=>{
+  if(!confirm("Reset the whole journey back to step 1? (Does not touch any live system, only the plan.)"))return;
+  await fetch("/api/door/journey/reset",{method:"POST",headers:{"Content-Type":"application/json","x-uni-cc":"1"},body:"{}"});
+  pollJourney();
+};
+pollJourney(); setInterval(pollJourney,3000);
+</script></body></html>

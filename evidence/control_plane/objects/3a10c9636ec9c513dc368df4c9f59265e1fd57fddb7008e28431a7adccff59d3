@@ -1,0 +1,32 @@
+PHASE 9 STEP 3.6 - re-measure F28-F31 against the 0.2 inventory. GREEN RECEIPT, 2026-07-27.
+
+$ node viewer/reinventory_f28_f31.cjs
+
+RE-MEASURE F28-F31 AGAINST THE 0.2 INVENTORY (baseline 2026-07-26T19:17:35.021Z)
+
+  F28       instruments at 0.2: 0   now: 3   exiting 0: 2
+  F29+F30   instruments at 0.2: 0   now: 3   exiting 0: 3
+  F31       instruments at 0.2: 0   now: 3   exiting 0: 2
+
+  F28       FLAG suite       exit=  0  hierarchical-aif/tests/motor_stack_aif/test_frozen_evidence_halts.py
+  F28       FLAG proof       exit=  0  hierarchical-aif/src/motor_stack_aif/frozen_evidence_guard.py
+  F28       FLAG wiring      exit=  -  hierarchical-aif/tests/conftest.py
+  F29+F30   FLAG suite       exit=  0  hierarchical-aif/tests/motor_stack_aif/test_d5_distribution_guard.py
+  F29+F30   FLAG suite       exit=  0  hierarchical-aif/tests/motor_stack_aif/test_d5_coverage_conservation.py
+  F29+F30   FLAG proof       exit=  0  hierarchical-aif/scripts/prove_unverified_bites.py
+  F31       MC   gate        exit=  0  viewer/verify_golive_refuses_agents.cjs
+  F31       MC   proof       exit=  0  viewer/prove_golive_refuses_me.cjs
+  F31       MC   chokepoint  exit=  -  viewer/golive_guard.cjs
+
+  independent second count (registrations, not execution): 1 F31 gate(s) registered, 41 python cases collected -> AGREES
+
+EXPECTED OUTPUT: 9 instruments present, 7 runnable, all 7 exiting 0, and
+ZERO of them in the 0.2 inventory — because at Stage 0 none of them existed.
+
+RECOMPUTE IT YOURSELF:
+    node -e "const r=require('./evidence/remediation/3.6_f28_f31_remeasure.json');console.log(r.instruments.filter(i=>i.present).length, r.instruments.filter(i=>i.in_0_2_inventory).length)"
+  It must print: 9 0
+
+RESULT: all instruments green, both counts agree
+
+exit=0

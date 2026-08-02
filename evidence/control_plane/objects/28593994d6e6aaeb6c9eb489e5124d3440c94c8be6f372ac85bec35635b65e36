@@ -1,0 +1,490 @@
+Running ExUnit with seed: 635235, max_cases: 32
+Excluding tags: [:skip]
+
+.........................................
+
+  1) test the room's history is itself a verifiable chain (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:70
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:71: (test)
+
+
+
+  2) test the error from a real attempt carries the SAME condition list, not a bare failure (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:85: (test)
+
+
+
+  3) test the receipt is HASHED into the transition, so editing it afterwards is detectable (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:87
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = clean_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:37: SP.ControlPlane.SterileEntryNeedsReceiptTest.clean_room/0
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:88: (test)
+
+...................
+
+  4) test advancing with every condition met succeeds and moves exactly one step (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:47
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:48: (test)
+
+
+
+  5) test conditions/2 is pure — three calls, identical answers (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:65: (test)
+
+
+
+  6) test F19 — a NAMED receipt that does not exist on disk is refused, naming the path (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = clean_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:37: SP.ControlPlane.SterileEntryNeedsReceiptTest.clean_room/0
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:69: (test)
+
+....................
+
+  7) test a room id must be kebab-case, like every other identifier here (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:41
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: for bad <- ["Lab A", "lab_a", "", "LabA"] do
+     stacktrace:
+       SP.ControlPlane.Room.new("Lab A")
+       test/sp/control_plane/room_transition_conditions_test.exs:43: anonymous fn/2 in SP.ControlPlane.RoomTransitionConditionsTest."test a room id must be kebab-case, like every other identifier here"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/room_transition_conditions_test.exs:42: (test)
+
+............
+
+  8) test asking about a room is a READ — it never changes the room (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:50
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:51: (test)
+
+
+
+  9) test F19 — sterile entry WITHOUT an execution receipt is refused, and the refusal names it (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:55
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = clean_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:37: SP.ControlPlane.SterileEntryNeedsReceiptTest.clean_room/0
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:56: (test)
+
+....
+
+ 10) test both exit receipts are hashed into the transition (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:85: (test)
+
+.....
+
+ 11) test a room is identified, so two rooms are not confused for one (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:32
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, a} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:33: (test)
+
+
+
+ 12) test an unmet condition says what would MEET it, not merely that it is unmet (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:41
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:42: (test)
+
+
+
+ 13) test the progression is green then clean then sterile, and skipping is refused (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:47
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:48: (test)
+
+
+
+ 14) test F22 — a named receipt that is not on disk does not satisfy the condition (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:65: (test)
+
+.
+
+ 15) test a refusal names EVERY unmet condition and leaves the room untouched (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:91
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:92: (test)
+
+
+
+ 16) test conditions for an out-of-order target say so, rather than listing conditions that cannot apply (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:105
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:106: (test)
+
+
+
+ 17) test every condition is reported, not just the first to fail (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:111
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:112: (test)
+
+
+
+ 18) test F22 — a manifest recompute ALONE is not enough either (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:55
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:56: (test)
+
+..
+
+ 19) test the transition is authorised by the operator key, and the agent is not the grantor (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:104
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:105: (test)
+
+
+
+ 20) test a room that is ready reports every condition met, and says so before you try (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:95
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:96: (test)
+
+
+
+ 21) test entering clean needs a scan receipt, by the same rule (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:102
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:103: (test)
+
+
+
+ 22) test F22 — a contamination check ALONE is not enough; the manifest must be recomputed too (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:46
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:47: (test)
+
+..
+
+ 23) test an unknown target state is refused (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:86
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:87: (test)
+
+.
+
+ 24) test conditions/2 answers for a fresh room without raising and without erroring (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:32
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:33: (test)
+
+..
+
+ 25) test green is where a room starts — nothing is assumed about it (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:42
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:43: (test)
+
+...
+
+ 26) test the exit transition is recorded, so a room's whole occupancy is auditable (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:102: (test)
+
+..
+
+ 27) test F21 — an unmet condition has no escape hatch even with every key present (SP.ControlPlane.NoOverridePathTest)
+     test/sp/control_plane/no_override_path_test.exs:80
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/no_override_path_test.exs:81: (test)
+
+..........
+
+ 28) test a partially-met room reports BOTH — what holds and what does not (SP.ControlPlane.RoomNotYetMetIsNotFailureTest)
+     test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:71
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_not_yet_met_is_not_failure_test.exs:72: (test)
+
+.
+
+ 29) test re-entering the state a room is already in is refused, not silently accepted (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:79
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:80: (test)
+
+.
+
+ 30) test a receipt that exists admits, and the room reaches sterile (SP.ControlPlane.SterileEntryNeedsReceiptTest)
+     test/sp/control_plane/sterile_entry_needs_receipt_test.exs:81
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = clean_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:37: SP.ControlPlane.SterileEntryNeedsReceiptTest.clean_room/0
+       test/sp/control_plane/sterile_entry_needs_receipt_test.exs:82: (test)
+
+
+
+ 31) test exiting a room that is not sterile is refused — there is nothing to check out of (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:95
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:96: (test)
+
+
+
+ 32) test F21 — the state cannot be set directly; it is only ever reached by transition (SP.ControlPlane.NoOverridePathTest)
+     test/sp/control_plane/no_override_path_test.exs:67
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/no_override_path_test.exs:68: (test)
+
+
+
+ 33) test the states are exactly green, clean and sterile — no fourth, no numeric level (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:26
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.states/0 is undefined (module SP.ControlPlane.Room is not available)
+     code: assert Room.states() == [:green, :clean, :sterile]
+     stacktrace:
+       SP.ControlPlane.Room.states()
+       test/sp/control_plane/room_transition_conditions_test.exs:27: (test)
+
+
+
+ 34) test F22 — exiting sterile with NO receipts is refused, and both are named (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:36
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:37: (test)
+
+.
+
+ 35) test a transition records a real ledger entry — actor, authority, prior, resulting (SP.ControlPlane.RoomTransitionConditionsTest)
+     test/sp/control_plane/room_transition_conditions_test.exs:56
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/room_transition_conditions_test.exs:57: (test)
+
+
+
+ 36) test both receipts present, both on disk — the room exits to clean, not to green (SP.ControlPlane.SterileExitContaminationTest)
+     test/sp/control_plane/sterile_exit_contamination_test.exs:75
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: room = sterile_room()
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/sterile_exit_contamination_test.exs:30: SP.ControlPlane.SterileExitContaminationTest.sterile_room/0
+       test/sp/control_plane/sterile_exit_contamination_test.exs:76: (test)
+
+.................
+
+ 37) test a key must carry a holder, a kind and a reference to how it was granted (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:81
+     ** (UndefinedFunctionError) function SP.ControlPlane.Key.new/3 is undefined (module SP.ControlPlane.Key is not available)
+     code: assert {:error, _} = Key.new("", :operator, "ref")
+     stacktrace:
+       SP.ControlPlane.Key.new("", :operator, "ref")
+       test/sp/control_plane/airlock_two_keys_test.exs:82: (test)
+
+
+
+ 38) test F20 — two keys from the SAME holder are one party wearing two hats (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:58
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/airlock_two_keys_test.exs:59: (test)
+
+
+
+ 39) test F20 — NO keys does not admit (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:52
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/airlock_two_keys_test.exs:53: (test)
+
+
+
+ 40) test F20 — ONE key does not admit, and the refusal says how many were needed (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:40
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/airlock_two_keys_test.exs:41: (test)
+
+......
+
+ 41) test the keys are carried into the ledger entry, not merely checked and discarded (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:97
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/airlock_two_keys_test.exs:98: (test)
+
+
+
+ 42) test holder comparison ignores case and whitespace — Michael and michael are one person (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:88
+     ** (UndefinedFunctionError) function SP.ControlPlane.Key.new!/3 is undefined (module SP.ControlPlane.Key is not available)
+     code: a = Key.new!("michael", :operator, "r1")
+     stacktrace:
+       SP.ControlPlane.Key.new!("michael", :operator, "r1")
+       test/sp/control_plane/airlock_two_keys_test.exs:89: (test)
+
+.
+
+ 43) test two keys from distinct holders, one of them an operator, admit (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:34
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/airlock_two_keys_test.exs:35: (test)
+
+
+
+ 44) test F20 — the refusal names WHICH key is missing when no operator key is present (SP.ControlPlane.AirlockTwoKeysTest)
+     test/sp/control_plane/airlock_two_keys_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/airlock_two_keys_test.exs:69: (test)
+
+.............
+
+ 45) test F21 — no source in the namespace carries the vocabulary of a bypass (SP.ControlPlane.NoOverridePathTest)
+     test/sp/control_plane/no_override_path_test.exs:50
+     bypass vocabulary present: [{"anchor.ex", "def"}, {"anchor.ex", "force"}, {"anchor.ex", "def"}, {"anchor.ex", "def"}, {"anchor.ex", "def"}, {"command.ex", "def"}, {"command.ex", "force"}, {"command.ex", "def"}, {"command.ex", "def"}, {"command.ex", "def"}, {"writ.ex", "def"}, {"writ.ex", "force"}, {"writ.ex", "def"}, {"writ.ex", "def"}, {"writ.ex", "bypass"}, {"writ.ex", "def"}, {"drift.ex", "def"}, {"drift.ex", "def"}, {"drift.ex", "def"}, {"drift.ex", "def"}, {"gate_row.ex", "def"}, {"gate_row.ex", "force"}, {"gate_row.ex", "def"}, {"gate_row.ex", "def"}, {"gate_row.ex", "def"}, {"ledger.ex", "def"}, {"ledger.ex", "force"}, {"ledger.ex", "def"}, {"ledger.ex", "def"}, {"ledger.ex", "def"}, {"pair.ex", "def"}, {"pair.ex", "def"}, {"pair.ex", "def"}, {...}, ...]
+     code: assert offenders == [],
+     stacktrace:
+       test/sp/control_plane/no_override_path_test.exs:63: (test)
+
+
+
+ 46) test F21 — no bypass function is exported by Room or Key (SP.ControlPlane.NoOverridePathTest)
+     test/sp/control_plane/no_override_path_test.exs:26
+     ** (ArgumentError) could not load module SP.ControlPlane.Room due to reason :nofile
+     code: for mod <- [Room, Key] do
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/no_override_path_test.exs:28: anonymous fn/2 in SP.ControlPlane.NoOverridePathTest."test F21 — no bypass function is exported by Room or Key"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/no_override_path_test.exs:27: (test)
+
+
+
+ 47) test F21 — the refusal returns the room unchanged, so a caller cannot pattern-match its way in (SP.ControlPlane.NoOverridePathTest)
+     test/sp/control_plane/no_override_path_test.exs:98
+     ** (UndefinedFunctionError) function SP.ControlPlane.Room.new/1 is undefined (module SP.ControlPlane.Room is not available)
+     code: {:ok, room} = Room.new("lab-a")
+     stacktrace:
+       SP.ControlPlane.Room.new("lab-a")
+       test/sp/control_plane/no_override_path_test.exs:99: (test)
+
+...........................................................................
+Finished in 1.4 seconds (1.4s async, 0.04s sync)
+286 tests, 47 failures

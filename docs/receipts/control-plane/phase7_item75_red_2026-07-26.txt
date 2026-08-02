@@ -1,0 +1,66 @@
+Running ExUnit with seed: 697188, max_cases: 32
+Excluding tags: [:skip]
+
+...
+
+  1) test an unknown key is refused even when its value is innocuous — the channel is what is refused (SP.ControlPlane.ClaimFenceInTheSceneTest)
+     test/sp/control_plane/claim_fence_in_the_scene_test.exs:82
+     match (=) failed
+     code:  assert {:error, _} = Scene.node("gate:x", attrs(%{colour: "blue"}))
+     left:  {:error, _}
+     right: {:ok,
+             %{
+               id: "gate:x",
+               live: nil,
+               truth_class: :OBSERVED,
+               receipt_ref: "docs/GATES.md",
+               evidence_class: "A",
+               captured_at: "2026-07-26T09:00:00Z"
+             }}
+     stacktrace:
+       test/sp/control_plane/claim_fence_in_the_scene_test.exs:83: (test)
+
+...
+
+  2) test F27 — a prose field cannot be ADDED; unknown keys are refused, not silently dropped (SP.ControlPlane.ClaimFenceInTheSceneTest)
+     test/sp/control_plane/claim_fence_in_the_scene_test.exs:73
+     ** (MatchError) no match of right hand side value:
+
+         {:ok,
+          %{
+            id: "gate:x",
+            live: nil,
+            truth_class: :OBSERVED,
+            receipt_ref: "docs/GATES.md",
+            evidence_class: "A",
+            captured_at: "2026-07-26T09:00:00Z"
+          }}
+
+     code: for key <- [:label, :caption, :description, :narrative, :summary, :status_text, :note] do
+     stacktrace:
+       test/sp/control_plane/claim_fence_in_the_scene_test.exs:75: anonymous fn/2 in SP.ControlPlane.ClaimFenceInTheSceneTest."test F27 — a prose field cannot be ADDED; unknown keys are refused, not silently dropped"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/claim_fence_in_the_scene_test.exs:74: (test)
+
+.
+
+  3) test the refusal names the offending key, so a caller knows what to remove (SP.ControlPlane.ClaimFenceInTheSceneTest)
+     test/sp/control_plane/claim_fence_in_the_scene_test.exs:87
+     match (=) failed
+     code:  assert {:error, reason} = Scene.node("gate:x", attrs(%{mood: "content"}))
+     left:  {:error, reason}
+     right: {:ok,
+             %{
+               id: "gate:x",
+               live: nil,
+               truth_class: :OBSERVED,
+               receipt_ref: "docs/GATES.md",
+               evidence_class: "A",
+               captured_at: "2026-07-26T09:00:00Z"
+             }}
+     stacktrace:
+       test/sp/control_plane/claim_fence_in_the_scene_test.exs:88: (test)
+
+.
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+11 tests, 3 failures

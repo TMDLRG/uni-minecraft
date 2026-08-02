@@ -1,0 +1,157 @@
+#!/bin/sh
+# heartbeat.sh.v2 — DESIGN/REFERENCE, D-C1 + D-C4 in the UNI OS+MIND Deepening Plan.
+# Supersedes production/scripts/heartbeat.sh once landed. This file is the .v2 candidate; the
+# original stays running until this passes rehearsal.
+#
+# What's new vs v1:
+#   1. Idle/live cadence split. If broadcast.json.onAir.value == false for > 60s, drop to a light
+#      probe (reachability only, skip heavy P1 re-run). Row carries `cadence:"idle"|"live"`.
+#      Closes heartbeat.sh:8-9 TODO + GAPS_REGISTER.md:40 open item.
+#   2. Emits envelope-conformant rows against production/schemas/sensorium_envelope.schema.json.
+#   3. Additionally collects peer heartbeat tails and writes fleet_status.ndjson (D-C1) —
+#      the sole-writer for that spool per production/docs/OS_SPOOL_POLICY.md.
+#
+# Contract stays: exit 0 always. A probe FAILING is captured data (ledger + notify), not a crash.
+set -u
+
+SPOOL="${UNI_BCAST_SPOOL:-/var/lib/uni/broadcast}"
+LOGFILE="$SPOOL/audit/heartbeat.ndjson"
+FLEET_LOG="${UNI_FLEET_SPOOL:-/var/lib/uni/status}/fleet_status.ndjson"
+COLONY_HEALTH_URL="${UNI_COLONY_HEALTH_URL:-http://127.0.0.1:4000/producer/health}"
+BROADCAST_JSON="${UNI_BROADCAST_JSON:-/var/lib/uni/broadcast/broadcast.json}"
+IDLE_THRESHOLD_SEC="${UNI_HEARTBEAT_IDLE_THRESHOLD_SEC:-60}"
+GIT_COMMIT="${UNI_GIT_COMMIT:-}"
+
+fails=0
+pass() { echo "PASS  $1"; }
+fail() { echo "FAIL  $1"; fails=$((fails + 1)); }
+
+ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+if [ -z "$GIT_COMMIT" ]; then
+  GIT_COMMIT=$(cd /var/lib/uni/broadcast-src 2>/dev/null && git rev-parse HEAD 2>/dev/null || echo "")
+fi
+
+# ---- decide cadence: idle or live ----
+cadence="idle"
+if [ -f "$BROADCAST_JSON" ]; then
+  on_air=$(python3 -c '
+import json, sys
+try:
+    with open(sys.argv[1]) as f:
+        d = json.load(f)
+    print("true" if (d.get("onAir") or {}).get("value") else "false")
+except Exception:
+    print("unknown")
+' "$BROADCAST_JSON" 2>/dev/null)
+  case "$on_air" in
+    true) cadence="live" ;;
+    *)    cadence="idle" ;;
+  esac
+fi
+
+# ---- probes (always) ----
+program_ready="unknown"
+paths_json=$(curl -sS -m 5 http://127.0.0.1:9997/v3/paths/list 2>/dev/null)
+program_ready=$(printf '%s' "$paths_json" | python3 -c '
+import json, sys
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    print("unknown"); sys.exit(0)
+for item in d.get("items", []):
+    if item.get("name") == "uni/program":
+        print("true" if item.get("ready") else "false"); sys.exit(0)
+print("false")
+' 2>/dev/null || echo unknown)
+
+colony_reachable="false"
+colony_gate_pass="false"
+if curl -sS -m 5 "$COLONY_HEALTH_URL" >/dev/null 2>&1; then
+  colony_reachable="true"
+  ph=$(curl -sS -m 5 "$COLONY_HEALTH_URL")
+  colony_gate_pass=$(printf '%s' "$ph" | python3 -c '
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    ok = d.get("verdict") == "LIVE" and d.get("driver") == "producer"
+    print("true" if ok else "false")
+except Exception:
+    print("false")
+' 2>/dev/null || echo false)
+fi
+
+# ---- heavy P1 gate: ONLY under live cadence ----
+p1_pass="skipped_idle"
+if [ "$cadence" = "live" ]; then
+  p1_rc=0
+  podman run --rm --network host -v /var/lib/uni:/w:ro -v /etc/containers/systemd:/q:ro \
+    --entrypoint sh docker.io/alpine/git /w/broadcast-src/production/verify_p1_v2.sh >/dev/null 2>&1 || p1_rc=$?
+  if [ "$p1_rc" -eq 0 ]; then p1_pass="true"; pass "P1 gate"
+  else                        p1_pass="false"; fail "P1 gate exit $p1_rc"; fi
+fi
+
+# ---- write the envelope-conformant row ----
+mkdir -p "$(dirname "$LOGFILE")"
+python3 - "$LOGFILE" <<EOF
+import json, sys
+row = {
+    "schema_version": 1,
+    "source": "heartbeat",
+    "ts": "$ts",
+    "kind": "row",
+    "payload": {
+        "cadence": "$cadence",
+        "p1_gate_pass": "$p1_pass",
+        "relay_program_ready": "$program_ready",
+        "colony_reachable": "$colony_reachable",
+        "colony_gate_pass": "$colony_gate_pass",
+        "fails": $fails,
+    },
+    "provenance": {
+        "server": "$(hostname 2>/dev/null || echo uni-lab-79740c)",
+        "git_commit": "$GIT_COMMIT",
+        "evidence_class": "C",
+        "audit_id": "",
+    },
+}
+with open(sys.argv[1], "a") as f:
+    f.write(json.dumps(row) + "\\n")
+EOF
+
+# ---- fleet_status: collect peer tails (best-effort) ----
+mkdir -p "$(dirname "$FLEET_LOG")"
+python3 - "$FLEET_LOG" <<EOF
+import json, sys, subprocess
+peers = {
+    "uni-lab":         "http://10.13.13.1:9997/v3/paths/list",
+    "uni-lab-79740c":  "http://10.13.13.3:9997/v3/paths/list",
+    "uni-tab-arm-1":   "http://10.13.13.5:9997/v3/paths/list",
+}
+row = {
+    "schema_version": 1,
+    "source": "fleet_status",
+    "ts": "$ts",
+    "kind": "row",
+    "payload": {"limbs": {}},
+    "provenance": {"server": "$(hostname 2>/dev/null || echo uni-lab-79740c)",
+                   "git_commit": "$GIT_COMMIT",
+                   "evidence_class": "C",
+                   "audit_id": ""},
+}
+for name, url in peers.items():
+    try:
+        subprocess.check_output(["curl", "-sS", "-m", "3", url])
+        row["payload"]["limbs"][name] = {"last_good": "$ts", "verdict": "PASS"}
+    except Exception:
+        row["payload"]["limbs"][name] = {"last_good": None, "verdict": "UNREACHABLE"}
+with open(sys.argv[1], "a") as f:
+    f.write(json.dumps(row) + "\\n")
+EOF
+
+# ---- notify on any fail ----
+if [ "$fails" -gt 0 ]; then
+  SCRIPT_DIR=$(dirname "$0")
+  "$SCRIPT_DIR/notify.sh" "heartbeat" "$fails probes failed" || true
+fi
+
+exit 0

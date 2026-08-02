@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - ON-AIR overlay</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* ON-AIR indicator, top-right. Hidden unless state.onAir.value === true. */
+      .oa-wrap {
+        position: fixed;
+        top: 28px;
+        right: 36px;
+      }
+      .oa {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 18px;
+        border-radius: 8px;
+        background: rgba(6, 12, 22, 0.66);
+        border: 1px solid rgba(255, 91, 103, 0.55);
+        box-shadow: var(--shadow);
+      }
+      .oa .led {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--crit);
+        box-shadow: 0 0 14px var(--crit);
+      }
+      .oa .label {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--crit);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="oa-wrap">
+      <div class="oa view" id="oa">
+        <span class="led" id="led"></span>
+        <span class="label" id="label">LIVE</span>
+      </div>
+    </div>
+
+    <script>
+      // ---- ON-AIR overlay ----
+      // Renders state.onAir {value,text}. Shows only when value===true AND the feed
+      // is fresh. The flash fires only after a debounce STREAK of confirmed on-air
+      // reads, so a single jittery snapshot never blinks the LIVE light on/off.
+
+      var STALE_MS = 8000;
+      var STREAK_TO_FLASH = 3; // consecutive on-air reads before the LED flashes
+
+      var el = {
+        oa: document.getElementById('oa'),
+        led: document.getElementById('led'),
+        label: document.getElementById('label'),
+      };
+
+      var onairStreak = 0;
+
+      function fresh(updatedUtc) {
+        var t = updatedUtc ? Date.parse(updatedUtc) : NaN;
+        return isFinite(t) && Date.now() - t < STALE_MS;
+      }
+
+      function render(state) {
+        var oa = (state && state.onAir) || null;
+        var live = !!oa && oa.value === true && fresh(state.updatedUtc);
+
+        if (!live) {
+          onairStreak = 0;
+          el.oa.classList.remove('on');
+          el.led.classList.remove('flash');
+          return;
+        }
+
+        // Debounce: require a streak before we start the hard steps(1) blink.
+        onairStreak = Math.min(onairStreak + 1, STREAK_TO_FLASH + 1);
+        var text = oa.text && String(oa.text).trim() ? String(oa.text) : 'LIVE';
+        if (el.label.textContent !== text) el.label.textContent = text;
+        el.oa.classList.add('on');
+        el.led.classList.toggle('flash', onairStreak >= STREAK_TO_FLASH);
+      }
+
+      function tick() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(render)
+          .catch(function () {
+            onairStreak = 0;
+            el.oa.classList.remove('on');
+            el.led.classList.remove('flash');
+          });
+      }
+
+      tick();
+      setInterval(tick, 600);
+    </script>
+  </body>
+</html>

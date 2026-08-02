@@ -1,0 +1,436 @@
+{
+  "schema": "uni.rundown/1.0.0",
+  "id": "first-show",
+  "title": "Launch Broadcast, Run of Show (4 hours, solo host)",
+  "authored_at": "2026-07-29",
+  "source": {
+    "document": "SolutionWrightUniversal.Website/docs/launch-run-of-show.md",
+    "bytes": 20570,
+    "commit": "27f55ac",
+    "commit_date": "2026-07-17",
+    "note": "The SOURCE OF WORDS. Every on_screen, host_beat, cta, never_say and contingency string in this file is VERBATIM from that document. Nothing is paraphrased. viewer/firstrun_data.json paraphrased all 21 cues while its own header said it must not be paraphrased, renamed a real site route from 'the living gate' to 'the open gate' to slip past the overlay fence, and dropped 'natural, not artificial' from the GNI line. This file exists partly so that never happens again."
+  },
+
+  "_why_this_file": [
+    "The 2026-07-17 rundown is CONTENT-TRUE and MACHINERY-FALSE. Measured 2026-07-29: every website",
+    "route it names resolves, every playlist id resolves, every price is exact, the DOI is right.",
+    "But its six camera words -- BROWSER, TITLE, COLONY-LIVE, COLONY-CLIP, LAB-LIVE, CHAT -- match",
+    "ZERO of the 32 selectable scenes the studio actually has, and the copy embedded at",
+    "viewer/infra.html drives nothing: it makes three fetches, none to the studio, and clicking a row",
+    "writes localStorage and swaps teleprompter text. This file binds every row to a REAL scene and a",
+    "REAL route so the rundown can drive the show instead of describing one."
+  ],
+
+  "measured_2026_07_29": {
+    "scenes_selectable": 32,
+    "scenes_described": 33,
+    "scene_groups": 11,
+    "orphan": "PIP_AB is described but belongs to NO group, so allTemplates() excludes it and /api/preview 400s on it. It is reachable ONLY by /api/camlayout {layout:'pip'} whose default branch CUTS TO AIR (command_center.cjs:1618,1624-1625). THE ONE SCENE YOU CANNOT PREVIEW IS REACHABLE ONLY BY PUTTING IT ON AIR. No row in this rundown calls it.",
+    "source_of_scene_list": "GET http://127.0.0.1:8098/api/state -> groups[].scenes, and viewer/runtime/templates.json"
+  },
+
+  "rules": {
+    "never_use_api_cut": "/api/cut (command_center.cjs:1600) takes ANY string and puts it straight on air with NO validation. /api/preview (:1585) validates against allTemplates() and 400s on an unknown scene. THE SAFE ROUTE IS FENCED AND THE DANGEROUS ONE IS NOT. Every row here is driven preview-then-take, never cut.",
+    "preview_then_take": "POST /api/preview {scene} -> look at it -> POST /api/take. The operator has said he needs to see what will happen before it does; this is that, mechanically.",
+    "undo": "POST /api/back returns to the previous program scene. Every row is reversible.",
+    "csrf": "Every mutating route requires header x-uni-cc: 1 and content-type: application/json, loopback peer only (the house standard, command_center.cjs:1579).",
+    "advancing_is_not_going_live": "Nothing in this rundown can start a stream. Going to air is POST /api/golive, which passes through viewer/golive_guard.cjs and refuses all seven paths for want of a presence token nothing in the repository mints. An advance changes what is on PROGRAM inside an already-running (or not-running) stream. It never starts one.",
+    "speech_is_not_fenced": "The overlay fence at command_center.cjs:313 guards /api/overlay -- the SUPER. It does not and cannot guard the host's mouth. A line the fence refuses may still be SAID, and this show is built on saying them."
+  },
+
+  "fence_collisions_measured": {
+    "how_tested": "The FENCE regex was read out of command_center.cjs:313 and applied to every line locally. Nothing was POSTed.",
+    "lower_thirds_refused": 1,
+    "lower_thirds_total": 9,
+    "L4": {
+      "text": "Passing a gate demonstrates the named behaviour, never experience.",
+      "trips_on": "experience",
+      "called_for_in": ["1.2", "1.3", "3.2", "4.3"],
+      "why_this_is_the_hard_one": "L4 is the show's most-used strap and the fence refuses it. The fence cannot tell a CLAIM from a DENIAL: 'never experience' is a refusal to claim experience, and /experienc\\w*/ catches the word regardless of polarity. This is use-versus-mention at the broadcast layer -- the same defect class this programme has been caught by repeatedly.",
+      "resolution_in_this_rundown": "L4 IS SPOKEN, NOT SUPERED, in all four segments -- which the source document already instructs at 1.3 ('F1 fence, read it'). The super for those rows is a strap that passes the fence. NO WORD OF L4 IS CHANGED. Rewriting it is what produced 'the open gate'.",
+      "the_operator_may_overturn_this": "fenceCheck(text, force) at command_center.cjs:314 ALREADY takes a force parameter, so L4 could be supered verbatim under an explicit authorised force with a recorded reason. That is his call, not an agent's, because it is a decision about what this show puts on screen."
+    },
+    "honesty_card_cells_refused": {
+      "count": 2,
+      "which": ["row3 (experience)", "row6 (feels)"],
+      "why_it_does_not_matter": "The honesty card is a SECOND-MONITOR ARTEFACT -- the source says 'keep this on the second monitor'. It is never sent to /api/overlay, so the fence never sees it. It is listed here only so nobody later mistakes a card cell for a super.",
+      "correction_to_an_earlier_claim": "An audit of this show reported '18 of 148 lines refused by the fence'. That count included HOST BEATS and NEVER-SAY lines, which are spoken and never supered. Measured against the surface the fence actually guards, it is ONE lower-third."
+    }
+  },
+
+  "known_gaps": [
+    {
+      "gap": "THE TITLE CARD HAS NO OBS SOURCE.",
+      "detail": "production/overlays/title.html exists (4496 bytes) and renders state.title{visible,kicker,text,subtitle,tone}; overlay_server.cjs serves it at 127.0.0.1:8099/title.html; viewer/runtime/broadcast.json carries the title key right now. But ovl_title appears ZERO times in viewer/studio_stage.cjs -- only in the retired Python builder (production/mixer/build_scenes.py:121) -- and NOTHING in viewer/ ever writes st.title. It is a dead field with two readers.",
+      "workaround_used_here": "Every row that wants a title card uses STANDBY, which is a real built source (studio_stage.cjs:124) and which ALREADY reads state.title as a copy override (production/overlays/standby.html:158-176). STANDBY is described as an 'honest please stand by slate, silent, no music bed, no overlays' -- which is exactly what a breath reset is.",
+      "naming_trap": "/api/overlay's `title` field does NOT touch the title card. It sets the lower-third's middle line (command_center.cjs:1974-1975). Anyone driving this studio from route names alone gets the wrong surface."
+    },
+    {
+      "gap": "THERE IS NO CHAT SURFACE ON AIR.",
+      "detail": "Scoped search for ovl_chat / chat.html / cap_chat / chat_overlay / superchat / api/chat across the repository returns one hit, a HUD test fixture. production/overlays/ has eleven pages and none is chat. The audience intake is real -- POST /api/hud/audience/publish into a bounded ring on the HUD at :8100, read at GET /api/hud/audience/recent -- but NO OBS SOURCE CONSUMES IT.",
+      "affects": "4.3, whose source line is 'ON SCREEN: /falsify, then the live chat.'",
+      "workaround_used_here": "4.3 stays on WEB_HOST for /falsify and moves to CAM_A to answer. The host reads questions from the HUD on the second monitor and answers to camera. The chat is never supered because there is nothing to super it with. This is stated in the row rather than left for the operator to discover on air."
+    },
+    {
+      "gap": "THE BACKUP COLONY CLIP DOES NOT EXIST ON DISK.",
+      "detail": "1.3's contingency requires 'a short recorded clip of the colony agent acting'. No such staged asset was found.",
+      "affects": "1.3 contingency",
+      "workaround_used_here": "The row carries alt_scene CLIP_HOST and marks the asset MISSING. If the live view drops and no clip exists, the honest fallback is COLONY_SIDE with the host narrating, or STANDBY. Recording that clip is a pre-flight task and it is listed in preflight."
+    }
+  ],
+
+  "preflight": {
+    "scene": "BARS_TONE",
+    "why": "SMPTE bars + 1kHz reference tone. Sound check and the SEEN-sweep opener for BROADCAST TEST (studio_stage.cjs description, verbatim).",
+    "checks": [
+      "GET /api/state -> obs:true, and program/preview both report a scene you recognise.",
+      "POST /api/preflight and read what it returns before anything else.",
+      "Eleven tabs open in the order the source document lists them (see tabs).",
+      "RECORD THE BACKUP COLONY CLIP. 1.3's contingency depends on it and it is not on disk.",
+      "Honesty card on the second monitor. It is not an overlay and never goes to /api/overlay.",
+      "The HUD at :8100 on the second monitor for audience questions -- there is no on-air chat.",
+      "Confirm /api/back works: preview a scene, take it, back out of it. Prove the undo before you need it."
+    ],
+    "tabs": [
+      "solutionwright.com (home)",
+      "solutionwright.com/science",
+      "solutionwright.com/science/benchmark",
+      "solutionwright.com/science/the-living-gate",
+      "solutionwright.com/science/paper (the Zenodo link)",
+      "A UNI lab you can steer live (from /science/labs)",
+      "The live colony agent view (the real game world screen)",
+      "solutionwright.com/learn/movement (Streets Shorts)",
+      "solutionwright.com/watch (the Reading Room)",
+      "solutionwright.com/falsify",
+      "solutionwright.com/begin"
+    ]
+  },
+
+  "lower_thirds": {
+    "L1": { "text": "General Natural Intelligence. Natural, not artificial. Tested in the open.", "fence": "passes" },
+    "L2": { "text": "No reward. No reinforcement learning. No backprop.", "fence": "passes" },
+    "L3": { "text": "Unrefereed working preprint. Peer review pending. DOI 10.5281/zenodo.19785799", "fence": "passes" },
+    "L4": { "text": "Passing a gate demonstrates the named behaviour, never experience.", "fence": "REFUSED on 'experience' -- SPOKEN, never supered, unless the operator authorises a force" },
+    "L5": { "text": "A design and modeling lens, not a clinical or diagnostic tool. Not medical advice.", "fence": "passes" },
+    "L6": { "text": "You are not broken. The world around the loop is too small.", "fence": "passes" },
+    "L7": { "text": "Try to break it. solutionwright.com/falsify", "fence": "passes" },
+    "L8": { "text": "Start with one honest hour. solutionwright.com/begin", "fence": "passes" },
+    "L9": { "text": "Grow the world. Grow it together. No one left outside.", "fence": "passes" }
+  },
+
+  "rotation": {
+    "every_minutes": [12, 15],
+    "order": ["current-segment fence", "L7", "L8"],
+    "at_each_breath_reset": "L9",
+    "repin_at_each_hour": true,
+    "source": "launch-run-of-show.md:366-371, verbatim intent"
+  },
+
+  "rows": [
+    {
+      "id": "0", "title": "Cold open and welcome", "start": "0:00", "end": "0:12", "minutes": 12,
+      "scene": "WEB_HOST", "then_scene": "CAM_A", "alt_scene": "STANDBY", "preview_first": true,
+      "scene_why": "WEB_HOST is 'a web page (defaults to the master-plan board) full-frame + you in the corner' -- the home page with you present. Then CAM_A, 'solo presenter, full frame', for the promises. The source asks for 'your face or a still title card'; the title card has no source, so CAM_A carries it.",
+      "on_screen": "home page, calm. Then your face or a still title card.",
+      "host_beats": [
+        "Three slow breaths before you speak. Let the room settle.",
+        "\"Welcome. We are building something in the open, and today we open the doors.\"",
+        "Name the frame plainly: this is a working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open.",
+        "Say what this is NOT: not a product demo, not a hype reel, not a claim that anything is solved. \"We are going to show you the work, the tests it could fail, and where it still might.\"",
+        "Set the three promises of the next four hours: the science and the tests, why it might matter for being human, and an open invitation to come learn and build.",
+        "The one rule of the stream: \"Do not take anything I say on faith. The record is open, and so is the invitation. Try to break it.\""
+      ],
+      "super": "L1", "spoken_fence": null,
+      "cta": "none yet, point to the pinned comment",
+      "never_say": "AI, proven, breakthrough."
+    },
+    {
+      "id": "1.1", "title": "what UNI is", "start": "0:12", "end": "0:28", "minutes": 16,
+      "scene": "WEB_SIDE", "alt_scene": "DESK", "preview_first": true,
+      "scene_why": "WEB_SIDE is 'you and a web page side-by-side. Walk the roadmap / a site together' -- the shape of explaining a page rather than presenting it.",
+      "on_screen": "/science, then /science/benchmark.",
+      "host_beats": [
+        "\"UNI is our work in active inference. A lens, not a product.\"",
+        "Plain-language mechanism: a system that perceives, learns, and acts by keeping the gap small between what it expects and what the world gives it.",
+        "The objective is expected free energy, an epistemic term (reduce uncertainty) plus a pragmatic term (move toward preferred outcomes).",
+        "The honest anchor, say it slowly: \"No reward, no reinforcement learning, no backprop. No score, no return, no fitness on any learner-facing path. That is not a slogan. It is a property we checked in code.\"",
+        "Cite Parr, Pezzulo and Friston (2022) as the research line this sits in."
+      ],
+      "super": "L2", "spoken_fence": null,
+      "cta": "\"The paper is public. Read it and argue with it.\"",
+      "asset": "mention UNI the vision (playlist in the Reading Room) as the way to go deeper later.",
+      "never_say": "intelligence in the AI sense, thinking, understanding."
+    },
+    {
+      "id": "1.2", "title": "the benchmark built to fail in public", "start": "0:28", "end": "0:45", "minutes": 17,
+      "scene": "WEB_SIDE", "alt_scene": "WEB_HOST", "preview_first": true,
+      "on_screen": "/science/benchmark, then /science/the-living-gate.",
+      "route_warning": "THE ROUTE IS /science/the-living-gate AND THE HOST SHOULD SAY 'the living gate'. viewer/firstrun_data.json renamed it 'the open gate' -- an unannounced rewrite of a real URL to slip the word 'living' past the overlay fence. The page exists at that path. Say the real name; just do not SUPER it.",
+      "host_beats": [
+        "The Stratified Palimpsest: a hard sandbox with opaque senses and a no-leak monitor, so the agent cannot cheat by reading the answer.",
+        "Why a benchmark you can fail is the point: \"A claim you cannot break is just a slogan. So we wrote ours down, with the test that would prove it wrong.\"",
+        "Show the living gate: a bet registered in public before the run. Evidence first, discrete verdicts, receipts."
+      ],
+      "super": "L2", "super_substituted_for": "L4",
+      "spoken_fence": "Passing a gate demonstrates the named behaviour, never experience.",
+      "cta": "L7, \"Try to break it, solutionwright.com/falsify.\"",
+      "never_say": "proven, guaranteed."
+    },
+    {
+      "id": "1.3", "title": "the colony agent, live", "start": "0:45", "end": "1:00", "minutes": 15,
+      "scene": "COLONY", "then_scene": "CAM_PIP", "alt_scene": "CLIP_HOST", "preview_first": true,
+      "scene_why": "COLONY is 'the Minecraft colony world, full frame -- the hero shot. No camera.' Open there and let it breathe, then CAM_PIP ('colony hero + you as a small picture-in-picture. Narrate the world') to narrate without leaving the world.",
+      "live_status_2026_07_29": "The colony is genuinely running -- GET colony.uni-lab.local:4000/producer/health returned verdict LIVE, driver producer, colony_count 5, with the frame counter advancing between two timed reads. BUT verify_colony FAILS: RCON 25575 and Minecraft 25565 are unreachable from THINKER. The world runs and the studio cannot talk to it.",
+      "on_screen": "the live colony agent acting in a real game world.",
+      "host_beats": [
+        "\"This is a colony agent acting in a real game world, driven by the same engine, no scripted rules and no reward.\"",
+        "Narrate what is actually happening on screen in mechanical terms: the inner loop is landing real actions, the body is doing work in the world.",
+        "State the honest status out loud, do not skip this: \"The mechanism is demonstrated and reproducible. Whether a hunger-like drive reliably turns into foraging is the hypothesis we are testing right now. Several behavioural gates are still in flight. I will not tell you that is settled, because it is not.\"",
+        "F1 fence, read it: \"Passing a gate demonstrates the named behaviour, never experience.\" The colony does not see, want, or feel. Those are our words for our own comfort, and we keep them out of the math."
+      ],
+      "super": "L2", "super_substituted_for": "L4",
+      "spoken_fence": "Passing a gate demonstrates the named behaviour, never experience.",
+      "cta": "none, let the demo breathe",
+      "never_say": "it wants food, it is hungry (as literal claims), it decided, it is alive.",
+      "contingency": "if the live view drops, cut to the recorded colony clip and say \"here is a capture from earlier, same engine,\" then continue.",
+      "contingency_scene": "COLONY_SIDE",
+      "contingency_scene_2": "STANDBY",
+      "contingency_asset_status": "MISSING -- no staged clip found on disk. If it is still missing at air time, fall back to contingency_scene (COLONY_SIDE, 'you and the colony side-by-side') and narrate, or contingency_scene_2 (STANDBY). Do not narrate the drop as a failure of the science (source, verbatim intent)."
+    },
+    {
+      "id": "1.4", "title": "the paper and how it is judged", "start": "1:00", "end": "1:05", "minutes": 5,
+      "scene": "WEB_SIDE", "preview_first": true,
+      "on_screen": "/science/paper (Zenodo), /science/lab-protocol.",
+      "host_beats": [
+        "\"The working paper is on Zenodo. It is an unrefereed working preprint, and peer review is pending. We present it exactly that way.\"",
+        "Read the DOI: 10.5281/zenodo.19785799.",
+        "The lab protocol page shows how a claim is judged: pre-registered gates, discrete verdicts, receipts anyone can check."
+      ],
+      "super": "L3", "spoken_fence": null,
+      "cta": "\"Read it, run it, and try to break it.\"",
+      "never_say": "peer-reviewed, published.",
+      "note": "The honesty card spells the DOI 'DOI 10.5281 slash zenodo.19785799' for SPEAKING and '10.5281/zenodo.19785799' for PRINT. Both are correct in their place; they are not a drift."
+    },
+    {
+      "id": "BR-1", "title": "Breath reset", "start": "1:05", "end": "1:08", "minutes": 3,
+      "scene": "STANDBY", "preview_first": true,
+      "scene_why": "STANDBY is the 'honest please stand by slate. Silent (no music bed, no overlays)' AND it already reads state.title as a copy override. It is the only real title surface in the studio.",
+      "on_screen": "title card, three slow breaths",
+      "host_beats": ["\"Now, why any of this might matter for a person.\""],
+      "super": "L9", "spoken_fence": null,
+      "verbatim_warning": "viewer/infra.html paraphrases this to 'Now, why this matters for a person.' The sentence above is the source's. Say the source's."
+    },
+    {
+      "id": "2.1", "title": "the fence first", "start": "1:08", "end": "1:18", "minutes": 10,
+      "scene": "WEB_SIDE", "then_scene": "STANDBY", "preview_first": true,
+      "on_screen": "/science (scroll to the non-clinical lines), then a plain title card.",
+      "host_beats": [
+        "Open with the fence, do not bury it: \"What follows is a design and modeling lens, not a clinical or diagnostic tool. Nothing here is medical advice, and nothing here is a diagnosis. If you are in crisis, please reach a professional or a local helpline.\"",
+        "The idea, in the gentlest true form: \"The same math that keeps an agent's expectations close to the world is a way to think about how a person can lower the fear of the present so the future feels safe to explore.\"",
+        "Keep the subject the person, never the company, never a promise to fix anyone."
+      ],
+      "super": "L5", "spoken_fence": null,
+      "cta": "none",
+      "never_say": "treats trauma, heals, therapy, clinical outcome.",
+      "note": "The 'feels safe to explore' sentence is REFUSED by the overlay fence on 'feels'. It is SPOKEN here, which is what the source intends. L5 is the super and L5 passes."
+    },
+    {
+      "id": "2.2", "title": "you are not broken", "start": "1:18", "end": "1:38", "minutes": 20,
+      "scene": "CLIP_SIDE", "then_scene": "CLIP", "preview_first": true,
+      "scene_why": "CLIP_SIDE is 'a YouTube clip and you side-by-side. React to a video as it plays' for the introduction; CLIP is 'a YouTube clip, full frame. Carries its own audio' for watching the short in silence, which the row asks for.",
+      "on_screen": "/learn/movement (Streets Shorts), play one short film.",
+      "host_beats": [
+        "Introduce Streets Shorts: a trauma-informed short-film series in six languages.",
+        "The core line, say it and let it sit: \"You are not broken. The world around the loop is too small.\"",
+        "Frame it as an invitation to a different reading of a hard moment, not a prescription. \"Small films for the moment someone decides whether they are the problem. They are not.\"",
+        "Watch one short together, in silence, then a slow breath."
+      ],
+      "super": "L6", "spoken_fence": null,
+      "cta": "\"The films are free. Share them with someone who needs the reminder.\"",
+      "asset": "You Are Not Broken, and Streets Shorts on /learn/movement.",
+      "never_say": "this will help your trauma, guaranteed relief."
+    },
+    {
+      "id": "2.3", "title": "the map in your head", "start": "1:38", "end": "1:55", "minutes": 17,
+      "scene": "WEB_SIDE", "preview_first": true,
+      "on_screen": "/watch, feature The Map in Your Head playlist.",
+      "host_beats": [
+        "Belief as one of the oldest tools people have for lowering the fear of the present so the future feels safe to explore.",
+        "Tie it back to the mechanism without overreaching: a calmer prior is a smaller gap to the world, and a smaller gap is room to move.",
+        "Reassert the fence once more, briefly: \"A lens for thinking, not a clinic.\""
+      ],
+      "super": "L5", "spoken_fence": null,
+      "cta": "L8, \"Start with one honest hour, solutionwright.com/begin.\"",
+      "asset": "The Map in Your Head, How your mind guesses.",
+      "never_say": "measurement of a patient, diagnosis."
+    },
+    {
+      "id": "2.4", "title": "hold and hand off", "start": "1:55", "end": "2:00", "minutes": 5,
+      "scene": "CAM_A", "preview_first": true,
+      "host_beats": [
+        "Short summary: this is why the work is gentle by design, and why we keep it non-clinical on purpose.",
+        "Hand off to the way in: \"If that landed, here is how you actually come and learn.\""
+      ],
+      "super": "L6", "spoken_fence": null
+    },
+    {
+      "id": "BR-2", "title": "Breath reset", "start": "2:00", "end": "2:03", "minutes": 3,
+      "scene": "STANDBY", "preview_first": true,
+      "on_screen": "title card, three slow breaths",
+      "host_beats": ["\"Here is the front door, and it is wide open.\""],
+      "super": "L9", "spoken_fence": null,
+      "verbatim_warning": "viewer/infra.html paraphrases this to 'Here is the front door, wide open.' Say the source's."
+    },
+    {
+      "id": "3.1", "title": "the Reading Room tour", "start": "2:03", "end": "2:20", "minutes": 17,
+      "scene": "WEB_SIDE", "preview_first": true,
+      "flex": "FLEX BLOCK -- trim here first if time runs long. Never trim the fences.",
+      "on_screen": "/watch.",
+      "host_beats": [
+        "\"This is the Reading Room. Hundreds of short pieces, in many languages, free.\"",
+        "Tour the on-ramps: UNI the vision for the whole picture, How your mind guesses and Bayesian, Not Brain for the science made plain, Reality Theory for the deep end.",
+        "The gentle entries: the pop-culture story playlists, where a familiar show is a doorway into the same ideas (Gravity Falls, Bluey, Avatar, Star Trek, and the rest). \"Start wherever you already love something.\""
+      ],
+      "super": "L1", "spoken_fence": null,
+      "cta": "\"Pick one playlist and start. Link is solutionwright.com/watch.\"",
+      "never_say": "the AI series (call it the science series or the UNI series)."
+    },
+    {
+      "id": "3.2", "title": "steer the agent yourself", "start": "2:20", "end": "2:38", "minutes": 18,
+      "scene": "DESK", "alt_scene": "GLASS_TALK", "preview_first": true,
+      "scene_why": "DESK is 'you on the left, a shared screen on the right. Teach or walk through something' -- the right shape for steering a lab and narrating it. GLASS_TALK is the alternate IF the lab you steer is the UNI.OS cockpit rather than a website lab.",
+      "on_screen": "a UNI lab from /science/labs, steer it live.",
+      "host_beats": [
+        "\"You do not have to take my word for the mechanism. Steer it yourself.\"",
+        "Drive one lab, narrate the loop: prediction, action, the gap getting smaller.",
+        "The come-build line, read it: \"Do not take the claim on faith. Test the build, inspect the gates, and help us find where it fails.\""
+      ],
+      "super": "L1", "super_substituted_for": "L4",
+      "spoken_fence": "Passing a gate demonstrates the named behaviour, never experience.",
+      "cta": "L7, falsify.",
+      "never_say": "it learns like a person, it is smart."
+    },
+    {
+      "id": "3.3", "title": "the hands-on path", "start": "2:38", "end": "2:50", "minutes": 12,
+      "scene": "WEB_SIDE", "preview_first": true,
+      "on_screen": "the workshop page.",
+      "host_beats": [
+        "\"If you want to go from reading about it to building it, the workshop is the hands-on path. Twelve weeks, you ship a model, and you get the gates to check the claim for yourself.\"",
+        "State the fact plainly: the workshop is $75,000, and there are grants, $20M for education and $5M for internships, so cost is not the wall."
+      ],
+      "super": "L1", "spoken_fence": null,
+      "cta": "\"Details and the grant path are on the site.\"",
+      "never_say": "certification, credential guarantees."
+    },
+    {
+      "id": "3.4", "title": "one honest hour", "start": "2:50", "end": "2:55", "minutes": 5,
+      "scene": "WEB_HOST", "preview_first": true,
+      "on_screen": "/begin.",
+      "host_beats": [
+        "\"The simplest way in is one honest hour. We listen to you. No pitch. No catalog. Nothing to prepare and nothing to perform.\"",
+        "Walk the three-step intake on screen, slowly."
+      ],
+      "super": "L8", "spoken_fence": null,
+      "cta": "\"Start with one honest hour, solutionwright.com/begin.\"",
+      "never_say": "free trial, sales call."
+    },
+    {
+      "id": "BR-3", "title": "Breath reset", "start": "2:55", "end": "2:58", "minutes": 3,
+      "scene": "STANDBY", "preview_first": true,
+      "on_screen": "title card, three slow breaths",
+      "host_beats": ["\"Last hour. This is who it is all for.\""],
+      "super": "L9", "spoken_fence": null,
+      "verbatim_warning": "viewer/infra.html paraphrases this to \"Last hour, this is who it's for.\" Say the source's."
+    },
+    {
+      "id": "4.1", "title": "where the value goes", "start": "2:58", "end": "3:15", "minutes": 17,
+      "scene": "WEB_SIDE", "preview_first": true,
+      "on_screen": "/mission, /mission/where-the-value-goes.",
+      "host_beats": [
+        "The mission in the plain register: grow the world, grow it together, no one left outside.",
+        "The anti-extraction fact: \"$200 leaves outward with every engagement, to the people doing the work. We keep the receipt where you can see it.\"",
+        "EducateWright and the grants: name them as facts, not as credit we borrow. \"Software does not end violence. We fund the humans who do that work.\""
+      ],
+      "super": "L9", "spoken_fence": null,
+      "cta": "\"Do not take our word for it. Take the record.\"",
+      "never_say": "we solve poverty, we end violence."
+    },
+    {
+      "id": "4.2", "title": "built in the open, with receipts", "start": "3:15", "end": "3:28", "minutes": 13,
+      "scene": "SHARE_MULTI", "alt_scene": "WEB_SIDE", "preview_first": true,
+      "scene_why": "SHARE_MULTI is 'up to three shared windows + you, in a 2x2 wall' -- and this row names exactly three pages. This is the one row where the studio has a shape the old rundown never imagined.",
+      "on_screen": "/work/how-this-was-built, /standard/receipts, /falsify.",
+      "host_beats": [
+        "Show that the build itself is in the open: the method (LOOP: Listen, Observe, Orchestrate, Partner, Build, Decide), the receipts, the falsify page.",
+        "\"Every strong claim ships with the test that would prove it wrong.\""
+      ],
+      "super": "L7", "spoken_fence": null,
+      "cta": "\"Bring a claim you can break. We will test it with you, on the record.\"",
+      "never_say": "the trademarked four-letter method name, flawless, bug-free."
+    },
+    {
+      "id": "4.3", "title": "live falsification and Q and A", "start": "3:28", "end": "3:42", "minutes": 14,
+      "scene": "WEB_HOST", "then_scene": "CAM_A", "preview_first": true,
+      "flex": "FLEX BLOCK -- trim here first if time runs long. Never trim the fences.",
+      "on_screen": "/falsify, then the live chat.",
+      "gap": "THERE IS NO CHAT SURFACE ON AIR. Read questions from the HUD at :8100 on the second monitor and answer to CAM_A. Nothing supers the chat because nothing renders it.",
+      "host_beats": [
+        "Open the floor: \"Pick any claim I made today. Bring your source. Let us test it live.\"",
+        "Answer in plain words. If something is uncertain, say the evidence class and the gate that is still in flight. Model the honesty.",
+        "If a hard question has no answer yet, say so, and add it to the open ledger out loud."
+      ],
+      "super": "L7", "super_substituted_for": "L4",
+      "spoken_fence": "Passing a gate demonstrates the named behaviour, never experience.",
+      "cta": "rotate L7 and L8.",
+      "never_say": "we already proved that, trust me."
+    },
+    {
+      "id": "4.4", "title": "the come-build call", "start": "3:42", "end": "3:45", "minutes": 3,
+      "scene": "CAM_A", "preview_first": true,
+      "host_beats": [
+        "\"We are not doing this alone, and we are not doing it behind glass. Come learn, come build, come help us find where it fails.\"",
+        "\"The record is open. So is the invitation.\""
+      ],
+      "super": "L9", "spoken_fence": null,
+      "cta": "L8."
+    },
+    {
+      "id": "CLOSE", "title": "Close", "start": "3:45", "end": "4:00", "minutes": 15,
+      "scene": "STANDBY", "then_scene": "CAM_A", "preview_first": true,
+      "on_screen": "a calm title card, then your face.",
+      "host_beats": [
+        "Recap the three promises kept: you saw the science and the tests it could fail, you heard why it might matter for a person, and the door is open.",
+        "Restate the honest frame one last time: \"A working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open. Growing evidence, gates still in flight, nothing hidden.\"",
+        "The invitation, in the anthem register (do not quote the song lyrics, just carry the calm): grow the world, grow it together, no one left outside.",
+        "Point them home once more: one honest hour at solutionwright.com/begin, or try to break us at solutionwright.com/falsify.",
+        "Three slow breaths on screen. Sign off: \"breathe in. breathe out.\""
+      ],
+      "super": "L9", "then_super": "L8", "spoken_fence": null
+    }
+  ],
+
+  "contingency": [
+    "Live colony view drops: cut to the recorded colony clip, say \"a capture from earlier, same engine,\" continue. Do not narrate the drop as a failure of the science. -- CLIP IS MISSING; see known_gaps.",
+    "A claim starts to overreach: stop, read the matching fence line from the honesty card, then restate the claim inside the fence.",
+    "A viewer pushes a hard question you cannot answer: say the evidence class, name the gate in flight, and add it to the open ledger out loud. That is a win here, not a loss.",
+    "Trauma chat gets heavy: repeat the non-clinical fence, point to a professional or local helpline, do not counsel live.",
+    "Time runs long: Hour 3 segment 3.1 and Hour 4 segment 4.3 are the flex blocks, trim there first. Never trim the fences.",
+    "A scene will not preview: /api/preview 400s on any scene not in allTemplates(). Do NOT reach for /api/cut to force it -- cut is unvalidated and goes straight to air. Pick a scene from the 32."
+  ],
+
+  "arithmetic": {
+    "rows": 21,
+    "declared_minutes_sum": 240,
+    "note": "12+16+17+15+5+3+10+20+17+5+3+17+18+12+5+3+17+13+14+3+15 = 240. The source's timeline closes exactly on 4:00:00 and this file preserves every duration. The copy at viewer/infra.html DROPPED every duration -- its table has four columns and no time field."
+  },
+
+  "scenes_used": ["BARS_TONE", "WEB_HOST", "CAM_A", "WEB_SIDE", "COLONY", "CAM_PIP", "CLIP_HOST", "STANDBY", "CLIP_SIDE", "CLIP", "DESK", "GLASS_TALK", "SHARE_MULTI", "COLONY_SIDE"],
+  "scenes_deliberately_unused": {
+    "PIP_AB": "preview-unreachable, cut-only. Never call it.",
+    "DUAL_AB / TRIO / DUAL_WORLD / CAM_B": "demoted in the studio's own grouping; this is a solo show with no guest.",
+    "GRID": "a 5x2 remote-camera wall; no remote cameras in this show.",
+    "MUSIC_HOUR / MUSIC_CARD / COLONY_SIDE_MUSIC": "no music segment in this rundown. Available if one is added.",
+    "OVERLOOK": "the Producer's view -- and its own description says the Producer is MISSING (health 404) on the stale v2 mind. Honest to show, but not while it is 404.",
+    "GLASS_OS / PIP / NEWSDESK / ANCHOR / SHARE / TEACH / WEB": "unused here, all available."
+  }
+}

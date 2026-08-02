@@ -1,0 +1,1 @@
+{"schema_version":1,"name":"control-plane-ledger-appendable","verdict":"PENDING","evidence_class":"pending","last_updated":"2026-07-25","notes":"FIXTURE ONLY — receipt_path is absent. A row with no receipt is a claim with no evidence."}

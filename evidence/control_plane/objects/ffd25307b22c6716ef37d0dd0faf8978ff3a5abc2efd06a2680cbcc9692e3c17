@@ -1,0 +1,23 @@
+PHASE 9 STEP 4.6 BUILD L0
+captured 2026-07-28  ·  HEAD 81feb53
+
+CAPTURED LATE, AND SAYING SO IS THE POINT. Builds L0-L3 shipped green with NO RECEIPT:
+the convention only started at L4, and nothing noticed because the anti-silence guard read
+steps and never builds. Step 4.6 is IN_PROGRESS, so its six DONE builds were filtered out
+entirely -- the Phase 5 failure mode reappearing one level down, inside the guard built to
+prevent it. This receipt is the gate re-run at the commit above, not a reconstruction of
+the original run.
+
+  ok  the lab exists - lab.html 10113 bytes · lab_server.cjs 16669 bytes
+  ok  CPU-ONLY: no WebGL, no WebGPU, no Three.js - a 2d context and arithmetic. The release contract forbids all three, and a rendered surface is exactly where that rule gets broken by convenience.
+  ok  it renders from a 2D context - isometric projection done in arithmetic, no library
+  ok  ZERO NODES: L0 reaches forward into nothing - no truth_class, no receipt_ref, no evidence_class, no material — L2 must be able to FAIL on swapped materials, and it cannot prove that against a renderer that already assumed them
+  ok  it declares its own census, and the honest number is zero - /api/lab reports nodes: 0 with the reason — an empty room and a broken feed look identical from outside unless one of them says so
+  ok  floor, walls, three shells, five arches, the dome - all present
+  ok  the counts are the ones L0 promised - 3 room shells · 5 arches
+  ok  WASD and click-to-stand - he opens /lab and walks around — that is L0's whole acceptance
+  ok  read-only apart from ONE named, exact-match route - the only non-GET path is /api/lab/run — L5's desk, which runs a registered gate in a throwaway worktree and writes nothing. Everything else, every method, is refused before a route is considered. THIS CHECK USED TO SAY "by OMISSION, not by guard" and that stopped being true at L5; the sentence changed rather than the branch being disguised as a GET.
+  ok  L0's OWN route reads no real state - /api/lab returns a fixed census of nodes: 0 and touches no evidence. The projection is L3's build and arriving early would mean showing real gates before anything can say what a fogged one looks like. NARROWED FROM A WHOLE-FILE SCAN, which stopped meaning anything once L3, L4 and L5 shared this server — it was passing by accident of file layout.
+
+GATE: PASS - lab-l0, 10/10 checks
+  Open it: node viewer/lab/lab_server.cjs  ->  http://127.0.0.1:8103/lab

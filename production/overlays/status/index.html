@@ -1,0 +1,102 @@
+<!--
+  production/overlays/status/index.html - DESIGN/REFERENCE, status: pending (authored, not yet run on
+  node hardware).
+
+  Tiny read-only heartbeat status dashboard, intended to be served by the ALREADY-DEPLOYED
+  uni-bcast-overlays caddy container at :8099/status/. LOOPBACK ONLY (127.0.0.1:8099) - this is NOT a
+  public surface, same posture as onair.html/the overlay pages it sits alongside.
+
+  Plain HTML + a small inline <script> using fetch(); no build step, no framework.
+
+  FOLLOW-UP WIRING NEEDED (outside this file, NOT done here): caddy is a static file server and cannot
+  turn a live file into JSON on demand. This page fetches /status/heartbeat.ndjson directly as TEXT and
+  parses it client-side, line by line (each line is one JSON object written by
+  production/scripts/heartbeat.sh). For that fetch to succeed, production/containers/systemd/
+  uni-bcast-overlays.container's Caddyfile needs an ADDITIONAL read-only bind-mount of
+  /var/lib/uni/broadcast/audit at a /status/ path (alongside its existing overlays + state.json mounts).
+  That Caddyfile/quadlet change is OUTSIDE this agent's file list - left as a clear TODO for the owner of
+  production/containers/systemd/uni-bcast-overlays.container, not attempted here.
+-->
+<title>UNI Heartbeat Status</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font: 14px/1.4 -apple-system, Segoe UI, sans-serif;
+    margin: 1.5rem;
+    background: Canvas;
+    color: CanvasText;
+  }
+  h1 { font-size: 1.1rem; margin: 0 0 0.25rem; }
+  #meta { color: GrayText; margin-bottom: 1rem; font-size: 0.85rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 0.35rem 0.6rem; border-bottom: 1px solid color-mix(in srgb, CanvasText 15%, transparent); font-size: 0.85rem; }
+  th { color: GrayText; font-weight: 600; }
+  .dot { display: inline-block; width: 0.7em; height: 0.7em; border-radius: 50%; }
+  .ok { background: #2ecc71; }
+  .bad { background: #e74c3c; }
+  .unk { background: #999; }
+  #err { color: #e74c3c; display: none; margin-bottom: 1rem; }
+</style>
+
+<h1>UNI Heartbeat Status</h1>
+<div id="meta">polling /status/heartbeat.ndjson every 5s - last 20 rows, newest first</div>
+<div id="err"></div>
+<table>
+  <thead>
+    <tr><th>ts (UTC)</th><th>P1 gate</th><th>relay path</th><th>colony reachable</th><th>colony gate</th><th>fails</th></tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script>
+  const ROWS_URL = "/status/heartbeat.ndjson";
+  const MAX_ROWS = 20;
+  const POLL_MS = 5000;
+
+  function dot(state) {
+    // state: true/false -> ok/bad ; anything else -> unknown
+    if (state === true || state === "true") return '<span class="dot ok" title="pass"></span>';
+    if (state === false || state === "false") return '<span class="dot bad" title="fail"></span>';
+    return '<span class="dot unk" title="' + String(state) + '"></span>';
+  }
+
+  function render(rows) {
+    const tbody = document.getElementById("rows");
+    tbody.innerHTML = "";
+    for (const r of rows) {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + (r.ts || "?") + "</td>" +
+        "<td>" + dot(r.p1_gate_pass) + "</td>" +
+        "<td>" + dot(r.relay_program_ready) + " <span title=\"raw value\">" + (r.relay_program_ready ?? "?") + "</span></td>" +
+        "<td>" + dot(r.colony_reachable) + " <span>" + (r.colony_summary || "") + "</span></td>" +
+        "<td>" + dot(r.colony_gate_pass) + "</td>" +
+        "<td>" + (r.fails ?? "?") + "</td>";
+      tbody.appendChild(tr);
+    }
+  }
+
+  async function poll() {
+    const errEl = document.getElementById("err");
+    try {
+      const resp = await fetch(ROWS_URL, { cache: "no-store" });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const text = await resp.text();
+      const lines = text.split("\n").filter((l) => l.trim().length > 0);
+      const parsed = [];
+      for (const line of lines) {
+        try { parsed.push(JSON.parse(line)); } catch (_) { /* skip malformed line */ }
+      }
+      const last = parsed.slice(-MAX_ROWS).reverse();
+      render(last);
+      errEl.style.display = "none";
+    } catch (e) {
+      errEl.textContent = "failed to load " + ROWS_URL + ": " + e.message +
+        " (see the Caddyfile follow-up wiring note at the top of this file's source)";
+      errEl.style.display = "block";
+    }
+  }
+
+  poll();
+  setInterval(poll, POLL_MS);
+</script>

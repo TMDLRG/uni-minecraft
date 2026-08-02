@@ -1,0 +1,111 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Life, No Game — Hard-Science Lab (static snapshot)</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --ink: #e6edf3; --muted: #9aa7b4;
+    --a: #2ea043; --b: #3b82f6; --c: #d29922; --d: #a371f7; --u: #8b949e; --x: #f85149;
+    --line: #30363d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 20px 60px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 22px; font-size: 13px; }
+  .banner { background: #1c2128; border: 1px solid var(--line); border-left: 3px solid var(--c);
+            border-radius: 8px; padding: 12px 14px; margin: 0 0 26px; color: var(--muted); font-size: 13px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+           padding: 18px 18px 8px; margin: 0 0 22px; }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px;
+          font-weight: 700; color: #0b0e12; }
+  .A{background:var(--a)} .B{background:var(--b);color:#fff} .C{background:var(--c)}
+  .D{background:var(--d);color:#fff} .U{background:var(--u)} .X{background:var(--x);color:#fff}
+  .fail { color: var(--x); font-weight: 600; }
+  .ok { color: var(--a); font-weight: 600; }
+  .leg span { margin-right: 12px; font-size: 12px; color: var(--muted); }
+  code { background:#1c2128; padding:1px 5px; border-radius:4px; font-size:12.5px; }
+  footer { color: var(--muted); font-size: 12px; margin-top: 30px; border-top:1px solid var(--line); padding-top:14px; }
+</style>
+<div class="wrap">
+  <h1>Life, No Game — Hard-Science Lab</h1>
+  <p class="sub">A bounded, falsifiable science lab inside The Stratified Palimpsest. Static snapshot of computed results.</p>
+
+  <div class="banner">
+    <b>This is a static snapshot, not a live simulation.</b> Every number below is produced by the pure
+    <code>SP.Lab.*</code> Elixir modules and verified by <code>mix test test/sp/lab/</code>
+    (26 tests + 4 doctests, 0 failures). Nothing here is labelled "proven." Evidence classes:
+    <span class="leg">
+      <span><b class="pill A">A</b> derivable</span>
+      <span><b class="pill B">B</b> agency/peer-reviewed</span>
+      <span><b class="pill C">C</b> hypothesis</span>
+      <span><b class="pill D">D</b> interpretive</span>
+      <span><b class="pill U">U</b> speculative</span>
+      <span><b class="pill X">X</b> contradicted</span>
+    </span>
+  </div>
+
+  <div class="panel">
+    <h2>1 · Does atmospheric pressure explain gravity? (the DGST test)</h2>
+    <p class="sub">Newtonian <code>g = GM/R²</code> uses mass + radius, zero per-body tuning. The pressure model
+      <code>g = k·P</code> is calibrated on Earth, then must predict every other body. The math is allowed to fail — and it does.</p>
+    <table>
+      <thead><tr><th>Body</th><th class="num">Pressure</th><th class="num">Measured g (m/s²)</th>
+        <th class="num">Newtonian err</th><th class="num">Pressure-model err</th></tr></thead>
+      <tbody>
+        <tr><td>Earth</td><td class="num">1.014 bar</td><td class="num">9.82</td><td class="num ok">0.03%</td><td class="num">0% (calib.)</td></tr>
+        <tr><td>Moon</td><td class="num">3×10⁻¹⁵ bar</td><td class="num">1.62</td><td class="num ok">0.36%</td><td class="num fail">~100%</td></tr>
+        <tr><td>Mercury</td><td class="num">5×10⁻¹⁵ bar</td><td class="num">3.70</td><td class="num ok">0.02%</td><td class="num fail">~100%</td></tr>
+        <tr><td>Mars</td><td class="num">6.36 mbar</td><td class="num">3.73</td><td class="num ok">0.04%</td><td class="num fail">98%</td></tr>
+        <tr><td>Venus</td><td class="num">92 bar</td><td class="num">8.87</td><td class="num ok">0.04%</td><td class="num fail">~9,900%</td></tr>
+        <tr><td>Titan</td><td class="num">1.467 bar</td><td class="num">1.354</td><td class="num ok">0.02%</td><td class="num fail">~950%</td></tr>
+        <tr><td>Jupiter</td><td class="num">no surface</td><td class="num">25.92</td><td class="num ok">0.09%</td><td class="num">excluded</td></tr>
+      </tbody>
+    </table>
+    <p class="sub" style="margin-top:10px">Newtonian failures at 2% tolerance: <b class="ok">0 / 7</b>.
+      Pressure-model failures (bodies with a surface, out-of-sample): <b class="fail">5 / 5</b>.
+      Verdict: <b>atmospheric pressure replaces gravity</b> — <b class="pill X">X</b> contradicted-by-test.</p>
+  </div>
+
+  <div class="panel">
+    <h2>2 · "Ozone = Life" — decomposed</h2>
+    <p class="sub">The thesis is not one claim but several. Each reading gets its own verdict.</p>
+    <table>
+      <thead><tr><th>Reading of "Ozone = Life"</th><th>Class</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Ozone is literally alive / is life itself</td><td><span class="pill U">U</span></td><td>not-supported</td></tr>
+        <tr><td>Ozone is a protective UV shield on modern Earth</td><td><span class="pill B">B</span></td><td class="ok">supported-within-model</td></tr>
+        <tr><td>Ozone is a contextual biosignature</td><td><span class="pill B">B</span></td><td>survives-as-narrowed-hypothesis</td></tr>
+        <tr><td>Ozone is necessary for ALL life</td><td><span class="pill X">X</span></td><td class="fail">contradicted (anaerobic / early life)</td></tr>
+        <tr><td>Ozone alone makes water</td><td><span class="pill X">X</span></td><td class="fail">contradicted (no ozone needed for 2H₂+O₂→2H₂O)</td></tr>
+      </tbody>
+    </table>
+    <p class="sub" style="margin-top:10px">Beer–Lambert (<code>SP.Lab.Radiation</code>): a ~300 DU ozone column gives optical depth
+      τ ≈ 89, so UV-C surface transmission is < 10⁻³⁰ — the shield is real. Ozone is also produced abiotically on Venus and Mars,
+      which is why "shield" ≠ "biosignature" ≠ "life."</p>
+  </div>
+
+  <div class="panel">
+    <h2>3 · Is oxygen "life itself"? (bioenergetics)</h2>
+    <p class="sub"><code>SP.Lab.Bioenergetics</code>: proton-motive force Δp = Δψ − (2.303RT/F)·ΔpH; ATP proxy ΔG ≈ n·F·Δp.</p>
+    <table>
+      <thead><tr><th>Claim</th><th>Class</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Proton gradients are foundational to known bioenergetics</td><td><span class="pill B">B</span></td><td class="ok">supported-within-model</td></tr>
+        <tr><td>Oxygen is a powerful terminal electron acceptor (aerobic life)</td><td><span class="pill B">B</span></td><td class="ok">supported-within-model</td></tr>
+        <tr><td>Oxygen / ozone uniquely defines all life</td><td><span class="pill X">X</span></td><td class="fail">contradicted (anaerobic cell survives without O₂ in the model)</td></tr>
+        <tr><td>"Proton = soul"</td><td><span class="pill D">D</span></td><td>metaphor-preserved</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Reproduce: <code>mix test test/sp/lab/ --seed 0</code> · Provenance: <code>lab/evidence/</code> · Fences: <code>lab/docs/SCIENTIFIC_LIMITS.md</code><br>
+    The math is allowed to say "contradicted." Nothing here is labelled "proven."
+  </footer>
+</div>

@@ -1,0 +1,116 @@
+{
+  "schema": "uni.bootstrap_literals.v1",
+  "why": [
+    "CLAUDE.md: IPs live ONLY in the host registry, and consumers resolve by NAME. A literal in",
+    "live code is an address that cannot follow a lease. But a few places genuinely cannot use a",
+    "name: the bootstrap that RESOLVES names cannot resolve one before it has the registry; a",
+    "self-signed cert's SAN is an IP because guest devices connect by IP; and container-internal",
+    "podman addresses have no fleet DNS at all. For those, a small, NAMED, EXPIRING allowlist is the",
+    "honest shape.",
+    "",
+    "AN ALLOWLIST WITHOUT EXPIRY IS A PERMANENT HOLE. Every entry carries `expires` and",
+    "`re_derivation`. Past its expiry an entry is a FAILURE, not a warning: the fence goes red and",
+    "someone has to look again. `re_derivation` is the command that recovers the value, so a reader",
+    "can CHECK the literal rather than trust it.",
+    "",
+    "CORRECTED 2026-08-01: the two pre-existing entries' re_derivation pointed at",
+    "`viewer/host_registry.json` (which does not exist) and a `boxes[].id` field (the real field is",
+    "`name`). A re-derivation command that errors is worse than none - it looks checkable and is not.",
+    "Both now name the real file and field. Ten entries were added the same day when the IP->DNS",
+    "remediation turned 29 live literals into names: what remained are the addresses a name genuinely",
+    "cannot replace, each with the reason it must stay and the date it must be looked at again."
+  ],
+  "rules": {
+    "expiry_is_a_failure": "an entry past `expires` fails the fence; it does not warn",
+    "no_open_ended_entries": "`expires` is required on every entry and may not be null or 'never'",
+    "max_horizon_days": 120,
+    "re_derivation_is_required": "an allowlisted literal a reader cannot recompute is a literal nobody can check"
+  },
+  "literals": [
+    {
+      "literal": "10.13.13.1",
+      "file": "viewer/infra.cjs",
+      "why": "the WireGuard mesh gateway. The bootstrap dials it to reach the registry; it cannot resolve a name before it has the registry that resolves names.",
+      "re_derivation": "node -e \"console.log(require('./viewer/infra_registry.json').boxes.find(b=>(b.ips||[]).includes('10.13.13.1')).name)\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.13.13.3",
+      "file": "viewer/infra.cjs",
+      "why": "the chip's mesh address, used only by the sanctioned bootstrap probe.",
+      "re_derivation": "node -e \"console.log(require('./viewer/infra_registry.json').boxes.find(b=>(b.ips||[]).includes('10.13.13.3')).name)\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.190.245.121",
+      "file": "viewer/infra.cjs",
+      "why": "THE CHIP'S CURRENT DHCP LAN LEASE, dialled by the bootstrap DNS resolver before any name can be resolved. It is NOT declarable (the _lan_dynamic_law: a lease is never pinned in the registry), so it cannot be swapped for a name here. This entry exists to be RETIRED by the operator's overlay-plane move (plan O2/O3: dial the chip via the stable tailscale overlay 100.100.188.48 that THINKER can reach, and allowlist THAT instead). Its expiry is the deadline for that co-signed decision - never allowlist .121 again past it, because pinning a lease is the exact trap the fence exists to catch.",
+      "re_derivation": "powershell -Command \"(Resolve-DnsName uni-lab.uni-lab.local -Type A | Where-Object { $_.IPAddress -like '10.190.245.*' }).IPAddress\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.190.245.121",
+      "file": "viewer/apply_nrpt.ps1",
+      "why": "the chip's current LAN lease, written into the Windows NRPT rule that routes *.uni-lab.local to the chip's dnsmasq - the one resolver that cannot itself be addressed by the name it serves. Same lease-not-declarable case as infra.cjs; retired by the same operator overlay-plane move (O4).",
+      "re_derivation": "powershell -Command \"(Resolve-DnsName uni-lab.uni-lab.local -Type A | Where-Object { $_.IPAddress -like '10.190.245.*' }).IPAddress\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.89.1.40",
+      "file": "viewer/apply_nrpt.ps1",
+      "why": "mc.uni-lab.local - the Minecraft world host, in the NRPT routing rule. Declared in the zone (production/dns/uni-lab.local.hosts) and recoverable by name; kept as a literal only because an NRPT rule maps a name-suffix to a resolver IP by IP.",
+      "re_derivation": "powershell -Command \"(Resolve-DnsName mc.uni-lab.local -Type A).IPAddress\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.190.245.196",
+      "file": "viewer/gen_auto_cert.ps1",
+      "why": "the SAN of the studio's self-signed cert for the camera gateway. Guest contributors open https://<thinker>:8443/ BY IP (the cert's SAN is the IP; a DNS name would cert-mismatch on a guest device that may not resolve the private zone), so the literal is intrinsic to the cert. The primary source is still channels.json { host }; this is the fallback SAN.",
+      "re_derivation": "node -e \"console.log((require('./viewer/infra_registry.json').boxes.find(b=>b.name==='thinker').ips||[])[0])\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.190.245.196",
+      "file": "viewer/studio_up.ps1",
+      "why": "the camera-gateway URL printed in the bring-up banner for LAN devices. IP-addressed to match the cert SAN above (same guest-connects-by-IP reason).",
+      "re_derivation": "node -e \"console.log((require('./viewer/infra_registry.json').boxes.find(b=>b.name==='thinker').ips||[])[0])\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.190.245.149",
+      "file": "production/containers/systemd/mediamtx.yml",
+      "why": "node2's LAN address advertised as a WebRTC ICE host candidate by the relay's MediaMTX (webrtcAdditionalHosts). ICE candidates are literal addresses by protocol - a browser cannot ICE against a name. node2 is declared in the registry; the operator applies this yaml change on the live relay (plan O5).",
+      "re_derivation": "node -e \"console.log((require('./viewer/infra_registry.json').boxes.find(b=>b.name==='node2').ips||[])[0])\"",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.88.0.35",
+      "file": "production/mixer/build_scenes.py",
+      "why": "the relay container's current podman-bridge IP (RELAY_RTMP/SRT defaults). The default 'podman' bridge has no aardvark-dns, so container-name resolution fails and this is addressed by IP. NO fleet DNS name exists for a container-internal address. Overridable via env; the durable fix (the file's own comment) is a custom podman network with DNS. System-2, authored-not-run.",
+      "re_derivation": "podman inspect uni-bcast-relay --format '{{.NetworkSettings.IPAddress}}'",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.88.0.1",
+      "file": "production/mixer/build_scenes.py",
+      "why": "the podman bridge GATEWAY, named in a docstring explaining why cam reads address the gateway not a container IP (container IPs move across restarts). Container-plane address, no fleet DNS.",
+      "re_derivation": "podman network inspect podman --format '{{range .Subnets}}{{.Gateway}}{{end}}'",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.88.0.35",
+      "file": "production/containers/obs-entrypoint.sh",
+      "why": "the relay container IP the OBS entrypoint pushes to. Same container-internal, no-fleet-DNS case as build_scenes.py. System-2.",
+      "re_derivation": "podman inspect uni-bcast-relay --format '{{.NetworkSettings.IPAddress}}'",
+      "expires": "2026-10-30"
+    },
+    {
+      "literal": "10.88.0.1",
+      "file": "production/guest/pubgate/server.cjs",
+      "why": "the podman bridge gateway the pubgate's WHIP proxy reaches the relay through. Container-plane address, no fleet DNS. System-2.",
+      "re_derivation": "podman network inspect podman --format '{{range .Subnets}}{{.Gateway}}{{end}}'",
+      "expires": "2026-10-30"
+    }
+  ],
+  "expiry_is_a_hard_failure": "EVERY ENTRY HERE EXPIRES, AND AN EXPIRED ENTRY IS A HARD FAILURE OF viewer/verify_ip_fence.cjs -- not a warning. The 2026-10-30 horizon is deliberate: it is the deadline by which the operator's overlay-plane move (O2/O3/O4 for the two .121 lease entries) and the podman-network-DNS follow-up (the 10.88.0.x entries) must be done or consciously re-dated. Do not silently bump these; re-derive with each entry's command, or let it expire and look again."
+}

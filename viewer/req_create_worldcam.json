@@ -1,0 +1,17 @@
+{
+  "requestType": "CreateInput",
+  "requestData": {
+    "sceneName": "UNI Show",
+    "inputName": "UNI World Cam",
+    "inputKind": "browser_source",
+    "inputSettings": {
+      "url": "http://localhost:3020/",
+      "width": 1920,
+      "height": 1080,
+      "reroute_audio": false,
+      "restart_when_active": true,
+      "webpage_control_level": 1
+    },
+    "sceneItemEnabled": true
+  }
+}

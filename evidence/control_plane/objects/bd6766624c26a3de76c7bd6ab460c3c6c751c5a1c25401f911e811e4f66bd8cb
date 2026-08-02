@@ -1,0 +1,17 @@
+PHASE 9 STEP 4.4 - the repo-wide IP fence, LANDED RED as item 8.6 requires. 2026-07-27.
+
+$ node viewer/verify_ip_fence.cjs
+LIVE IP LITERALS — 27 use(s) across 16 file(s); 19 mention(s) spared
+  ok  every allowlisted literal expires and can be re-derived - 2 entries, all with an expiry in the future (today 2026-07-27) and a command that recomputes them from the registry
+  ok  no open-ended entry exists - an allowlist without expiry is a permanent hole
+  ok  THE WALK FOUND SOMETHING (a green fence here is a broken walk) - 27 live IP literals across 407 files — acceptance asks for >=12
+  ok  a comment RECORDING A REMOVAL is not convicted - counted as a mention. A fence that punishes the sentence teaches people to delete it, and the next reader loses the only account of why the address is gone.
+  ok  the SAME literal in live code IS convicted - mention is spared; use is not
+  ok  NEGATIVE CONTROL: versions, wildcards and loopback are not addresses - 4.0.0.0 · 15.0.0.0 · 2.9.3.0 · 0.0.0.0 · 127.0.0.1 · 10.0.0.0 — all correctly ignored
+  ok  NEGATIVE CONTROL: real fleet addresses ARE recognised - RFC1918 and CGNAT hosts
+  ok  M5 historical replay: >=12 hits on the pre-fix tree - 34 uses at d2b52a23 over 354 in-scope files — the acceptance number is met on real history, not on a fixture
+GATE: FAIL - ip-fence, 8/8 self-checks, 27 live literal(s)
+  Every self-check passed. This gate is RED because THE FENCE FOUND WHAT IT WAS BUILT
+  TO FIND — item 8.6 requires it to land red, and a green landing would mean the walk
+  is wrong. Each literal above is an address that cannot follow a lease.
+exit=1 (RED IS THE ACCEPTANCE: a green landing would mean the walk is wrong)

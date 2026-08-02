@@ -1,0 +1,41 @@
+[Unit]
+Description=UNI Heartbeat (oneshot probe: P1 gate + relay path + colony health + colony-size gate -> ledger)
+# Timer-triggered oneshot (see uni-heartbeat.timer, OnUnitActiveSec=60s). Runs production/scripts/heartbeat.sh,
+# which re-runs verify_p1.sh, checks the relay's uni/program path readiness, probes the colony source's
+# /producer/health (non-fatal if unreachable - the colony source may be intentionally down, see
+# docs/STUDIO_SYSTEMS.md CURRENT STATUS), and calls colony_gate.sh (viewer/verify_colony.cjs) for the
+# colony-size proof. Every check's pass/fail + raw values is appended as one JSON line to
+# /var/lib/uni/broadcast/audit/heartbeat.ndjson; on ANY failure it calls notify.sh. This is a READ-ONLY
+# probe daemon - it never calls a HUMAN_GATED MCP verb (start/stop_broadcast, admit_guest, schedule,
+# open_session); at most it may exercise pre-authorized IN_SHOW_VERBS-tier reads via the same surfaces
+# verify_p1.sh already probes.
+After=network-online.target uni-production-mcp.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/uni
+Environment=PYTHONPATH=/opt/uni
+# Where heartbeat.sh appends its ndjson ledger row (mirrors UNI_BCAST_SPOOL used elsewhere).
+Environment=UNI_BCAST_SPOOL=/var/lib/uni/broadcast
+# Colony source health endpoint - loopback default; on the real deploy this may be a WireGuard address
+# (the colony source runs on a different host, THINKER, per docs/STUDIO_SYSTEMS.md). Override in
+# /etc/uni/runtime.env, not here.
+Environment=UNI_COLONY_HEALTH_URL=http://127.0.0.1:4000/producer/health
+# Optional outward notification on failure (webhook URL); notify.sh no-ops if unset.
+#Environment=UNI_NOTIFY_URL=
+# This is a plain systemd .service (production/systemd/, NOT production/containers/systemd/) - it is
+# started directly by systemd/the timer, never passed through podman's quadlet generator. The
+# dash-optional EnvironmentFile form below is therefore SAFE here even though the quadlet generator
+# was found (2026-07-11, see uni-bcast-relay.container's header) to reject the dash-optional form for
+# .container units on this node. uni-production-mcp.service - also a plain .service - already proves
+# this form works for non-quadlet units; mirrored here, not the design doc's untested default.
+EnvironmentFile=-/etc/uni/runtime.env
+ExecStartPre=-/bin/mkdir -p /var/lib/uni/broadcast/audit
+ExecStart=/opt/uni/production/scripts/heartbeat.sh
+StandardError=append:/run/uni-heartbeat.err.log
+# No Restart= - this is a oneshot fired by uni-heartbeat.timer, not a long-running daemon; the timer's
+# own cadence is the retry loop, not systemd's service-restart machinery.
+
+[Install]
+WantedBy=multi-user.target

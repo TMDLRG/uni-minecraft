@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">Where does the word reward appear anywhere in the brain?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node -e const cp=require('child_process');const r=cp.spawnSync('git',['grep','-nE','\\breward\\b','--','lib/sp/brain'],{encoding:'utf8'});const L=(r.stdout||'').split(/\r?\n/).filter(Boolean);const neg=L.filter(function(l){return /\bno\b[^.]{0,24}reward|reward[- ]smuggl|dispreferred/i.test(l);});console.log('lines_naming_reward='+L.length);console.log('of_those_saying_there_is_none='+neg.length);L.slice(0,5).forEach(function(x){console.log('  '+x.replace(/^lib\/sp\/brain\//,''));});</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="244" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  curriculum.ex:92:  # bin-0 still steeply dispreferred (the agent STILL eats/stays alive) but</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">reward keeps RISING toward 'full'</text>
+  <text x="136" y="554" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  curriculum.ex:101:  # saturable foil = reward-smuggling). This is the depth the single 4-bin</text>
+  <text x="136" y="584" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">setpoint scalar lacked.</text>
+  <text x="136" y="614" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  factors.ex:27:  # actually taken — pure model-learning, no reward. Uniform `e` ⇒ ln E is</text>
+  <text x="136" y="644" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">constant ⇒</text>
+  <text x="136" y="674" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  factors.ex:142:  @doc "Per-factor Dirichlet model learning (no reward)."</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">lib/sp/brain — the search across every brain module, and the lines it returned, unedited</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">A word search finds a word. It cannot find a reward that was implemented under a different name.</text>
+</svg>

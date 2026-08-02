@@ -1,0 +1,150 @@
+Running ExUnit with seed: 184731, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test a node id must be namespaced, so a gate and a room cannot collide (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:222
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.node/2 is undefined (module SP.ControlPlane.Scene is not available)
+     code: Scene.node("bare-id", %{
+     stacktrace:
+       SP.ControlPlane.Scene.node("bare-id", %{truth_class: :DERIVED, receipt_ref: nil, evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_is_pure_test.exs:224: (test)
+
+.
+
+  2) test a node with NO truth_class is refused at construction (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:135
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.node/2 is undefined (module SP.ControlPlane.Scene is not available)
+     code: Scene.node("gate:x", %{
+     stacktrace:
+       SP.ControlPlane.Scene.node("gate:x", %{receipt_ref: "docs/GATES.md", evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_is_pure_test.exs:137: (test)
+
+
+
+  3) test every node carries truth_class, receipt_ref, evidence_class and captured_at (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:122
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.of/1 is undefined (module SP.ControlPlane.Scene is not available)
+     code: {:ok, scene} = Scene.of(state())
+     stacktrace:
+       SP.ControlPlane.Scene.of(%{gates: [%{id: "gate:control-plane-ledger-appendable", truth_class: :DERIVED, receipt_ref: "docs/GATES.md", evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"}], rooms: [%{id: "room:lab-a", truth_class: :OBSERVED, receipt_ref: "docs/receipts/control-plane/phase6_green_2026-07-26.txt", evidence_class: "B", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/scene_is_pure_test.exs:123: (test)
+
+
+
+  4) test evidence_class is CARRIED, never invented — only the source's vocabulary is accepted (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:187
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.node/2 is undefined (module SP.ControlPlane.Scene is not available)
+     code: for c <- ~w(A B C Sec pending) do
+     stacktrace:
+       SP.ControlPlane.Scene.node("gate:x", %{truth_class: :DERIVED, receipt_ref: nil, evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_is_pure_test.exs:190: anonymous fn/2 in SP.ControlPlane.SceneIsPureTest."test evidence_class is CARRIED, never invented — only the source's vocabulary is accepted"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/scene_is_pure_test.exs:188: (test)
+
+
+
+  5) test a scene refuses to build when ANY node is malformed — it does not silently drop one (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:240
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.of/1 is undefined (module SP.ControlPlane.Scene is not available)
+     code: assert {:error, reason} = Scene.of(bad)
+     stacktrace:
+       SP.ControlPlane.Scene.of(%{gates: [%{id: "gate:x", receipt_ref: nil}], rooms: [%{id: "room:lab-a", truth_class: :OBSERVED, receipt_ref: "docs/receipts/control-plane/phase6_green_2026-07-26.txt", evidence_class: "B", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/scene_is_pure_test.exs:243: (test)
+
+
+
+  6) test building a scene sends this process no message (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:85
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.of/1 is undefined (module SP.ControlPlane.Scene is not available)
+     code: {:ok, _} = Scene.of(state())
+     stacktrace:
+       SP.ControlPlane.Scene.of(%{gates: [%{id: "gate:control-plane-ledger-appendable", truth_class: :DERIVED, receipt_ref: "docs/GATES.md", evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"}], rooms: [%{id: "room:lab-a", truth_class: :OBSERVED, receipt_ref: "docs/receipts/control-plane/phase6_green_2026-07-26.txt", evidence_class: "B", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/scene_is_pure_test.exs:86: (test)
+
+
+
+  7) test a truth_class outside the vocabulary is refused (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:146
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.truth_classes/0 is undefined (module SP.ControlPlane.Scene is not available)
+     code: assert Scene.truth_classes() ==
+     stacktrace:
+       SP.ControlPlane.Scene.truth_classes()
+       test/sp/control_plane/scene_is_pure_test.exs:147: (test)
+
+
+
+  8) test a scene is a function of its ARGUMENT — it reads no clock and no disk (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:90
+     ** (File.Error) could not read file "c:/Users/mpolz/Documents/UNI.Minecraft/lib/sp/control_plane/scene.ex": no such file or directory
+     code: |> File.read!()
+     stacktrace:
+       (elixir 1.19.5) lib/file.ex:435: File.read!/1
+       test/sp/control_plane/scene_is_pure_test.exs:94: (test)
+
+
+
+  9) test captured_at must be a real instant — a scene cannot depict a time that never was (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:210
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.node/2 is undefined (module SP.ControlPlane.Scene is not available)
+     code: for bad <- ["", "yesterday", "2026-13-01T00:00:00Z", nil] do
+     stacktrace:
+       SP.ControlPlane.Scene.node("gate:x", %{truth_class: :DERIVED, receipt_ref: nil, evidence_class: "C", captured_at: ""})
+       test/sp/control_plane/scene_is_pure_test.exs:213: anonymous fn/2 in SP.ControlPlane.SceneIsPureTest."test captured_at must be a real instant — a scene cannot depict a time that never was"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/scene_is_pure_test.exs:211: (test)
+
+
+
+ 10) test an empty state builds an empty scene, not an error (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:249
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.of/1 is undefined (module SP.ControlPlane.Scene is not available)
+     code: assert {:ok, scene} = Scene.of(%{gates: [], rooms: []})
+     stacktrace:
+       SP.ControlPlane.Scene.of(%{gates: [], rooms: []})
+       test/sp/control_plane/scene_is_pure_test.exs:250: (test)
+
+
+
+ 11) test receipt_ref may be nil — that is permitted, and is NOT an error (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:162
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.node/2 is undefined (module SP.ControlPlane.Scene is not available)
+     code: Scene.node("gate:x", %{
+     stacktrace:
+       SP.ControlPlane.Scene.node("gate:x", %{truth_class: :UNKNOWN, receipt_ref: nil, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_is_pure_test.exs:164: (test)
+
+
+
+ 12) test the same state produces the same scene, every time (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.of/1 is undefined (module SP.ControlPlane.Scene is not available)
+     code: {:ok, a} = Scene.of(state())
+     stacktrace:
+       SP.ControlPlane.Scene.of(%{gates: [%{id: "gate:control-plane-ledger-appendable", truth_class: :DERIVED, receipt_ref: "docs/GATES.md", evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"}], rooms: [%{id: "room:lab-a", truth_class: :OBSERVED, receipt_ref: "docs/receipts/control-plane/phase6_green_2026-07-26.txt", evidence_class: "B", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/scene_is_pure_test.exs:69: (test)
+
+
+
+ 13) test the key itself must be PRESENT even when its value is nil (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:175
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.node/2 is undefined (module SP.ControlPlane.Scene is not available)
+     code: Scene.node("gate:x", %{
+     stacktrace:
+       SP.ControlPlane.Scene.node("gate:x", %{truth_class: :UNKNOWN, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_is_pure_test.exs:177: (test)
+
+
+
+ 14) test building a scene spawns nothing (SP.ControlPlane.SceneIsPureTest)
+     test/sp/control_plane/scene_is_pure_test.exs:76
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.of/1 is undefined (module SP.ControlPlane.Scene is not available)
+     code: {:ok, _} = Scene.of(state())
+     stacktrace:
+       SP.ControlPlane.Scene.of(%{gates: [%{id: "gate:control-plane-ledger-appendable", truth_class: :DERIVED, receipt_ref: "docs/GATES.md", evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"}], rooms: [%{id: "room:lab-a", truth_class: :OBSERVED, receipt_ref: "docs/receipts/control-plane/phase6_green_2026-07-26.txt", evidence_class: "B", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/scene_is_pure_test.exs:78: (test)
+
+
+Finished in 0.4 seconds (0.4s async, 0.00s sync)
+15 tests, 14 failures

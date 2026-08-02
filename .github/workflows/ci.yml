@@ -1,0 +1,213 @@
+name: CI
+
+on:
+  push:
+    # Phase 9 step 1.3 finding: this repo's real branch is `gen2-runtime`, which never matched
+    # [main, master] -- so CI had NEVER RUN, not once, for any commit made on it (confirmed via
+    # `gh run list`: zero runs, ever, on any branch). main/master are kept for a future default-
+    # branch rename; gen2-runtime is the one that matters today.
+    branches: [main, master, gen2-runtime]
+  pull_request:
+  workflow_dispatch: {} # manual/canary runs without needing a matching push
+
+jobs:
+  test:
+    name: Test & QA (Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 1.17 dropped 2026-07-26: the Control Plane needs the built-in JSON module (1.18+); see
+          # mix.exs's elixir constraint comment. mix.exs is the floor this matrix must match.
+          - elixir: "1.18"
+            otp: "27"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, not the default shallow clone. The control-plane ledger names a commit
+          # in every entry and a test asserts each one EXISTS in git -- that is the whole point of
+          # the ledger being real rather than decorative. With fetch-depth 1 those commits are
+          # absent and the test failed reporting 'the ledger names a commit this repository does
+          # not have', which was true of the checkout and false of the repository.
+          fetch-depth: 0
+
+      - name: Set up Elixir/OTP
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      # The pure core has ZERO hex dependencies, so there is nothing to fetch.
+      - name: Compile (warnings as errors)
+        run: mix compile --warnings-as-errors --force
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Run the full QA suite
+        run: mix test
+
+      - name: Regenerate and diff the golden trace (regression guard)
+        run: |
+          mix run scripts/gen_golden.exs
+          git diff --exit-code config/golden/ || (echo "Golden trace drifted; review dynamics changes." && exit 1)
+
+      - name: Blanket evidence — record a run and verify it independently
+        run: |
+          mix run scripts/record_run.exs 314 morphology_seeking 120
+          mix sp.verify runs/seed314-morphology_seeking.jsonl
+
+  ui:
+    name: Overlooker UI (Phoenix LiveView)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, not the default shallow clone. The control-plane ledger names a commit
+          # in every entry and a test asserts each one EXISTS in git -- that is the whole point of
+          # the ledger being real rather than decorative. With fetch-depth 1 those commits are
+          # absent and the test failed reporting 'the ledger names a commit this repository does
+          # not have', which was true of the checkout and false of the repository.
+          fetch-depth: 0
+
+      - name: Set up Elixir/OTP
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18"
+          otp-version: "27"
+
+      # The UI app is the only part of the repo that takes hex dependencies.
+      - name: Fetch UI deps
+        working-directory: ui
+        run: mix deps.get
+
+      - name: Run LiveView tests (mount, step, falsifiable verdict)
+        working-directory: ui
+        run: mix test
+
+  gates-node:
+    name: gates-node (viewer/*.cjs gate law + registry completeness)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, not the default shallow clone. The control-plane ledger names a commit
+          # in every entry and a test asserts each one EXISTS in git -- that is the whole point of
+          # the ledger being real rather than decorative. With fetch-depth 1 those commits are
+          # absent and the test failed reporting 'the ledger names a commit this repository does
+          # not have', which was true of the checkout and false of the repository.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # ELIXIR TOO, AND THIS JOB HAD NEITHER. Three registered lab gates -- lab-l1, lab-l5 and,
+      # through the gauntlet it runs, lab-l6 -- spawn `mix` to cross-check the renderer's materials
+      # against the engine that produces them. This job set up Node alone, so `mix` was not on PATH
+      # and all three reported FAIL in CI while passing on any machine with Elixir installed.
+      #
+      # That is a false red, and a false red is not harmless: it is three of the five gates that made
+      # this pipeline look permanently broken, and it trains a reader to discount the other two --
+      # which are real.
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18"
+          otp-version: "27"
+
+      - name: Compile the engine the lab gates cross-check against
+        run: mix compile
+
+      # gate_runner.cjs (Phase 9 step 1.2) invokes every CI-safe registered node gate un-piped and asserts
+      # exit==0<=>verdict==PASS + registry completeness (a gate file on disk but unregistered fails this).
+      # --require-pass is CI's own policy layered on top: it additionally requires every run gate's verdict
+      # be PASS, so a real red gate (e.g. host-tracking today) makes THIS JOB red, not just the law-check.
+      - name: gate_runner — law, completeness, and require every run gate PASS
+        run: node viewer/gate_runner.cjs --require-pass
+
+      # The meta-gate proves the runner itself has teeth (a FAIL-but-exit-0 liar is caught; an unregistered
+      # ghost file is caught) via mutation on a disposable fixture — it never touches this repo's real files.
+      - name: gate_runner meta-gate (proves the law-checker bites)
+        run: node viewer/verify_gate_runner.cjs
+
+      # THE RESONANCE METER'S INSTRUMENT PROOF. It is deliberately NOT a registered gate — layer L2
+      # measures whether the instruments run BY RUNNING gate_runner, and the runner runs every
+      # registered verify_* file, so a meter inside the registry recurses into itself. It was tried
+      # under the name verify_resonance.cjs and did exactly that. A ruler among the things it measures
+      # will eventually measure itself, so it is invoked HERE instead, by name.
+      #
+      # --prove proves THE METER, not the system: that the lattice is conjunctive at every layer, that a
+      # throwing probe reads UNMEASURED and never FULL, that it CAN still report FULL (the negative
+      # control, without which every red it prints would be vacuous), and that one real unstubbed probe
+      # detects one real break. It does NOT measure resonance and does not pretend to — a system that is
+      # not yet resonant is the news the meter carries, not a broken build.
+      #
+      # It runs in ~0.12s and needs no services, no worktree and no BEAM. Until 2026-07-30 it took 721
+      # SECONDS, because it measured the whole real system first — four gate runs, a git worktree and
+      # `mix test` — purely to print one narrator line that was never a counted check. That cost is the
+      # entire reason this instrument had no CI step, no script and no caller for its whole life.
+      - name: resonance meter — prove the instrument (NOT the system; it is not a registered gate)
+        run: node viewer/resonance_meter.cjs --prove
+
+  # The .NET HUD is the REAL HUD (UNI.Hud.Service, a Windows service; the node HUD under viewer/hud/*.cjs
+  # is superseded per ADR-PROD-016). Its tests assert the rules that keep the operator's one alarm surface
+  # honest — RenderDecisionsTests asserts that a sensor which has stopped reporting is drawn as NOT
+  # REPORTING rather than as calm, which is the exact defect hud.html carried until 2026-07-30. Until this
+  # job existed, ci.yml had NO dotnet step, so all 89 of those tests were asserted by NO PIPELINE.
+  #
+  # WHY windows-latest AND NOT ubuntu. UNI.Hud.Widget.Tests is deliberately a plain net10.0 project with no
+  # ProjectReference to the WPF widget (RenderDecisions.cs is compiled in directly), so it would very likely
+  # run on ubuntu. UNI.Hud.Service.Tests would not be safe to assume: the service it covers uses
+  # System.Diagnostics.EventLog, which raises four CA1416 "windows only" warnings at compile time and throws
+  # at runtime off Windows. Both projects were measured PASSING on Windows (35 + 54 = 89 tests) and on no
+  # other platform, so the job runs on the platform where the claim was actually measured.
+  hud-native:
+    name: hud-native (.NET service + widget render rules — 89 tests no pipeline used to run)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, not the default shallow clone. The control-plane ledger names a commit
+          # in every entry and a test asserts each one EXISTS in git -- that is the whole point of
+          # the ledger being real rather than decorative. With fetch-depth 1 those commits are
+          # absent and the test failed reporting 'the ledger names a commit this repository does
+          # not have', which was true of the checkout and false of the repository.
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      # The render rules: a dead detector must read NOT REPORTING, a live black push must read RED, an
+      # unknown level must read SYNCING and never a confident OFF, null readers must read NOT MEASURED.
+      # Every one of those is a "does the HUD lie when it does not know" assertion.
+      - name: dotnet test — UNI.Hud.Widget.Tests (RenderDecisions + AlarmEngine)
+        run: dotnet test viewer/hud/native/UNI.Hud.Widget.Tests/UNI.Hud.Widget.Tests.csproj --nologo
+
+      - name: dotnet test — UNI.Hud.Service.Tests
+        run: dotnet test viewer/hud/native/UNI.Hud.Service.Tests/UNI.Hud.Service.Tests.csproj --nologo
+
+  gates-python:
+    name: gates-python (discover, compile+import check, run what's CI-safe)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, not the default shallow clone. The control-plane ledger names a commit
+          # in every entry and a test asserts each one EXISTS in git -- that is the whole point of
+          # the ledger being real rather than decorative. With fetch-depth 1 those commits are
+          # absent and the test failed reporting 'the ledger names a commit this repository does
+          # not have', which was true of the checkout and false of the repository.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Discovers every python file carrying the GATE:/RESULT:/PROOF: verdict convention, compile+import
+      # checks each (a real, failing check — catches a broken import or syntax error), and runs the ones that
+      # do not declare CI_EXTERNAL for a real PASS/FAIL. Today's one python gate (verify_scenes.py) needs a
+      # live OBS instance and declares CI_EXTERNAL, so it is listed and import-checked, never fabricated PASS.
+      - name: verify_python_gates — discover, compile+import, run what's CI-safe
+        run: python production/verify_python_gates.py

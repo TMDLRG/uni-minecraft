@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g9" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g9)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="90" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#9aa7b4" letter-spacing="3">seven worlds — NASA NSSDCA reference data</text>
+
+  <g font-family="ui-monospace,Consolas,monospace" font-size="24" fill="#cdd6f4">
+    <text x="220" y="180" fill="#6c7393" font-size="22">BODY</text>
+    <text x="780" y="180" text-anchor="end" fill="#6c7393" font-size="22">SURFACE PRESSURE</text>
+    <text x="1180" y="180" text-anchor="end" fill="#6c7393" font-size="22">MEASURED g (m/s²)</text>
+    <text x="1700" y="180" text-anchor="end" fill="#6c7393" font-size="22">RADIUS / MASS</text>
+    <line x1="200" y1="200" x2="1720" y2="200" stroke="#30363d" stroke-width="2"/>
+
+    <text x="220" y="248">Earth</text>
+    <text x="780" y="248" text-anchor="end">1.014 bar</text>
+    <text x="1180" y="248" text-anchor="end" fill="#f9e2af">9.82</text>
+    <text x="1700" y="248" text-anchor="end">6371 km · 5.97e24 kg</text>
+
+    <text x="220" y="296">Moon</text>
+    <text x="780" y="296" text-anchor="end" fill="#9aa7b4">~3 × 10⁻¹⁵ bar</text>
+    <text x="1180" y="296" text-anchor="end" fill="#a6e3a1">1.62</text>
+    <text x="1700" y="296" text-anchor="end">1737 km · 7.35e22 kg</text>
+
+    <text x="220" y="344">Mars</text>
+    <text x="780" y="344" text-anchor="end">6.36 mbar</text>
+    <text x="1180" y="344" text-anchor="end" fill="#a6e3a1">3.73</text>
+    <text x="1700" y="344" text-anchor="end">3390 km · 6.42e23 kg</text>
+
+    <text x="220" y="392">Venus</text>
+    <text x="780" y="392" text-anchor="end" fill="#f38ba8">92 bar</text>
+    <text x="1180" y="392" text-anchor="end" fill="#a6e3a1">8.87</text>
+    <text x="1700" y="392" text-anchor="end">6052 km · 4.87e24 kg</text>
+
+    <text x="220" y="440">Mercury</text>
+    <text x="780" y="440" text-anchor="end" fill="#9aa7b4">~5 × 10⁻¹⁵ bar</text>
+    <text x="1180" y="440" text-anchor="end" fill="#a6e3a1">3.70</text>
+    <text x="1700" y="440" text-anchor="end">2440 km · 3.30e23 kg</text>
+
+    <text x="220" y="488">Jupiter</text>
+    <text x="780" y="488" text-anchor="end">≫1000 bar</text>
+    <text x="1180" y="488" text-anchor="end" fill="#a6e3a1">25.92</text>
+    <text x="1700" y="488" text-anchor="end">69911 km · 1.90e27 kg</text>
+
+    <text x="220" y="536">Titan</text>
+    <text x="780" y="536" text-anchor="end" fill="#f9e2af">1.467 bar</text>
+    <text x="1180" y="536" text-anchor="end" fill="#a6e3a1">1.354</text>
+    <text x="1700" y="536" text-anchor="end">2575 km · 1.35e23 kg</text>
+
+    <line x1="200" y1="560" x2="1720" y2="560" stroke="#30363d" stroke-width="2"/>
+  </g>
+  <text x="960" y="610" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="22" fill="#6c7393">sources: NASA NSSDCA factsheets · JPL Solar System Dynamics · Huygens HASI (Titan)</text>
+  <rect x="0" y="599" width="1920" height="481" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="599" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="651" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Let us look at the bench together. There is Earth, at one bar of pressure and</text>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">nine-point-eight of gravity. There is the airless Moon and the airless Mercury, with</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">essentially zero atmosphere. There is Mars, with a thin breath of carbon dioxide at six</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">millibars. There is Venus, with a crushing ninety-two bars. There is mighty Jupiter. And</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">there is Titan — Saturn's moon — with an atmosphere thicker than ours, but the gentle</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">gravity of a small world.</text>
+  <rect x="800" y="835" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">बेंचकडे एकत्र पाहू. तिथे आहे पृथ्वी, एक बार दाबावर आणि नऊ-पूर्णांक-आठ</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">गुरुत्वाकर्षणावर. तिथे आहे हवारहित चंद्र आणि हवारहित बुध, जवळजवळ शून्य वातावरणासह.</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">तिथे आहे मंगळ, सहा मिलिबारवर कार्बन डायऑक्साइडच्या पातळ श्वासासह. तिथे आहे शुक्र,</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">चिरडणाऱ्या ब्याऐंशी बारांसह. तिथे आहे पराक्रमी गुरू. आणि तिथे आहे टायटन — शनीचा</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">चंद्र — आपल्यापेक्षा जाडसर वातावरणासह, पण एका छोट्या जगाच्या सौम्य</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">गुरुत्वाकर्षणासह.</text>
+</svg>

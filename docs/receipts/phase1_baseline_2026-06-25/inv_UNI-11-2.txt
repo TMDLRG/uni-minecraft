@@ -1,0 +1,1 @@
+UNI-11-2 has the following entity data: [{Slot: 0b, id: "minecraft:oak_sapling", Count: 1b}, {Slot: 2b, id: "minecraft:wooden_sword", tag: {Damage: 0}, Count: 1b}, {Slot: 9b, id: "minecraft:stick", Count: 1b}, {Slot: 11b, id: "minecraft:birch_planks", Count: 1b}]

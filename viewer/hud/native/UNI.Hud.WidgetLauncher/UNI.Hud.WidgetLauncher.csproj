@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>UNI.Hud.WidgetLauncher</RootNamespace>
+    <AssemblyName>UNI.Hud.WidgetLauncher</AssemblyName>
+    <Version>0.1.0</Version>
+    <AssemblyTitle>UNI HUD Widget Launcher</AssemblyTitle>
+    <Company>solutionwright</Company>
+    <Product>UNI HUD</Product>
+    <Description>Windows Service that supervises UNI.Hud.Widget.exe. It registers a native Windows Scheduled Task ("UNI\HUD Widget", interactive-token, at-logon) and triggers it whenever the widget is absent, so the Task Scheduler service spawns the WPF widget in the operator's session (Session 0 isolation forbids the service from drawing UI itself). No script anywhere in the boot path; the widget's own named-mutex guard makes duplicate spawns safe no-ops.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.0" />
+    <PackageReference Include="TaskScheduler" Version="2.11.0" />
+  </ItemGroup>
+
+</Project>

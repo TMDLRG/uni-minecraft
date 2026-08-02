@@ -1,0 +1,22 @@
+UNI PROOF RUN — mix sp.uni.prove
+
+ALL_PROVEN: true
+
+1    pass  digamma ψ(x) ≈ scipy (1e-6) — 
+2    pass  (ln B)·s ≠ ln(B·s) — bound-critical convention — Jensen gap 0.1845
+3    pass  VFE is an upper bound: F ≥ −ln p(o) — 
+4    pass  A/B columns stochastic (Σ=1) — 506 columns
+5    pass  mean-field: belief_size = Σ_f N_f (joint never built) — Σ=46 vs joint ∏=7464960
+6    pass  purity: identical (params,obs) ⇒ identical action — 
+7    pass  EFE decomposes into finite epistemic + pragmatic — 
+11   pass  bounded planning ≡ exhaustive at full beam — 
+12   pass  hierarchy inter-level blanket carries only primitives — digest=0 (primitive)
+13   pass  Designer.compile(card) ≡ Genome.express — 
+8    skip  blanket carries only σ in / α out — bridge_test.exs
+9    skip  lockstep: N senses ⇄ N actions — bridge_test.exs
+10   skip  leakage / encode-equivalence / provenance — SP.Sim.Verifier
+14   pass  no foreign layer (Nx|rustler|nif|System.cmd|Port) in SP.Brain.* math — 42 math files foreign-free
+15   pass  native BeamAsm JIT asserted (emu_flavor=:jit) — math on chip — emu_flavor=:jit
+17   pass  no simulator in the live UNI path (sense→decide→act) — 57 live files simulator-free
+18   pass  no foreign mind (LLM/network/external model) in the live UNI path — 57 live files foreign-mind-free
+19   pass  grounded speech: the producer speaks no fact it cannot see (no hallucination) — spoken facts ⊆ live state

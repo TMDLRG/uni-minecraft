@@ -1,0 +1,14 @@
+PHASE 9 STEP 4.2 - PENDING no longer collapses into one word. GREEN RECEIPT, 2026-07-27.
+
+$ node viewer/verify_gate_attempts.cjs
+  ok  the sidecar is byte-identical to a fresh classification - 59 gates, 21394 bytes
+  ok  PENDING no longer collapses into one word - 23 HAS_RESULT_DOCUMENT · 28 NO_RUNNER · 8 RUNNER_REFUSES
+  ok  'never attempted' and 'attempted and blocked' are now different states - 28 have no runner at all (waiting on WORK); 8 have a runner that refuses by construction (waiting on the WORLD)
+  ok  said out loud: gates reading PENDING that name a result document - 23 of them — something was produced and the verdict was never moved
+  ok  evidence/gates.ndjson is untouched (S4) - 964ea25cfe8666ca… — the sidecar wrote nothing here
+  ok  M5 historical replay: the classification is STABLE across history - at 62dc97d6 there were 8 PENDING gates and ALL of them were RUNNER_REFUSES. Every one is still RUNNER_REFUSES today — read from the record, not invented. The other 51 PENDING gates arrived AFTERWARDS, and that is where "nine" came from.
+  ok  MUTATION: the state follows the runner, all three ways - refuses → RUNNER_REFUSES · stops refusing → RUNNABLE_NEVER_RUN · deleted → NO_RUNNER
+  ok  NEGATIVE CONTROL: only PENDING gates are classified - 59 rows, all PENDING
+
+GATE: PASS - gate-attempts, 8/8 checks
+exit=0

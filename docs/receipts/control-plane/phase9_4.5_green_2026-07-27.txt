@@ -1,0 +1,11 @@
+PHASE 9 STEP 4.5 - the format debt: OUTCOME ACHIEVED, ACCEPTANCE CLAUSE NOT MET. 2026-07-27.
+
+$ mix format --check-formatted lib/sp/brain/language.ex
+  (clean - the debt carried for five phases is paid)
+
+$ git show --stat 3ade5d8 | tail -1
+ 81 files changed, 1780 insertions(+), 427 deletions(-)
+
+8.11's clause is 'reformatted IN ITS OWN COMMIT ON ITS OWN TERMS'. It was one of 81.
+The clause is unreachable retroactively: the file is already formatted, so a fresh
+commit would be empty and its only content would be the claim that it had its own commit.

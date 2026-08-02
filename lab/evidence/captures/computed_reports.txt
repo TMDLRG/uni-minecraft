@@ -1,0 +1,25 @@
+=== gravity_model_report(0.02) ===
+Newtonian: failures=0 score=6.5
+Pressure:  failures=5 score=-13.0
+Verdict: newtonian_dominates
+Newtonian per-body rel error:
+  earth: 0.005%
+  moon: 0.36%
+  mars: 0.043%
+  venus: 0.045%
+  mercury: 0.019%
+  jupiter: 0.095%
+  titan: 0.019%
+Pressure-model per-body rel error:
+  earth: 0.0x-ish (0.0)
+  moon: 100.0x-ish (1.0)
+  mars: 98.35x-ish (0.983)
+  venus: 9944.72x-ish (99.447)
+  mercury: 100.0x-ish (1.0)
+  titan: 949.26x-ish (9.493)
+=== ozone shield ===
+tau(300 DU)=88.77  transmittance=2.8033598009926913e-39  shield=1.0
+=== bioenergetics ===
+Nernst slope @298K = 59.167 mV/pH
+PMF(150,0.5) = 120.42 mV
+ATP(3,0.12) = 34734.6 J/mol

@@ -1,0 +1,33 @@
+[Unit]
+Description=UNI Playout (scheduler: catalog.json + per-slot run-of-show, 7-day 4hx3, standby/fallback)
+# Reads catalog.json + the per-slot run-of-show; cues live segments; rolls clips from the FINAL pool;
+# on any source/encoder glitch it cuts to STANDBY and loops catalog content (last-frame hold ->
+# standby reel) until recovery. Watchdog = systemd Restart=always + a health probe. ADR-PROD-007.
+After=network-online.target uni-production-mcp.service uni-producer.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/uni
+Environment=PYTHONPATH=/opt/uni
+Environment=UNI_BCAST_SPOOL=/var/lib/uni/broadcast
+Environment=UNI_BCAST_JSON=/var/lib/uni/broadcast/broadcast.json
+Environment=UNI_BCAST_CATALOG=/var/lib/uni/broadcast/catalog.json
+Environment=UNI_BCAST_CLIPS=/var/lib/uni/broadcast/clips
+Environment=UNI_BCAST_RUNOFSHOW=/var/lib/uni/broadcast/run-of-show
+# Playout cues live segments + rolls clips THROUGH the production MCP (so every cut is audited + gated).
+Environment=UNI_PROD_MCP_URL=http://127.0.0.1:8095/prod-mcp
+Environment=UNI_OBS_WS=ws://127.0.0.1:4455
+# Standby scene name the playout cuts to on a source/encoder glitch.
+Environment=UNI_BCAST_STANDBY_SCENE=STANDBY
+EnvironmentFile=-/etc/uni/runtime.env
+ExecStartPre=-/bin/mount -o remount,rw /
+ExecStartPre=-/bin/mkdir -p /var/lib/uni/broadcast/clips
+ExecStartPre=-/bin/mkdir -p /var/lib/uni/broadcast/run-of-show
+ExecStart=/opt/uni/.venv/bin/python -m production.playout.run
+StandardError=append:/run/uni-playout.err.log
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

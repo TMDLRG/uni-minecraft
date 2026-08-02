@@ -1,0 +1,132 @@
+# UNI Production Platform - a complete 4-hour SLOT
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# A slot = a 4-hour block that chains the 8 templates into a full show: cold-open,
+# segments, breaks (film-playout), and a close. The weekly grid (weekly-grid.yaml)
+# places three of these per day across time zones, each with its own language.
+#
+# Slot schema (consistent with the brief):
+#   { slot, startUtc, durationHours: 4, language, segments: [ { template, params, repeat? } ] }
+# Each segment names a template from templates/ and (optionally) params + a repeat count.
+# uni-playout executes the segments in order; the deterministic beat clock inside each
+# template drives the producer's MCP calls. On any glitch, playout cuts to the standby
+# template and resumes here on recovery.
+#
+# Scenes used (fixed): COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs the producer emits: cut_to set_overlay narrate set_music_volume duck roll_clip start_segment admit_guest set_layout
+
+slot: SLOT-TEMPLATE-4H
+description: >
+  Reference 4-hour slot - cold open, news desk, interview, explainer, a colony-live
+  rest segment, a film break, a panel, a Q-and-A, more film breaks, and a close.
+  Approximately 240 minutes; uni-playout flexes ambient/film beats to hit the clock.
+startUtc: "2026-06-22T00:00:00Z"   # overridden per placement by the weekly grid
+durationHours: 4
+language: en                        # overridden per placement by the weekly grid
+
+segments:
+
+  # --- COLD OPEN (approx 0:00-0:10) ---
+  - template: standby
+    params: { reelClipId: STANDBY-REEL, language: en }
+    repeat: 1
+    notes: Pre-roll holding pattern as the slot comes up to air - playout starts here, then cuts to the news desk cold-open.
+
+  - template: news-desk
+    params: { language: en }
+    repeat: 1
+    notes: Cold open + lead story + colony cut-in + look-ahead. Approx 3 min of beats; sets the slot up.
+
+  # --- BLOCK A - INTERVIEW (approx 0:10-0:30) ---
+  - template: interview
+    params: { language: en, guestId: GUEST-A, guestName: "Dr. A. Rivera", guestTopic: "Trauma and the nervous system" }
+    repeat: 1
+    notes: Host + 1 guest. admit_guest is human-gated. Approx 5-6 min of beats; host pads live to fill the block.
+
+  # --- BLOCK B - EXPLAINER (approx 0:30-0:50) ---
+  - template: explainer
+    params: { language: en, topic: "Aligning mental-health care to nature" }
+    repeat: 1
+    notes: Host + glass visual + colony model + UNI narration. Honesty fences on every word.
+
+  # --- REST / AMBIENT (approx 0:50-1:05) ---
+  - template: colony-live
+    params: { language: en }
+    repeat: 1
+    notes: Ambient live-colony rest segment with UNI narration. Playout can extend the ambient beats to flex the clock.
+
+  # --- BREAK 1 - FILM PLAYOUT (approx 1:05-1:20) ---
+  - template: film-playout
+    params: { clipId: "BNB-P1-03", clipTitle: "The loop that never closes", clipLang: en, clipDuration: 90 }
+    repeat: 1
+    notes: First film break - roll a catalog segment with bumpers + captions. clipId/duration come from catalog.json.
+
+  # --- BLOCK C - PANEL (approx 1:20-1:50) ---
+  - template: panel
+    params: { language: en, guestIds: ["GUEST-B", "GUEST-C", "GUEST-D"], topic: "World understanding and the path to peace" }
+    repeat: 1
+    notes: Host + N guests, panel grid. Each admit_guest is a separate human-gated act. set_layout panel.
+
+  # --- BREAK 2 - FILM PLAYOUT (approx 1:50-2:05) ---
+  - template: film-playout
+    params: { clipId: "STREETS-014", clipTitle: "Streets short - the evidence", clipLang: en, clipDuration: 120 }
+    repeat: 1
+    notes: Second film break. Vertical clip -> G-9x16 pillarbox / shorts-wall.
+
+  # --- BLOCK D - Q AND A (approx 2:05-2:30) ---
+  - template: qa-chat
+    params: { language: en }
+    repeat: 1
+    notes: Read audience chat live, sanitized lower-thirds, optional UNI-expert beat.
+
+  # --- SECOND NEWS DESK (approx 2:30-2:40) ---
+  - template: news-desk
+    params: { language: en }
+    repeat: 1
+    notes: Mid-slot desk refresh - new lead story + colony cut-in.
+
+  # --- BLOCK E - INTERVIEW 2 (approx 2:40-3:00) ---
+  - template: interview
+    params: { language: en, guestId: GUEST-E, guestName: "Guest two", guestTopic: "Free food, water, health" }
+    repeat: 1
+    notes: Second interview block. Human-gated admit.
+
+  # --- AMBIENT + FILM REST (approx 3:00-3:30) ---
+  - template: colony-live
+    params: { language: en }
+    repeat: 1
+    notes: Second ambient rest. Extend ambient beats to flex toward the close.
+
+  - template: film-playout
+    params: { clipId: "BNB-P2-07", clipTitle: "Restraint, peace, and the loop", clipLang: en, clipDuration: 90 }
+    repeat: 1
+    notes: Third film break before the close.
+
+  # --- BLOCK F - EXPLAINER 2 + Q AND A (approx 3:30-3:54) ---
+  - template: explainer
+    params: { language: en, topic: "A path to travel the stars - honestly" }
+    repeat: 1
+    notes: Closing explainer. Aspirational framing kept inside CLAIMS_AND_FENCES.
+
+  - template: qa-chat
+    params: { language: en }
+    repeat: 1
+    notes: Final audience questions before sign-off.
+
+  # --- CLOSE (approx 3:54-4:00) ---
+  - template: news-desk
+    params: { language: en }
+    repeat: 1
+    notes: Sign-off desk - recap + thanks + handoff to the next slot. Final beat lifts music on a TITLE sting.
+
+  - template: standby
+    params: { reelClipId: STANDBY-REEL, language: en }
+    repeat: 1
+    notes: >
+      Tail holding pattern bridging into the next slot in the grid (never go to black between slots).
+      uni-playout transitions out of standby when the next slot's startUtc arrives.
+
+# Resilience (ADR-PROD-007): on ANY source/encoder glitch during ANY segment above,
+# uni-playout cuts to the `standby` template (last-frame hold -> reel loop) and resumes
+# this slot at the next live beat on recovery. The watchdog is systemd Restart=always
+# plus a health probe; the slot clock keeps wall-time position so the grid stays aligned.

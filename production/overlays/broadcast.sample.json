@@ -1,0 +1,32 @@
+{
+  "updatedUtc": "2026-06-21T18:04:22.117Z",
+  "source": "broadcast.sample",
+  "onAir": { "value": false, "text": "LIVE" },
+  "lowerThird": {
+    "visible": true,
+    "kicker": "UNI EXPERT",
+    "title": "Dr. A. Rivera",
+    "subtitle": "Trauma and the nervous system",
+    "tone": "ok"
+  },
+  "title": { "visible": false, "kicker": "", "text": "", "subtitle": "", "tone": "accent" },
+  "ticker": [
+    { "text": "EducateWright - the science feed, back on air", "tone": "ok" },
+    { "text": "Multilingual coverage across every time zone", "tone": "accent" },
+    { "text": "Design reference seed - status: pending", "tone": "warn" }
+  ],
+  "caption": {
+    "visible": true,
+    "lang": "en",
+    "text": "Tonight: aligning mental-health treatment to nature.",
+    "translations": {
+      "es": "Esta noche: alinear el tratamiento de salud mental con la naturaleza.",
+      "hi": "आज रात: मानसिक स्वास्थ्य उपचार को प्रकृति के साथ जोड़ना।"
+    }
+  },
+  "clock": { "zones": ["UTC", "America/Chicago", "Europe/London", "Asia/Kolkata"] },
+  "music": { "volume": 0.18, "ducked": false },
+  "nowPlaying": { "segment": "Interview", "lang": "en", "clipId": null, "layout": "talking-head" },
+  "brand": { "logo": "uni-logo.png", "poweredBy": "solution-wright-logo-light.png" },
+  "evidence": { "class": "C" }
+}

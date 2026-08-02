@@ -1,0 +1,255 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>UNI LAB — L1, the five materials</title>
+<!--
+  L1: THE FIVE MATERIALS, from a fixture, socket-free. Phase 9 step 4.6, build 1.
+
+  This is where F24-F27 stop being DESIGN and start being something a screenshot can catch.
+
+    F24  a node lacking truth_class or receipt_ref renders as FOG
+    F25  where evidence is absent: fog, AND no authoring affordance — you cannot stand at a desk
+         that is not there, and that refusal IS the absence of the desk
+    F26  liveness that did not come from a real probe is not drawn AT ALL
+    F27  a gate demonstrates a BEHAVIOUR; the material says how well-backed it is and nothing
+         about awareness, experience or life
+
+  THE FIVE MUST BE TELLABLE APART WITH NO TEXT READ. That is 4.6's acceptance (A4, two images) and
+  the falsifier is "he cannot tell them apart, OR CAN FOR A REASON THAT IS NOT truth_class". So
+  each material differs in FORM, not in a label and not only in hue:
+
+    lit_solid      solid, crisp edge, full height, its own cast shadow
+    seamed_solid   solid and full height, but visibly JOINED — seams across the face
+    translucent    you can see the grid THROUGH it
+    staged         a flat on a plinth: outline only, no body, standing on a marked base
+    fog            no edge at all, and no floor contact
+
+  SOCKET-FREE. It reads /api/lab/fixture and nothing else. L3 is where real state arrives.
+-->
+<style>
+  :root { --ink:#e8eef2; --dim:#7c8b96; --floor:#141b21; --line:#1e2a33; --you:#7fd1c4;
+          --lit:#cfe4ef; --seam:#9fb6c4; --trans:#6f96ab; --stage:#8a7fb0; --fog:#4a5a66; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:#0a0f13; color:var(--ink);
+              font:13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  canvas { display:block; width:100%; height:100%; cursor:crosshair; }
+  #hud { position:fixed; left:14px; top:12px; pointer-events:none; }
+  #hud h1 { margin:0 0 2px; font-size:13px; letter-spacing:.14em; font-weight:600; }
+  #hud p { margin:0; color:var(--dim); }
+  #right { position:fixed; right:14px; top:12px; text-align:right; color:var(--dim); pointer-events:none; }
+  #right b { color:var(--ink); font-weight:600; }
+  #keys { position:fixed; left:14px; bottom:12px; color:var(--dim); pointer-events:none; }
+  kbd { background:#1a242c; border:1px solid #2a3742; border-radius:3px; padding:0 4px; color:var(--ink); }
+</style>
+
+<canvas id="c"></canvas>
+<div id="hud"><h1>UNI LAB · L1</h1><p>the five materials, from a fixture</p></div>
+<div id="right"><b id="count">…</b><br /><span id="boot">boot …</span></div>
+<div id="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk · <kbd>click</kbd> stand there</div>
+
+<script>
+  "use strict";
+  const ROOM = { w: 44, h: 28 };
+  const you = { x: 22, y: 24 };
+  const target = { x: null, y: null };
+  const keys = new Set();
+  let NODES = [];
+
+  const c = document.getElementById("c");
+  const g = c.getContext("2d");
+  let W = 0, H = 0, DPR = 1;
+
+  // ---- THE RENDER CONTRACT, in one function ------------------------------------------------
+  // A JS restatement of SP.ControlPlane.Scene.material/1. It is NOT trusted on its own: the L1
+  // gate asks the Elixir for its answer on every fixture node and fails if the two disagree. A
+  // second implementation that nobody cross-checks is just a second place to be wrong.
+  function materialOf(n) {
+    const r = n.receipt_ref;
+    if (typeof r !== "string" || r.trim() === "") return "fog";       // F24 — no receipt, no material
+    switch (n.truth_class) {
+      case "OBSERVED": return "lit_solid";
+      case "STRUCTURAL_RECONSTRUCTION": return "seamed_solid";
+      case "REDUCED_MODEL":
+      case "DERIVED": return "translucent";
+      case "SIMULATED": return "staged";
+      default: return "fog";                                          // F24 — UNKNOWN or unreadable
+    }
+  }
+  // F25: authoring is possible only where the evidence is. Fog has no desk, and the ABSENCE of
+  // the desk is the refusal — there is nothing to click that could refuse you.
+  const authorable = (n) => materialOf(n) !== "fog";
+  // F26: liveness comes from a probe or it is not drawn. `live` absent means NOT PROBED, and not
+  // probed is not "fine".
+  function liveness(n) {
+    if (!n.live || typeof n.live.up !== "boolean") return "not_probed";
+    return n.live.up ? "up" : "down";
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  addEventListener("resize", resize);
+
+  function view() {
+    const s = Math.min(W / (ROOM.w * 1.5), H / (ROOM.h * 1.05));
+    return { s, ox: W / 2, oy: H / 2 - ROOM.h * s * 0.22 };
+  }
+  function iso(x, y) {
+    const { s, ox, oy } = view();
+    return [ox + (x - ROOM.w / 2) * s * 0.75 - (y - ROOM.h / 2) * s * 0.75,
+            oy + (x - ROOM.w / 2) * s * 0.38 + (y - ROOM.h / 2) * s * 0.38];
+  }
+  function unIso(px, py) {
+    const { s, ox, oy } = view();
+    const a = (px - ox) / (s * 0.75), b = (py - oy) / (s * 0.38);
+    return [(a + b) / 2 + ROOM.w / 2, (b - a) / 2 + ROOM.h / 2];
+  }
+  function line(x1, y1, x2, y2) {
+    const [a, b] = iso(x1, y1), [d, e] = iso(x2, y2);
+    g.beginPath(); g.moveTo(a, b); g.lineTo(d, e); g.stroke();
+  }
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  function floor() {
+    g.beginPath();
+    [[0,0],[ROOM.w,0],[ROOM.w,ROOM.h],[0,ROOM.h]].forEach(([x,y],i)=>{const[a,b]=iso(x,y);i?g.lineTo(a,b):g.moveTo(a,b);});
+    g.closePath(); g.fillStyle = cssVar("--floor"); g.fill();
+    g.strokeStyle = cssVar("--line"); g.lineWidth = 1; g.globalAlpha = .55;
+    for (let x = 1; x < ROOM.w; x++) line(x, 0, x, ROOM.h);
+    for (let y = 1; y < ROOM.h; y++) line(0, y, ROOM.w, y);
+    g.globalAlpha = 1;
+    g.strokeStyle = cssVar("--line"); g.lineWidth = 1.5;
+    g.beginPath();
+    [[0,0],[ROOM.w,0],[ROOM.w,ROOM.h],[0,ROOM.h]].forEach(([x,y],i)=>{const[a,b]=iso(x,y);i?g.lineTo(a,b):g.moveTo(a,b);});
+    g.closePath(); g.stroke();
+  }
+
+  // ---- five forms, and the difference is FORM ------------------------------------------------
+  function drawNode(n) {
+    const m = materialOf(n);
+    const [px, py] = iso(n.x, n.y);
+    const { s } = view();
+    const w = s * 1.9, h = s * 2.6;
+
+    if (m === "fog") {
+      // No edge, no floor contact. It does not stand on anything, because nothing holds it up.
+      const grd = g.createRadialGradient(px, py - h * 0.35, s * 0.2, px, py - h * 0.35, w * 0.95);
+      grd.addColorStop(0, "rgba(74,90,102,.55)"); grd.addColorStop(1, "rgba(74,90,102,0)");
+      g.fillStyle = grd;
+      g.beginPath(); g.ellipse(px, py - h * 0.35, w * 0.95, h * 0.55, 0, 0, Math.PI * 2); g.fill();
+      return;
+    }
+
+    // Everything that is not fog stands on the floor: a contact shadow, then a body.
+    g.beginPath(); g.ellipse(px, py, w * 0.42, w * 0.20, 0, 0, Math.PI * 2);
+    g.fillStyle = "rgba(0,0,0,.45)"; g.fill();
+
+    const body = [[px - w/2, py], [px + w/2, py], [px + w/2, py - h], [px - w/2, py - h]];
+    const trace = () => { g.beginPath(); body.forEach(([a,b],i)=>i?g.lineTo(a,b):g.moveTo(a,b)); g.closePath(); };
+
+    if (m === "staged") {
+      // A flat on a plinth: OUTLINE ONLY, no body, standing on a marked base. It is a set, and it
+      // looks like a set.
+      g.beginPath(); g.ellipse(px, py, w * 0.62, w * 0.26, 0, 0, Math.PI * 2);
+      g.strokeStyle = cssVar("--stage"); g.lineWidth = 1.6; g.stroke();
+      trace(); g.setLineDash([6, 5]); g.strokeStyle = cssVar("--stage"); g.lineWidth = 2; g.stroke();
+      g.setLineDash([]);
+      return;
+    }
+
+    if (m === "translucent") {
+      // You can see the grid THROUGH it. That is the whole point of the word.
+      trace(); g.fillStyle = "rgba(111,150,171,.28)"; g.fill();
+      g.strokeStyle = cssVar("--trans"); g.lineWidth = 1.4; g.stroke();
+      return;
+    }
+
+    trace();
+    g.fillStyle = m === "lit_solid" ? cssVar("--lit") : cssVar("--seam");
+    g.fill();
+    g.strokeStyle = "#0b1116"; g.lineWidth = 1.4; g.stroke();
+
+    if (m === "seamed_solid") {
+      // Solid and full height, but visibly JOINED — it was assembled from pieces, and it shows.
+      g.strokeStyle = "rgba(11,17,22,.55)"; g.lineWidth = 1.2;
+      for (let i = 1; i <= 3; i++) {
+        const yy = py - (h * i) / 4;
+        g.beginPath(); g.moveTo(px - w/2, yy); g.lineTo(px + w/2, yy); g.stroke();
+      }
+    }
+
+    // F26 — a liveness mark ONLY where a probe answered. Nothing is drawn for not_probed, and
+    // that silence is the point: absence of a probe is not evidence of health.
+    const l = liveness(n);
+    if (l === "up" || l === "down") {
+      g.beginPath(); g.arc(px + w * 0.34, py - h - s * 0.28, s * 0.19, 0, Math.PI * 2);
+      g.fillStyle = l === "up" ? "#69d39a" : "#d2695f"; g.fill();
+    }
+
+    // F25 — a desk exists only where authoring is possible. Fog returned above, so anything
+    // reaching here has one; the refusal for fog is that there is nothing here to click.
+    if (authorable(n)) {
+      g.beginPath(); g.ellipse(px, py + w * 0.30, w * 0.26, w * 0.12, 0, 0, Math.PI * 2);
+      g.strokeStyle = "rgba(127,209,196,.55)"; g.lineWidth = 1.2; g.stroke();
+    }
+  }
+
+  function drawYou() {
+    const [px, py] = iso(you.x, you.y); const { s } = view();
+    g.beginPath(); g.ellipse(px, py, s * 0.42, s * 0.22, 0, 0, Math.PI * 2);
+    g.fillStyle = "rgba(0,0,0,.45)"; g.fill();
+    g.beginPath(); g.moveTo(px, py - s * 1.15); g.lineTo(px + s * .30, py); g.lineTo(px - s * .30, py);
+    g.closePath(); g.fillStyle = cssVar("--you"); g.fill();
+  }
+
+  addEventListener("keydown", (e) => { keys.add(e.key.toLowerCase()); if ("wasd".includes(e.key.toLowerCase())) { target.x = null; e.preventDefault(); } });
+  addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
+  c.addEventListener("click", (e) => {
+    const r = c.getBoundingClientRect();
+    const [x, y] = unIso(e.clientX - r.left, e.clientY - r.top);
+    target.x = Math.max(.6, Math.min(ROOM.w - .6, x));
+    target.y = Math.max(.6, Math.min(ROOM.h - .6, y));
+  });
+
+  function step(dt) {
+    const sp = keys.has("shift") ? 15 : 7.5;
+    let dx = 0, dy = 0;
+    if (keys.has("w")) { dx -= 1; dy -= 1; }
+    if (keys.has("s")) { dx += 1; dy += 1; }
+    if (keys.has("a")) { dx -= 1; dy += 1; }
+    if (keys.has("d")) { dx += 1; dy -= 1; }
+    if (dx || dy) { const m = Math.hypot(dx, dy); you.x += dx / m * sp * dt; you.y += dy / m * sp * dt; }
+    else if (target.x !== null) {
+      const ax = target.x - you.x, ay = target.y - you.y, d = Math.hypot(ax, ay);
+      if (d < .15) target.x = null; else { you.x += ax / d * sp * dt; you.y += ay / d * sp * dt; }
+    }
+    you.x = Math.max(.6, Math.min(ROOM.w - .6, you.x));
+    you.y = Math.max(.6, Math.min(ROOM.h - .6, you.y));
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, .05); last = now;
+    step(dt);
+    g.clearRect(0, 0, W, H);
+    floor();
+    // Painter's order: farther first, so the nearer body occludes it and the floor stays readable.
+    [...NODES].sort((a, b) => a.x + a.y - (b.x + b.y)).forEach(drawNode);
+    drawYou();
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  fetch("/api/lab/fixture").then((r) => r.json()).then((f) => {
+    NODES = f.nodes || [];
+    const fogged = NODES.filter((n) => materialOf(n) === "fog").length;
+    document.getElementById("count").textContent =
+      NODES.length + " nodes · " + fogged + " in fog";
+    requestAnimationFrame(frame);
+  });
+  fetch("/api/identity").then((r) => r.json()).then((i) => {
+    document.getElementById("boot").textContent = "boot " + String(i.boot_git_commit || "?").slice(0, 7);
+  }).catch(() => {});
+</script>

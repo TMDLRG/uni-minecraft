@@ -1,0 +1,121 @@
+# Line-ending enforcement (added 2026-07-11 after the CRLF incident: a Windows working-tree
+# checkout was tarballed to the broadcast node and obs-entrypoint.sh's shebang arrived as
+# '#!/usr/bin/env bash\r' -> the mixer container died on boot). Everything the production
+# platform ships to Linux MUST checkout as LF on every platform - this file makes that
+# non-mistakable at the git layer instead of relying on agent discipline.
+production/** text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.container text eol=lf
+Caddyfile text eol=lf
+# Node sources (added 2026-07-27, Phase 9 step 1.4). Every .cjs BLOB in this repo was already pure LF
+# (measured: 0 of 95 contained a CR), but with no rule here the working tree was split 42 CRLF / 53 LF by
+# core.autocrlf, so the SAME COMMIT checked out to different bytes on different machines. That silently
+# broke the golden sha pins (viewer/gaia/goldens.json): a pin taken on Windows could never match a Linux
+# CI checkout, and would have fired a FALSE mismatch in gates-node. These files ship to Linux (the chip,
+# node2) exactly like production/**, so the same law applies. Supersedes the narrower `runs/*.cjs` rule
+# below, which is kept as-is for the record.
+*.cjs text eol=lf
+# Elixir sources (added 2026-07-27, end of Phase 9 stage 2 handoff). Same gap, same fix, found before it
+# bit anyone: all 355 .ex/.exs BLOBS are already pure LF (measured: 0 with a CR), but with no rule here
+# the WORKING TREE re-acquires CRLF via core.autocrlf on ordinary git operations (confirmed live on
+# lib/sp/brain/language.ex, which the 81-file 1.18 reformat committed clean, yet the working-tree copy on
+# this box now differs). CI checks out the LF blob and is unaffected today, but any future agent editing
+# an .ex/.exs file directly in this working tree and committing without the same LF-forcing container
+# pipeline could silently reintroduce the exact Windows-vs-Linux mismatch step 1.4 fixed for .cjs.
+*.ex text eol=lf
+*.exs text eol=lf
+# HASH-REFERENCED EVIDENCE (added 2026-07-27, Phase 9 step 2.7). Found by re-measuring 2.7 from a
+# CLEAN WORKTREE — proof 2 exists for exactly this and is the only reason it was ever seen. It
+# surfaced S9, "a receipt cannot be reproduced from its own commit," which is a STOP.
+#
+# The Control Plane ledger names its evidence BY SHA256. Measured across all 15 hash references
+# (14 in the chain plus the gates.ndjson pin): 14 match the file on disk, but only 12 match THE
+# COMMITTED BLOB. Evidence was recorded from the working tree at different moments, which captured
+# different terminators, and core.autocrlf=true then flattened them all on the way into git:
+#
+#   docs/receipts/control-plane/phase7_item710_green_2026-07-26.txt
+#       recorded c09b5146… (6 CR, a Windows checkout)  ·  committed blob 7973702b… (0 CR)   S9
+#   evidence/gates.ndjson
+#       pinned   964ea25c… (58 CR, mixed)              ·  committed blob 641c8211… (0 CR)   S9+S4
+#
+# THERE IS NO SETTING HERE THAT SATISFIES ALL FOURTEEN, because two of them recorded mutually
+# incompatible conventions. `text eol=lf` is chosen as the honest minimum: it changes NO committed
+# byte (every receipt blob is already pure LF), it makes twelve of the fourteen reproducible on
+# every platform instead of on one, and it leaves exactly ONE red that names a real defect rather
+# than papering over six. `-text` would satisfy all fourteen — by committing the CRLF form of 13
+# unrelated historical receipts and changing their hashes, which is a far worse trade.
+#
+# BOTH S9 ITEMS WERE RULED BY THE OPERATOR ON 2026-07-27: "fix gates.ndjson with the one-line rule,
+# and supersede the receipt." Both are now done.
+#
+# gates.ndjson gets `-text` below. This is an S4 write, explicitly authorised, and it changes NOT
+# ONE BYTE ON DISK — measured before and after: the working-tree file hashes to 964ea25c… on both
+# sides. What changes is what git STORES: the blob goes from 641c8211… (0 CR, normalised) to
+# 964ea25c… (58 CR, the bytes every pin in this programme actually refers to). `-text` and not
+# `text eol=lf`, because eol=lf would force the LF form and make the pin permanently unreachable.
+#
+# The receipt was repaired the other way, by the machinery step 2.7 built: an authorised append
+# recording a correctly-reproducible reference that SUPERSEDES the artifact-recorded one, with the
+# original kept retrievable as an object forever. No entry edited, no history rewritten.
+#
+# evidence/control_plane/** is `-text` and that is NOT a preference: an object is bytes addressed by
+# their own digest and must never be converted in either direction, whatever it contains. This
+# caught a real corruption committed minutes earlier — object c09b5146… was normalised on its way
+# into git and no longer contained what its own name claimed.
+# THE FOURTH AND FIFTH INSTANCES (added 2026-07-27, found by an adversarial clean-checkout audit
+# and NOT by me). viewer/lab/l1.html and evidence/gate_attempts.ndjson had NO rule here, so a fresh
+# Windows clone got CRLF — and two gates committed the same day PASSED in the working tree and
+# FAILED FROM THEIR OWN COMMIT. A gate that cannot reproduce its own verdict is worse than no gate,
+# because it is trusted. `.cjs` was ruled in step 1.4, `.ex`/`.exs` at the end of stage 2,
+# gates.ndjson under the S9 ruling — and the class kept surfacing in whichever file type nobody had
+# ruled yet. Both gates were ALSO made EOL-agnostic in their own code: an attribute is a fix, and a
+# guard that only works on one platform's line endings is a latent one wherever the attribute is missed.
+*.html text eol=lf
+evidence/gate_attempts.ndjson text eol=lf
+docs/receipts/** text eol=lf
+evidence/remediation/** text eol=lf
+evidence/control_plane/** -text
+# THE CANONICAL GATE LEDGER. Byte-exact, in both directions, forever. Its 206 rows carry 58 CR
+# bytes from appends made at different times on different terminators, and its pinned hash
+# 964ea25c… is of exactly those bytes — cited by phase9_plan.json, the frozen 0.1a baseline, a
+# receipt, replica_ledgers.json and control_plane_ledger_is_real_test.exs. Anything that converts
+# it breaks every one of those at once.
+evidence/gates.ndjson -text
+# Windows-native scripts stay CRLF.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+
+# Binary guards (added 2026-07-11): declare binaries explicitly so the `production/** text eol=lf`
+# subtree coercion (and the *.yml/*.py rules) can NEVER EOL-normalize an asset. A LATER matching
+# pattern overrides an earlier one, so these win over the text rules above — the first logo/font/
+# archive committed under production/** for the caddy overlays service will NOT be corrupted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.gz binary
+*.zip binary
+*.jar binary
+*.bin binary
+*.mp4 binary
+*.pdf binary
+# Remediation-plan additions (Phase I, 2026-07-11): LiveKit vendor JS + music/audio assets
+# land under production/** next (Phase VII/V) — guard them before the first one is committed.
+production/overlays/vendor/*.js binary
+*.m4a binary
+*.mp3 binary
+*.wav binary
+
+# uni-producer deploy artifacts ship via git archive to the chip -- LF structurally, same class as production/**
+deploy/** text eol=lf
+runs/*.cjs text eol=lf

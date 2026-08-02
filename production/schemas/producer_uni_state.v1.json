@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/producer_uni_state.v1.json",
+  "title": "UNI per-UNI observation surface (producer v1a)",
+  "description": "Response contract for the four read-only routes on the uni-producer Phoenix node: GET /producer/uni_roster, /producer/uni_state/:name, /producer/uni_history/:name, /producer/generations. Every payload is a SUBSTRATE-LEVEL OBSERVATION read verbatim from SP.Runtime.Board. Gate: producer-per-uni-telemetry. THE FENCE: no response may contain a synthesized aggregate score, rank, percentage, health index, or any value the producer itself derived beyond regrouping the board's own fields — the gate FALSIFIES on exactly that, and on any response missing the disclaimer.",
+
+  "$defs": {
+    "disclaimer": {
+      "type": "string",
+      "const": "substrate observation only; no evidence for awareness/experience — see LAB_PROTOCOL claim fence",
+      "description": "MANDATORY on every response, and mirrored in the x-uni-claim-fence response header. Removing it FALSIFIES the gate."
+    },
+
+    "uniEntry": {
+      "type": "object",
+      "description": "One UNI as the board sees it. All fields are observations; none is a score.",
+      "required": ["username", "kin", "lineage_generation"],
+      "properties": {
+        "username": { "type": ["string", "null"], "description": "Board-authoritative name, e.g. UNI-1-3 or UNI-1-g4." },
+        "kin": { "type": ["integer", "null"], "description": "Kin group 0..9. THE FIRST NUMBER IN THE NAME IS THE KIN GROUP, NOT A GENERATION." },
+        "index": { "type": ["integer", "null"], "description": "Monotonic per-kin index for Colony-spawned UNIs (UNI-<kin>-<idx>). null for lineage-bred names." },
+        "lineage_generation": { "type": ["integer", "null"], "description": "True breeding generation. Present ONLY for SP.Runtime.Lineage names (UNI-<kin>-g<gen>). null means this UNI was Colony-spawned and carries no generation — it does NOT mean generation 0." },
+        "mode": { "type": ["string", "null"], "enum": ["see_all", "blind", "see_kin", null], "description": "Social visibility mode governing this UNI's perception of others." },
+        "phase": { "type": ["integer", "null"], "description": "Curriculum phase reached (0 survive .. 4 shelter). An observation of the genome's phase field." },
+        "action": { "type": ["string", "null"], "description": "Last committed primitive action written to the body Port." },
+        "ticks": { "type": ["integer", "null"], "description": "Count of completed predict-act cycles for this life." }
+      }
+    },
+
+    "mindBeat": {
+      "type": "object",
+      "description": "SP.Runtime.Mind.of/2 output, computed BY the agent from its own live model and pushed to the board. NOT felt states — see SP.Brain.Awareness, which models access and report, never phenomenal experience.",
+      "properties": {
+        "context": { "type": ["string", "null"], "description": "L2 Strategist standing context (a control/preference selection, e.g. :forage). NOT a predictive-coding layer." },
+        "stress": { "type": ["number", "null"], "description": "SP.Brain.Hormones.of_context/1 scalar implied by the context. A modulation parameter, not a feeling." },
+        "emotion": { "type": ["string", "null"], "description": "SP.Brain.Emotion dominant LABEL derived from factor precisions. A label over a distribution. Never surface as 'the UNI feels X'." },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "Awareness.metacognition/1 — precision-weighted peakedness of the agent's own posteriors." },
+        "focus": { "type": ["integer", "null"], "description": "Index of the factor with highest precision x peakedness (the 'spotlight' factor)." },
+        "intent": { "type": "array", "items": { "type": "string" }, "description": "Plan.preview/2 greedy depth-N action rollout. An EXPECTED trajectory under the model, not a commitment." },
+        "report": { "type": ["string", "null"], "description": "Awareness.report/1 one-line reportable statement of the broadcast. The agent describing its computed state; NOT evidence of qualia." }
+      }
+    },
+
+    "absentNote": {
+      "type": "object",
+      "description": "Explicit statement of what v1a does NOT carry and why. Present so a consumer never mistakes absence for zero.",
+      "properties": {
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "reason": { "type": "string" },
+        "efe_breakdown": { "type": "string" }
+      }
+    }
+  },
+
+  "oneOf": [
+    {
+      "title": "GET /producer/uni_roster",
+      "type": "object",
+      "required": ["disclaimer", "count", "uni"],
+      "properties": {
+        "disclaimer": { "$ref": "#/$defs/disclaimer" },
+        "observed_at_unix": { "type": "integer" },
+        "count": { "type": "integer" },
+        "source": { "type": "string" },
+        "colony_node": { "type": "string" },
+        "uni": { "type": "array", "items": { "$ref": "#/$defs/uniEntry" } }
+      }
+    },
+    {
+      "title": "GET /producer/uni_state/:name",
+      "type": "object",
+      "required": ["disclaimer"],
+      "properties": {
+        "disclaimer": { "$ref": "#/$defs/disclaimer" },
+        "observed_at_unix": { "type": "integer" },
+        "uni": { "$ref": "#/$defs/uniEntry" },
+        "mind": { "$ref": "#/$defs/mindBeat" },
+        "senses": { "type": "object", "description": "Raw last sense-line map as parsed from the body Port. Verbatim observation channel." },
+        "action": { "type": ["string", "null"] },
+        "ticks": { "type": ["integer", "null"] },
+        "absent": { "$ref": "#/$defs/absentNote" },
+        "error": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    {
+      "title": "GET /producer/uni_history/:name",
+      "description": "v1a ALWAYS returns available:false. SP.Runtime.Board is replace-in-place, so no per-frame series exists. Returning an empty frames[] with a stated reason is the honest answer; synthesizing a series would FALSIFY the gate.",
+      "type": "object",
+      "required": ["disclaimer", "available", "frames", "reason"],
+      "properties": {
+        "disclaimer": { "$ref": "#/$defs/disclaimer" },
+        "observed_at_unix": { "type": "integer" },
+        "name": { "type": "string" },
+        "known_to_board": { "type": "boolean" },
+        "available": { "const": false },
+        "frames": { "type": "array", "maxItems": 0 },
+        "reason": { "type": "string" }
+      }
+    },
+    {
+      "title": "GET /producer/generations",
+      "type": "object",
+      "required": ["disclaimer", "kin_groups", "lineage_bred_count", "note"],
+      "properties": {
+        "disclaimer": { "$ref": "#/$defs/disclaimer" },
+        "observed_at_unix": { "type": "integer" },
+        "kin_groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kin", "alive"],
+            "properties": {
+              "kin": { "type": ["integer", "null"] },
+              "alive": { "type": "integer" },
+              "uni": { "type": "array", "items": { "type": ["string", "null"] } }
+            }
+          }
+        },
+        "kin_group_count": { "type": "integer" },
+        "lineage_bred_count": { "type": "integer", "description": "Count of UNIs carrying a g-prefixed lineage generation. 0 means NO generational turnover is observable — kin spread MUST NOT be reported as generational depth." },
+        "lineage_generations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["generation", "alive"],
+            "properties": {
+              "generation": { "type": "integer" },
+              "alive": { "type": "integer" }
+            }
+          }
+        },
+        "note": { "type": "string" }
+      }
+    }
+  ]
+}

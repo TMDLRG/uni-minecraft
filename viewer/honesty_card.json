@@ -1,0 +1,21 @@
+{
+  "rule": "If a claim starts to feel bigger than the evidence, stop and read the matching fence line out loud. The fence is the story here, not a disclaimer.",
+  "rows": [
+    { "say": "A working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open.", "never": "AI, AGI, artificial intelligence, machine intelligence." },
+    { "say": "The mechanism is demonstrated and reproducible. The evidence is growing and evidence-classed. Several behavioural gates are still in flight.", "never": "Proven, first, only, breakthrough, solved, human-level." },
+    { "say": "Passing a gate demonstrates the named behaviour, never experience.", "never": "It sees, wants, feels, understands, is aware, is conscious, is alive." },
+    { "say": "A colony agent acting in a real game world.", "never": "Minecraft (say \"a real game world\" instead)." },
+    { "say": "An unrefereed working preprint. Peer review is pending. DOI 10.5281/zenodo.19785799.", "never": "Peer-reviewed, published, refereed, \"unreferenced.\"" },
+    { "say": "It helps people lower the fear of the present so the future feels safe to explore. It is a design and modeling lens, not a clinical or diagnostic tool. Nothing here is medical advice.", "never": "Treats, cures, heals, diagnoses trauma. Any medical or clinical claim." },
+    { "say": "LOOP: Listen, Observe, Orchestrate, Partner, Build, Decide.", "never": "The trademarked four-letter method name." },
+    { "say": "Our channel, the Reading Room, the playlists. Link people to solutionwright.com/watch.", "never": "The channel @-handle on any lower-third or pinned text." }
+  ],
+  "canonical_facts": [
+    "Preprint DOI 10.5281/zenodo.19785799, unrefereed, peer review pending.",
+    "Objective is expected free energy, an epistemic term plus a pragmatic term. No reward, no reinforcement learning, no backprop.",
+    "Workshop is $75,000. Grants are $20M for education and $5M for internships.",
+    "$200 leaves outward with every engagement, to the people doing the work.",
+    "Packages, fixed price, thirty days: Pathfinder $1,000, Scout $3,000, Explorer $5,000, Adventurer $8,000, Odyssey $15,000.",
+    "Cite Parr, Pezzulo and Friston (2022), Active Inference, the Free Energy Principle in Mind, Brain, and Behavior."
+  ]
+}

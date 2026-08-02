@@ -1,0 +1,855 @@
+Running ExUnit with seed: 491556, max_cases: 32
+Excluding tags: [:skip]
+
+...........
+
+  1) test the status vocabulary is exactly these five, and none of them is a score (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:46
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.statuses/0 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert Run.statuses() == [:NOT_RUN, :PARTIAL_NOT_ESTABLISHED, :STOPPED_BY_RULE, :COMPLETE, :OVERRUN]
+     stacktrace:
+       SP.ControlPlane.Run.statuses()
+       test/sp/control_plane/run_status_refusals_test.exs:47: (test)
+
+
+
+  2) test a well-formed run is built and carries every identity and execution field (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:58
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:ok, r} = run(1)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:59: (test)
+
+
+
+  3) test a run that met its plan is COMPLETE (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert Run.status(run(planned_n: 30, actual_n: 30)) == :COMPLETE
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 30, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:73: (test)
+
+
+
+  4) test FAILED_RUN is in the vocabulary, so it cannot be a surprise value nothing renders (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:151
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.statuses/0 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert :FAILED_RUN in Run.statuses()
+     stacktrace:
+       SP.ControlPlane.Run.statuses()
+       test/sp/control_plane/run_failure_refusals_test.exs:152: (test)
+
+
+
+  5) test a stopping rule is part of the IDENTITY — it cannot be declared after the numbers are seen (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:145
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, without} = run(1)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:146: (test)
+
+
+
+  6) test planned_n is part of the run IDENTITY — it cannot be lowered after the fact to make a short run look complete (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:144
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: base = run(planned_n: 30, actual_n: 12)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 12, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:145: (test)
+
+
+
+  7) test only OVERRUN and PARTIAL_NOT_ESTABLISHED are flagged; the rest carry no flag (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:94
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert Run.flag(run(planned_n: 30, actual_n: 30)) == :ok
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 30, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:95: (test)
+
+
+
+  8) test F16 — a converged fit may be scored (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:52
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:ok, r} = Run.new(Map.put(base(), :converged, true))
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000, converged: true})
+       test/sp/control_plane/run_failure_refusals_test.exs:53: (test)
+
+..........
+
+  9) test F14 — the stopping rule must be substantive; a word is not a rule (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:63
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: for rule <- ["", "   ", "yes", "TBD", "n/a"] do
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 12, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000, stopping_rule: ""})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:65: anonymous fn/2 in SP.ControlPlane.RunStatusRefusalsTest."test F14 — the stopping rule must be substantive; a word is not a rule"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/run_status_refusals_test.exs:64: (test)
+
+
+
+ 10) test a later persist appends only the new tail and leaves the existing bytes untouched (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:48
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, %{appended: 3, total: 3}} = Store.persist(dir, l3)
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_append_197", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "5bdcb93642c43cbaa2acb2f97770eebb8af3112530a46e473331d7687dfdb36c", "prev_hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "as recorded"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785492000000000003, "utc" => "2026-07-26T10:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prev_hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "as recorded"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785492000000000002, "utc" => "2026-07-26T10:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "as recorded"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785492000000000001, "utc" => "2026-07-26T10:00:01Z"}]})
+       test/sp/control_plane/store_append_only_test.exs:50: (test)
+
+
+
+ 11) test persisting writes an anchor beside the ledger, as its own artifact (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:67
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(4))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_849", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prev_hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785495600000000004, "utc" => "2026-07-26T11:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785495600000000001, "utc" => "2026-07-26T11:00:01Z"}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:68: (test)
+
+
+
+ 12) test the terminator comes from the LAST line, not from whether CRLF occurs anywhere (SP.ControlPlane.AppenderTakesLastLineTerminatorTest)
+     test/sp/control_plane/appender_takes_last_line_terminator_test.exs:62
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, l2)
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_eol_785", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prev_hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785517200000000002, "utc" => "2026-07-26T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785517200000000001, "utc" => "2026-07-26T17:00:01Z"}]})
+       test/sp/control_plane/appender_takes_last_line_terminator_test.exs:64: (test)
+
+
+
+ 13) test a run record cannot be edited after the fact — there is no setter (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:177
+     ** (ArgumentError) could not load module SP.ControlPlane.Run due to reason :nofile
+     code: Code.ensure_loaded!(Run)
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/run_identity_determinism_test.exs:178: (test)
+
+
+
+ 14) test planned_n and actual_n must be non-negative integers, not strings that look like numbers (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:122
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: for {p, a} <- [{"30", 12}, {30, "12"}, {-1, 0}, {30, -1}, {30.0, 12}] do
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{}, exit_code: 0, outputs: [], code_identity: "x", env_identity: "y", inputs: %{}, seeds: [1], planned_n: "30", actual_n: 12, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1, ended_utc: "2026-07-26T15:00:01Z", ended_unix_ns: 2})
+       test/sp/control_plane/run_status_refusals_test.exs:125: anonymous fn/2 in SP.ControlPlane.RunStatusRefusalsTest."test planned_n and actual_n must be non-negative integers, not strings that look like numbers"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/run_status_refusals_test.exs:123: (test)
+
+...........
+
+ 15) test exactly one module in the Control Plane performs disk IO, and it is the store (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:108
+     disk IO must be confined to the store; found it in: []
+     code: assert writers == ["store.ex"],
+     stacktrace:
+       test/sp/control_plane/store_append_only_test.exs:118: (test)
+
+
+
+ 16) test a corrupt anchor file is refused rather than ignored (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:109
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_267", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785495600000000001, "utc" => "2026-07-26T11:00:01Z"}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:110: (test)
+
+
+
+ 17) test changing an EXECUTION field does NOT change the run identity (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:128
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, base} = run(1)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:129: (test)
+
+
+
+ 18) test F17 — equal-length score and id arrays aggregate normally (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:90
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.aggregate/2 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:ok, %{n: 3, mean: mean}} = Run.aggregate([1.0, 2.0, 3.0], ["m1", "m2", "m3"])
+     stacktrace:
+       SP.ControlPlane.Run.aggregate([1.0, 2.0, 3.0], ["m1", "m2", "m3"])
+       test/sp/control_plane/run_failure_refusals_test.exs:91: (test)
+
+
+
+ 19) test the write PROVES what it did — a store whose file is mutated mid-flight refuses rather than trusts (SP.ControlPlane.AppenderTakesLastLineTerminatorTest)
+     test/sp/control_plane/appender_takes_last_line_terminator_test.exs:130
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_eol_1094", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "7c4297954d6b9ebec80edb46b8b0cf2a7fdcd4fc2163b657d4a2532a244b1030", "prev_hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785517200000000003, "utc" => "2026-07-26T17:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prev_hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785517200000000002, "utc" => "2026-07-26T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785517200000000001, "utc" => "2026-07-26T17:00:01Z"}]})
+       test/sp/control_plane/appender_takes_last_line_terminator_test.exs:132: (test)
+
+
+
+ 20) test F15 — an overrun is FLAGGED, and the flag names both numbers (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:82
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: r = run(planned_n: 30, actual_n: 45)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 45, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:83: (test)
+
+.......
+
+ 21) test a run missing both time bases is refused — unix_ns and UTC are both required, neither substitutes (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:163
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: for key <- [:started_utc, :started_unix_ns, :ended_utc, :ended_unix_ns] do
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:166: anonymous fn/2 in SP.ControlPlane.RunIdentityDeterminismTest."test a run missing both time bases is refused — unix_ns and UTC are both required, neither substitutes"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/run_identity_determinism_test.exs:164: (test)
+
+
+
+ 22) test the store exposes no rewrite, truncate or delete path at all (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:90
+     ** (ArgumentError) could not load module SP.ControlPlane.Store due to reason :nofile
+     code: Code.ensure_loaded!(Store)
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/store_append_only_test.exs:91: (test)
+
+
+
+ 23) test F15 — actual_n > planned_n is OVERRUN, and is never COMPLETE or eligible (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:76
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: r = run(planned_n: 30, actual_n: 31)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 31, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:77: (test)
+
+
+
+ 24) test a store with NO anchor is refused — an absent anchor is not a pass (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_269", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785495600000000001, "utc" => "2026-07-26T11:00:01Z"}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:102: (test)
+
+
+
+ 25) test the file ends with exactly one newline, never two (SP.ControlPlane.AppenderTakesLastLineTerminatorTest)
+     test/sp/control_plane/appender_takes_last_line_terminator_test.exs:121
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(4))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_eol_325", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "533b53bfbdb8eebf76c03749d035a1ee5c1d6053d0204c815b058982f4bdbdd4", "prev_hash" => "7c4297954d6b9ebec80edb46b8b0cf2a7fdcd4fc2163b657d4a2532a244b1030", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785517200000000004, "utc" => "2026-07-26T17:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "7c4297954d6b9ebec80edb46b8b0cf2a7fdcd4fc2163b657d4a2532a244b1030", "prev_hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785517200000000003, "utc" => "2026-07-26T17:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prev_hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785517200000000002, "utc" => "2026-07-26T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785517200000000001, "utc" => "2026-07-26T17:00:01Z"}]})
+       test/sp/control_plane/appender_takes_last_line_terminator_test.exs:122: (test)
+
+.....
+
+ 26) test a run missing any identity field is refused, and the refusal names it (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:155
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: for key <- [:code_identity, :env_identity, :inputs, :params, :seeds] do
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:158: anonymous fn/2 in SP.ControlPlane.RunIdentityDeterminismTest."test a run missing any identity field is refused, and the refusal names it"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/run_identity_determinism_test.exs:156: (test)
+
+.
+
+ 27) test F13 — actual_n = 0 records NOT_RUN, never a verdict (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:50
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert Run.status(run(planned_n: 30, actual_n: 0)) == :NOT_RUN
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 0, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:51: (test)
+
+...........
+
+ 28) test the store writes only inside the directory it was given (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:132
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(2))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_append_1222", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prev_hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "as recorded"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785492000000000002, "utc" => "2026-07-26T10:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "as recorded"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785492000000000001, "utc" => "2026-07-26T10:00:01Z"}]})
+       test/sp/control_plane/store_append_only_test.exs:133: (test)
+
+.....
+
+ 29) test RESIDUAL — an adversary who owns the directory can rewrite BOTH, and this is not caught (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:145
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(6))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_335", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "ebc6ecaaa80db846d7de24aa779e2d74d3cb249ec99be19b82309049609edc4e", "prev_hash" => "edd686342947e3cb7c1ac9c6cc456a617ab4bbeac00daf5ee4aa064529497cfd", "prior" => %{"step" => 5}, "resulting" => %{"step" => 6}, "role" => "agent", "seq" => 6, "transition" => "note.written", "unix_ns" => 1785495600000000006, "utc" => "2026-07-26T11:00:06Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "edd686342947e3cb7c1ac9c6cc456a617ab4bbeac00daf5ee4aa064529497cfd", "prev_hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prior" => %{"step" => 4}, "resulting" => %{"step" => 5}, "role" => "agent", "seq" => 5, "transition" => "note.written", "unix_ns" => 1785495600000000005, "utc" => "2026-07-26T11:00:05Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prev_hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785495600000000004, "utc" => "2026-07-26T11:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, ...}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:146: (test)
+
+
+
+ 30) test THE CORRECTION — two runs of identical inputs share an IDENTITY, and differ in their RECORD (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:81
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, a} = run(1)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:82: (test)
+
+
+
+ 31) test F15 — a stopping rule does NOT excuse an overrun; it explains running short, not long (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:89
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: r = run(planned_n: 30, actual_n: 45, stopping_rule: "stop at 30 successes or 2 hours")
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 45, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000, stopping_rule: "stop at 30 successes or 2 hours"})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:90: (test)
+
+...
+
+ 32) test F18 — a crashed run may not be scored, whatever its convergence flag says (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:133
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(%{base() | exit_code: 1} |> Map.put(:converged, true))
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 1, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000, converged: true})
+       test/sp/control_plane/run_failure_refusals_test.exs:134: (test)
+
+...........
+
+ 33) test every output must be content-addressed (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:171
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:error, reason} = Run.new(attrs)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:173: (test)
+
+.
+
+ 34) test when the last line DOES end CRLF, the appender uses CRLF (SP.ControlPlane.AppenderTakesLastLineTerminatorTest)
+     test/sp/control_plane/appender_takes_last_line_terminator_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(2))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_eol_9", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prev_hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785517200000000002, "utc" => "2026-07-26T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785517200000000001, "utc" => "2026-07-26T17:00:01Z"}]})
+       test/sp/control_plane/appender_takes_last_line_terminator_test.exs:85: (test)
+
+.
+
+ 35) test no status is a number, and none of them is ELIGIBLE (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:155
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.statuses/0 is undefined (module SP.ControlPlane.Run is not available)
+     code: for s <- Run.statuses() do
+     stacktrace:
+       SP.ControlPlane.Run.statuses()
+       test/sp/control_plane/run_status_refusals_test.exs:156: (test)
+
+...
+
+ 36) test the anchor advances as the ledger grows, and the old anchor no longer attests (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:116
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, l3)
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_1350", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785495600000000001, "utc" => "2026-07-26T11:00:01Z"}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:118: (test)
+
+..
+
+ 37) test the identity digest is stable across map ordering and across processes (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:93
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, a} = run(1)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:94: (test)
+
+.
+
+ 38) test a run with no planned_n cannot be given a status — the plan is what status is measured against (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:102
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: Run.new(%{
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{}, exit_code: 0, outputs: [], code_identity: "x", env_identity: "y", inputs: %{}, seeds: [1], actual_n: 5, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1, ended_utc: "2026-07-26T15:00:01Z", ended_unix_ns: 2})
+       test/sp/control_plane/run_status_refusals_test.exs:104: (test)
+
+.
+
+ 39) test REFUSED — a ledger whose history differs from what is stored cannot be persisted (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:61
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3, "as recorded"))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_append_974", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "5bdcb93642c43cbaa2acb2f97770eebb8af3112530a46e473331d7687dfdb36c", "prev_hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "as recorded"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785492000000000003, "utc" => "2026-07-26T10:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prev_hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "as recorded"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785492000000000002, "utc" => "2026-07-26T10:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "as recorded"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785492000000000001, "utc" => "2026-07-26T10:00:01Z"}]})
+       test/sp/control_plane/store_append_only_test.exs:62: (test)
+
+..
+
+ 40) test THE ROLLBACK, mechanically — appending N rows adds exactly N lines and no blank one (SP.ControlPlane.AppenderTakesLastLineTerminatorTest)
+     test/sp/control_plane/appender_takes_last_line_terminator_test.exs:95
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_eol_399", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "7c4297954d6b9ebec80edb46b8b0cf2a7fdcd4fc2163b657d4a2532a244b1030", "prev_hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785517200000000003, "utc" => "2026-07-26T17:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prev_hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785517200000000002, "utc" => "2026-07-26T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785517200000000001, "utc" => "2026-07-26T17:00:01Z"}]})
+       test/sp/control_plane/appender_takes_last_line_terminator_test.exs:96: (test)
+
+...
+
+ 41) test a sound store attests (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:76
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(4))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_463", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prev_hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785495600000000004, "utc" => "2026-07-26T11:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785495600000000001, "utc" => "2026-07-26T11:00:01Z"}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:77: (test)
+
+
+
+ 42) test changing ANY identity field changes the run identity (SP.ControlPlane.RunIdentityDeterminismTest)
+     test/sp/control_plane/run_identity_determinism_test.exs:109
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, base} = run(1)
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [%{"path" => "results/a.json", "sha256" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a", "n_rows" => 1349}, seeds: ~c"\a", started_utc: "2026-07-26T12:00:01Z", started_unix_ns: 1785499200000000001, ended_utc: "2026-07-26T12:00:11Z", ended_unix_ns: 1785499210000000001})
+       test/sp/control_plane/run_identity_determinism_test.exs:110: (test)
+
+........
+
+ 43) test F14 — a short run with NO pre-declared stopping rule is PARTIAL_NOT_ESTABLISHED (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:54
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert Run.status(run(planned_n: 30, actual_n: 12)) == :PARTIAL_NOT_ESTABLISHED
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 12, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:55: (test)
+
+...
+
+ 44) test F17 — a repeated motor id is refused; frames are not independent replicates (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:110
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.aggregate/2 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:error, reason} = Run.aggregate([1.0, 2.0, 3.0], ["m1", "m1", "m2"])
+     stacktrace:
+       SP.ControlPlane.Run.aggregate([1.0, 2.0, 3.0], ["m1", "m1", "m2"])
+       test/sp/control_plane/run_failure_refusals_test.exs:111: (test)
+
+........
+
+ 45) test REFUSED — a ledger SHORTER than what is stored cannot be persisted (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(5))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_append_1038", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "515ff80a2767228d3df81aabaa7d6362bc15e022e2e4d9e0eb15a8fae4812643", "prev_hash" => "72080041f470457fc027326dc57e81270d462a781e5a2811d24e044d90e79438", "prior" => %{"step" => 4}, "resulting" => %{"step" => 5, "text" => "as recorded"}, "role" => "agent", "seq" => 5, "transition" => "note.written", "unix_ns" => 1785492000000000005, "utc" => "2026-07-26T10:00:05Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "72080041f470457fc027326dc57e81270d462a781e5a2811d24e044d90e79438", "prev_hash" => "5bdcb93642c43cbaa2acb2f97770eebb8af3112530a46e473331d7687dfdb36c", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4, "text" => "as recorded"}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785492000000000004, "utc" => "2026-07-26T10:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "5bdcb93642c43cbaa2acb2f97770eebb8af3112530a46e473331d7687dfdb36c", "prev_hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "as recorded"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785492000000000003, "utc" => "2026-07-26T10:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prev_hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "as recorded"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785492000000000002, "utc" => "2026-07-26T10:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "as recorded"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785492000000000001, "utc" => "2026-07-26T10:00:01Z"}]})
+       test/sp/control_plane/store_append_only_test.exs:73: (test)
+
+
+
+ 46) test F14 — a short run WITH a pre-declared stopping rule is STOPPED_BY_RULE, which is a different thing (SP.ControlPlane.RunStatusRefusalsTest)
+     test/sp/control_plane/run_status_refusals_test.exs:58
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: r = run(planned_n: 30, actual_n: 12, stopping_rule: "stop at 12 successes or 2 hours, whichever first")
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 30, actual_n: 12, started_utc: "2026-07-26T15:00:00Z", started_unix_ns: 1785510000000000000, ended_utc: "2026-07-26T15:00:10Z", ended_unix_ns: 1785510010000000000, stopping_rule: "stop at 12 successes or 2 hours, whichever first"})
+       test/sp/control_plane/run_status_refusals_test.exs:24: SP.ControlPlane.RunStatusRefusalsTest.run/1
+       test/sp/control_plane/run_status_refusals_test.exs:59: (test)
+
+.
+
+ 47) test a file that does NOT end with a newline gets exactly one separator, not two (SP.ControlPlane.AppenderTakesLastLineTerminatorTest)
+     test/sp/control_plane/appender_takes_last_line_terminator_test.exs:110
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(2))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_eol_1671", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "ef7d7eb309e670a7a58359d71ef08fe8b6cae0188bea936a47b35fc66890d05d", "prev_hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785517200000000002, "utc" => "2026-07-26T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.7"}, "evidence" => [], "hash" => "697e8ebe46d3f2079d687d0ef32581873c40656d321ff6984951d210ec187b00", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785517200000000001, "utc" => "2026-07-26T17:00:01Z"}]})
+       test/sp/control_plane/appender_takes_last_line_terminator_test.exs:111: (test)
+
+
+
+ 48) test THE POINT — a store that has lost its tail FAILS to attest, across a reload (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:81
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(6))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_522", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "ebc6ecaaa80db846d7de24aa779e2d74d3cb249ec99be19b82309049609edc4e", "prev_hash" => "edd686342947e3cb7c1ac9c6cc456a617ab4bbeac00daf5ee4aa064529497cfd", "prior" => %{"step" => 5}, "resulting" => %{"step" => 6}, "role" => "agent", "seq" => 6, "transition" => "note.written", "unix_ns" => 1785495600000000006, "utc" => "2026-07-26T11:00:06Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "edd686342947e3cb7c1ac9c6cc456a617ab4bbeac00daf5ee4aa064529497cfd", "prev_hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prior" => %{"step" => 4}, "resulting" => %{"step" => 5}, "role" => "agent", "seq" => 5, "transition" => "note.written", "unix_ns" => 1785495600000000005, "utc" => "2026-07-26T11:00:05Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prev_hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785495600000000004, "utc" => "2026-07-26T11:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, ...}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:82: (test)
+
+
+
+ 49) test the refusal names the seq at which the histories part company (SP.ControlPlane.StoreAppendOnlyTest)
+     test/sp/control_plane/store_append_only_test.exs:81
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(4, "as recorded"))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_append_461", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "72080041f470457fc027326dc57e81270d462a781e5a2811d24e044d90e79438", "prev_hash" => "5bdcb93642c43cbaa2acb2f97770eebb8af3112530a46e473331d7687dfdb36c", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4, "text" => "as recorded"}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785492000000000004, "utc" => "2026-07-26T10:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "5bdcb93642c43cbaa2acb2f97770eebb8af3112530a46e473331d7687dfdb36c", "prev_hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "as recorded"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785492000000000003, "utc" => "2026-07-26T10:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "801744f50f3b150b45632622661ff05a8e18f447202d210a3089e2b9dc0e9241", "prev_hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "as recorded"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785492000000000002, "utc" => "2026-07-26T10:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "a958686c1e0abc10205aedfb51beca1d4c9019dd0b25350ebed97bb7f4590b78", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "as recorded"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785492000000000001, "utc" => "2026-07-26T10:00:01Z"}]})
+       test/sp/control_plane/store_append_only_test.exs:82: (test)
+
+.
+
+ 50) test exactly one differing param is comparable, and the pair names the variable (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:45
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1, "k" => 8})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:46: (test)
+
+
+
+ 51) test differing INPUTS also count — the variable need not be a param (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:88
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1}, %{inputs: %{"dataset" => "fixture-a"}})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:89: (test)
+
+
+
+ 52) test losing a single entry from the tail is caught (SP.ControlPlane.StoreAnchorInPracticeTest)
+     test/sp/control_plane/store_anchor_in_practice_test.exs:95
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(4))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_anchor_395", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "4d5ee78b1ce70bf37ce199fe1eed0aadde4ebd60fdd07a7c5fa2ccdbe7418371", "prev_hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785495600000000004, "utc" => "2026-07-26T11:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "6f90b7f74ed98542c8230ef8f540cbd8f0251b13ccd7cfa1283e3b717a3ba7e0", "prev_hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785495600000000003, "utc" => "2026-07-26T11:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "85eb87689d7166396620096c71ed04933c28abbf43a603815fc1e50da77a17de", "prev_hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785495600000000002, "utc" => "2026-07-26T11:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.2"}, "evidence" => [], "hash" => "2a9a40ddc14a2fe6f4a971599862429198f0d5fe174b6fd88c4c5a8add2183a2", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785495600000000001, "utc" => "2026-07-26T11:00:01Z"}]})
+       test/sp/control_plane/store_anchor_in_practice_test.exs:96: (test)
+
+
+
+ 53) test execution facts are NOT variables — two arms necessarily run at different times (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:125
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:126: (test)
+
+
+
+ 54) test a param present in one arm and absent in the other counts as a difference (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:79
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1, "k" => 8})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:80: (test)
+
+
+
+ 55) test Pair decides comparability and nothing else — it renders no verdict (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:153
+     ** (File.Error) could not read file "c:/Users/mpolz/Documents/UNI.Minecraft/lib/sp/control_plane/pair.ex": no such file or directory
+     code: source = Path.expand("../../../lib/sp/control_plane/pair.ex", __DIR__) |> File.read!()
+     stacktrace:
+       (elixir 1.19.5) lib/file.ex:435: File.read!/1
+       test/sp/control_plane/pair_one_variable_test.exs:154: (test)
+
+
+
+ 56) test a differing SEED is a variable — it is not free (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:104
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1}, %{seeds: [7]})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:105: (test)
+
+
+
+ 57) test F12 — one param AND one input differing is TWO variables, and therefore VOID (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:96
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1}, %{inputs: %{"dataset" => "fixture-a"}})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:97: (test)
+
+
+
+ 58) test a converged run does write its artifact, so the refusal above is not vacuous (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:80
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(Map.put(base(), :converged, true))
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000, converged: true})
+       test/sp/control_plane/run_failure_refusals_test.exs:81: (test)
+
+.
+
+ 59) test F12 — two differing params mark the pair VOID and unclaimable, naming both (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:56
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1, "k" => 8})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:57: (test)
+
+
+
+ 60) test a differing CODE or ENV identity is a variable — the same code is part of the contrast (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:112
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: for {key, value, name} <- [
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:117: anonymous fn/2 in SP.ControlPlane.PairOneVariableTest."test a differing CODE or ENV identity is a variable — the same code is part of the contrast"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/pair_one_variable_test.exs:113: (test)
+
+
+
+ 61) test a VOID pair exposes no way to claim it anyway (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:141
+     ** (ArgumentError) could not load module SP.ControlPlane.Pair due to reason :nofile
+     code: Code.ensure_loaded!(Pair)
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/pair_one_variable_test.exs:142: (test)
+
+.
+
+ 62) test F12 — three or more differences are equally VOID; it does not get worse, it is already unclaimable (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1, "k" => 8, "iters" => 12})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "iters" => 12, "k" => 8}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:65: (test)
+
+.
+
+ 63) test zero differences is refused too — two identical arms are a repeat, not a contrast (SP.ControlPlane.PairOneVariableTest)
+     test/sp/control_plane/pair_one_variable_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: a = arm(%{"alpha" => 0.1, "k" => 8})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1, "k" => 8}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", started_utc: "2026-07-26T13:00:00Z", started_unix_ns: 1785502800000000000, ended_utc: "2026-07-26T13:00:10Z", ended_unix_ns: 1785502810000000000})
+       test/sp/control_plane/pair_one_variable_test.exs:23: SP.ControlPlane.PairOneVariableTest.arm/2
+       test/sp/control_plane/pair_one_variable_test.exs:73: (test)
+
+........
+
+ 64) test F18 — a FAILED_RUN stays inspectable: its identity, times and exit code all survive (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:124
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(%{base() | exit_code: 1})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 1, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000})
+       test/sp/control_plane/run_failure_refusals_test.exs:125: (test)
+
+
+
+ 65) test F17 — the refusal holds in both directions; a longer id list is equally wrong (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.aggregate/2 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:error, _} = Run.aggregate([1.0, 2.0], ["m1", "m2", "m3"])
+     stacktrace:
+       SP.ControlPlane.Run.aggregate([1.0, 2.0], ["m1", "m2", "m3"])
+       test/sp/control_plane/run_failure_refusals_test.exs:102: (test)
+
+
+
+ 66) test F17 — differing lengths are REFUSED before any mean is computed, and both lengths are named (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:95
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.aggregate/2 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:error, reason} = Run.aggregate([1.0, 2.0, 3.0], ["m1", "m2"])
+     stacktrace:
+       SP.ControlPlane.Run.aggregate([1.0, 2.0, 3.0], ["m1", "m2"])
+       test/sp/control_plane/run_failure_refusals_test.exs:96: (test)
+
+
+
+ 67) test F16 — a NON-converged fit is refused before scoring, and the refusal says so (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:57
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(Map.put(base(), :converged, false))
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000, converged: false})
+       test/sp/control_plane/run_failure_refusals_test.exs:58: (test)
+
+
+
+ 68) test a ledger survives a round trip through disk, entry for entry (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:58
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: assert {:ok, %{appended: 5, total: 5}} = Store.persist(dir, original)
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_525", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "664fc8dbd437c662a01054f45d6d90579f79eb47372b32d1ac892170243858cf", "prev_hash" => "89285593c5f52baec0ee5ef2a905e0dc6a5ebe25f6213e6890ce7d23fea461b3", "prior" => %{"step" => 4}, "resulting" => %{"step" => 5, "text" => "entry number 5"}, "role" => "agent", "seq" => 5, "transition" => "note.written", "unix_ns" => 1785488400000000005, "utc" => "2026-07-26T09:00:05Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "89285593c5f52baec0ee5ef2a905e0dc6a5ebe25f6213e6890ce7d23fea461b3", "prev_hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4, "text" => "entry number 4"}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785488400000000004, "utc" => "2026-07-26T09:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prev_hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "entry number 3"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785488400000000003, "utc" => "2026-07-26T09:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "entry number 2"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}]})
+       test/sp/control_plane/store_roundtrip_test.exs:60: (test)
+
+
+
+ 69) test F17 — empty inputs do not silently produce a mean of zero (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:105
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.aggregate/2 is undefined (module SP.ControlPlane.Run is not available)
+     code: assert {:error, reason} = Run.aggregate([], [])
+     stacktrace:
+       SP.ControlPlane.Run.aggregate([], [])
+       test/sp/control_plane/run_failure_refusals_test.exs:106: (test)
+
+
+
+ 70) test a store whose ledger file has been corrupted is refused, not silently repaired (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:106
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_1735", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prev_hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "entry number 3"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785488400000000003, "utc" => "2026-07-26T09:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "entry number 2"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}]})
+       test/sp/control_plane/store_roundtrip_test.exs:107: (test)
+
+
+
+ 71) test F18 — FAILED_RUN outranks every other status, including OVERRUN (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:143
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, crashed_overrun} = Run.new(%{base() | exit_code: 1, actual_n: 99})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 1, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 99, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000})
+       test/sp/control_plane/run_failure_refusals_test.exs:144: (test)
+
+
+
+ 72) test persisting twice with no new entries is a no-op, not a rewrite (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:157
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, %{appended: 3}} = Store.persist(dir, l)
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_523", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prev_hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "entry number 3"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785488400000000003, "utc" => "2026-07-26T09:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "entry number 2"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}]})
+       test/sp/control_plane/store_roundtrip_test.exs:159: (test)
+
+
+
+ 73) test F18 — a non-zero exit code records FAILED_RUN, never a verdict-bearing status (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:119
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(%{base() | exit_code: 137})
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 137, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000})
+       test/sp/control_plane/run_failure_refusals_test.exs:120: (test)
+
+
+
+ 74) test loading a directory that was never a store is refused, not treated as empty (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.load/1 is undefined (module SP.ControlPlane.Store is not available)
+     code: assert {:error, reason} = Store.load(dir)
+     stacktrace:
+       SP.ControlPlane.Store.load("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_650")
+       test/sp/control_plane/store_roundtrip_test.exs:102: (test)
+
+
+
+ 75) test from_entries refuses a chain that does not verify — corruption and accident stop here (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:129
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.from_entries/1 is undefined or private
+     code: assert {:error, _} = Ledger.from_entries(broken)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Ledger.from_entries([%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 99}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prev_hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "entry number 3"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785488400000000003, "utc" => "2026-07-26T09:00:03Z"}])
+       test/sp/control_plane/store_roundtrip_test.exs:133: (test)
+
+
+
+ 76) test F16 — convergence UNDECLARED is refused, not assumed true (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(base())
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000})
+       test/sp/control_plane/run_failure_refusals_test.exs:65: (test)
+
+..
+
+ 77) test a store with an unparseable line is refused, and the refusal names the line (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:121
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(2))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_714", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "entry number 2"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}]})
+       test/sp/control_plane/store_roundtrip_test.exs:122: (test)
+
+
+
+ 78) test F16 — a non-converged run writes NO artifact at all (SP.ControlPlane.RunFailureRefusalsTest)
+     test/sp/control_plane/run_failure_refusals_test.exs:73
+     ** (UndefinedFunctionError) function SP.ControlPlane.Run.new/1 is undefined (module SP.ControlPlane.Run is not available)
+     code: {:ok, r} = Run.new(Map.put(base(), :converged, false))
+     stacktrace:
+       SP.ControlPlane.Run.new(%{params: %{"alpha" => 0.1}, exit_code: 0, outputs: [], code_identity: "8ff5591", env_identity: "elixir-1.19.5/otp-28", inputs: %{"dataset" => "fixture-a"}, seeds: ~c"\a", planned_n: 10, actual_n: 10, started_utc: "2026-07-26T16:00:00Z", started_unix_ns: 1785513600000000000, ended_utc: "2026-07-26T16:00:10Z", ended_unix_ns: 1785513610000000000, converged: false})
+       test/sp/control_plane/run_failure_refusals_test.exs:74: (test)
+
+
+
+ 79) test the reload is byte-identical, not merely equal — canonical bytes match entry for entry (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:67
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, original)
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_778", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "89285593c5f52baec0ee5ef2a905e0dc6a5ebe25f6213e6890ce7d23fea461b3", "prev_hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4, "text" => "entry number 4"}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785488400000000004, "utc" => "2026-07-26T09:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prev_hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "entry number 3"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785488400000000003, "utc" => "2026-07-26T09:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "entry number 2"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}]})
+       test/sp/control_plane/store_roundtrip_test.exs:69: (test)
+
+
+
+ 80) test from_entries CANNOT stop a forger who recomputes hashes — stated, not hidden (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:137
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.from_entries/1 is undefined or private
+     code: assert {:ok, _} = Ledger.from_entries(forged),
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Ledger.from_entries([%{"actor" => "someone-else", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "23108617263d3a7189ad375c78016f6050bf029a1cf25fd1e2dc45e59cf3ff69", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}])
+       test/sp/control_plane/store_roundtrip_test.exs:152: (test)
+
+
+
+ 81) test the store is a plain, readable NDJSON file — evidence a human can open (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:78
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: {:ok, _} = Store.persist(dir, chain(3))
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_4360", %SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "232fb6488ee5fc59d10772fe3a5ae6e238704f241cdf3c29c20db24d25af0763", "prev_hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3, "text" => "entry number 3"}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785488400000000003, "utc" => "2026-07-26T09:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "7ebf625f038a98ab062c6f9fc3bfabcd423c617afb198f39e7bbc242875b510f", "prev_hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2, "text" => "entry number 2"}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785488400000000002, "utc" => "2026-07-26T09:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-4.md#4.1"}, "evidence" => [], "hash" => "91f6c04fb64ff43ff57d50796fd0e074f848e731e6a6e42bf4d41dc8c4bd6a12", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1, "text" => "entry number 1"}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785488400000000001, "utc" => "2026-07-26T09:00:01Z"}]})
+       test/sp/control_plane/store_roundtrip_test.exs:79: (test)
+
+
+
+ 82) test an empty ledger persists and reloads as an empty ledger (SP.ControlPlane.StoreRoundtripTest)
+     test/sp/control_plane/store_roundtrip_test.exs:94
+     ** (UndefinedFunctionError) function SP.ControlPlane.Store.persist/2 is undefined (module SP.ControlPlane.Store is not available)
+     code: assert {:ok, %{appended: 0, total: 0}} = Store.persist(dir, Ledger.new())
+     stacktrace:
+       SP.ControlPlane.Store.persist("C:\\Users\\mpolz\\AppData\\Local\\Temp/cp_store_roundtrip_842", %SP.ControlPlane.Ledger{reversed: []})
+       test/sp/control_plane/store_roundtrip_test.exs:95: (test)
+
+......
+Finished in 1.1 seconds (1.0s async, 0.1s sync)
+211 tests, 82 failures

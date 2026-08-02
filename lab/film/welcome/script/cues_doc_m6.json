@@ -1,0 +1,253 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "documentary",
+  "movement": "M6",
+  "design_rule": [
+    "M6 — THE HONEST STATE. The load-bearing movement of the documentary cut, held to the operator's",
+    "rule: expose the measurement, never assert the conclusion. Every adverse fact gets ONE frame,",
+    "ONE command and ONE output — never a cluster, never an apology. Where the short cut states a",
+    "fact once, this cut states it, then shows the source behind it, then shows what would falsify it.",
+    "Every PRINTS band is recorded stdout from capture/forensic_latest.json. Every quotation is the",
+    "project's own bytes, re-read and re-hashed at render time. Every number is a token id."
+  ],
+  "scenes": [
+    {
+      "id": "d_m6_open",
+      "plate": "title",
+      "kicker": "M6 — THE HONEST STATE",
+      "line1": "What is not true here today.",
+      "line2": "One fact. One command. One frame.",
+      "narration": "This next stretch is not a disclaimer reel at the end of a pitch. It is the part of the film the rest of the film is for. Every fact in it gets its own frame, its own command and its own output, at the same size as everything you have already been shown.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_golive_run",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Can this software put itself on air?",
+      "source": "viewer/prove_golive_refuses_me.cjs — an agent walking every path to air in this codebase and recording what stops it",
+      "note": "Paths the guard recognises: @n.golive.paths — paths it permits right now: @n.golive.allowed_now",
+      "narration": "A program here attempts to broadcast, deliberately, down every route this codebase has, and records what refuses it. The count of routes and the count it is allowed down are both under the frame. The last line the program printed is its own limit, not its own strength.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m6_golive_claim_level",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/golive_guard.cjs",
+      "from": 30,
+      "to": 36,
+      "why": "The guard's claim level, written into the module that enforces it",
+      "narration": "The guard states its own worth in its own file, and the word is @n.golive.claim_level, carried in every refusal and every grant it emits. Read the sentence about an agent already sitting inside the operator's desktop session. That is the case this guard says it does not cover, written by whoever wrote the guard.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_golive_no_key",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/golive_guard.cjs",
+      "from": 38,
+      "to": 43,
+      "why": "Why the door has no key — the module's own heading",
+      "narration": "The token that would open this door is created nowhere in the repository. Minting it belongs to the operator, and until he rules on it the guard refuses every route, including his. A door that turns away everyone is not a strong door. It is an unbuilt one, and it says so.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m6_golive_falsifier",
+      "plate": "measurement",
+      "probe": "golive.gate",
+      "asks": "What would falsify that refusal?",
+      "source": "viewer/verify_golive_refuses_agents.cjs — a stale token, a forged token, a non-interactive session and a replayed token, each required to be refused",
+      "note": "Presence-token minters in this codebase: @n.golive.minters — presence directory on disk: @n.golive.presence_dir_exists",
+      "narration": "A refusal is worth nothing unless something tries to break it. This check forges the token, ages it past its expiry, replays a spent one, and asks from a session with no human in it. Each attempt is required to be turned away. The line it printed is on screen.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m6_obs_bypass",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "What does that refusal NOT cover?",
+      "source": "viewer/prove_golive_refuses_me.cjs — the guard printing its own limit on every run. Its address is not on this frame and is not in this film.",
+      "note": "Closing that surface is the operator's, and what is on record for it is an acceptance.",
+      "narration": "Every route the last frames refused runs through this codebase. A control surface on the operator's studio machine runs through none of them, takes no credential, and bypasses all of it. Closing it is his. What is on record is an acceptance rather than a repair, and it rests on a network condition that can change unnoticed.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m6_gap_run",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many registered gates have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, cached nowhere",
+      "note": "@n.gap.in_ledger of @n.gap.registered registered gates. @n.gap.absent have no row at all.",
+      "narration": "This is the sharpest number in the film, and it is put on screen without a sentence wrapped around it. Of the gates this project registers, that many appear in its canonical evidence record. The rest do not appear in it at all. The instrument recomputes both counts every time it is asked.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m6_gap_schema",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 5,
+      "to": 5,
+      "why": "What that record is required to contain, from the schema's own description",
+      "narration": "The requirement is not something this film brought with it. It sits in the schema that governs every row of that record, in capitals, in the description the schema publishes about itself. Hold it beside the previous frame. The distance between the two is the whole of this scene.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_gap_stop",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/lab/desk.cjs",
+      "from": 739,
+      "to": 741,
+      "why": "Why it has stayed that way — the instrument's own answer",
+      "narration": "This is not a defect waiting for an agent to repair it. Writing rows into that record is a stop condition. The operator signs them and no agent may author one. The desk's whole job is to print the exact missing line and then halt, which is what you are reading.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_gap_selfcorrect",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "viewer/lab/desk.cjs",
+      "from": 742,
+      "to": 747,
+      "why": "The comment beside that field, recording what it used to say",
+      "narration": "The field above this comment once held a written sentence instead of a computed one. It stopped being true the day a row landed, and it stayed wrong for a fortnight inside the instrument whose numbers, two lines further up, were right. The comment stays. So does the correction it records.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_witness_run",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is there an independent party corroborating this record?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from the capture rather than recalled",
+      "note": "Independent custodians: @n.witness.independent_custodians — custodians qualifying as a witness: @n.witness.qualifying",
+      "narration": "A record only its author can vouch for is worth less than one a stranger can check. This counts the parties outside this machine that corroborate the evidence here. The box that was meant to be the second domain answers the writer's own key, so no custodian sits anywhere the writer cannot reach.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_witness_limitation",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/control-plane/LIMITATIONS.md",
+      "from": 35,
+      "to": 36,
+      "why": "The declared limitation, and the claim level it carries on the line beneath",
+      "narration": "A second domain the writer can reach is not a second domain. That sentence is not narration. It is the limitation as the repository declares it, with its claim level directly underneath. This film does not upgrade that word anywhere, and neither does the file it came from.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_witness_anchor",
+      "plate": "measurement",
+      "probe": "ledger.chain",
+      "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+      "source": "evidence/control_plane/ledger.ndjson and anchor.json — every link re-hashed, then the tip compared with the anchor",
+      "note": "Independent custodians: @n.witness.independent_custodians — claim level: @n.witness.claim_level",
+      "narration": "The chain verifies and the anchor agrees with it. That frame is placed here, beside the custodian count, on purpose. Anyone holding write access to the store rewrites the ledger and its anchor in one move. Agreement is a real property, and it is not corroboration by anybody else.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_witness_forgery",
+      "plate": "measurement",
+      "probe": "bag.roundtrip",
+      "asks": "Is a forged evidence pack caught?",
+      "source": "viewer/verify_bag.cjs --mutate — the pack is tampered with on purpose and every mutation is required to fail verification",
+      "note": "Claim level: @n.witness.claim_level — never authenticated, never independent",
+      "narration": "The pack survives a round trip and a tampered one is refused. The same run records the case it cannot catch: edit the payload, recompute the manifest and the tag manifest, and the forgery verifies clean. The gate says that itself, at the foot of its own passing output.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_pureworld_run",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the file is read and its first raise located by line number",
+      "note": "The road to air for the colony's forage claim runs through this file.",
+      "narration": "This is the check that would graduate the colony's forage claim. The command opens its runner, finds the first raise, prints the line number it sits on and the block that follows. It does not run the check. There is nothing in there yet to run.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pureworld_scaffold",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "runs/pureworld_qa_gate.exs",
+      "from": 28,
+      "to": 28,
+      "why": "The attribute the runner raises with, before it reaches the colony",
+      "narration": "One line, in the file, in the project's own words. The runner raises this before it touches the colony at all. Nothing about the colony's behaviour has been measured through this gate, and the gate has never returned a verdict of any kind, in any direction.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pureworld_prereg",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "runs/pureworld_qa_gate.exs",
+      "from": 3,
+      "to": 4,
+      "why": "Its pre-registration, and the verdict word on its row in the ledger",
+      "narration": "It is not a vague intention. There is a pre-registration written before any run, a named row in the evidence ledger, and a contract the scaffold locks in for whoever finishes it. What it has never had is a result. The verdict word on that row is on screen, and it reads pending.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pladder_receipt",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The parity ladder, as the strongest result in this programme states it in its own code",
+      "narration": "The strongest result here reaches held-out duration prediction and stops. @n.pladder.unclosed levels above it are named in the same string and marked untouched, in either direction. That clause is doing real work. Untouched is not weak support. It is no evidence at all, for or against.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m6_pladder_correction",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 568,
+      "to": 572,
+      "why": "The comment above it, recording what the ladder used to say",
+      "narration": "That list was once written off by one. Every level above transfer read a rung higher than the evidence licensed, and independent replication had been left off the list entirely. The correction sits in the file, above the line it corrected, and it names what it corrected rather than quietly replacing it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_pladder_external",
+      "plate": "title",
+      "kicker": "WHAT CANNOT BE CLOSED FROM IN HERE",
+      "line1": "Transfer needs another dataset.",
+      "line2": "Intervention needs an apparatus. Replication needs somebody who is not us.",
+      "narration": "Three of those levels cannot be closed from inside this estate at any budget. Transfer needs a second dataset. Intervention needs a physical apparatus and a hand on it. Independent replication needs somebody who is not us, working from the published method. Full parity is not claimed here, and it is false.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m6_limitations_run",
+      "plate": "measurement",
+      "probe": "limitations.declared",
+      "asks": "What does this project say it cannot do?",
+      "source": "docs/control-plane/LIMITATIONS.md — every declared limitation, listed by its identifier",
+      "note": "@n.limitations.declared declared, and derived from one repository of the three.",
+      "narration": "Each identifier on screen names a thing this project states it does not do, carried in the document that collects them. The count under the frame is for one repository out of three. The document says that about itself, and records the omission as one of its own limitations.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_limitations_derived",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/control-plane/LIMITATIONS.md",
+      "from": 3,
+      "to": 9,
+      "why": "How that document is made, and why it cannot drift",
+      "narration": "The page is not written. It is generated from annotations sitting on the line each limitation lives on, and a gate regenerates it and refuses any difference. A hand-kept list of limits drifts one way. Nobody deletes a limit that was fixed, and everybody forgets the one just found.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m6_no_verdict",
+      "plate": "title",
+      "kicker": "THE FIGURE THIS WORK EXISTS TO MOVE",
+      "line1": "No verdict has yet been authored",
+      "line2": "about a real scientific claim.",
+      "narration": "That is the honest position, and it is the last thing this movement says. There is also no register of scientific verdicts anywhere in this estate to count, so this is the one figure in the film that is declared rather than measured. The missing instrument is the harder finding.",
+      "tail_silence": 2.0
+    }
+  ]
+}

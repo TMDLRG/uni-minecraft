@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">How many of those registered checks have a row in the</text>
+  <text x="120" y="216" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">permanent record?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node -e console.log(JSON.stringify(require('./viewer/lab/desk.cjs').theGap(),null,1))</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="334" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve"> "so": "1 of 34 are. 33 are not.",</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve"> "why_it_has_stayed_that_way": "Writing evidence/gates.ndjson is S4 — a stop condition. An agent</text>
+  <text x="136" y="554" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">cannot author these rows, and should not. The desk's whole job is to show the exact line and</text>
+  <text x="136" y="584" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">stop.",</text>
+  <text x="136" y="614" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve"> "and_one_consequence_worth_naming": "canRun's SEALED_BY_S10 branch is currently UNREACHABLE for</text>
+  <text x="136" y="644" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">every registered gate: 1 of 34 registered gate_row(s) appear in the ledger at all, and NONE of</text>
+  <text x="136" y="674" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">them names a row whose latest verdict is PENDING (the 1 present read PASS). The seal is proved</text>
+  <text x="136" y="704" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">to bite by injection in the L5 gate rather than by anything on this floor, and that is said out</text>
+  <text x="136" y="734" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">loud because a guard nobody has seen fire is a guard nobody should trust."</text>
+  <text x="136" y="764" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">}</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">viewer/lab/desk.cjs — theGap(), recomputed on every call</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">The schema says every gate the project claims MUST be represented in that record.</text>
+</svg>

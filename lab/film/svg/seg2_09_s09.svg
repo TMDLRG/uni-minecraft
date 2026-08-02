@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g8" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g8)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="150" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#9aa7b4" letter-spacing="3">plug in Earth's ozone column</text>
+
+  <text x="960" y="260" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="32" fill="#cdd6f4">300 Dobson Units  =  8.07 × 10¹⁸ molecules / cm²</text>
+  <text x="960" y="320" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="32" fill="#cdd6f4">σ (Hartley peak ~255 nm)  ≈  1.1 × 10⁻¹⁷ cm²</text>
+
+  <rect x="430" y="380" width="1060" height="100" rx="14" fill="#1c2128" stroke="#89b4fa" stroke-width="2"/>
+  <text x="960" y="445" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="50" fill="#a6e3a1">τ  ≈  88.8</text>
+
+  <text x="960" y="560" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#9aa7b4">UV-C transmission at the ground:</text>
+  <rect x="430" y="600" width="1060" height="100" rx="14" fill="#1c2128" stroke="#f9e2af" stroke-width="2"/>
+  <text x="960" y="665" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="46" fill="#f9e2af">e⁻⁸⁸·⁸  ≈  3 × 10⁻³⁹</text>
+  <rect x="0" y="667" width="1920" height="413" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="667" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Plug in Earth's numbers. The ozone column above your head, on a typical day, is about</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">three hundred Dobson Units — roughly eight times ten to the eighteen molecules in every</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">square centimetre. Multiply by how strongly each ozone molecule absorbs ultraviolet light</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">at its peak — about one-point-one times ten to the minus seventeen — and you get an</text>
+  <text x="960" y="855" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">optical depth of about eighty-eight point eight.</text>
+  <rect x="800" y="869" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">पृथ्वीचे आकडे टाका. तुमच्या डोक्यावर एका सामान्य दिवशी ओझोनचा स्तंभ साधारण तीनशे</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">डॉब्सन एकके आहे — प्रत्येक चौरस सेंटिमीटरात अंदाजे आठ-गुणिले-दहा-च्या-अठरा रेणू.</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">प्रत्येक ओझोन रेणू अतिनील किरण किती तीव्रतेने शोषतो त्याच्या उच्चांकाने — सुमारे</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">एक-दशांश-एक-गुणिले-दहा-च्या-वजा-सतरा — गुणा, आणि सुमारे अठ्ठ्याऐंशी-दशांश-आठ इतकी</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">प्रकाशीय खोली मिळते.</text>
+</svg>

@@ -1,0 +1,143 @@
+{
+ "schema": "uni.remediation.f28_f31_remeasure.v1",
+ "step": "3.6",
+ "baseline": {
+  "file": "evidence/remediation/0.2_instrument_inventory.json",
+  "captured_at": "2026-07-26T19:17:35.021Z"
+ },
+ "method": "Each instrument spawned directly with output captured to a buffer. NEVER piped — inherited verbatim from 0.2's method, which was itself written after piping produced a false 'exits 0'.",
+ "cross_repo_note": "F28/F29/F30's instruments live in UNI-FLAGELLUM. The 0.2 inventory covered UNI.Minecraft's viewer gates only, so it could not have contained them and still cannot. The gap is real.",
+ "totals": {
+  "F28": {
+   "at_0_2": 0,
+   "now": 3,
+   "passing": 2
+  },
+  "F29+F30": {
+   "at_0_2": 0,
+   "now": 3,
+   "passing": 3
+  },
+  "F31": {
+   "at_0_2": 0,
+   "now": 3,
+   "passing": 2
+  }
+ },
+ "independent_second_count": {
+  "method": "registrations rather than execution: gate_registry.json for Node, pytest --collect-only for Python",
+  "f31_gates_registered": 1,
+  "python_cases_collected": 41,
+  "agrees": true
+ },
+ "instruments": [
+  {
+   "failure_mode": "F28",
+   "repo": "UNI-FLAGELLUM",
+   "file": "hierarchical-aif/tests/motor_stack_aif/test_frozen_evidence_halts.py",
+   "kind": "suite",
+   "present": true,
+   "file_sha256": "c72a9507f79a271392933dfbebd83725d959f834e8aafe94a147eb513dda0f0e",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F28",
+   "repo": "UNI-FLAGELLUM",
+   "file": "hierarchical-aif/src/motor_stack_aif/frozen_evidence_guard.py",
+   "kind": "proof",
+   "present": true,
+   "file_sha256": "1ccfe39f68db645567f446fac0fa1f9f757946cd6de358b829a1e7ceaeee2f35",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "   so this side may legitimately refuse where sha256sum is content, never the reverse.)",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F28",
+   "repo": "UNI-FLAGELLUM",
+   "file": "hierarchical-aif/tests/conftest.py",
+   "kind": "wiring",
+   "present": true,
+   "file_sha256": "580744940dfdbc823595aadcf2be7e027a0907a09740e8b6271b96759c19e67a",
+   "in_0_2_inventory": false,
+   "exit_code": null,
+   "verdict_line": null,
+   "timed_out": null
+  },
+  {
+   "failure_mode": "F29+F30",
+   "repo": "UNI-FLAGELLUM",
+   "file": "hierarchical-aif/tests/motor_stack_aif/test_d5_distribution_guard.py",
+   "kind": "suite",
+   "present": true,
+   "file_sha256": "ea1e2fd35851aa818ab38d0d682e8fcac82e0d1abb15c0434c375b99d2dc4537",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F29+F30",
+   "repo": "UNI-FLAGELLUM",
+   "file": "hierarchical-aif/tests/motor_stack_aif/test_d5_coverage_conservation.py",
+   "kind": "suite",
+   "present": true,
+   "file_sha256": "ebfd7e5dd9b44c71221dc01bae54d7529d1980aaa091dac08137327d03da9474",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F29+F30",
+   "repo": "UNI-FLAGELLUM",
+   "file": "hierarchical-aif/scripts/prove_unverified_bites.py",
+   "kind": "proof",
+   "present": true,
+   "file_sha256": "fee3ec38dbc077bf5f0977e2801e076e1c60d7e556dbf1daa52d99b47472f001",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "RESULT: all three bite as declared",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F31",
+   "repo": "UNI.Minecraft",
+   "file": "viewer/verify_golive_refuses_agents.cjs",
+   "kind": "gate",
+   "present": true,
+   "file_sha256": "b189949fda3c27c6fb1325e16480ff9c3b2d809b00fa8b29dd57e81f0bc7800f",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "GATE: PASS - golive-refuses-agents, 13/13 checks",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F31",
+   "repo": "UNI.Minecraft",
+   "file": "viewer/prove_golive_refuses_me.cjs",
+   "kind": "proof",
+   "present": true,
+   "file_sha256": "890c900b1eb4577f44517dfd8b48a62843c09ef582fd0886c06a12281df3913e",
+   "in_0_2_inventory": false,
+   "exit_code": 0,
+   "verdict_line": "RESULT: no path through",
+   "timed_out": false
+  },
+  {
+   "failure_mode": "F31",
+   "repo": "UNI.Minecraft",
+   "file": "viewer/golive_guard.cjs",
+   "kind": "chokepoint",
+   "present": true,
+   "file_sha256": "ac9d5b99c1f98669f19f85d4e7ab5ab7af70ff7ee965a49fe57f7bac1dd58578",
+   "in_0_2_inventory": false,
+   "exit_code": null,
+   "verdict_line": null,
+   "timed_out": null
+  }
+ ]
+}

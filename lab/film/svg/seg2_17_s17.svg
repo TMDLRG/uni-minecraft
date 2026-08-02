@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g16" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g16)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="130" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="36" fill="#9aa7b4" letter-spacing="3">but ozone is also found on dead worlds</text>
+
+  <g font-family="ui-monospace,Consolas,monospace" font-size="30" fill="#cdd6f4">
+    <text x="320" y="260" fill="#6c7393" font-size="24">PLANET</text>
+    <text x="800" y="260" fill="#6c7393" font-size="24">ATMOSPHERE</text>
+    <text x="1280" y="260" fill="#6c7393" font-size="24">OZONE DETECTED?</text>
+    <text x="1620" y="260" fill="#6c7393" font-size="24">LIFE?</text>
+    <line x1="280" y1="280" x2="1760" y2="280" stroke="#30363d" stroke-width="2"/>
+
+    <text x="320" y="340">Earth</text>
+    <text x="800" y="340">~1 bar O₂/N₂</text>
+    <text x="1280" y="340" fill="#a6e3a1">Yes — ~300 DU</text>
+    <text x="1620" y="340" fill="#a6e3a1">YES</text>
+
+    <text x="320" y="410">Venus</text>
+    <text x="800" y="410">~92 bar CO₂</text>
+    <text x="1280" y="410" fill="#f9e2af">Yes — nightside, ~100 km</text>
+    <text x="1620" y="410" fill="#f38ba8">NO</text>
+
+    <text x="320" y="480">Mars</text>
+    <text x="800" y="480">6 mbar CO₂</text>
+    <text x="1280" y="480" fill="#f9e2af">Yes — 0.4–4 DU</text>
+    <text x="1620" y="480" fill="#f38ba8">NO</text>
+  </g>
+
+  <text x="960" y="620" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="26" fill="#6c7393">sources: ESA Venus Express SPICAV · ESA Mars Express SPICAM</text>
+  <rect x="510" y="660" width="900" height="60" rx="10" fill="#1c2128" stroke="#f38ba8" stroke-width="2"/>
+  <text x="960" y="700" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#f38ba8" font-weight="bold">Ozone forms in any UV-irradiated O/O₂ atmosphere — biotic or not.</text>
+  <rect x="0" y="633" width="1920" height="447" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="633" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">And here is the falsifier the cosmos itself hands us. Ozone exists on dead worlds. The</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">European Space Agency's Venus Express probe found a thin nightside ozone layer about a</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">hundred kilometres above Venus. Mars Express found a small but measurable ozone column</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">over Mars. Both planets are, by every measure we have, biologically sterile. The shield is</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">there, and the life is not. Reading one fails its test, cleanly.</text>
+  <rect x="800" y="835" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">आणि इथे विश्वच आपल्या हातात देत असलेला खोडक आहे. ओझोन मृत जगांवर अस्तित्वात आहे.</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">युरोपीय अवकाश संस्थेच्या व्हीनस एक्स्प्रेस यानाला शुक्रावर सुमारे शंभर किलोमीटर वर</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">रात्रीच्या बाजूचा पातळ ओझोन थर सापडला. मार्स एक्स्प्रेसला मंगळावर लहान पण मोजता</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">येण्याजोगा ओझोन स्तंभ सापडला. दोन्ही ग्रह, आपल्याकडे असलेल्या प्रत्येक मापाने,</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">जैविकदृष्ट्या निर्जंतुक आहेत. कवच आहे, आणि जीवन नाही. वाचन एक त्याची चाचणी हरते,</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">स्वच्छपणे.</text>
+</svg>

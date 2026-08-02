@@ -1,0 +1,954 @@
+{
+ "schema": "uni.remediation.plan.v1",
+ "phase": "PHASE-9 — RETURN TO RESONANCE",
+ "authored_at": "2026-07-26",
+ "next_act": {
+  "id": "CHECKPOINT-E",
+  "owner": "OPERATOR",
+  "one_line": "CHECKPOINT E -- the operator's. Two images side by side at http://127.0.0.1:8103/lab/l6. He says whether they differ with NO TEXT READ, and if so whether the reason is that the MATERIAL (truth_class) changed. That is the step's falsifier and it is M8, the operator's eye.",
+  "where": "stages[id=4].steps[id=4.6]",
+  "blocked_on": "M8 -- the operator's eye. No gate can stand in for it, and none is being asked to. Measured 2026-07-29: both images are real and they differ -- GET /api/lab/shot?swap=0 returns 3371 bytes and ?swap=1 returns 3375 bytes, both valid PNG, sha256 6eed6e94... and 0321be29..., embedded side by side at viewer/lab/l6.html:52-53. The surface is ready; the eye is not a gate.",
+  "authored_at": "2026-07-29",
+  "why_this_key_exists": "docs/control-plane/AGENT-CALIBRATION-PROMPT.md instructs every fresh agent to read this plan and do what its next_act says. Until 2026-07-29 NO SUCH KEY EXISTED, and five governing documents at six locations named a next act -- 'build L6' -- that had shipped at 6234f3d on 2026-07-28T19:11:29. A fresh agent obeying the calibration prompt BEFORE verifying anything would have rebuilt a finished build. This key is the single authoritative answer. The documents RENDER it from here and must not restate it: a restated fact is a fact with a half-life, and this one had a half-life of six hours.",
+  "supersedes": [
+   {
+    "token": "L6",
+    "was": "Stage 4 step 4.6 -- build L6, THE GAUNTLET THEN THE CO-SIGN",
+    "shipped_at": "6234f3d",
+    "shipped_utc": "2026-07-28T19:11:29",
+    "note": "A RETIRED TOKEN. It must not appear inside any generated state block. viewer/verify_claims.cjs check C9.3 refuses it there, and the mutation M5 proves that refusal bites."
+   }
+  ]
+ },
+ "register": "UNI-FLAGELLUM/docs/control-plane/phases/PHASE-9-REMEDIATION.md",
+ "law": "This file is the SINGLE SOURCE OF TRUTH for the plan. UNI TRACK renders it and Gaia projects it verbatim. None of the three may state a status the others do not. A drift signal compares this file's claims against the artifacts on disk — that comparison IS the resonance check, and it is designed so equal:true is reachable.",
+ "status_vocabulary": [
+  "DONE",
+  "IN_PROGRESS",
+  "NEXT",
+  "PLANNED",
+  "BLOCKED",
+  "OPERATOR",
+  "STANDING"
+ ],
+ "proof_methods": {
+  "M1": "mutation — break what the guard guards; it must fire",
+  "M2": "independent reimplementation — shares no code with the subject",
+  "M3": "live probe — ask the running system, not the repo",
+  "M4": "adversarial agent — a fresh agent given the forbidden goal",
+  "M5": "historical replay — run the new guard against the pre-fix tree",
+  "M6": "negative control — a case that must NOT fire",
+  "M7": "cross-instrument corroboration — the same fact from two unrelated instruments",
+  "M8": "the operator's eye"
+ },
+ "proof_artifacts": {
+  "A1": "a number he recomputes",
+  "A2": "a command that fails on demand — he watches the guard bite",
+  "A3": "a diff he reads in full",
+  "A4": "two images",
+  "A5": "a red/green receipt pair he reruns",
+  "A6": "an absence he probes for"
+ },
+ "stages": [
+  {
+   "id": "0",
+   "name": "CONSERVE",
+   "status": "DONE",
+   "why": "The five malformed drift comparisons are currently the ONLY in-repo record that the world is wrong. Repairing an instrument can take its evidence with it. So freeze the picture first.",
+   "checkpoint": {
+    "id": "A",
+    "status": "OPERATOR",
+    "he_sees": "the frozen census — the agreed picture of today",
+    "he_does": "rules it complete; everything later is diffed against it"
+   },
+   "steps": [
+    {
+     "id": "0.1",
+     "title": "freeze the drift signals verbatim",
+     "status": "DONE",
+     "p3": "M7",
+     "p4": "A1",
+     "artifact": "evidence/remediation/0.1a_drift_verbatim_prefix.json",
+     "sha256": "8b760e6019237e8cd8d23efb2915cb4570d2465dd47190cf4f12dfb2a7c909e7",
+     "found": "ONE PAYLOAD, TWO MUTUALLY EXCLUSIVE STATEMENTS — envelope.git_commit reports c1e9425 while the same response serves the pre-91ab10b resolver string. The field that should have caught the 22-hour blind spot is the field that hid it."
+    },
+    {
+     "id": "0.2",
+     "title": "instrument inventory — does the exit code carry the verdict",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A1",
+     "artifact": "evidence/remediation/0.2_instrument_inventory.json",
+     "sha256": "0f9dd95afd3b7d5c3f3bde30a98414bbb18829caa0f7a4107186432cfa582bcd",
+     "found": "ALL FIVE gates carry their verdict. My 'verify_host_tracking exits 0' report was FALSE — I read tail's status through a pipe. RETRACTED, settled by measurement. The real defect stands: nothing invokes them."
+    },
+    {
+     "id": "0.3",
+     "title": "the stale-process record",
+     "status": "DONE",
+     "p3": "M7",
+     "p4": "A1",
+     "artifact": "evidence/remediation/0.3_stale_processes.json",
+     "sha256": "1d5050995f8d425456eda69a5cdcd91b25a35840815238253e916066533128ad",
+     "found": "The DOOR is 50 commits behind. So are both watchdogs — the supervisors are themselves stale. TRACK 20, Gaia 8."
+    },
+    {
+     "id": "0.4",
+     "title": "frozen-evidence baseline verified",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A1",
+     "found": "250 files, BYTE-IDENTICAL. No STOP_FROZEN_EVIDENCE_DRIFT."
+    },
+    {
+     "id": "0.5",
+     "title": "PHASE-9 register pre-registered",
+     "status": "DONE",
+     "p3": "-",
+     "p4": "A3",
+     "found": "Proof 3 and 4 named per step BEFORE execution, so a method cannot be chosen afterwards for having agreed."
+    }
+   ]
+  },
+  {
+   "id": "1",
+   "name": "THE INSTRUMENTS",
+   "status": "DONE",
+   "why": "Nothing measured after this is trustworthy until it is done. Every live probe in every later step measures a ghost while five long-lived processes serve bytes that are not HEAD.",
+   "checkpoint": {
+    "id": "B",
+    "status": "OPERATOR",
+    "he_sees": "CI going RED in front of him on the canary branch",
+    "he_does": "rules on my verify_host_tracking retraction",
+    "ready_note": "STAGE 1 IS COMPLETE, 9 of 9 steps DONE, and Checkpoint B is now the operator's. Both of its clauses are already satisfied and can be re-read at any time: (1) 'he sees CI going RED in front of him on the canary branch' -- done live in step 1.3, GitHub Actions run 30226371980, gates-node RED for the planted reason, canary branch deleted afterwards; (2) 'he rules on my verify_host_tracking retraction' -- the retraction stands and was re-confirmed by this very step: host_tracking is byte-identical to Stage 0 and still exits 1 with verdict FAIL, so the gate DOES carry its verdict in its exit code and my original 'exits 0' report was false. That ruling is his to make; the measurement is on the table."
+   },
+   "steps": [
+    {
+     "id": "1.1",
+     "title": "build identity on all four bodies",
+     "status": "DONE",
+     "p3": "M3+M7+M6",
+     "p4": "A1",
+     "falsifier": "a freshness field RECOMPUTED PER REQUEST — the gaia.cjs:62 defect",
+     "detail": "boot-time module_set_sha256 from require.cache / assembly MVID / :code.get_object_code, served verbatim. Watchdogs gain a second clause and ANNUNCIATE, never auto-restart — and never restart under air.",
+     "green_sha": "05edda0af0ec414d0ebdc4ff52c8a5a7b453de9b",
+     "found": "All 4 bodies serve boot identity LIVE: Door boot 05edda0/module_set 7ddae14c, TRACK boot 05edda0/module_set 95dd4c24, Gaia envelope 05edda0 (frozen), HUD MVID 9c4b2a44660e4dbb91d0132c5ae6c924 (== staged). Watchdog second clause (door_healer.identityLag) live, annunciate-only, reaches no restart. Gate 7/7; mix 970/0; HUD dotnet 54/0. PROOF1 red→green operator-witnessed. PROOF2 clean-worktree remeasure caught + fixed a worktree-null defect in the HEAD reader. PROOF3 M3 live on all 4 bodies (off-air restart, single listener each). PROOF4 A1 operator recomputed git rev-parse HEAD == served boot_git_commit on the Door. HUD git_commit is null (NetworkService cannot run git — pre-existing, immaterial: MVID is the .NET identity)."
+    },
+    {
+     "id": "1.2",
+     "title": "gate_runner asserts exit != 0 <=> verdict != PASS",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A2",
+     "falsifier": "a registered gate absent from the runner",
+     "green_sha": "c55acf7",
+     "found": "viewer/gate_runner.cjs invokes every registered node gate un-piped and asserts exit==0<=>verdict==PASS + registry completeness against filesystem discovery. Red-first: completeness caught the author's OWN registry missing viewer/hud/verify_hud.cjs; fixed, then green. Meta-gate verify_gate_runner.cjs proves teeth (M1: a FAIL-but-exit-0 liar caught as a law violation; an unregistered ghost file caught as incompleteness). 6/6 CI-safe gates law-consistent, registry complete. ADVERSE RESULT SURFACED, NOT MINE TO FIX: host-tracking gate now visibly FAILs (exit 1, verdict FAIL, law-consistent) — root cause is viewer/infra_registry.json:38, the 'music' service, whose own _ips_note documents this is a DELIBERATE, already-honest DNS-first fallback 'for the window before the zone gains the record' (music.uni-lab.local has no DNS record yet). This is exactly the plan's own not_mine item 'whether music.uni-lab.local is a real service' — the code is not wrong; the DNS zone is the operator's to place or not. Tracked, not silently fixed, not spawned as an autonomous task (a coding agent cannot rule on a not_mine question)."
+    },
+    {
+     "id": "1.3",
+     "title": "CI runs node — gates-node, gates-python, and a canary branch that must go RED",
+     "status": "DONE",
+     "p3": "M1 at CI level",
+     "p4": "A2 watched live",
+     "falsifier": "CI still never invokes node; or the canary never goes red, which makes CI indistinguishable from absent",
+     "found": "ADVERSE, WORST CASE: `gh run list` showed CI had NEVER RUN, ever, on any branch — the trigger was branches:[main,master] and the real/default branch is gen2-runtime, which never matched. Fixed (trigger + workflow_dispatch). New gates-node (gate_runner.cjs --require-pass) + gates-python (production/verify_python_gates.py, discovery-based) jobs added, proven locally + from a clean worktree (sha 71cdb5d). PROOF3+4 LIVE: pushed a throwaway canary branch (never merged, deleted after), watched GitHub Actions run 30226371980 live via gh run watch, gates-node went RED exactly as designed (canary-TEMPORARY=FAIL), gates-python PASSED. Canary branch deleted both remote and local post-observation.",
+     "second_finding_out_of_scope": "The SAME run also showed the PRE-EXISTING `test` job (Elixir 1.17/1.18 matrix, untouched by this step) failing for two real, previously-invisible reasons: (a) lib/sp/control_plane/{anchor.ex:96, gate_row.ex:112, ledger.ex:152-162, run.ex:149, store.ex:187} call the built-in JSON module (added Elixir 1.18) — undefined on 1.17, so mix.exs's declared `elixir: \"~> 1.17\"` was FALSE for the Control Plane; on a real 1.17 runtime not a warning, UndefinedFunctionError at call time. RULED by the operator: drop 1.17, bump the floor to ~>1.18 (nothing needs it; no JSON compat shim). ACTED: mix.exs elixir constraint -> \"~> 1.18\" (with a WHY comment naming the JSON dependency); ci.yml matrix's 1.17/OTP-27 entry removed (single-entry 1.18/OTP-27 remains). Verified: local mix compile --warnings-as-errors clean, full mix test 970/0 (no regression) — the true proof of the 1.18 floor is CI's own now-single-version job, no local 1.18 toolchain was available to test directly. (b) mix format --check-formatted disagrees between local dev (1.19.5, exit 0 clean) and CI's 1.18.4 (76 files flagged) — a real formatter-version drift, not a one-file debt, superseding the older 'lib/sp/brain/language.ex only' record. STILL OPEN, asked, not yet ruled: which Elixir version is the formatting source of truth (CI's 1.18 or dev's 1.19+).",
+     "format_ruling_acted": "RULED: CI's 1.18 is the source of truth. VERIFIED first (not assumed) the drift was real, not a CRLF artifact of this Windows box's autocrlf: ran `git archive HEAD | tar -x` ENTIRELY INSIDE an elixir:1.18-otp-27 container (matching CI exactly: Erlang/OTP 27, Elixir 1.18.4) so the checkout had zero Windows involvement; real style differences remained (long calls split, comments moved above code, single-line maps expanded). Reformatted the same way (archive+format inside the container, copied back): 81 files, sha 3ade5d8. Definitive re-check (same container, fresh clean checkout of the new HEAD): mix format --check-formatted exit 0, zero files flagged. Local compile/test unaffected (970/0, no regression).",
+     "pre_push_full_ci_simulation_found_3_more_real_defects": "Before pushing, ran the ENTIRE test job (compile+format+test+golden-trace+blanket-evidence) inside the matching container as a full dry run. Found THREE further real, previously-invisible defects, none caused by this step, none fixable by this agent alone: (A) SEVEN Control-Plane tests (unbacked_state_refuses_authoring_test.exs, scene_node_requires_truth_class_test.exs x3, claim_fence_in_the_scene_test.exs, fog_is_walkable_test.exs x2) read the SIBLING repo at a hardcoded relative path (fog_is_walkable_test.exs:57-62: Path.expand(\"../../../../UNI-Flagellum/UNI-FLAGELLUM/docs/control-plane/{FAILURE-MODES,ARCHITECTURE}.md\", __DIR__)), dating to Phase 7 (2a9a6d4/7a9ac35/3ff0dc9) -- a deliberate design (Control Plane tests verify against the OTHER repo's canonical docs) never run where only one repo is checked out, which is exactly what CI's single actions/checkout does, and always will unless CI also checks out TMDLRG/UNI-FLAGELLUM (confirmed on GitHub, same org). (B) evidence/gates.ndjson (the CANONICAL LEDGER, S4-protected, never touched by this agent) has REALLY drifted since its last pin: real blob sha256 is now 641c8211d9c97e811fff2e1dcd0b6bd58354279b8cd9a1483aef98eb932453aa, not the 964ea25c... this resume block and control_plane_ledger_is_real_test.exs:216 both still cite; and the file is now uniformly LF (0 of 207 lines CRLF), not the genuinely-mixed premise appender_takes_last_line_terminator_test.exs:147 asserts. Both tests are doing their job -- likely a legitimate append from ongoing live operation since the pin -- but re-pinning is not this agent's call. (C) bridge_test.exs (a real-Port lockstep test) times out at 30s with an empty mailbox on Linux, reproduced running it ALONE (rules out suite-level contention) with both an archive checkout and a full git-clone checkout -- passes natively on this Windows box, fails on Linux; not yet isolated to container-vs-bare-Linux or a genuine platform difference. NOT PUSHED: gen2-runtime. Pushing now would show CI red for host-tracking (already tracked) PLUS these three newly-found classes -- a materially bigger surface than was on the table when the push was authorized. Re-surfaced, re-asking before proceeding.",
+     "pushed_and_real_ci_result_corrects_the_prior_prediction": "Pushed gen2-runtime 653234c..e8e5427 (private repo, backup priority per operator). First real CI run in this repository's history: run 30229474567, RED as expected -- but MY OWN PRE-PUSH CONTAINER PREDICTION WAS WRONG IN TWO SPECIFIC WAYS, corrected here by the real measurement (gh run view --log-failed), not assumed: (1) bridge_test.exs PASSED in real CI -- absent from the real failure list entirely. The Linux timeout reproduced twice in the local Docker container was a LOCAL DOCKER-RESOURCE ARTIFACT (likely CPU/scheduling contention under Docker Desktop), not a genuine platform or CI concern; retracted as a finding. (2) The git-history test (control_plane_ledger_is_real_test.exs, \"EVERY commit named in the ledger exists in git\") DID fail in real CI, contradicting the claim that preserving .git (tested via a FULL git clone) would fix it -- the real cause is that ci.yml's actions/checkout uses fetch-depth:1 (confirmed in the run log), a SHALLOW clone that does not carry the older commit history the ledger names, which a full local clone masked. Net: real CI shows 974 tests, 10 failures -- the same TOTAL COUNT predicted, by coincidence of two errors cancelling, not because the prediction was actually right. CORRECTED FINAL BREAKDOWN, CI-confirmed: 7 sibling-repo-path tests (unchanged) + 2 ledger-drift tests (unchanged: CRLF-mix premise + hash pin) + 1 shallow-clone/git-history test (recharacterized: needs a deeper fetch, not merely '.git present'). gates-python and Overlooker UI both PASS in real CI. gates-node fails at gate_runner --require-pass (host-tracking, already tracked). compile and format BOTH PASS in real CI -- direct, real confirmation the Elixir-1.18 bump and the 81-file reformat are genuinely correct, not merely container-simulated.",
+     "RETRACTION_finding_B_was_wrong": "RETRACTED, settled by measurement during step 1.5. I reported finding (B) as 'evidence/gates.ndjson has REALLY drifted since its last pin ... likely a legitimate append from ongoing live operation'. THAT WAS FALSE. The ledger has not drifted by a single byte. Measured: the WORKING TREE file hashes to 964ea25cfe8666cae89aed23dac55bb483b654730a3259269d5e42d91d8a4c44 -- exactly the pin control_plane_ledger_is_real_test.exs:216 asserts -- and carries 58 CRLF-terminated lines of 207, i.e. genuinely mixed endings, exactly the premise appender_takes_last_line_terminator_test.exs:147 asserts. Both ledger tests are correct and the ledger is intact ON THE MACHINE THAT PINNED IT. THE REAL CAUSE is the SAME cross-platform EOL defect found and fixed for .cjs in step 1.4, now reaching the canonical ledger: evidence/gates.ndjson has no .gitattributes rule, so core.autocrlf governs it. Its BLOB is uniform LF (0 CRLF of 207, hash 641c8211d9c97e811fff2e1dcd0b6bd58354279b8cd9a1483aef98eb932453aa), so a Linux CI checkout reads different bytes than this Windows working tree: the hash pin misses AND the 'mixed endings' premise evaporates. TWO CI failures, ONE cause, and NOT drift. NOT FIXED, deliberately, and NOT MINE to fix: S4 forbids any write to evidence/gates.ndjson, and ADR-0002 Amendment 1 explicitly REJECTS 'normalize line endings so the digests match' as tail-wagging-dog -- it would change how the canonical ledger is stored in order to satisfy a comparison. Adding a .gitattributes rule for it would equally change the checkout on THIS box and break the very pin that currently passes. The honest options are to make the two Elixir tests EOL-robust (hash normalized content, so the pin identifies CONTENT rather than platform line endings) or to accept the tests as Windows-working-tree-only and say so; both are the operator's call, not an agent's, because they change what the canonical ledger's identity MEANS."
+    },
+    {
+     "id": "1.4",
+     "title": "golden sha pins (3 currently unpinned)",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A2",
+     "falsifier": "an edit without a re-pin passes",
+     "green_sha": "9574e1c",
+     "found": "The 3 pins did not merely need writing -- viewer/gaia/goldens.json DID NOT EXIST, so gaia_lint's check (e) could never fire. Two further real defects surfaced, both red-first, neither anticipated by the plan text. (1) THE PIN WAS SELF-ERASING. The pre-registered falsifier ('an edit without a re-pin passes') had THREE routes, and the design closed only one: edit->mismatch was caught, but edit + delete goldens.json, and edit + drop that file's entry, both fell back to status 'unpinned', which raised nothing because requireGolden defaulted false and nothing set it. The guard could be removed by removing the guard. Fixed: the manifest is a committed artifact, so a missing manifest, a missing entry, or a pinned-but-deleted file are each hard GOLDEN violations now. (2) THE PINS DID NOT SURVIVE A CHECKOUT -- caught by proof 2, and it would have shipped a FALSE ALARM to CI. Every .cjs blob is already pure LF (measured: 0 of 95 contain a CR), but with no .gitattributes rule for .cjs, core.autocrlf split the working tree 42 CRLF / 53 LF, so the same commit checks out to different bytes on different machines. A Windows-taken pin could never match Linux CI: gates-node would have gone red for no real defect. Fixed with `*.cjs text eol=lf` (the same law .gitattributes already applies to production/**, *.py, *.sh, *.yml; `runs/*.cjs` was already the precedent), renormalized the 42 files, and VERIFIED every tracked .cjs is now byte-identical to its blob. No .cjs blob content changed -- the only real diff was .gitattributes. PROOFS: red-first 3 FAIL -> 5 PASS (M1 mutation on a disposable sandbox copy; gaia_lint resolves paths from __dirname so a copy lints itself and the real viewer/gaia/ is never touched). Negative control (M6): an untouched pinned tree stays silent. Proof 2 clean-worktree remeasure: PASS after the eol fix, and it is what caught that defect. Proof 3 (M7) cross-platform: a Linux checkout in a container verified all 3 pins MATCH using sha256sum -- an implementation sharing no code with the subject. Cross-instrument bonus: step 1.2's gate_runner independently caught this new gate as unregistered before I registered it. Suite after: runner 7/7 law-consistent + registry complete, meta-gate 4/4, gaia 12/12, gaia_lint 0 violations, boot-identity 7/7. LIMITATIONS, stated not buried: pins bind BYTES, not behaviour -- a matching pin says a file is what was committed, never that it is correct. gaia_lint.cjs itself is NOT among PINNED_FILES, so the pin-checker is not pinned by the pin; scope was kept to the 3 the plan names rather than silently widened. goldens.json itself carries no eol rule (it is .json), which is harmless because its hashes are parsed values, not bytes-on-disk comparisons."
+    },
+    {
+     "id": "1.5",
+     "title": "the five malformed drift comparisons",
+     "status": "DONE",
+     "p3": "M1 MANDATORY (ADR-0002 Amd 1 Decision 8)",
+     "p4": "A2",
+     "falsifier": "a comparison repaired without a bite-proving mutation is indistinguishable from one loosened",
+     "detail": "resolver_planned LAST — it is the live demonstration of the stale-module defect.",
+     "green_sha": "fd8ef64",
+     "found": "FOUR of the five repaired; the fifth (replica_ledger x3) is BLOCKED on a re-capture that needs a host (S2) and is handed to 1.6. Repaired: fqdn_cjs (prose->path vs path), gate_row_schema_path (prose->cited schema PATHS vs those paths on disk), self_caps_doc_vs_served (11KB JSON + 54KB markdown -> served NAMES vs documented NAMES), resolver_planned (236-char prose vs 21-row array -> expectation vs names that failed to resolve). resolver_planned done LAST per plan. DECISION 8 SATISFIED: viewer/gaia/verify_drift_wellformed.cjs mutates EVERY repaired comparison and fails if it does not bite; 5/5, including two negative controls (a healthy DHCP-tracking name must not read as a resolve failure; a line RECORDING that the $id is not a real path must NOT be captured as a citation -- use vs mention, which was that signal's original defect) plus a check that repair never became REMOVAL. BEFORE->AFTER live, via an off-air Gaia restart: gate_row_schema_path 106vs39 false -> 39vs39 TRUE; self_caps_doc_vs_served 11524vs54261 false -> 565vs565 TRUE; fqdn_cjs 112vs0 -> 15vs0; resolver_planned 236vs1031 -> 0vs32. TWO CONVERGED the moment the comparison became well-formed -- exactly what Amendment 1 predicted. The other two now name ONE fact each: fqdn_cjs says CLAUDE.md:94 cites `viewer/fqdn.cjs` which does not exist (the real one is viewer/hud/fqdn.cjs) -- CLAUDE.md:93-97 is the operator's, surfaced not edited; resolver_planned says `music.uni-lab.local:not_verified`, the SAME root cause the host-tracking gate reports, i.e. M7 cross-instrument corroboration of an already-tracked not_mine item. OPERATOR GATE NOTED: verify_schema_pointers.cjs carried a standing note that repairing drift.gate_row_schema_path 'is operator-gated'. That gate is satisfied by ADR-0002 Amendment 1 itself (operator co-signed 2026-07-26, Decision 5 MANDATES the repair) plus plan step 1.5 and an explicit instruction to take it. The exclusion that note guarded is now STALE (the ghost probe is gone) and was removed, per that file's own rule that an exclusion without a live reason 'is just a way to go green'; unexcluded, it scans 157 cited paths (was 152) and passes. SELF-CAUGHT TWICE while being written: an IP literal in a fixture (gaia-no-ip-literal fence) and a ghost schema path inside a COMMENT explaining why ghost paths must not appear (schema-pointers). Both fixed -- the fences biting their own author, again. Suite: runner 8/8 law-consistent + registry complete, meta 4/4, gaia 12/12, lint 0, golden pins 5/5.",
+     "replica_ledger_deferred_to_1_6": "The fifth malformed family, drift.replica_ledger.* (x3), is NOT repaired here and must not be reported as if it were. Amendment 1 diagnoses it as same-kind/different-normalization (canonical hashed from mixed-EOL working-tree bytes vs the chip's bytes). Measured now, it is WORSE than that: the captured replicas hold 191 rows against canonical's 206 -- a REAL 15-row lag, not merely a normalization artifact. Amendment 1 Decision 6 says a deployment lagging its source belongs in a signal with its own relation (`lag`), which is precisely plan step 1.6. Repairing the digest comparison additionally requires the PROBE to capture an EOL-normalized digest, and re-running viewer/gaia/replica_ledger_probe.cjs sshes to a host -- S2, not the agent's to perform. Deliberately left as-is rather than half-repaired: replacing digest-vs-digest with rows-vs-rows would converge but would SWALLOW THE IN-PLACE-EDIT CASE, the only thing that family exists for, which Amendment 1 names as the most dangerous option on its list."
+    },
+    {
+     "id": "1.6",
+     "title": "drift.deploy_ref_behind_head.<build>, relation lag",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A1",
+     "falsifier": "a tolerance that swallows the in-place-edit case",
+     "detail": "becomes the ONLY in-place-edit tripwire on a deployed ledger anywhere on the platform. Live proof is S2.",
+     "green_sha": "c84e1d0",
+     "found": "drift.deploy_ref_behind_head.<build> now carries relation `lag` (Amendment 1 Decision 6), and it FOUND A REAL DIVERGENCE the old signal could not express. NO TOLERANCE was used -- the falsifier names one -- so it rests on an exact structural property instead: evidence/gates.ndjson is APPEND-ONLY, therefore a deployment honestly N rows behind must be a BYTE-EXACT PREFIX of canonical. MEASURED LIVE: chip:build_9e6cee1 lag 15 of 206 = CLEAN (byte-exact prefix under all-crlf); chip:build_producer_08fa60d lag 22 = NOT A PREFIX; chip:build_producer lag 153 = NOT A PREFIX. Every prefix length 1..206 was searched under as-is/all-lf/all-crlf for the latter two and NO prefix of ANY length under ANY normalization matches -- the append-only relation does not hold between canonical and those two deployments. Before this, all three read identically as 'digests differ' and were dismissed as normalization noise; now one is provably clean and two are not. HONEST LIMIT: unequal LOCATES a divergence, it does not ATTRIBUTE one. Canonical having been rewritten and a chip copy having been edited both break the prefix relation; separating them needs the chip (S2). The signal says WHICH, never WHO, and accuses no one. M1 (verify_deploy_lag_tripwire.cjs, 5/5): clean prefix reads clean (negative control); a single edited row inside the retained prefix with row COUNT unchanged is caught -- the exact shape a lag-keyed tolerance would wave through; a one-byte edit is still caught at lag=18, so detection does not weaken as the deployment falls further behind; divergent lineage caught; normalization is SELECTIVE not blind. SELF-CAUGHT on the live run: the collector read the ledger as a utf8 string and re-encoded it, which changes the bytes (the ledger carries non-ASCII) and made a genuinely clean replica report 'no normalization matched'. Fixed to read true file bytes; local measurement and live signal now agree exactly. Suite: runner 9/9 law-consistent + registry complete, gaia 12/12, lint 0, golden pins 5/5, drift well-formedness 5/5.",
+     "operator_next": "TWO deployed ledgers are not prefixes of canonical. Determining WHY -- an old copy predating a canonical rewrite, a different ledger lineage, or an in-place edit on the chip -- requires reading those files on the host, which is S2 and the operator's. Also still open from 1.5: the replica capture itself is stale (2026-07-26T03:33) and re-running viewer/gaia/replica_ledger_probe.cjs sshes to the chip (S2)."
+    },
+    {
+     "id": "1.7",
+     "title": "capture-age fences",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A1",
+     "falsifier": "a capture past its max age rendered as a value",
+     "green_sha": "92bfcc1",
+     "found": "The falsifier ('a capture past its max age rendered as a value') was simply TRUE for EVERY capture on the platform: Gaia applied no age test at all. Measured before the fix -- replica_ledgers captures 85,251s old (23.7h) and the witness capture 36,567s old (10.2h), all four served as current values. BOUND 3600s, INHERITED not invented: the same bound the Control Plane already applies to the witness (SP.ControlPlane.Witness), so both bodies age a capture identically rather than each holding a private opinion. The fence WITHHOLDS rather than deletes -- a stale digest becomes an explicit STALE_CAPTURE marker while the locator still names when it was taken, its exact age, and the command that retakes it. New drift.capture_age_fence makes staleness visible and CONVERGENT (the well-formed shape of drift.git_dirty_vs_clean); live it names all four captures with ages and refresh commands. M1 (verify_capture_age_fence.cjs, 6/6): fresh still renders (negative control); the real 23.7h age is withheld; the bound is a hard edge at exactly 3600/3601s; a missing/empty/unparseable timestamp is STALE and never assumed fresh; a future stamp clamps to age 0 rather than underflowing; the signal converges when all captures are fresh. STATED LIMIT: this bounds how OLD a reading may be before it stops counting as evidence. It does not make a fresh reading true, and it does not AUTHENTICATE a timestamp -- a forged captured_at is out of scope. Suite: runner 10/10 law-consistent + registry complete, meta 4/4, gaia 12/12, lint 0, pins 5/5.",
+     "consequence_for_1_6": "HONEST CONSEQUENCE, recorded rather than buried: the deploy-lag verdicts from 1.6 are now WITHHELD, because they rest on that 23.7-hour-old capture. 1.6's finding -- chip:build_9e6cee1 a byte-exact clean prefix at lag 15, and chip:build_producer_08fa60d / chip:build_producer NOT prefixes of canonical under any length or normalization -- remains a TRUE measurement OF THE CAPTURE, computed directly from the capture file and reproducible from it. What changed is that it is no longer presented as the deployments' state NOW, which it never was. The fence did not weaken 1.6; it dated it correctly. Re-taking the capture requires the chip (S2) and is the operator's; until then the divergence finding stands as history, not as a live reading."
+    },
+    {
+     "id": "1.8",
+     "title": "witness capture freshness; independent_custodians:0 forces BLOCKED",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A1",
+     "green_sha": "840850a",
+     "found": "THE DEFECT WAS NOT A WRONG VALUE, IT WAS A CORRECT VALUE NOBODY READ. witness_probe.cjs:169 computes `independent_custodians` and writes it into witness.json on every capture -- and nothing anywhere consulted it. Not Gaia, not the Control Plane. The single number that says whether the off-box witness is real was measured, stored, and never looked at. It reads 0: node2 answers the WRITER'S OWN KEY, so no custodian sits in a failure domain the writer cannot reach, and the anchor stands on git alone -- tamper-EVIDENT, not unforgeable. The capture's own claim_level already said `tamper_evident` and its claim_note already warned this is 'a CURRENT CONFIGURATION FACT, not a structural law'. Now read, and a zero BLOCKS rather than rendering as a value. drift.witness_independence projects the source's own fields verbatim (Gaia does not author the verdict) in the convergent shape of drift.git_dirty_vs_clean, so equal:true is reachable the moment a genuinely independent custodian exists. LIVE it reads unequal for BOTH reasons separately: capture stale (37,077s > 3600s) AND independent_custodians=0. M1 (verify_witness_blocked.cjs, 6/6): zero blocks even with a perfectly FRESH capture (freshness cannot substitute for independence); one independent custodian + fresh CLEARS, so the gate is not a constant 'no' and a real repair would be visible; staleness and non-independence block SEPARATELY so neither masks the other; a missing field, null, a non-numeric count and an absent capture all BLOCK -- unknown is never assumed safe; plus an explicit check that the probe's number now HAS a consumer, since that absence was the defect. Suite: runner 11/11 law-consistent + registry complete, gaia 12/12, lint 0.",
+     "s1_boundary_held": "THIS IS THE REFUSAL, NOT THE REPAIR, and that is deliberate. Making the witness real means removing the writer's key from node2, which is STOP S1 -- 'the one repair the agent must not perform' -- because using write access to erase the evidence of write access destroys the last proof rather than restoring a witness. No key was touched, no host was written to, node2 was never contacted. The gate is built to KEEP FAILING until a human makes the witness real, and it will say so on the operator surface every time it is read. The one-independent-custodian test exists precisely so that day is visible rather than silent."
+    },
+    {
+     "id": "1.9",
+     "title": "re-run the 0.2 inventory and diff",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A1",
+     "detail": "Stage 1's proof 2.",
+     "artifact": "evidence/remediation/1.9_reinventory_diff.json",
+     "sha256": "aad912d583629cdfde8a78b865a56e84031a23af588e985a7b9ebea2c7f969ca",
+     "found": "Stage 1's proof 2, clean: 5 gates re-measured, 3 UNCHANGED, 2 changed, 0 UNEXPLAINED. THE CRITICAL HONESTY CHECK HELD: host_tracking is STILL exit 1 / FAIL, byte-identical to Stage 0 (sha 74cc7eac). The four-proof cycle warns that 'an unexpected second improvement is as suspicious as a failure', so the re-inventory treats an improved verdict as UNEXPLAINED and fails on it. Nothing improved by accident. The music DNS gap is still unresolved and the gate still says so. The two changes were PRE-DECLARED before the run, with reasons: gaia_lint (1.6 added `lag` to the drift relation vocabulary; 1.4 made a missing golden manifest a hard violation) and schema_pointers (1.5 removed the now-stale collectors.cjs exclusion, so the scan covers 5 more cited paths). gaia, lint_bites and host_tracking are byte-identical with identical exits. M2 INDEPENDENCE: viewer/reinventory_gates.cjs shares no code with gate_runner.cjs (step 1.2) -- it does not import it and does not read gate_registry.json; it re-derives the gate list from the Stage 0 artifact itself. The two agree, which is the point of a second implementation. STAGE 0 LESSON HONOURED: each gate spawned with stdout to a BUFFER and the child's own exit status read from the process, never through a pipe -- the mistake that produced the retracted 'exits 0 on FAIL' report is structurally unrepeatable here too. Run from a CLEAN WORKTREE at the green sha, as proof 2 requires. Stage 0's frozen artifact is untouched (0.2 still 0f9dd95a..., S3 held)."
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "name": "THE RECORDER",
+   "status": "DONE",
+   "why": "The Control Plane's own ledger stopped at Phase 5. 'Capability became practice' for one phase, then stopped, recorded nowhere. The audit trail for two phases is the very mechanism this body exists to replace.",
+   "checkpoint": {
+    "id": "C",
+    "status": "OPERATOR",
+    "he_sees": "ledger.ndjson open in a text editor — a human can read it; that was the design",
+    "he_does": "co-signs the bootstrap's honesty caveat",
+    "ready_note": "CHECKPOINT C IS THE OPERATOR'S. First clause already satisfiable: open evidence/control_plane/ledger.ndjson in a text editor — a human can read it, which was the design. It holds 11 entries: 7 original, Phases 6 and 7 backfilled (Phase 7 as ACCEPTANCE NOT MET), and at seq 10 and 11 two bootstrap ingestions. Second clause is his co-sign on the bootstrap's honesty caveat: this ledger did NOT witness Phase 9 Stages 0-2, could not have, and records only that it INGESTED an account written elsewhere and identified by hash. STAGE 2 IS NOW COMPLETE, 7 of 7. Step 2.6 introduced a real defect and step 2.7 repaired it without editing, withdrawing or rebuilding a single entry. Two S9 items are open and are HIS, not an agent's — see 2.7."
+   },
+   "steps": [
+    {
+     "id": "2.1",
+     "title": "direct tests for GateRow.new/1 and Store.write_artifact/2",
+     "status": "DONE",
+     "p3": "M2+M6",
+     "p4": "A5",
+     "falsifier": "a path traversal escapes the declared directory",
+     "detail": "One builds canonical evidence, one is the only public disk write. Neither has a direct test.",
+     "green_sha": "252cfd2",
+     "found": "THE FALSIFIER HELD. write_artifact/2 took a whole path and wrote it -- File.mkdir_p! on its dirname then File.write! -- with no notion of a declared directory, so it could not tell an artifact from an escape. Its only caller, Run.score_to/3, built Path.join(dir, \"score_<run_id>.json\"), so a run_id carrying `..` walked out of dir and an absolute path ignored dir entirely. Neither function had a test naming it as its subject; both were exercised only incidentally, and a function covered by accident is covered until the accident stops. Now write_artifact/3 takes the directory and the FILENAME separately so containment is expressible, and REFUSES rather than raises. Two independent checks, both required: a plain filename (no separator, not ''/'.'/'..') AND the expanded result must sit under the expanded root. Red-first 12 tests / 8 failures -> 12/12. M6 negative control (an ordinary filename must still be written, or 'refuses everything' passes as security); M2 (containment re-derived in the test with Path.expand and an independent prefix check, and every refusal is followed by asserting the file does NOT exist outside the directory). SELF-CAUGHT: my first edit to score_to/3 reordered the guard so the artifact was written BEFORE may_score?/1 was consulted, breaking the documented invariant that a halted run leaves no artifact behind. Fixed in the same breath; may_score?/1 is first again. Full suite 982 tests, 0 failures (was 970)."
+    },
+    {
+     "id": "2.2",
+     "title": "seat_projects_verbatim_test.exs — THE LOST ITEM",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A2",
+     "falsifier": "a scan that fires on honest prose (use vs mention)",
+     "detail": "Pre-registered PHASE-5.md:63, never written, never mentioned again anywhere.",
+     "green_sha": "d418aff",
+     "found": "THE LOST ITEM IS RESTORED. Pre-registered at PHASE-5.md:63 with its red reason stated ('a projected signal differs from its source bytes'), then never written and never mentioned again. Four of the five tests in that table exist; this one went missing and nothing noticed for FOUR PHASES. A pre-registration that can be silently dropped is not a pre-registration. It tests a property of the SOURCE, so it needs no running Gaia: ADR-0002 Decision 2 has Gaia project verbatim, and its consequence 2 puts the obligation on this body -- 'no field may require Gaia to compute anything'. Canonical bytes are stable, key order in the source map cannot change them, and a round trip through the Store returns byte-identical entries. The red reason is covered four ways: a one-byte verdict flip, a reordering (order is part of an append-only record), an ADDED field (a seat may not enrich what it carries) and a DROPPED field (thinning evidence is the same defect). THE FALSIFIER GOT ITS OWN NEGATIVE CONTROL: 2.2's falsifier is 'a scan that fires on honest prose (use vs mention)', and a verbatim check is exactly the guard that gets this wrong. Entries whose CONTENT carries counts, percents and the words PASS/FAIL/rank/score/total must still project verbatim and must NOT be convicted -- carrying a source's own words is projection, computing them is derivation, and ADR-0002 says so explicitly. 9 tests, 0 failures. Full suite 991 tests, 0 failures."
+    },
+    {
+     "id": "2.3",
+     "title": "the stepwise recorder",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A3",
+     "falsifier": "it rebuilds the chain instead of appending",
+     "detail": "Today's script rebuilds all 7 entries from a literal list, so any receipt edit makes it unrunnable — remediation would jam on its own second step.",
+     "green_sha": "f00b6c3",
+     "found": "THE FALSIFIER HELD. The existing script holds all seven entries as a LITERAL LIST and rebuilds the chain from Ledger.new() on every run, hashing each receipt from disk -- so it only works while every historical receipt stays byte-identical forever. Edit one and the rebuild hashes differently at that seq, Store.persist refuses with would_rewrite_history_at_seq, and the script cannot append ANYTHING, including an unrelated entry. Step 2.4 must append Phases 6 and 7 to this exact ledger, so the remediation would have jammed on its own second step, precisely as the plan predicted. SP.ControlPlane.Recorder loads what is stored, carries those entries as bytes, and appends exactly one. A recorder that must reproduce the past in order to write the future has confused REPLAY with APPEND. The falsifier is DEMONSTRATED, not described: one test performs the rebuild with the same primitives the script uses and asserts the store REFUSES it; the next shows the recorder appending successfully with that same edited receipt present, and asserts seq 1 still holds the ORIGINAL hash -- carried, not re-derived. 8 tests, 0 failures; full suite 999 tests, 0 failures.",
+     "f10_caught_me": "F10 CAUGHT ME MID-STEP, and the guard was right. My first draft called Ledger.append/3 directly, and the test asserting that no module in lib/ other than command.ex calls the ledger writer failed the suite immediately. That invariant is what stops a well-meaning new module bypassing the writ check, the two-party rule and the authorization check. The recorder now submits through Command, and Command decides.",
+     "finding_for_2_4_and_2_6": "MEASURED ON THE REAL LEDGER (read-only, no write): all 7 stored entries carry the SAME transition, phase.executed. So recorded?/2 answers 'has anything of this KIND been recorded', never 'has THIS step been recorded'. Keying step 2.6 on transition would report every phase as already recorded and SILENTLY SKIP THE BACKFILL. recorded_by/2 takes a predicate for the identity question, and the limitation is documented on recorded?/2 rather than papered over. Steps 2.4 and 2.6 must use recorded_by/2."
+    },
+    {
+     "id": "2.4",
+     "title": "backfill Phases 6 and 7",
+     "status": "DONE",
+     "p3": "M5",
+     "p4": "A5",
+     "falsifier": "Phase 7 recorded as a pass rather than ACCEPTANCE NOT MET",
+     "green_sha": "eebffae",
+     "found": "THE CONTROL PLANE RECORDS ITS OWN HISTORY AGAIN. The ledger stopped after Phase 5; two phases had executed, produced receipts and adverse results, and left no entry in the body whose whole purpose is to record them. It now holds 9 entries, verifies, and is anchored. THE FALSIFIER IS HONOURED: Phase 7 is recorded acceptance=NOT_MET with BOTH failing clauses named in the ENTRY itself, not left to a receipt someone might not open -- the witness clause (the off-box custodian answers the writer's OWN key, independent_custodians=0, so the anchor stands on git alone) and 'two fixtures distinguishable with no text read' (the renderer was never built, so the clause cannot be evaluated at all: a failure, not a deferral). Phase 6's adverse result rides too, and item 7.6's repair-worse-than-the-defect is recorded, because a repair that makes things worse is the most important kind of entry a recorder can hold. ENFORCED PERMANENTLY, not merely at write time: phase7_is_not_recorded_as_a_pass_test.exs reads the REAL ledger on every suite run, so if anyone ever records Phase 7 as a success, or supersedes the honest entry with a passing one, the suite fails. APPEND-ONLY, VERIFIED BY DIFF not assumption: the original 7 entries are byte-identical after the write. Re-running is a no-op (both phases report 'already recorded', count stays 9). Every commit was checked to exist and every receipt hashed from disk BEFORE writing; a backfill asserting a history the repository cannot show would have refused and halted. Full suite 1005 tests, 0 failures.",
+     "my_test_was_wrong": "MY TEST WAS WRONG AND THE LEDGER WAS RIGHT. I asserted at most one entry per PHASE; it failed, because Phase 5 legitimately has THREE entries -- the ledger records per ITEM, not per phase. Corrected to assert uniqueness per (phase, item).",
+     "stated_limitation": "STATED LIMITATION, recorded rather than smoothed over: this backfill wrote ONE SUMMARY ENTRY per phase for 6 and 7, which is COARSER than the per-item entries Phase 5 left. It is defensible for a backfill written after the fact -- the per-item detail lives in the receipts the entries hash -- but a recorder writing LIVE should record per item, as Phase 5 did. Noted for 2.6 and for whoever records Phase 9."
+    },
+    {
+     "id": "2.5",
+     "title": "THE BOOTSTRAP — recording a repair to the recorder",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A3",
+     "falsifier": "the ledger claims to have WITNESSED its own repair",
+     "detail": "Stages 0-2 go to evidence/remediation/prelude.ndjson (schema uni.remediation.prelude.v1 — it says in its own bytes that it is not the ledger), then replay in, each entry naming the prelude's hash. The ledger records that it INGESTED the account of its own repair.",
+     "green_sha": "1f7700b",
+     "artifact": "evidence/remediation/prelude.ndjson",
+     "sha256": "6d9e1e0d1fea783b6746e7c66da57c7f4216855971622870c6a02502376fdb46",
+     "found": "THE LEDGER INGESTED THE ACCOUNT OF ITS OWN REPAIR, and said so in those words. Stages 0-2 repaired the recorder, and throughout that work the recorder could not record -- it had stopped after Phase 5 and its only writer rebuilt the chain rather than appending. A body cannot witness its own repair while it is the thing being repaired. The account went to evidence/remediation/prelude.ndjson first (schema uni.remediation.prelude.v1), whose header says IN ITS OWN BYTES that it is not the ledger and why a prelude was needed, so a reader finding it out of context cannot mistake it for the record. It is DERIVED from phase9_plan.json -- nothing retyped from memory; a step the plan does not mark DONE does not enter the prelude. Ingested at seq 10 with transition=account.ingested (not executed, not witnessed), witnessed_by_this_ledger=false stated EXPLICITLY rather than left absent, prelude_sha256=6d9e1e0d..., and an honesty_caveat that says plainly the ledger did not witness these stages AND why it could not. 'I saw this happen' and 'I was handed a record of this having happened, and here is its hash' are different epistemic claims. The second is the true one, it is weaker, and it is what is written. Enforced permanently by bootstrap_does_not_claim_to_witness_test.exs against the REAL ledger every suite run: no witnessing verb; witnessed_by_this_ledger must be explicitly false (absent would let a reader assume the stronger claim); the caveat must give its REASON (a caveat without one is a formality); the prelude must be named by HASH and that hash must still match the file on disk, so editing the account after ingestion is exactly what the hash reveals; and at most one ingestion, because an account ingested twice is two claims about one event. Ledger now 10 entries, verifies, anchored. Full suite 1012 tests, 0 failures."
+    },
+    {
+     "id": "2.6",
+     "title": "every step marked done has exactly one ledger entry",
+     "status": "DONE",
+     "p3": "M1",
+     "p4": "A1",
+     "falsifier": "the ledger falls out of practice again, silently — which is exactly what happened after Phase 5",
+     "found": "THE ANTI-SILENCE GUARD. The falsifier is 'the ledger falls out of practice again, silently -- which is exactly what happened after Phase 5', and that is this body's entire failure history: it gained the capability to record in Phase 4, used it once in Phase 5, then stopped. Two phases executed and left no entry. Nothing failed, nothing warned, nothing noticed, for four phases. The capability was never lost; the PRACTICE was, and a practice that lapses silently is indistinguishable from one that never existed. So the guard does not ask 'can the ledger record?' -- Phase 4 already proved it could, and that proved nothing. It asks DOES THE RECORD STILL MATCH THE WORK: every step the plan marks DONE must be accounted for in the ledger, by its own entry or by an ingested account that names it. When they diverge it fails loudly, in the suite everyone runs. The silence is the defect, so the guard's only job is to be incapable of silence. IT FIRED ON REAL DATA BEFORE IT PASSED: run against the ledger as it stood, it reported 'stage 2 step 2.5' as marked DONE but accounted for nowhere -- caught by the guard, not by me. Closed by ingesting a current account. M1: a fabricated step recorded nowhere must be reported, or the coverage check is vacuous. M6 negative control: a step named in an ingested account must NOT be reported, because a guard that cries wolf on correctly-recorded work gets muted -- and a muted guard is the silence it exists to prevent, arriving by another route. Coverage is hash-bound: accounts are named by sha256 in the ledger and step 2.5's guard independently checks that hash still matches the file, so coverage never means 'someone says so'.",
+     "defect_i_introduced": "ADVERSE RESULT, MINE, AND THE SUITE IS RED BY ONE BECAUSE OF IT. Closing 2.6 required a CURRENT account (the guard correctly reported step 2.5 as done-but-unrecorded), so I regenerated the prelude and ingested it. I wrote the new account to THE SAME PATH as the first one, evidence/remediation/prelude.ndjson, and ingested it as seq 11. The ledger's own pre-existing guard (control_plane_ledger_is_real_test.exs: 'EVERY piece of evidence exists on disk and rehashes to what the entry recorded') then failed, correctly. Seq 10 recorded {prelude.ndjson, 6d9e1e0d...} and seq 11 recorded {prelude.ndjson, 2c87d457...}. ONE FILE CANNOT HASH TO TWO VALUES, so exactly one of those two entries must always fail, whichever bytes the file holds. I cannot repair this. The ledger is append-only: seq 11 cannot be edited or withdrawn, and appending another entry does not stop the guard iterating seq 11's evidence. Restoring the file satisfies seq 10 and breaks seq 11; leaving the new bytes does the reverse. The suite is currently red on seq 11, with prelude.ndjson holding seq 10's original bytes -- the earlier reference, which was valid when it was made. MITIGATED, NOT FIXED: both accounts now also exist content-addressed and immutable at prelude_6d9e1e0d.ndjson and prelude_2c87d457.ndjson, so neither set of bytes is lost and both remain hash-verifiable. The bootstrap script now writes a content-addressed immutable copy on every run, so this cannot recur. But the two ledger entries still name the shared mutable path, and that is permanent. THE LESSON, which is the real one: an append-only record must never point at a MUTABLE path. Evidence has to be content-addressed at the moment it is referenced, not afterwards. I learned this by breaking it, and the repository's own guard caught me rather than me catching myself. THE OPERATOR'S CALL: accept a permanently-red entry with this record attached, or authorise a ledger rebuild (which is itself a violation of the append-only property this body exists to keep, and would be a far bigger decision than the defect it repairs). I am not choosing between those.",
+     "what_did_work": "The 2.6 guard itself is built, correct, and proven: it FIRED on real data before it passed, reporting 'stage 2 step 2.5' as marked DONE but accounted for nowhere -- caught by the guard, not by me. It carries an M1 mutation (a step recorded nowhere must be reported) and an M6 negative control (a step named in an ingested account must not be, because a guard that cries wolf gets muted, and a muted guard is the silence it exists to prevent). That part of 2.6 stands.",
+     "repaired_by": "STEP 2.7. The operator refused BOTH halves of the choice I put up — 'do not accept the permanently-red entry' — and he was right, because both were answers to the wrong question. THE DEFECT WAS NEVER IN THE TWO ENTRIES. It was in the guard. It required every referenced path to hold its recorded bytes NOW, which silently assumed NO PATH IS EVER REFERENCED TWICE. Nothing guaranteed that; it held for ten entries by accident and broke on the eleventh. Neither entry is edited, withdrawn or rebuilt. The premise is. The chain is byte-identical and all eleven of its hashes were independently re-derived in Node to prove it."
+    },
+    {
+     "id": "2.7",
+     "title": "the ledger's evidence is content-addressed — the repair of 2.6, and the false premise it exposed",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A1",
+     "falsifier": "a weakened guard: an edited receipt, an invented hash, deleted evidence or a lost object slips through the repaired check. Pre-registered before the code existed; the check must still bite on all of them.",
+     "detail": "Two properties were tangled into one assertion. Separated, and BOTH enforced. (1) RETRIEVABILITY, NEW and strictly stronger: every reference — current OR superseded — must be in a content-addressed object store and rehash. Before this, ZERO of the fourteen references had an immutable copy; now all fourteen do. (2) THE LIVE PATH, unchanged in strength: the reference that is CURRENT for a path must still be at that path. An edited receipt is superseded by nothing, so it still fails with no tolerance. Supersession is read from the CHAIN and nowhere else — no allowlist, no exception file, no inspection of disk. Escaping (2) takes a real entry appended through Command: two-party authorised, hash-chained, anchored, with the new bytes stored. That is not an exemption; it is an append-only ledger recording that evidence changed. And supersession is never SILENT: both the Elixir suite and the Node gate print it.",
+     "proved": "RED FIRST: 15 tests, 15 failures, every one for the pre-registered reason (the functions did not exist). GREEN: 1031 tests, 0 failures (was 1016 tests, 1 failure). Five mutation routes refused in BOTH languages: receipt edited after the fact, hash invented in an entry, evidence deleted, object lost, object planted under a name it does not hash to. Plus: a superseded reference whose object is gone is STILL a fault, and the CURRENT reference is never excused by superseding.",
+     "proof3": "M2 — viewer/verify_control_plane_evidence.cjs. An independent reimplementation in another language sharing no code, no library and no runtime with the subject. It re-derives the canonical serializer, all eleven chain hashes, and the supersession rule from raw bytes. IT AGREES with proof 1, including on the one remaining fault. Registered as gate 15; gate_runner law holds 12/12.",
+     "proof4": "node viewer/verify_control_plane_evidence.cjs — prints its own expected output, exit 0 = PASS.",
+     "s9_raised": "PROOF 2 (re-measure from a clean worktree) IS THE ONLY REASON THIS WAS SEEN, and what it found is larger than 2.7's own repair. Measured across all fifteen hash references (fourteen in the chain plus the gates.ndjson pin): FOURTEEN match the file on disk, but only TWELVE match the COMMITTED BLOB. docs/receipts/control-plane/phase7_item710_green_2026-07-26.txt was recorded as c09b5146... (6 CR — a Windows checkout artifact, recorded as canonical) and its committed blob is 7973702b... (0 CR). evidence/gates.ndjson is pinned 964ea25c... (58 CR, mixed) and its committed blob is 641c8211... (0 CR). Neither file's CONTENT is wrong — same rows, same words. Git stores a form neither hash was taken of. So on a clean clone, which the contract REQUIRES for a release claim, the canonical gate ledger does not match its own pin and one receipt cannot rehash. Every 'gates.ndjson 964ea25c..., S4 held' line written this programme is a statement about ONE box, not about anything committed. THIS IS S9, WORD FOR WORD: 'a receipt cannot be reproduced from its own commit.' STOPPED AND PUT UP. What I fixed, because it is unambiguously mine: evidence/control_plane/** is now `-text`, so objects are byte-exact — which caught a REAL CORRUPTION I had committed twenty minutes earlier, an object normalised on its way into git that no longer contained what its own name claimed. And docs/receipts/** and evidence/remediation/** are `text eol=lf`, which changes NO committed byte and takes a clean worktree from SIX failures to ONE. `-text` everywhere would satisfy all fourteen — by committing the CRLF form of thirteen unrelated historical receipts and changing their hashes. Measured, staged, inspected, REJECTED.",
+     "what_is_the_operators": "THE RECEIPT (S9): the repair already exists and is the machinery 2.7 built — append a correctly-recorded reference that SUPERSEDES the artifact-recorded one, leaving the original retrievable as an object forever, no history edited. It needs his co-sign because every ledger entry carries his authorisation. GATES.NDJSON (S9 + S4): the same one-line .gitattributes fix would make its pin true on every machine and change NOT ONE BYTE on disk — but it rewrites the committed bytes of the canonical gate ledger, and that is S4. I put both up rather than take either. I do not pick."
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "name": "THE REFUSALS THAT DO NOT EXIST",
+   "status": "BLOCKED",
+   "why": "F28-F31 have no test in either repository. F29 and F30 are violated LIVE. F31 protects the operator's own go-live gate from an agent and does not exist.",
+   "checkpoint": {
+    "id": "D",
+    "status": "PLANNED",
+    "he_sees": "NOTHING — he tries to reach go-live himself and finds no path",
+    "he_does": "rules whether F31's absence is broad enough"
+   },
+   "steps": [
+    {
+     "id": "3.1",
+     "title": "F29/F30 — release_verdict gains a third word, UNVERIFIED",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A2",
+     "falsifier": "a caller treats UNVERIFIED as truthy",
+     "detail": "d5_distribution_guard.py:266 returns PASS for an archive it could not open. 'We could not look' and 'we looked and found nothing' are different states.",
+     "found": "BOTH F29 AND F30 WERE VIOLATED LIVE, and the words for the repair were already written and simply had no consumer. scan_archive has always returned a note reading 'archive could not be opened - treated as UNVERIFIED, not clean' -- and scan_paths took sub['findings'] and dropped the note one function short of the verdict. scan_paths has collected 'unscanned' since the day it was written, with a docstring promising 'a skipped file is NOT a clean file... a caller can fail on it', and release_verdict never once looked at it. So an archive nobody could open, and a file nobody scanned, both reached the release as PASS.",
+     "proved": "RED FIRST: 8 of 25 failing, every one for the pre-registered reason. GREEN: 547 passed, 3 skipped, 1 xfailed across the whole hierarchical-aif suite (was 542). release_verdict now returns FAIL / UNVERIFIED / PASS, with FAIL outranking UNVERIFIED deliberately -- 'we looked and found something' is a worse state than 'we could not look', and a real finding must never be downgraded to a coverage caveat. unverified_because(report) names every gap in words a reader can act on, because a coverage gap nobody can locate is a coverage gap nobody will close.",
+     "falsifier_result": "HELD, AND IT WAS LIVE. The pre-registered falsifier is 'a caller treats UNVERIFIED as truthy' and main() was exactly that: `return 1 if verdict == \"FAIL\" else 0` exited 0 on UNVERIFIED. A third verdict word is worth nothing if the exit code still has two. Exit 0 is now reserved for PASS. Every other caller was re-checked by hand: build_d5_safe_successor_archive.py already required PASS and nothing else, and separately re-checked 'unscanned' -- which is to say its author already knew the two-word verdict was inadequate and compensated locally instead of fixing the guard. No CI workflow calls it.",
+     "proof3": "M2 -- hierarchical-aif/tests/motor_stack_aif/test_d5_coverage_conservation.py. Two properties chosen so they copy NONE of the guard's suffix tables or classification rules, and would survive a full rewrite of them: (1) DECOMPOSITION INVARIANCE, scanning a tree must equal scanning its files one at a time and adding up the answers -- every laundering bug of the shape 3.1 repaired makes the whole disagree with the sum of its parts; (2) VERDICT MONOTONICITY, adding a file to a distribution can never IMPROVE its verdict under PASS < UNVERIFIED < FAIL, because a guard that gets cleaner as you ship more is not a guard. Plus a live probe of the real distributable tree.",
+     "proof3_found": "PROOF 3 FOUND A DEFECT PROOF 1 MISSED, immediately. scan_paths did `inspected += 1` BEFORE calling scan_archive, so an archive that would not open was COUNTED AS INSPECTED -- the artifact count itself claimed 'we looked' about the one file nobody could look at. The direct F29 tests never asked about the count, so they never saw it. The conservation test saw broken.zip land in two buckets at once. Repaired: scan_archive now reports `opened`, and inspected is incremented only when it did.",
+     "proof4": "A2 -- `python hierarchical-aif/scripts/prove_unverified_bites.py`. Builds three throwaway distributions, runs the real CLI on each, prints EXPECTED beside OBSERVED, and exits 0 only if all three agree. The middle case is the whole point: before 3.1 it printed PASS and exited 0. Plain ASCII on purpose -- it prints to a Windows console, and an operator reading mojibake in his own proof is not being shown anything.",
+     "live_result": "The REAL distributable tree (reports, protocols, ledgers, docs) is genuinely clean: 76 artifacts, 0 findings, 0 COVERAGE GAPS, PASS. So the guard was CAPABLE of laundering an unverified state into a PASS, and on this particular tree it was not doing so. Said plainly because the opposite would have been the headline.",
+     "not_touched": "FAILURE-MODES.md's status line still reads 'F24-F31 remain DESIGN'. That is step 3.4 and NOT this step, whose falsifier is 'correcting it earlier launders the F28-F31 gap into as-designed'. It stays false on purpose until 3.1-3.3 are all done."
+    },
+    {
+     "id": "3.2",
+     "title": "F28 — frozen-evidence drift halts",
+     "status": "DONE",
+     "p3": "M1 on a COPY",
+     "p4": "A1",
+     "falsifier": "the real frozen tree is mutated",
+     "found": "THERE WAS NO CHECKER AT ALL. frozen-evidence-baseline.sha256 has pinned 250 files under audits/phase-c/** and audits/phase-d/** since 2026-07-21, and NOTHING IN EITHER REPOSITORY EVER COMPARED THEM. CLAUDE.md says any diff against that baseline is 'a contract violation and a hard stop' -- a sentence with no mechanism behind it. Step 0.4 verified it ONCE, by hand, and recorded '250 files, BYTE-IDENTICAL'. A human who remembers to run sha256sum -c is a habit, and a habit is exactly what a frozen-evidence baseline exists to stop relying on.",
+     "proved": "RED FIRST: collection error, the module did not exist. GREEN: 558 passed, 3 skipped, 1 xfailed (was 547). The real tree verifies 250/250. TWO DIRECTIONS, because only one of them is free: sha256sum -c catches a CHANGED file and a MISSING one, and CANNOT catch an ADDED one -- a file dropped into a frozen tree is invisible to a manifest that never names it, and 'the manifest verifies' reads identically either way. So verify() also walks the frozen roots and refuses anything living there the baseline does not name. The frozen roots are DERIVED FROM THE BASELINE ITSELF, never configured separately: a guard whose scope lives in a second file can be narrowed by editing the second file, and the narrowing looks like configuration rather than like removing a guard.",
+     "halt": "F28 says HALT EVERYTHING and its falsifier is 'work CONTINUES past a drift', so the halt sits where continuing happens: hierarchical-aif/tests/conftest.py, at pytest_sessionstart, before a single test is collected. Paths are HARDCODED to the real baseline -- a halt that can be aimed at a tree of its own choosing halts nothing, and an environment variable that relocates it is an off switch with a polite name. CLAIMED AS NO MORE THAN IT IS: it does not stop a process that never imports the module. COST STATED UP FRONT rather than discovered later: a deliberate re-freeze makes the suite refuse to run until the baseline is regenerated, which is the intended behaviour of a hard stop, and regenerating it is a decision about the evidence record -- the operator's.",
+     "proof3": "M1 ON A COPY, as the plan declares. Three routes, each on its own shutil.copytree of the frozen tree: a changed byte, a deleted file, and an ADDED file (the route sha256sum -c cannot see). Plus a negative control -- an untouched copy must verify and must NOT halt, because a guard that fires on a faithful copy is untrustworthy in the other direction.",
+     "falsifier_result": "HELD, AND IT IS CHECKED RATHER THAN ASSUMED. The pre-registered falsifier for this step is about the PROOF, not the code: 'the real frozen tree is mutated'. Proving a drift guard bites means causing a drift, and audits/** is S3. Every mutation ran on a copy, and the last test in the file re-verifies the REAL tree at 250/250 afterwards -- so the falsifier is actively tested, not merely avoided.",
+     "also_found": "account() -- the function that runs at the worst possible moment -- raised KeyError on a partial report while trying to EXPLAIN a drift, turning a legible stop into a stack trace. Caught by my own test's incomplete fixture. Every lookup in it is now defensive, and its output is plain ASCII, because a reader deciphering mojibake in a halt message is being shown nothing.",
+     "proof4": "A1 -- `python hierarchical-aif/src/motor_stack_aif/frozen_evidence_guard.py` prints 'frozen evidence intact: 250 file(s) verified' and then prints the command to recompute that number with an instrument sharing nothing with it: `sha256sum -c <baseline> | grep -c ': OK$'` -> 250. Measured, both agree. The CLI says outright that if the two disagree, sha256sum wins."
+    },
+    {
+     "id": "3.3",
+     "title": "F31 — go-live refuses an agent",
+     "status": "BLOCKED",
+     "p3": "M4",
+     "p4": "A6",
+     "falsifier": "any path reaching an actuation",
+     "detail": "THE GO-LIVE GUARD IS A STRING COMPARISON on unauthenticated loopback :8098, and it guards 1 of >=5 paths to air. Built as ABSENCE. Key.any_operator?/1 already exists, built for the airlock, and nothing calls it. Human-presence token minted by the interactive-session WPF widget. Claim level presence_evident, NOT unforgeable. Needs ADR-0008.",
+     "found": "WORSE THAN THE PLAN SAID. The plan said the guard covered '1 of >=5 paths to air'. MEASURED: SEVEN paths reach StartStream, and between them there were TWO string comparisons. /api/golive compared a string on unauthenticated loopback -- `curl -X POST 127.0.0.1:8098/api/golive -d '{\"confirm\":\"CONFIRM\"}'` satisfied it entirely. studio.cjs compared a string on argv. THE OTHER FIVE HAD NOTHING: /api/broadcast_test (which is PUBLIC by owner directive -- 'NEVER private... only accepts with public egress' -- and calls StartStream directly at stage 2), obs_golive.cjs, obs_streamtest.cjs, obs_ctl.cjs and obs_req.cjs. The last two are the ones that matter most: their request type comes from argv and from a JSON file, so NEITHER CONTAINS THE WORD StartStream and a literal search cannot see them. That is exactly how they stayed unguarded.",
+     "built": "viewer/golive_guard.cjs -- ONE chokepoint, and the only function in the repository that may say yes. BUILT AS ABSENCE: there is no allow path reachable by argument alone. It refuses unless a token is PRESENT, FRESH (120s -- it attests presence a moment ago and nothing longer), INTERACTIVE (which excludes service sessions, scheduled tasks, remote shells and every script here), and SINGLE-USE (a nonce, spent on actuation). Refusal THROWS rather than returning, because a refusal you can assign to a variable is a refusal you can ignore -- which is how five of seven came to have no guard at all. The typed CONFIRM is kept on both paths that had it: it stops a slip of the hand, and it is no longer the thing standing between an agent and the air.",
+     "proof3": "M4 -- viewer/verify_golive_refuses_agents.cjs, gate 16. An adversary tries every route: no token, a stale token, a token minted ahead of now to beat the TTL, a service-session token, a token with no nonce, an unreadable minted_at, and a replay. All refused, each for its OWN named reason rather than generically. NEGATIVE CONTROL included and it matters: a fresh interactive token IS allowed, so the guard is refusing on evidence rather than always. And the gate's FIRST check is COMPLETENESS by filesystem discovery -- an eighth path fails the gate on the day it is added, not the day it is used. Every OBS forwarder must also be CLASSIFIED in a table a human reads (external vs internal); an unclassified one fails. A hidden heuristic decides quietly, a table has to be read.",
+     "proof4": "A6 -- `node viewer/prove_golive_refuses_me.cjs`. An agent trying to go live, on purpose, down all seven paths, refusing seven times, exit 0. It CANNOT go live even if the guard is broken: every attempt asks and reports, none proceeds on a grant. A prover that could put you on the air to demonstrate that it cannot is not a prover.",
+     "declared_limit": "STATED IN THE MODULE, IN EVERY GRANT, IN THE GATE OUTPUT AND IN THE PROVER -- not filed in a design document. Claim level presence_evident, NOT UNFORGEABLE. An agent already inside the operator's live desktop session, with read access to the token, can replay it before it expires. And the harder limit: OBS WebSocket listens on 127.0.0.1:4455 WITH NO AUTHENTICATION (obs_ctl.cjs's own header says so). Every path guarded is a path THROUGH THIS REPOSITORY; four lines of Node that never import the guard reach the same actuator. F31 binds this codebase's paths to air. IT DOES NOT BIND THE BOX. Closing that means enabling auth on the OBS WebSocket server -- the operator's studio, S2, his.",
+     "why_not_DONE": "THE DOOR IS SHUT AND NOTHING CAN OPEN IT, which is the correct resting state for a guard and is NOT a completed step. The MINT does not exist: the plan names a presence token minted by the interactive-session WPF widget, and building the mint is what OPENS the door, which is S6. And ADR-0008 is a contract, so adopting it is S5. Both are the operator's. Drafted at docs/control-plane/decisions/ADR-0008-human-presence-for-go-live.md, marked PROPOSED - NOT ADOPTED - NOT IN FORCE, asking him three questions: is presence_evident acceptable for opening a public broadcast; should OBS WebSocket auth be enabled; and who mints, from where.",
+     "status_correction": "was recorded as DONE_GUARD_BUILT_DOOR_CLOSED, which is NOT in this plan's status_vocabulary. Inventing a status to carry nuance is how a vocabulary stops meaning anything. BLOCKED is the true word: the refusal is built and proven, and finishing F31 needs the operator -- ADR-0008 is S5 and minting a presence token is S6. The nuance lives in the fields, where it already was."
+    },
+    {
+     "id": "3.4",
+     "title": "correct FAILURE-MODES.md status line — AFTER 3.1-3.3, never before",
+     "status": "DONE",
+     "p3": "M6",
+     "p4": "A3",
+     "falsifier": "correcting it earlier launders the F28-F31 gap into 'as designed'",
+     "found": "The status line said 'F1-F23 are BUILT and tested; F24-F31 remain DESIGN', and the status section carried a SECOND, WORSE claim that had been false since at least 2026-07-26: that the F8 residual was CLOSED because node2 'refuses every credential the writer holds'. The live capture says independent_custodians: 0 and qualifies_as_witness: false. A second domain the writer can reach is not a second domain, so PHASE 5's CLOSURE OF store_anchor_in_practice_test.exs:145 IS VOID and the residual is live: an adversary who owns the store directory can rewrite the ledger and the anchor together, and nothing local catches it.",
+     "done": "F28-F30 recorded as BUILT with what each actually was before the repair. F31 recorded as REFUSAL BUILT, NOT FINISHED, with go-live CLOSED rather than guarded, the claim level presence_evident stated as NOT unforgeable, and the unauthenticated OBS WebSocket named as the limit that matters. F24-F27 left as DESIGN, because stage 3 did not touch them. THE NOW-FALSE PHASE 5 PARAGRAPH IS LEFT STANDING, not rewritten -- the ledger's rule applies to documents too: what was believed at the time is part of the record, and a correction is an addition. The section is 'most recent last' and the correction is last.",
+     "proof3": "M6 -- hierarchical-aif/tests/control_plane/test_failure_modes_status_is_true.py, seven negative controls that each fail if the document gets tidier than the truth: F31 still unfinished, go-live still closed, presence_evident still NOT unforgeable, :4455 still named as unauthenticated, F24-F27 still DESIGN, the residual still VOID, and the superseded paragraph still present and still BEFORE its correction.",
+     "proof3_bite": "PROVED TO BITE on the exact laundering the falsifier names: replacing 'F31 IS NOT FINISHED, AND GO-LIVE IS CLOSED RATHER THAN GUARDED' with 'F31 IS IMPLEMENTED AS DESIGNED' turns 7 passed into 1 failed, 6 passed. Run on the real document and restored immediately after.",
+     "proof4": "A3 -- `git diff` of docs/control-plane/FAILURE-MODES.md in UNI-FLAGELLUM, read in full."
+    },
+    {
+     "id": "3.5",
+     "title": "LIMITATIONS.md generated from @limitation annotations",
+     "status": "DONE",
+     "p3": "M6",
+     "p4": "A3",
+     "falsifier": "a limitation in a test absent from the doc, or vice versa",
+     "detail": "A derived doc cannot drift. Must record that Phase 5's closure of store_anchor_in_practice_test.exs:145 is VOID.",
+     "found": "THERE WERE ZERO @limitation ANNOTATIONS IN EITHER REPOSITORY, and no LIMITATIONS.md anywhere. This was a build from nothing, not a regeneration. The limits were real and were being carried in prose inside moduledocs, where nothing could count them and nothing could notice one going missing.",
+     "done": "A comment-marker convention that works unchanged in Elixir, Python and JavaScript, so a limit sits at the LINE IT LIVES ON rather than in a document beside it. Seven declared: the ledger's tail truncation, the local anchor vs a local writer, PHASE 5'S VOID CLOSURE (required by the plan), the recorder's non-identity-safe presence check, F31's presence_evident claim, F31's unauthenticated actuator, and the limitations doc's own single-repo scope. docs/control-plane/LIMITATIONS.md is GENERATED and marked DO NOT EDIT.",
+     "why_derived": "A hand-written limitations page drifts, and it drifts in ONE DIRECTION: nobody forgets to delete a limit that has been fixed, and everybody forgets to add the one they just found. So the doc is not written. A DERIVED DOC CANNOT DRIFT.",
+     "proof3": "M6 -- viewer/verify_limitations_doc.cjs, gate 17. The falsifier is bidirectional ('a limitation in a test absent from the doc, or vice versa') and ONE check closes both: regenerate and require byte-identity. An annotation added without regenerating, and a doc edited by hand, are the same mismatch. Both mutations proved on sandbox copies. NEGATIVE CONTROL: an untouched tree must MATCH -- without it, a generator that has quietly stopped finding anything passes every mutation by comparing nothing to nothing. Plus a USE vs MENTION control: limitations.cjs discusses @limitation throughout and declares exactly one.",
+     "proof4": "A3 -- the generated docs/control-plane/LIMITATIONS.md, read in full; 7 limitations, 5537 bytes.",
+     "finding_corrected_2026_07_28": "THE RECORDED FINDING WAS HALF FALSE. It said 'THERE WERE ZERO @limitation ANNOTATIONS IN EITHER REPOSITORY, and no LIMITATIONS.md anywhere.' The first clause is true. The second is NOT: docs/LIMITATIONS.md (3,881 bytes, 2026-07-13) had existed for two weeks -- a hand-written document about a different system, referenced by nothing and read by no gate. The generator scans docs/control-plane/, so it could not see one directory up, and the finding was written from what the generator saw rather than from the filesystem. The orphan now carries a header saying what it is; deleting or merging it is the operator's.",
+     "counts_corrected_2026_07_28": "This step recorded 'Seven declared' and 'proof4: 7 limitations, 5537 bytes'. Both are stale: the generated doc now declares NINE at 6,889 bytes, two having been added by later steps (3.3's f31.presence-evident among them). The numbers are not re-typed here -- the doc is generated and its own gate holds it byte-identical, so the count lives in the artifact."
+    },
+    {
+     "id": "3.6",
+     "title": "re-measure F28-F31 against the 0.2 inventory",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A1",
+     "falsifier": "(the plan left this undefined) DECLARED BEFORE RUNNING: the re-measurement disagrees with an independent count of the same instruments taken from their registrations rather than by executing them.",
+     "found": "F28, F29, F30 and F31 APPEAR IN THE 0.2 INVENTORY NOWHERE, and that is not an omission -- at Stage 0 there was nothing to inventory. F28 had no checker at all, F29/F30 had a verdict function with two words, F31 had a string comparison on loopback. A census of instruments cannot list one that does not exist. The measurement is therefore a before/after against zero: 0 instruments at 0.2, 9 now, 7 of them runnable and all 7 exiting 0.",
+     "method": "Inherited from 0.2 VERBATIM: each instrument spawned directly with output captured to a buffer, NEVER PIPED -- 0.2's own method note records that piping is how a false 'exits 0' was produced about verify_host_tracking.cjs by reading tail's status.",
+     "proof3": "M2 -- the same instruments counted a second way, from their REGISTRATIONS rather than by execution: gate_registry.json for the Node side, pytest --collect-only for the Python side. 1 F31 gate registered, 41 python cases collected. THE TWO ROUTES AGREE. An instrument that runs but is registered nowhere is one nobody will run again; one registered but absent is a census counting a ghost.",
+     "proof4": "A1 -- `node -e \"const r=require('./evidence/remediation/3.6_f28_f31_remeasure.json');console.log(r.instruments.filter(i=>i.present).length, r.instruments.filter(i=>i.in_0_2_inventory).length)\"` prints `9 0`. Measured: 9 0.",
+     "cross_repo_gap": "REAL AND RECORDED RATHER THAN SMOOTHED OVER: F28/F29/F30's instruments live in UNI-FLAGELLUM. The 0.2 inventory covered UNI.Minecraft's viewer gates only, so it could not have contained them and still cannot. The same gap is declared as the limitation doc.limitations.single-repo."
+    }
+   ],
+   "go_live_alignment": {
+    "ruled_by": "the operator, 2026-07-27",
+    "asked": "align to a go-LIVE midway through this stage, so the end of the build and welcoming everyone into the lab happen at the same time",
+    "where": "AFTER 3.3, BEFORE 3.4. This is not a convenience — it is the only honest place it can go.",
+    "why": "BLOCKED ON THE OPERATOR, AND SAFELY SO. The guard the go-live was to be aligned behind is BUILT and REFUSING ALL SEVEN PATHS. It cannot be opened by an agent, by design. Going live now requires: (1) his ruling on ADR-0008, (2) the mint built to match it, (3) his hand on it. Steps 3.1 and 3.2 are DONE, so the release can now say UNVERIFIED and frozen-evidence drift now halts -- the two things that had to be true before anyone was shown anything.",
+    "the_agent_does_not_open_it": "S6 is 'go-live, in any form' and not_mine says 'go-live'. Neither is softened by this alignment. The agent builds the guard, proves it refuses an agent, and says the door is ready. THE OPERATOR OPENS IT.",
+    "precondition": "F31 built, red-first, with a proof that it REFUSES an agent — and the two S9 items above resolved or explicitly accepted, because going live on a build whose canonical gate ledger does not match its own committed pin would be showing people a claim we cannot reproduce.",
+    "status": "BLOCKED",
+    "state": "BLOCKED",
+    "vocabulary_note": "CORRECTED 2026-07-28. The `status` key held a prose paragraph, which is outside this plan's own declared vocabulary (DONE, IN_PROGRESS, NEXT, PLANNED, BLOCKED, OPERATOR, STANDING) and is exactly what step 3.3's own status_correction warns against: 'Inventing a status to carry nuance is how a vocabulary stops meaning anything.' The nuance moved to `why`; the key now carries a word from the list."
+   },
+   "s9_ruled": {
+    "ruled_by": "the operator, 2026-07-27: \"fix gates.ndjson with the one-line rule, and supersede the receipt\"",
+    "gates_ndjson": "DONE. An S4 write, taken only on that instruction. evidence/gates.ndjson is now `-text` in .gitattributes. IT CHANGED NOT ONE BYTE ON DISK -- measured on both sides at 964ea25cfe8666ca..., 58 CR, 206 rows. What changed is what git STORES: the blob went from 641c8211... (0 CR, a form nothing has ever pinned) to 964ea25c... (the bytes every pin actually refers to -- the plan, the frozen 0.1a baseline, a receipt, replica_ledgers.json and control_plane_ledger_is_real_test.exs). Proved to be line endings and nothing else, two ways: git diff --cached --ignore-cr-at-eol EMPTY, and old blob vs new blob with CR stripped IDENTICAL. A clean worktree now reproduces the pin, which it could not do anywhere before today.",
+    "receipt": "DONE. Seq 12 supersedes the seq 9 reference to phase7_item710_green_2026-07-26.txt, recording 7973702b... -- what git stores everywhere -- instead of c09b5146..., the CRLF form of a Windows checkout. APPENDED, NEVER EDITED: seq 9 stands, unwithdrawn, and its exact bytes remain retrievable as object c09b5146... The receipt TEXT is untouched, identical once CR is ignored, verified before appending. This is the FIRST USE OF THE STEP 2.7 MACHINERY FOR ITS DESIGNED PURPOSE -- built to repair a collision the agent caused itself, now repairing one it did not.",
+    "then_the_guard_fired": "Step 2.6 anti-silence guard caught that steps 2.7, 3.1 and 3.2 were marked DONE and recorded nowhere: work continuing while the record did not, the exact Phase 5 failure, caught in minutes instead of four phases. Answered rather than silenced, with three entries each carrying a receipt of a REAL run, hashed from disk and stored content-addressed before being referenced. TWO MISTAKES OF MINE ON THE WAY, both caught and both recorded rather than tidied away. (1) The recorder SKIPPED step 3.1 as already accounted for -- matching PHASE 3 item 3.1, the gate_row schema correction. The item id alone is ambiguous across phases; it would have reported success and left a step unrecorded, which is the precise failure 2.6 exists to prevent, reintroduced by the script written to answer it. (2) Those entries were filed under resulting.item, and the guard reads resulting.step -- so three entries described the work in full and COUNTED AS COVERING NOTHING, while the ledger looked answered. A record that cannot be found by the check that looks for it is the same silence in a better disguise. Corrected by a further entry, not by an edit, and NOT by broadening the guard: reading item would let Phase 3 schema correction count as covering Phase 9 F29/F30 work.",
+    "measured": "mix test 1031 tests 0 failures - chain 16 entries, verifies, anchor attests - audit 19 references, 3 superseded, 0 faults - clean-worktree evidence gate PASS - node gate runner law 13/13, registry complete, 12 PASS 1 FAIL (host-tracking/music.uni-lab.local, pre-existing and the operator's) - python 558 passed, 3 skipped, 1 xfailed - F31 gate PASS, prover refuses all seven paths"
+   },
+   "status_why": "Every step an agent can finish is DONE: 3.1, 3.2, 3.4, 3.5 and 3.6. 3.3 is BLOCKED on the operator and on nothing else -- the go-live refusal is built and proven across all seven paths to air, and opening the door needs ADR-0008 ruled (S5) and a presence mint built (S6). BLOCKED rather than IN_PROGRESS because no further agent work moves it.",
+   "agent_slip_recorded": {
+    "what": "I recorded statuses outside the plan's own declared status_vocabulary",
+    "which": "3.3 as DONE_GUARD_BUILT_DOOR_CLOSED, and earlier 2.6 as DONE_WITH_DEFECT",
+    "why_it_matters": "inventing a status to carry nuance is how a vocabulary stops meaning anything, and it makes every reader of the plan -- TRACK, Gaia, the anti-silence guard -- parse a word nobody declared",
+    "fixed": "both corrected to declared words; the nuance lives in the fields, where it already was",
+    "still_open": "NOTHING MECHANICALLY ENFORCES THE VOCABULARY. The plan declares status_vocabulary and no instrument checks the statuses against it, which is why this went unnoticed for two steps. That is a real gap and it is named here rather than quietly fixed inside another step's scope."
+   },
+   "measured_2026_07_27": "mix test 1031 tests 0 failures - gate runner law holds 14 of 14 RUN (17 registered, 3 external and listed-not-run), 0 violations, registry complete, 13 PASS 1 FAIL (host-tracking/music.uni-lab.local, pre-existing and the operators) - chain 19 entries, verifies, anchor attests, 22 references 3 superseded 0 faults - python 566 passed - LIMITATIONS.md 7 limitations, byte-identical to a fresh generation",
+   "commit_message_correction": "The commit message for 3.5/3.6 (cbc72d3) says the gate runner law holds 15/15. THE MEASURED VALUE IS 14/14 RUN. 17 gates are registered; 3 are external (hud, overlays, colony) and are listed-not-run rather than fabricated as passes. The commit message is wrong and is not editable, so the correction lives here and in TRACK. A number that is off by one in a commit is still a number somebody may quote."
+  },
+  {
+   "id": "4",
+   "name": "THE UNRUN AND THE UNWIRED",
+   "status": "IN_PROGRESS",
+   "why": "Zero of 15 Control Plane modules has a production caller. Nine PENDING gates have a written scaffold and have never been run. And the lab — the reason Scene exists — was never built.",
+   "checkpoint": {
+    "id": "E",
+    "status": "PLANNED",
+    "he_sees": "TWO IMAGES, and the lab he can walk around",
+    "he_does": "says distinguishable or not, with NO TEXT READ"
+   },
+   "steps": [
+    {
+     "id": "4.1",
+     "title": "the recorder becomes the first production caller",
+     "status": "DONE",
+     "p3": "M3",
+     "p4": "A1",
+     "falsifier": "still zero callers outside tests",
+     "found": "MEASURED AND EXACT: grepping lib/ for SP.ControlPlane outside lib/sp/control_plane/ returned TWO DOCUMENTATION MENTIONS AND NOTHING ELSE. Not one of the fifteen modules was called by anything that runs -- only by tests and by one-shot repair scripts. The body built to record canonical mutations was an island.",
+     "built": "`mix sp.uni.prove` -- a compiled Mix task in lib/, the production entry point whose own docstring reads 'the OBSERVABLE proof, every line recomputed from the running code' -- now records its run through Recorder.append_one. It is the most canonical repeatable thing in this repository and the Control Plane had never heard of it.",
+     "site_chosen_on_measurement": "`mix sp.verify` was the FIRST candidate and was REJECTED on measurement: there are ZERO .jsonl evidence logs in runs/, so it has nothing to verify. That is itself part of 'the unrun', and it is recorded rather than worked around by inventing a log to make the step land.",
+     "a_measurement_is_not_a_verdict": "THE ENTRY REFUSES TO BLUR THEM. F1 refuses a verdict authored with no pre-registered gate, so a proof run is recorded as an OBSERVATION: transition `proof.observed`, actor `mix sp.uni.prove` with role `instrument` rather than a person, and resulting.not_a_verdict SAYING SO IN WORDS so a reader never has to infer which of the two it is. The authorization is `standing`, not `co_sign`: an automated run cannot manufacture a fresh second party, and pretending otherwise would hollow out the two-party rule everywhere else it is enforced.",
+     "records_what_changed": "An identical result is NOT appended twice. Re-running and seeing the same thing is not a new fact, and a chain that grows on every invocation stops being a record and becomes a log. Proved live: the second run printed 'unchanged since the last recorded observation' and the chain stayed at 20.",
+     "the_science_comes_first": "RECORDING CANNOT BREAK THE SCIENCE. An unusable store returns {:error, _} and prints that the record did not land -- it never raises. A body that records the work must not be able to stop the work. Tested against a path that is a file where a directory must be.",
+     "proved": "RED FIRST: 11 tests, 11 failures, every one for the pre-registered reason. GREEN: 1042 tests, 0 failures (was 1031). The falsifier is tested MECHANICALLY -- a source scan for a caller under lib/ outside the Control Plane, which additionally requires that caller to be a production ENTRY POINT rather than another library module waiting for a caller of its own.",
+     "proof3": "M3 LIVE PROBE -- ask the running system, not the repo. Ran the real `mix sp.uni.prove` against the REAL store: ledger 19 -> 20, recorded as seq 20, actor `mix sp.uni.prove`, role `instrument`, transition `proof.observed`, 15 pass / 0 fail / 3 skip over 18 gates, evidence content-addressed and retrievable. Ran it a SECOND time: 'unchanged', chain still 20. Audit clean afterwards -- 20 entries, 22 objects, 23 references, 3 superseded, 0 faults.",
+     "proof4": "A1 -- the ledger's own length, which he recomputes: `node -e \"console.log(require('fs').readFileSync('evidence/control_plane/ledger.ndjson','utf8').trim().split(/\\r?\\n/).length)\"` -- 19 before the probe, 20 after, and still 20 after a second identical run.",
+     "limitation_noted": "The evidence path is a STABLE path, so each new observation supersedes the previous reference to it. That is legitimate and is exactly the machinery step 2.7 built -- superseded bytes stay retrievable as objects forever -- and it is the first time supersession has been used by a recurring production caller rather than by a repair."
+    },
+    {
+     "id": "4.2",
+     "title": "nine never-run gates get attempted_at",
+     "status": "DONE",
+     "p3": "M5",
+     "p4": "A1",
+     "stop": "S4",
+     "falsifier": "'never attempted' and 'attempted and blocked' still collapse into one word",
+     "found_before_building": "THE STEP AS WRITTEN CANNOT BE TAKEN, and the obstacle is in the plan rather than the code. 1. THE NUMBER IS WRONG: there are 69 PENDING rows covering 59 UNIQUE GATE NAMES, not nine. Nine is the count of gates with a written scaffold runner; the PENDING word covers far more. 2. attempted_at CANNOT GO IN THE ROW. production/schemas/gate_row.schema.json declares additionalProperties false, so a row carrying a new key FAILS ITS OWN SCHEMA and F5 refuses it. Adding the key to the schema is a contract amendment, S5, and writing the rows is a write to evidence/gates.ndjson, S4. THREE stop conditions on the obvious reading. 3. S10 additionally forbids RUNNING any of the nine, so attempted-versus-never-attempted has to be decided from the RECORD, not by trying them.",
+     "design_that_avoids_all_three": "A SIDECAR, which is this programme's own stated idiom -- S3 says a correction is a new sidecar with a new hash. An append-only evidence/gate_attempts.ndjson keyed by gate name, deriving its classification from evidence rather than execution: does a runner exist, does that runner raise a scaffold marker so it CANNOT complete, does a receipt exist at receipt_path, does git history show it ever ran. That gives the three-way distinction the falsifier demands -- NEVER_ATTEMPTED versus ATTEMPTED_BLOCKED versus ATTEMPTED_FAILED -- without touching gates.ndjson, without amending the schema, and without running a single science gate. p3 is M5, historical replay, which is exactly reading the record rather than executing it.",
+     "operator_note": "PUT UP RATHER THAN ASSUMED: the sidecar avoids S4, S5 and S10 entirely, so building it is not principal-gated. But THE PLAN SAYS the gates get attempted_at, and a reader expecting that field IN THE ROW will not find it there. That divergence from the written plan is named here rather than quietly reinterpreted.",
+     "built": "evidence/gate_attempts.ndjson -- an append-only SIDECAR, operator-authorised 2026-07-27 after the three stop conditions were put up. NOTHING WRITES gates.ndjson, nothing amends a schema, nothing runs a gate. The gate asserts on every run that gates.ndjson still hashes to 964ea25c.",
+     "measured": "59 unique PENDING gates split FOUR ways where there was one word: 28 NO_RUNNER (nothing exists that could attempt them -- waiting on WORK), 8 RUNNER_REFUSES (a runner exists and halts by construction -- waiting on the WORLD), 23 HAS_RESULT_DOCUMENT, 0 RUNNABLE_NEVER_RUN.",
+     "adverse": "23 GATES READ PENDING WHILE NAMING A RESULT DOCUMENT distinct from their pre-registration. Something was produced and the verdict was never moved. That is a FINDING rather than a category and the gate says the number out loud on every run so it cannot sit unnoticed. STATED HONESTLY: the classifier checks that the row POINTS at a distinct receipt; it does not read the receipt to decide whether it reports an outcome, because a classifier that interprets prose will disagree with the next reader. Declared as the limitation gates.attempts.result-document-is-a-judgment.",
+     "falsifier_result": "CLOSED AND PROVED. The falsifier was 'never attempted and attempted-and-blocked still collapse into one word'. Both states are now present and the gate FAILS if either count reaches zero -- a classification that distinguishes nothing is caught rather than admired. Plus a mutation proving the state FOLLOWS its subject all three ways: a runner that refuses gives RUNNER_REFUSES, the same runner with the refusal removed gives RUNNABLE_NEVER_RUN, and a deleted runner gives NO_RUNNER. A classifier whose answer does not move is a constant with extra steps.",
+     "proof3": "M5 HISTORICAL REPLAY, and MY FIRST VERSION OF IT ASSERTED THE WRONG THING. I demanded both states be present in history. They were not: at 62dc97d6, the commit that wrote the scaffold runner, there were EIGHT PENDING gates and ALL EIGHT were RUNNER_REFUSES. The picture was homogeneous, so there was nothing to distinguish. THE OTHER 51 PENDING GATES ARRIVED AFTERWARDS, every one with no runner at all -- and that is where the plan's 'nine' came from: it was counting the original scaffolded set, and the number stopped being true as the ledger grew. The check now proves what M5 can honestly prove: STABILITY. Every gate this classifier calls RUNNER_REFUSES today was already RUNNER_REFUSES then, from the same record. Derived, not invented.",
+     "proof4": "A1 -- `node viewer/classify_gate_attempts.cjs` prints the tally, and he can recompute the split from the sidecar directly. Measured: 59 gates, 28 + 8 + 23 + 0.",
+     "divergence_from_the_plan_as_written": "The plan says these gates 'get attempted_at'. THEY DO NOT, and cannot: gate_row.schema.json declares additionalProperties false, so a row carrying the key fails its own schema and F5 refuses it. A reader expecting the field IN THE ROW will not find it. It lives in the sidecar, and the reason is recorded here rather than left for them to discover."
+    },
+    {
+     "id": "4.3",
+     "title": "Phase 8 items 8.0-8.6 + bootstrap_literals.json with expiry",
+     "status": "DONE",
+     "p3": "M5",
+     "p4": "A2",
+     "falsifier": "an allowlist without expiry is a permanent hole",
+     "done_so_far": "PHASE 8 ITEMS 8.1 TO 8.4 ARE CLOSED, all four measured LIVE 2026-07-27 and all four still present when I got there. Each turned a fault into a NUMBER -- nothing raised, nothing warned, and the result was indistinguishable from a sound one. 8.1 score.py, TWO sites: bare zip truncates, producing a mean over a silently shortened pairing; the unit is the MOTOR, so dropping events reweights the motors that survive. Both lengths named in the refusal. 8.2 compare.py: an optimiser reporting failure still returns finite parameters, and scoring them yields a comparable-looking meaningless NLPD. The halt sits at the SCORING boundary, not the fit -- a fit may fail; a failed fit scored as though it succeeded may not. Absence of the flag is refused too, because defaulting it to True is the same bug in another hat. 8.3 compare.py:546: the parity ladder was OFF BY ONE and OMITTED P7 -- every level above transfer shifted UP, reading as a stronger claim than the evidence licenses, and independent replication left off the list entirely. 8.4 status.py: an OVERRUN was swept in with everything that met its plan. It is not a longer success -- nobody pre-registered stopping there. It has its own word, and may_claim_refutation refuses it without its own patch: the fix propagates.",
+     "item_8_0": "8.0 (a baseline captured before any edit) is SATISFIED BY CONSTRUCTION for this work: the measured green was recorded before each change and is in the commit -- 580 passed, 3 skipped, 1 xfailed after, against a suite that was green before.",
+     "item_8_5_already_closed": "8.5 -- release_verdict ignoring `unscanned`, an unopenable zip returning PASS -- WAS ALREADY CLOSED BY STEP 3.1. It is the same defect the plan lists twice, once as a Phase 8 item and once as F29/F30. Said rather than counted twice.",
+     "remaining": "evidence/bootstrap_literals.json WITH EXPIRY, which is inseparable from step 4.4's repo-wide IP fence -- the allowlist has no meaning without the fence that consults it. Both are carried into 4.4 rather than half-built here.",
+     "my_own_test_fell_into_4_4s_trap": "WORTH RECORDING BECAUSE IT IS THE SIXTH TIME. The 8.3 check scanned compare.py for the string 'P5 transfer' and CONVICTED THE COMMENT THAT RECORDS THE OLD WORDING -- exactly step 4.4's falsifier: 'it convicts a comment recording a removal, use vs mention, which has convicted honest documentation five times.' Make that six, and it caught me in the cheapest possible place. The comment STAYS -- a correction that cannot say what it corrected is a worse document -- and the scanner learned the difference instead. That lesson goes into 4.4's fence by design.",
+     "allowlist_landed": "evidence/bootstrap_literals.json landed with step 4.4, where it belongs: an allowlist has no meaning without the fence that consults it, and building it here would have been a file nothing read. Expiry and re-derivation are enforced by that fence, not merely declared in this one."
+    },
+    {
+     "id": "4.4",
+     "title": "the repo-wide IP fence, landed RED",
+     "status": "DONE",
+     "p3": "M5",
+     "p4": "A2",
+     "falsifier": "it convicts a comment recording a removal — use vs mention, which has convicted honest documentation five times",
+     "landed_red": "AS THE ACCEPTANCE DEMANDS. Item 8.6 requires >=12 hits on the pre-fix tree and states that a GREEN LANDING MEANS THE WALK IS WRONG. Measured: 27 live IP literals across 16 files on the current tree, and 34 at d2b52a23 on the pre-fix tree. The gate is RED with all 8 of its own self-checks passing, and it says so in its own output so nobody mistakes it for a broken gate. Each literal is an address that cannot follow a lease: the machine moves, the code does not, and the failure is silent until someone is on air.",
+     "falsifier_result": "CLOSED AND PROVED BOTH WAYS. The falsifier is 'it convicts a comment recording a removal -- use vs mention, which has convicted honest documentation five times'. The gate proves a comment reading 'removed 10.190.245.122 from here on 2026-07-11' is a MENTION and is spared, AND that the same literal in live code IS convicted -- because sparing comments degrades into sparing everything without the second half. A fence that punishes the sentence teaches people to delete the sentence, and the next reader loses the only account of why the address went.",
+     "it_caught_me_twice_more": "SIXTH AND SEVENTH. Sixth: my own step 4.3 test scanned for a string and convicted the comment recording the old wording. SEVENTH: THIS FENCE CONVICTED ITSELF -- its use-vs-mention probes carry a real literal in a real string, which is USE by every rule the fence states, so the first run reported 33 instead of 27 and six of the six extras were the gate's own fixtures. Excluded BY NAME in the source, exactly as verify_golive_refuses_agents.cjs excludes itself and its subject: an exclusion a reader can SEE beats a heuristic they cannot.",
+     "what_counts_as_an_address": "Most dotted quads here are not addresses -- 4.0.0.0 and 15.0.0.0 are versions, 2.9.3.0 is a version, 0.0.0.0 is a wildcard bind, 127.0.0.1 is loopback, 10.0.0.0 is a range. Convicting them would produce a fence nobody can keep green, which is a fence nobody keeps. The walk recognises only what can be a HOST on this fleet: RFC1918 and CGNAT, with network and broadcast addresses excluded. Both directions are negative-controlled.",
+     "allowlist": "evidence/bootstrap_literals.json. EVERY entry carries `expires` and `re_derivation`, and both are ENFORCED: an entry past its expiry FAILS the fence rather than warning, an entry with no expiry fails, and an entry a reader cannot recompute from the registry fails. That is the step's other falsifier -- 'an allowlist without expiry is a permanent hole' -- closed mechanically rather than by intention. Two entries today, both mesh addresses the bootstrap needs because resolving the name is what the bootstrap exists to do.",
+     "proof3": "M5 HISTORICAL REPLAY. The walk takes its reader, so the same code runs against a past commit via `git show`. At d2b52a23 (pre-fix, before 2026-07-20): 34 uses over 354 in-scope files. The acceptance number is met ON REAL HISTORY rather than on a fixture built to meet it.",
+     "proof4": "A2 -- `node viewer/verify_ip_fence.cjs` fails on demand, names every offender with file and line, and prints why a red landing is the correct outcome. Registered as gate 19; the runner reports law 16/16 with a complete registry and 2 legitimately-red gates."
+    },
+    {
+     "id": "4.5",
+     "title": "mix format on lib/sp/brain/language.ex — its own commit",
+     "status": "DONE",
+     "p3": "M2",
+     "p4": "A3",
+     "detail": "Carried five phases.",
+     "outcome_achieved": "lib/sp/brain/language.ex IS format-clean. Verified: `mix format --check-formatted` passes, 0 CR bytes, 318 lines. The debt that had been carried for five phases is paid.",
+     "acceptance_NOT_met": "BUT NOT ON ITS OWN TERMS, and that is said rather than glossed. Phase 8 item 8.11's acceptance is 'reformatted IN ITS OWN COMMIT ON ITS OWN TERMS' and its falsifier is 'the reformat is buried'. It was formatted in commit 3ade5d8 -- 'reformat 81 files to Elixir 1.18's mix format (CI's ruling)' -- ONE OF EIGHTY-ONE FILES swept up by a toolchain-version ruling during step 1.3. It was never addressed as the five-phase-carried item it was; it was collateral.",
+     "why_it_cannot_now_be_met": "The acceptance clause is UNREACHABLE from here. The file is already formatted, so reformatting it produces an empty diff and an empty commit -- a commit whose only content would be the claim that it had its own commit. Manufacturing that would be laundering a missed clause into a met one, which is the exact move this programme exists to refuse. The honest record is: OUTCOME ACHIEVED, ACCEPTANCE CLAUSE NOT MET, and it cannot be met retroactively.",
+     "proved": "mix format --check-formatted lib/sp/brain/language.ex passes. `git log -1 -- lib/sp/brain/language.ex` names 3ade5d8; `git show --stat 3ade5d8` reports 81 files changed, 1780 insertions, 427 deletions. Both numbers are the proof: the first that the debt is paid, the second that it was not paid on its own terms.",
+     "proof3": "M2 -- the independent method here is a DIFFERENT TOOLCHAIN, not a different implementation. Local Elixir is 1.19.5 and CI's 1.18.4 is the declared authority (the disagreement between them is what caused the 81-file reformat in the first place). Local 1.19.5 reports clean; the file was written BY 1.18 in a container, so both toolchains have now agreed on these bytes.",
+     "proof4": "A3 -- `git show --stat 3ade5d8`, read in full: 81 files, and language.ex is one of them."
+    },
+    {
+     "id": "4.6",
+     "title": "THE LAB — builds 0 through 6",
+     "status": "IN_PROGRESS",
+     "p3": "M1 (verify_shot --mutate MUST FAIL) + M8",
+     "p4": "A4",
+     "falsifier": "he cannot tell them apart, or can for a reason that is not truth_class",
+     "detail": "Closes Phase 7's failing clause 2. Build 0 is an empty room he can walk around on day one.",
+     "builds": [
+      {
+       "id": "L0",
+       "title": "THE EMPTY ROOM — floor, grid, walls, three room shells, five arches, Gaia dome, WASD, click-to-stand. Zero nodes.",
+       "shows": "he opens /lab and walks around",
+       "status": "DONE",
+       "built": "http://127.0.0.1:8103/lab -- viewer/lab/lab_server.cjs + lab.html. Floor, grid, walls, THREE room shells, FIVE arches, the Gaia dome, WASD with a shift stride, and click-to-stand. ZERO NODES. Boot identity on /api/identity like every other body; the page shows the commit it was served from.",
+       "zero_nodes_is_the_discipline": "L0 commits to NOTHING about truth_class, and the gate FAILS if it starts to. L2 is the screenshot gate and its whole job is to FAIL on swapped materials -- it cannot prove that against a renderer that already assumed them. So the discipline is order, not modesty: L1 brings the five materials from a fixture, and only then is there something for L2 to swap.",
+       "cpu_only": "2D canvas and arithmetic. No WebGL, no WebGPU, no Three.js -- ENFORCED by the gate, not intended. An isometric projection done in multiplication; there is no shader and no GPU context anywhere in it.",
+       "read_only_by_omission": "GET-only BY OMISSION, the property Gaia holds: not a guarded POST branch, an ABSENT one. Measured live: POST /lab returns 405. A surface built to be walked around must not be able to change anything by being walked around in.",
+       "it_says_zero_out_loud": "/api/lab reports nodes: 0 with the reason. An empty room and a broken feed look identical from outside unless one of them says which it is.",
+       "gate": "viewer/lab/verify_lab_l0.cjs, 10/10, registered as gate 20. It mostly checks what is ABSENT -- the same shape as F31 -- because a renderer showing something it has not earned is invisible in a screenshot and fatal to L2.",
+       "the_checker_caught_me_three_times": "ALL THREE FAILURES ON THE FIRST RUN WERE THE CHECKER, NOT THE LAB. It convicted lab.html HTML block comment (whose inner lines start with none of the markers I stripped) and lab_server.cjs own /api/lab response, WHICH HONESTLY DECLARES no WebGL, no WebGPU, no Three.js as its contract. That is USE-VS-MENTION FOR THE EIGHTH TIME, inside the gate whose own header describes the trap. A fence that punishes a file for stating the rule it obeys teaches people to stop stating the rule, so the check is now API-SHAPED: a bare word is mention, a getContext call or an import is USE. The third failure was a whitespace-intolerant regex counting 2 room shells where there are 3.",
+       "measured": "GET /lab 200 - POST /lab 405 - /api/lab reports nodes 0 and boot ffb06b5 - gate 10/10 - gate runner law 17/17 run, registry complete, 20 gates.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L0_green_2026-07-28.txt",
+       "receipt_note": "CAPTURED LATE, 2026-07-28. This build shipped green with NO receipt — the convention started at L4 and nothing noticed, because the anti-silence guard read `steps` and never `builds`, and step 4.6 being IN_PROGRESS hid all six. The receipt is the gate re-run at the correcting commit, not a reconstruction of the original run, and it says so in its own first lines."
+      },
+      {
+       "id": "L1",
+       "title": "THE FIVE MATERIALS from a fixture, socket-free",
+       "shows": "the render contract standing on a floor",
+       "status": "DONE",
+       "built": "http://127.0.0.1:8103/lab/l1 -- viewer/lab/l1.html + fixtures/l1_materials.json. Nine nodes covering all five materials, read from a FILE. Socket-free: it fetches the fixture and its own identity and nothing else, because the projection is L3 and reaching for real gates before anything could say what a fogged one looks like would be showing a claim it had not earned.",
+       "f24_to_f27_stop_being_design": "F24: a node with no receipt, a blank receipt, UNKNOWN, or an unreadable truth_class ALL render FOG -- a node CLAIMING to be observed with no receipt is fog, and the render is where that becomes visible without reading a word. F25: fog gets NO DESK, and the ABSENCE IS THE REFUSAL -- you cannot stand at a desk that is not there, and nothing has to say no. F26: liveness is drawn ONLY where a probe answered; not_probed draws NOTHING, and that silence is the point, because absence of a probe is not evidence of health. F27: the material says how well-backed a thing is and nothing about awareness, experience or life.",
+       "form_not_colour": "4.6s falsifier is he cannot tell them apart OR CAN FOR A REASON THAT IS NOT truth_class. Colour alone fails that twice -- a greyscale screenshot and a colour-blind reader -- so each material differs in FORM: fog has no edge and no floor contact; staged is an outline on a plinth with no body; translucent shows the grid THROUGH it; seamed is solid and full height but visibly JOINED; lit is solid and crisp.",
+       "proof3": "M2, AND IT IS THE CENTRE OF THE GATE. l1.html restates Scene.material/1 in JavaScript because a browser cannot call Elixir, and a second implementation nobody cross-checks is a second place to be wrong. The gate EXTRACTS THE SHIPPED materialOf() AND liveness() FROM THE PAGE, runs them, and compares every fixture node against the ELIXIR ITSELF via scripts/lab_l1_materials_from_elixir.exs. 9 of 9 agree. It does not re-type the function here -- a copy that agrees with another copy I wrote proves nothing.",
+       "the_checker_caught_me_again": "NINTH TIME. The F25 check capped its regex window at 400 characters and reported false against a fog branch that is correct -- the branch explains itself at length before returning. My checker, not the page, for the second time in this build.",
+       "measured": "gate 8/8, registered as gate 21. L0s gate still passes (L1 is its own page, so L0 stays zero-nodes). Gate runner law 18/18 run, registry complete.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L1_green_2026-07-28.txt",
+       "receipt_note": "CAPTURED LATE, 2026-07-28. This build shipped green with NO receipt — the convention started at L4 and nothing noticed, because the anti-silence guard read `steps` and never `builds`, and step 4.6 being IN_PROGRESS hid all six. The receipt is the gate re-run at the correcting commit, not a reconstruction of the original run, and it says so in its own first lines."
+      },
+      {
+       "id": "L2",
+       "title": "THE SCREENSHOT GATE, AND IT MUST BITE",
+       "shows": "the gate passes, then FAILS on swapped materials",
+       "status": "DONE",
+       "built": "viewer/lab/shot.cjs (a CPU rasteriser) + viewer/lab/verify_shot.cjs (the gate) + a blessed golden at viewer/lab/shots/l1_materials.png. NO BROWSER: a screenshot gate that needs Chromium needs Chromium on every machine that runs it, and CI has already taught this programme what an undeclared dependency costs. It rasterises in Node with nothing but zlib -- CPU-only, no GPU, deterministic to the byte.",
+       "it_passes_then_it_fails": "THE WHOLE BUILD, MEASURED. `node viewer/lab/verify_shot.cjs` exits 0 against the golden. `node viewer/lab/verify_shot.cjs --mutate` exits 1. The swap is lit_solid <-> seamed_solid, chosen deliberately as the CLOSEST PAIR in the contract -- both solid, both full height, differing only in whether the body is visibly joined. If a swap were going to slip past a screenshot it would slip past there.",
+       "the_polarity_was_wrong_first": "MY FIRST VERSION REPORTED THE CAUGHT MUTATION AS A PASS AND EXITED 0. That is backwards: the plan says --mutate MUST FAIL, and a mutation gate that goes GREEN when it catches something teaches a reader that green means nothing in particular, and cannot be WATCHED to bite. Both branches now fail and only the reason differs -- the one outcome that would mean the gate is broken, the swap slipping through, exits 0 nowhere.",
+       "every_pair_not_just_the_swapped_one": "TEN PAIRS over five materials, each rendered alone and hashed. If any two render identically the gate names WHICH two, because he can tell them apart has to be true of every pair and not only of the ones a test happened to pick.",
+       "and_in_greyscale": "4.6s falsifier has a second half -- or CAN tell them apart FOR A REASON THAT IS NOT truth_class. A hue difference is exactly that reason: it survives a colour screenshot, dies in a greyscale one, and fails a colour-blind reader outright. So every pair is re-checked with colour thrown away, quantised to three luminance levels. All ten still differ. The distinction is FORM.",
+       "one_statement_of_the_rule": "shot.cjs EXTRACTS materialOf FROM l1.html at run time, as the L1 gate does. There is one statement of the rule in JavaScript and this is not a second -- a third copy would be a third place to be wrong, and the wrong one would be invisible.",
+       "measured": "gate 3/3 PASS normally, 2/3 FAIL under --mutate with exit 1. Registered as gate 22. Runner law 19/19 run, registry complete.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L2_green_2026-07-28.txt",
+       "receipt_note": "CAPTURED LATE, 2026-07-28. This build shipped green with NO receipt — the convention started at L4 and nothing noticed, because the anti-silence guard read `steps` and never `builds`, and step 4.6 being IN_PROGRESS hid all six. The receipt is the gate re-run at the correcting commit, not a reconstruction of the original run, and it says so in its own first lines."
+      },
+      {
+       "id": "L3",
+       "title": "THE PROJECTION — real state, real receipts, 1 Hz, diff-suppressed",
+       "shows": "the real gates on his floor, and the ones with missing receipts standing in fog",
+       "status": "DONE",
+       "built": "http://127.0.0.1:8103/lab/l3 -- viewer/lab/projection.cjs (a READ over evidence/gates.ndjson) + l3.html. 109 gates on the floor, one node per gate NAME rather than per row, because a gate revised three times is one gate. 1 Hz and DIFF-SUPPRESSED: the projection is hashed and an identical payload answers unchanged, because a surface that re-sends a still world every second teaches its reader that motion means nothing, and then real motion goes unnoticed.",
+       "the_finding": "THE FLOOR IS ENTIRELY FOG AND THAT IS THE FINDING, NOT A RENDERING FAULT. The plan expected the ones with missing receipts standing in fog. MEASURED FIRST: 109 gates, 109 receipts PRESENT, ZERO missing -- that half of the promise has nothing to show, which is good news and is said rather than skipped. Every gate is fog for a DIFFERENT reason: THE GATE LEDGER CARRIES NO truth_class AND ITS SCHEMA FORBIDS ONE. gate_row.schema.json declares additionalProperties false, so a row bearing one fails its own schema and F5 refuses it. F24 renders a node without one as fog.",
+       "what_it_actually_means": "THE RENDER CONTRACT AND THE GATE LEDGER WERE BUILT WITH DIFFERENT VOCABULARIES AND NOTHING HAS EVER CONNECTED THEM. truth_class is OBSERVED/STRUCTURAL_RECONSTRUCTION/REDUCED_MODEL/DERIVED/SIMULATED/UNKNOWN -- what KIND of thing a node is. evidence_class is A/B/C/Sec/pending -- how STRONG the evidence is. Phase 7 built Scene against the first; the gate ledger has only ever carried the second.",
+       "the_mapping_i_refused": "A gate with evidence_class A is NOT thereby OBSERVED. Inventing that mapping would relabel a STRENGTH as a KIND, which the truth contract names as laundering in as many words. The gate FAILS if any truth_class ever appears that the ledger did not supply, AND it fails if such a table appears in the source at all -- a table nobody calls today is a table somebody calls tomorrow.",
+       "proved": "9/9. Every node is a real gate from the real ledger. No truth_class invented and no mapping table present. Every fogged node fogged for a STATED reason -- 109 lack truth_class, 0 lack a receipt, and none is fog for a third reason nobody named. The reason travels IN the payload so every surface rendering it must carry the explanation. The page SAYS the fog is the finding, so a viewer is never left wondering whether it broke. 1 Hz throttle and diff suppression both bite, and the MUTATION points at a MODIFIED COPY of the ledger -- never the real one, S4 -- to prove a real change gets through, because suppression that suppresses everything is a dead feed and a dead feed looks exactly like a still one.",
+       "closing_it": "Add truth_class to the gate row schema. That is a contract amendment: S5, the operator, not an agent.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L3_green_2026-07-28.txt",
+       "receipt_note": "CAPTURED LATE, 2026-07-28. This build shipped green with NO receipt — the convention started at L4 and nothing noticed, because the anti-silence guard read `steps` and never `builds`, and step 4.6 being IN_PROGRESS hid all six. The receipt is the gate re-run at the correcting commit, not a reconstruction of the original run, and it says so in its own first lines."
+      },
+      {
+       "id": "L4",
+       "title": "ROOMS, AIRLOCKS, PORTALS",
+       "shows": "a sterile room that will not open — the refusal is that there is no door",
+       "status": "DONE",
+       "built": "http://127.0.0.1:8103/lab/l4 -- viewer/lab/rooms.cjs + l4.html. Three rooms with walls, and the walls STOP YOU: collision, not narration. A page that says CLOSED and then lets you through has taught its reader that its words are decoration, and they will read the next one that way.",
+       "the_distinction_it_exists_to_hold": "THREE KINDS OF CLOSED, DRAWN THREE WAYS BY THREE CODE PATHS. OPEN is a gap in the wall with a lit threshold and no wall above it. SEALED BY RULE is a framed doorway with a bar across it -- a door EXISTS, S10 forbids an agent opening it, the operator can. NO DOOR is unbroken wall: no frame, no panel, nothing to look for. Collapsing them into one grey LOCKED is what this build exists to prevent, because SEALED waits on a DECISION and NO_DOOR waits on SOMETHING BEING BUILT, and drawn the same a reader concludes a decision opens the airlock. It does not.",
+       "the_airlock": "THE AIRLOCK TO AIR HAS NO DOOR, AND THAT IS COMPUTED RATHER THAN ASSERTED. F31 refuses all seven paths for want of a presence token; a scan of viewer/ finds NOTHING THAT CAN MINT ONE. So there is no mechanism to enter by, for anyone, including the operator. Plant a minter under a temp root and the wall becomes a door -- proved in the gate -- so today's no_door is a measurement of this tree, not a sentence about it. Building the mint is S6, his; minting IS opening.",
+       "adverse_result_found_and_fixed": "THE 4.2 SIDECAR SAID 59 GATES ARE PENDING. TWELVE ARE. gate_attempts.cjs filtered every row that ever said PENDING and deduped by name -- 47 of those gates were decided afterwards and wait on nothing. The backlog has read five times longer than it is since this morning, in the file built to make PENDING mean something precise. Corrected the same hour, caught by the L4 gate: nothing removed, every entry now carries current_verdict and pending_now, and the header reports pending_now 12 beside ever_pending 59 under names that say which is which. The HAS_RESULT_DOCUMENT finding shrinks with it -- 23 gates have held a result document while reading PENDING, but only ONE still does. Saying 23 made the instrument look more neglected than it is, which is its own kind of dishonesty.",
+       "and_a_claim_withdrawn": "verify_gate_attempts.cjs carried a comment saying the scaffolded set is what S10's nine was counting. That was a guess dressed as a conclusion and it does not survive arithmetic: the scaffolded set is EIGHT, pending now is TWELVE, ever pending is FIFTY-NINE, S10 says NINE. It matches none of them. Withdrawn in place, with the reasoning left visible.",
+       "a_stop_condition_that_cannot_be_enforced": "S10 NAMES A COUNT AND NO MEMBERS, so nothing can mechanically enforce it -- a guard cannot check a list it was never given. The sealed room therefore holds EVERY pending gate, which over-seals rather than under-seals, and says so instead of picking nine and presenting the choice as a measurement. NAMING THE NINE IS THE OPERATOR'S.",
+       "portals": "Five declared loopback surfaces, really probed, GET only, each answer stamped with the moment it was observed (F26). MEASURED 2026-07-28: TRACK up 200 · HUD up 404 · THE DOOR DOWN, ECONNREFUSED on :8098 · the voice transcript up 200 · this lab up 200. not_probed is a third state and is never rendered as down, because 'I did not look' and 'I looked and it was dark' are different facts.",
+       "proved": "13/13. Three door states from three branches · no_door computed and the scan BITES under mutation · every spared file named on every run (THE SCAN CONVICTED ITS OWN SOURCE first time out -- rooms.cjs names the token only inside the regex hunting for it: use versus mention, the ninth instance) · the seal quotes the plan by id, so lifting S10 there opens the room here · collision blocks entry · liveness only from a real probe · NOTHING HERE CAN OPEN ANYTHING, checked by ENUMERATING which guard members the module touches rather than by hunting for the word mint, which convicted the prose explaining why nothing mints.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L4_green_2026-07-28.txt"
+      },
+      {
+       "id": "L5",
+       "title": "THE DESK AND THE RUN UNDER WAY",
+       "shows": "he stands at a gate and reads exactly what would be written, before it is",
+       "status": "DONE",
+       "built": "http://127.0.0.1:8103/lab/l5 -- viewer/lab/desk.cjs + l5.html. Walk to a gate station and read the EXACT bytes that would be appended to the canonical ledger. Not a mock-up of the row: the string, in the schema's property order, proved byte-identical to SP.ControlPlane.GateRow.encode/1 by BOOTING THE BEAM -- on rows preRegistration() and afterRun() actually produced, so the comparison moves when the desk moves.",
+       "THE_HEADLINE_IS_THAT_THIS_BUILD_SHIPPED_GREEN_AND_WAS_WRONG": "L5 was declared 14/14. An adversarial audit (4 independent lenses, every finding then handed to a separate agent instructed to REFUTE it) raised 25 findings and 22 SURVIVED REFUTATION, six of them high. THREE OF THEM WERE INVISIBLE BECAUSE OF THIS GATE'S OWN CHECKS, and that is the lesson worth more than the build: (1) 'the lab's one non-GET route is carved out by name' counted ROUTES and never CALLERS -- true, and answering a different question than a reader takes from it; (2) 'NO VERDICT WITHOUT A RUN' proved only 'no verdict without a NUMBER NAMED exit_code' -- a hand-typed {exit_code: 0} produced a clean PASS row and the gate's very next check did exactly that; (3) 'THE GAP IS MEASURED' was `registered > 0 && typeof inLedger === 'number'`, a tautology, which is why it did not notice the headline count drifting in the same commit that wrote it. A SOURCE REGEX IS EVIDENCE ABOUT TEXT. Where the claim is about BEHAVIOUR, the rebuilt gate measures behaviour: it boots a server, issues a hostile cross-site request, runs processes, and hashes files and git state before and after. 20 checks, all green, and three of them fired on the first run.",
+       "the_worst_one": "POST /api/lab/run HAD NO CSRF FENCE. No Origin check, no Referer check, no token, and JSON.parse ignored content-type -- so the exact shape a browser sends with NO preflight (Content-Type: text/plain, or a JS-free auto-submitting form, which CORS does not govern at all) was accepted and acted on. Any page the operator had open could make his lab spawn gates and git worktrees in his own repository. AND THE FIX WAS ALREADY WRITTEN DOWN HERE: viewer/command_center.cjs:1579 carries the same `x-uni-cc: 1` check, and ADR-PROD-015 specifies 'GET-only + ONE loopback-only POST ... requiring header x-uni-cc: 1' -- L5's architecture verbatim, with the fence made mandatory. L5 kept the body cap and the loopback bind and dropped the fence. Now enforced, plus a content-type check, plus one-run-at-a-time, plus a timeout on the child. PROVED BY ASKING A BOOTED SERVER: hostile cross-site POST -> 403.",
+       "and_five_more_that_mattered": "(a) EVERY after-row the live page could produce carried receipt_path:'' and reported schema_errors [] with no blockers -- the careful half of the desk was the half nobody reaches by pressing R. Now both rows compute blockers the same way. (b) A gate registered but NOT COMMITTED was launched into a checkout of HEAD that does not contain it: MODULE_NOT_FOUND, exit 1, and the runner law turned that into a VERDICT OF FAIL about a gate that never ran -- L5's own gate was the first victim. Now refused as NOT_AT_HEAD: a question that could not be asked must never wear the same word as an answer of no. (c) desk.validate was documented as a port of GateRow.validate/1 and ran six of its nine checks, two of them weaker -- it accepted an impossible date (2026-02-31), a numeric notes, a numeric supersedes entry. The page renders that output as 'schema-valid'. Now complete, and compared against the Elixir on rows the Elixir REFUSES. (d) 'every one of the 12 pending rows follows' the receipt convention -- ELEVEN DO; hud-renders-stale-as-stale has no pre_registration_path at all, and the universal was rendered to the operator as the reason a row could not be written. Computed now. (e) S10's seal is UNREACHABLE for every registered gate, because the registry and the ledger are disjoint -- proved to bite by injection, and the payload says it is unreachable rather than leaving a guard nobody has watched work.",
+       "two_rows_never_one": "BEFORE says verdict PENDING and evidence_class pending, which are the SCHEMA'S OWN WORDS for 'registered but not run'. AFTER requires a RUN TOKEN minted inside run() while a process was actually running, spent once, unreachable from a request. Refused with nothing, with an empty observation, with a verdict handed over directly, with a hand-typed exit code, and with a forged token. The runner's law is now a pure exported function so it can be tested WITHOUT manufacturing a fake run -- which is what forced the first version to accept fake runs in the first place.",
+       "the_finding": "TWENTY-FIVE REGISTERED GATES, ZERO ROWS IN THE CANONICAL LEDGER, recomputed independently inside the gate rather than accepted from the module. The intersection is EMPTY -- checked by substring against every ledger name, so it is not a naming variant. Twenty of them PASS every runner run. production/schemas/gate_row.schema.json says in its own description: 'Every gate the project claims to have passed, partially passed, failed, withheld, or has open MUST be represented here, keyed to a real receipt on disk.' None is. The runner asserts its registry is COMPLETE -- against the FILESYSTEM, which is a different question, and nobody had asked the second one.",
+       "why_it_has_stayed_that_way": "Writing evidence/gates.ndjson is S4. An agent cannot author these rows and should not. The desk's entire job is to show the exact line and stop -- which is why it is the right tool for a gap only the operator can close.",
+       "the_run_under_way": "Press R and the gate ACTUALLY RUNS -- in a throwaway git worktree at HEAD, removed afterwards, output streaming line by line, one at a time, with a timeout. Two reasons and the second is the better one: it cannot touch the working tree (MEASURED -- git status --porcelain byte-identical before and after, and the worktree count unchanged), AND IT ANSWERS 'RUNNING, BUT NOT THE COMMITTED BYTES', which a run in your own tree cannot.",
+       "and_it_found_four_leaked_worktrees": "The first time the working-tree check measured instead of regexing, it found FOUR git worktrees left behind by earlier steps of Phase 9 -- all clean, all mine, all removed. The check now measures the DELTA across its own runs so a stray left by something else cannot be laundered into L5's verdict, and reports the pre-existing count out loud either way.",
+       "the_one_post": "The lab was GET-ONLY BY OMISSION through L4 and its refusal said 'there is no other branch'. That stopped being true, so THE SENTENCE CHANGED rather than the branch being disguised as a GET. L0's gate caught it and went RED -- an older gate refusing a newer build is the system working. L0 is amended in place, and while in there a second L0 check was found to be a FALSE GREEN: 'L0 reads no real state' scanned the whole server file and passed only because L3/L4/L5's reading lives one require away. Narrowed to L0's own route.",
+       "proved": "20/20, every behavioural claim measured rather than regexed.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L5_green_2026-07-28.txt",
+       "audit_incomplete": "THREE OF THE 29 AUDIT AGENTS DIED ON API ERRORS (one attacker, two refuters). This is therefore NOT a clean bill of health -- it is 22 confirmed defects from a pass that did not finish. The remaining coverage is unknown and is recorded as unknown.",
+       "closing_the_gap": "Authoring rows in evidence/gates.ndjson for the gates that pass. That is S4 -- the operator's, not an agent's. The desk prints each line ready to be read and appended by him."
+      },
+      {
+       "id": "L6",
+       "title": "THE GAUNTLET, THEN THE CO-SIGN",
+       "shows": "/organic-operator, default HOLD",
+       "status": "DONE",
+       "status_note": "ADDED 2026-07-28. L6 was the ONLY object in this plan carrying an id and a title and NO status key. Absent is not PLANNED: a consumer testing `build.status == \"PLANNED\"` got undefined, which is the most likely live rendering fault on the TRACK surface.",
+       "receipt": "docs/receipts/control-plane/phase9_4.6_L6_green_2026-07-28.txt",
+       "built": "http://127.0.0.1:8103/lab/l6 -- viewer/lab/gauntlet.cjs + l6.html. THE WHOLE LAB IN ONE WALK: six pillars, L0 through L5, each lit when its gate runs green in sequence (the gauntlet runs in a background child streaming progress, so the stations light one by one). And a THRESHOLD that reads HOLD.",
+       "the_gauntlet": "Every lab gate, run as one lab: L0 10/10, L1 8/8, L2 (verify_shot) 3/3, L3 9/9, L4 13/13, L5 26/26 -- 6/6 green, none killed. This is 'welcome everyone into the lab': the surface is complete and it holds end to end. The gauntlet REPORTS a failure rather than being wired green -- proved by pointing it at ip-fence (RED by acceptance) and watching all_green go false.",
+       "the_cosign": "DEFAULTS TO HOLD, and NOTHING IN THE REPOSITORY CAN LIFT IT. Read from F31: all seven paths to air refuse for want of a presence token, and minting one is S6 -- the operator's, because minting is opening. ADR-0008 is PROPOSED, not adopted (S5). F31 binds this codebase's paths, not the box: the OBS WebSocket on 127.0.0.1:4455 still has no auth (S2, his studio). The HOLD is COMPUTED from the refusals (feed the pure decision a path that would admit a human and it reads CLEAR), so it is a measurement, not a hardcoded word. The gauntlet touches guard.{mayGoLive, presence, CLAIM_LEVEL} -- all reads -- and can neither spend() nor go live: a surface that draws the co-sign must not be able to sign it.",
+       "the_cosign_review": "THE ORGANIC-OPERATOR HUMAN-FLOW CO-SIGN RAN, AND HELD -- default HOLD, earned FLY not given. It found the safety flyable (the co-sign genuinely cannot be lifted by anything but the human, which is the whole point) but the SURFACE not yet: L6 told the operator his move was 'two images, distinguishable with no text read' while the page showed NONE -- his one move was homework. CLOSED: L2's rasteriser now renders the golden fixture and its canonical material swap side by side on the co-sign panel, unlabelled, so Checkpoint E is one glance. Pending pillars are dashed (not confusable with a red FAIL), and the surface states it does not page a human who walks away. The HOLD it names stays the operator's to lift.",
+       "proved": "9/9. The gauntlet runs every build and all six are green · it reports a failure when pointed at a red gate · L2 is named as verify_shot rather than looking like a gap · the co-sign defaults to HOLD with all seven paths refused · the HOLD is COMPUTED not hardcoded · it names S6/S5/S2 and Checkpoint E · the module cannot go live or write · the page presents HOLD with no path to air · and CHECKPOINT E IS DELIVERABLE -- the two images are on the surface and they differ."
+      }
+     ],
+     "scoped_2026_07_27": "SCOPED 2026-07-27, and BUILT 2026-07-27/28 -- L0 through L5. This field said 'SCOPED, NOT STARTED' until 2026-07-28, unrevised across six build commits.",
+     "what_already_exists": "THE MODEL IS BUILT AND THE RENDERER IS NOT. SP.ControlPlane.Scene already carries everything the render contract needs: truth_classes, evidence_classes, the five materials, material/1, fogged/1, enterable?/1, authorable?/1, actions/1, desks/1, entrances/1, liveness/1 and probed/1 -- 23 public functions. Phase 7 built the state and never built the thing that draws it. So 4.6 is not a design problem; it is a rendering problem with a finished model behind it.",
+     "the_constraint_that_shapes_it": "CPU-ONLY. CLAUDE.md forbids WebGL, WebGPU and Three.js in the released product, so 'a room he can walk around' is 2D canvas, and ADR-PROD-005 already rules graphics/overlays to 2dcanvas. That is a real constraint on L0's shape and it is named now rather than discovered halfway in.",
+     "also_pending_underneath": "F24 to F27 -- the four RENDERING refusals (fog for a node lacking truth_class or receipt_ref; fog and no authoring where evidence is absent; no liveness that did not come from a real probe; render the behaviour a gate demonstrates and never awareness) -- remain DESIGN, and step 3.4 deliberately left them that way. They are what L1 and L2 make executable. A renderer built without them would draw a prettier version of the same unfalsifiable claim.",
+     "why_not_started_here": "SUPERSEDED. This said 'I stopped rather than start it', written when 4.6 was scoped. Six builds shipped afterwards and the sentence stayed. Left in place, corrected rather than deleted, because a plan that quietly rewrites its own history is worth less than one that shows where it was wrong.",
+     "recommended_next_act": "CHECKPOINT E -- the operators. Everything buildable is built and green; the last move is his eye on two images, and no gate can stand in for it.",
+     "next_build": "NONE remaining to build. THE NEXT ACT IS THE OPERATORS: CHECKPOINT E at http://127.0.0.1:8103/lab/l6 -- two images side by side, distinguishable with NO TEXT READ, and if so for a reason that is the MATERIAL (truth_class). That is the falsifier and it is M8, the operators eye. The co-sign HOLDS until he gives it.",
+     "awaiting_operator": "Checkpoint E (M8). The lab is built and walkable; the last move is his.",
+     "builds_complete": "L0 through L6 are DONE, each receipted and recorded in the Control Plane ledger. The lab has no build remaining."
+    }
+   ],
+   "remaining": "4.6 only, and within it BUILD L6 ONLY -- L0 through L5 are DONE. This read 'builds 0 through 6', which is true of the step's scope and reads as though none were built."
+  },
+  {
+   "id": "5",
+   "name": "THE DOCUMENTS",
+   "status": "PLANNED",
+   "why": "Last, always. Editing a document to match a broken world closes the only signal telling the truth.",
+   "checkpoint": {
+    "id": "F",
+    "status": "PLANNED",
+    "he_sees": "the docs, each naming the commit that made it true",
+    "he_does": "rules on CLAUDE.md:93-97 — a contract amendment, his alone"
+   },
+   "steps": [
+    {
+     "id": "5.1",
+     "title": "FAILURE-MODES.md final sweep",
+     "status": "PLANNED",
+     "p3": "M6",
+     "p4": "A3"
+    },
+    {
+     "id": "5.2",
+     "title": "README.md:3 and the phase table",
+     "status": "PLANNED",
+     "p3": "M6",
+     "p4": "A3"
+    },
+    {
+     "id": "5.3",
+     "title": "ARCHITECTURE.md:372-379 — THE DECLARED EXCEPTION",
+     "status": "PLANNED",
+     "p3": "M6",
+     "p4": "A3",
+     "detail": "It still claims the witness holds; false since 17:05Z. A document asserting a security property the code no longer has is corrected IMMEDIATELY, because that STRENGTHENS the signal. Correcting CLAUDE.md:93-97 to sanction current code would LAUNDER. The distinction is named in the receipt so the exception is not cited as precedent."
+    },
+    {
+     "id": "5.4",
+     "title": "RESUME.md; PHASE-7.md:79 by dated addendum",
+     "status": "PLANNED",
+     "p3": "M6",
+     "p4": "A3",
+     "falsifier": "a pre-registration edited after the fact is not a pre-registration"
+    },
+    {
+     "id": "5.5",
+     "title": "CLAUDE.md:93-97 — step 12 of 12, dead last",
+     "status": "OPERATOR",
+     "stop": "S5",
+     "p4": "A3"
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "name": "THE FINAL RUN",
+   "status": "PLANNED",
+   "why": "The whole stack, tested a bit at a time, in front of him.",
+   "checkpoint": {
+    "id": "AIR",
+    "status": "OPERATOR",
+    "he_sees": "the readiness report",
+    "he_does": "TYPES GO-LIVE HIMSELF. No agent path exists and none is built."
+   },
+   "steps": [
+    {
+     "id": "6.1",
+     "title": "full front-to-back replay from a CLEAN CLONE",
+     "status": "PLANNED",
+     "p3": "M2",
+     "p4": "A1",
+     "falsifier": "it works only because of an untracked file on this box"
+    },
+    {
+     "id": "6.2",
+     "title": "scripts/operator_verify.ps1 — one line per gate",
+     "status": "PLANNED",
+     "p3": "M2",
+     "p4": "A2",
+     "detail": "name | verdict | exit | receipt sha | reproduce command. He trusts none of it."
+    },
+    {
+     "id": "6.3",
+     "title": "the 24x7 readiness gate, separate from correctness",
+     "status": "PLANNED",
+     "p3": "M3",
+     "p4": "A1"
+    },
+    {
+     "id": "6.4",
+     "title": "go-live is typed by a human; the agent stops",
+     "status": "OPERATOR",
+     "stop": "S6"
+    },
+    {
+     "id": "6.5",
+     "title": "PHASE-10.md pre-registered",
+     "status": "PLANNED",
+     "p4": "A3"
+    }
+   ]
+  }
+ ],
+ "road_to_air": {
+  "track_record": "ONE go-live, 2026-07-18T22:20:49Z to 22:27:40Z. SIX MINUTES against a four-hour slot. That is the entire history.",
+  "run_sheet": "A 4-hour run is NOT underwritten. Attend it, or don't do it.",
+  "free_moves_today": [
+   {
+    "id": "A0",
+    "title": "hud-boot-persistent — run hud_native_boot_proof.ps1",
+    "status": "NEXT",
+    "detail": "All 5 clauses now measure true since the 07-24 power cycle. A FREE PASS sitting on the floor."
+   },
+   {
+    "id": "A1",
+    "title": "rehearse PANIC",
+    "status": "PLANNED",
+    "detail": "60 seconds, safe on STANDBY. Never done."
+   },
+   {
+    "id": "A2",
+    "title": "fire G-STOP once",
+    "status": "PLANNED",
+    "detail": "NEVER human-fired in the platform's life. A kill switch that has never been pulled is a decoration."
+   },
+   {
+    "id": "B1",
+    "title": "studio_up.ps1 — unblocks 4 of 6 plumbing surfaces with ONE KEY",
+    "status": "PLANNED"
+   }
+  ],
+  "gates": [
+   {
+    "id": "plumbing",
+    "blocked": true,
+    "reason": "publisher :8443 down, overlay_server :8099 down, obs-ws :4455 down, local MediaMTX :9997 down — 2 of 6 up, all four missing are on THIS box"
+   },
+   {
+    "id": "colony_on_program",
+    "blocked": true,
+    "reason": "forage-pureworld-graduation PENDING — and runs/pureworld_qa_gate.exs:41 RAISES @scaffold, so the runner body does not exist. Running the science gate is a BUILD, not a task."
+   },
+   {
+    "id": "relay-fanout-proven-offbox",
+    "blocked": true,
+    "reason": "NEW GATE REQUIRED. node2 :9997 is loopback-only, so 'TCP 1935 open' is not 'the tee runs'. Proof must come from node2's own vantage."
+   },
+   {
+    "id": "F31",
+    "blocked": true,
+    "reason": "no code, no test. The CONFIRM check is a string comparison and guards 1 of >=5 paths to air."
+   }
+  ],
+  "colony_ruling": {
+   "status": "OPERATOR",
+   "note": "Silence must not pick this.",
+   "route_1": "Close the science. Build the missing seed sweep (N>=8) + aggregation + receipt. ~64 colony-hours on the same box that runs the broadcast — cannot overlap a soak or a show. nursery-fenced-red-stocked is FAIL, so the trained graduate may not pass: FAIL must be a pre-registered outcome.",
+   "route_2": "Narrow the fence on the record. The fence binds the CLAIM, not the CAMERA. Legitimate only as a recorded Command entry with the operator as granted_by and its own falsifier. The gate row stays PENDING."
+  },
+  "near_24x7_definition": ">=20 of any 24 consecutive hours on public air, <=4 unattended-recovery events, no single gap exceeding 120s, every gap annunciated to the operator within 60s. Bounded to one box by construction so it never has to lie about single-node SPOF.",
+  "soak_ladder": [
+   {
+    "id": "S0",
+    "gate": "studio-soak-30m-keyless",
+    "dur": "30m",
+    "egress": "local MediaMTX only",
+    "attend": "attended",
+    "status": "PLANNED"
+   },
+   {
+    "id": "S1",
+    "gate": "studio-soak-4h-keyless",
+    "dur": "4h",
+    "egress": "local only",
+    "attend": "attended",
+    "status": "PLANNED",
+    "note": "THE FIRST HONEST SUSTAINED-RUN CLAIM. Needs a collector, not a session, and five named falsifiers including F-S1e: the collector itself dies."
+   },
+   {
+    "id": "S2",
+    "gate": "studio-soak-4h-private",
+    "dur": "4h",
+    "egress": "private unlisted",
+    "attend": "attended",
+    "status": "PLANNED"
+   },
+   {
+    "id": "S3",
+    "gate": "studio-soak-12h-private",
+    "dur": "12h",
+    "egress": "private unlisted",
+    "attend": "first hour attended",
+    "status": "PLANNED"
+   },
+   {
+    "id": "S4",
+    "gate": "studio-soak-24h-private",
+    "dur": "24h",
+    "egress": "private unlisted",
+    "attend": "reachable",
+    "status": "PLANNED"
+   },
+   {
+    "id": "S5",
+    "gate": "studio-near24x7-7d",
+    "dur": "7d",
+    "egress": "public",
+    "attend": "on-call",
+    "status": "PLANNED",
+    "note": "May not be claimed while single-node SPOF stands."
+   }
+  ]
+ },
+ "stops": [
+  {
+   "id": "S1",
+   "what": "the writer's key on node2",
+   "why": "THE ONE REPAIR THE AGENT MUST NOT PERFORM. Using write access to erase the evidence of write access is not restoring a witness; it is destroying the last proof."
+  },
+  {
+   "id": "S2",
+   "what": "any write to a host"
+  },
+  {
+   "id": "S3",
+   "what": "any write to a frozen artifact",
+   "why": "a correction is a new sidecar with a new hash"
+  },
+  {
+   "id": "S4",
+   "what": "any write to evidence/gates.ndjson"
+  },
+  {
+   "id": "S5",
+   "what": "any contract amendment"
+  },
+  {
+   "id": "S6",
+   "what": "go-live, in any form"
+  },
+  {
+   "id": "S7",
+   "what": "proof 3 disagrees with proof 1",
+   "why": "speak it, stop; the agent does not pick a winner alone"
+  },
+  {
+   "id": "S8",
+   "what": "a pre-registered falsifier fires",
+   "why": "that is a RESULT, not an obstacle"
+  },
+  {
+   "id": "S9",
+   "what": "a receipt cannot be reproduced from its own commit"
+  },
+  {
+   "id": "S10",
+   "what": "running any of the nine PENDING science gates",
+   "the_count_cannot_be_enforced": "THE NUMBER IN THIS RULE MATCHES NOTHING MEASURABLE, and this file diagnoses that at stage 4 step 4.6 build L4 while leaving the number standing here. Measured 2026-07-28: the scaffolded set is EIGHT, gates PENDING NOW are TWELVE, gates EVER PENDING are FIFTY-NINE. S10 says NINE and names no members, so nothing can mechanically enforce it -- a guard cannot check a list it was never given. The lab's sealed room therefore holds EVERY pending gate, which over-seals rather than under-seals, and says so. NAMING THE NINE IS THE OPERATOR'S; the rule stands unchanged until he does, and the contradiction is marked rather than resolved by an agent."
+  }
+ ],
+ "not_mine": [
+  "the writer's key on node2 — and with it item 7.7",
+  "the router's [redacted: client-identifier] search suffix",
+  "whether music.uni-lab.local is a real service",
+  "the colony ruling (Route 1 or Route 2)",
+  "CLAUDE.md:93-97",
+  "go-live",
+  "ADR-0009 — the Gaia / control-plane reconciliation: the control plane authors, Gaia is the one authoritative projection (ruled aloud 2026-08-01; adoption is S5 and needs a recorded row)",
+  "ADR-0008 — human presence for go-live: adopt, amend, or reject (S5; until ruled, mayGoLive refuses every path and that is the correct resting state)",
+  "ADR-0010 — room state is contamination, room purpose is function: add a Room.purpose field that gates nothing, rather than a fourth room state",
+  "declare a BagIt pack DISTRIBUTABLE — building a bag is agent work; declaring it fit to leave the box is the same class as the public push"
+ ]
+}

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI — all the tools, by name</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#121821;--edge:#1f2937;--ink:#e5eef7;--dim:#8296ab;--acc:#3fd2ff;
+        --ok:#2ecc71;--warn:#f1b40f;--live:#e5484d;--gold:#f9e2af;--nv:#6b7686}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,sans-serif;padding:20px;max-width:1180px;margin:0 auto}
+  h1{font-size:23px;letter-spacing:.03em}
+  h1 .u{color:var(--acc)}
+  .sub{color:var(--dim);font-size:13px;margin:3px 0 6px}
+  .zone{color:var(--gold);font-size:12px;margin-bottom:16px;font-family:"Cascadia Code",Consolas,monospace}
+  h3{font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin:20px 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  a.card{display:block;background:#0e141c;border:1px solid var(--edge);border-radius:11px;padding:13px 14px;text-decoration:none;color:var(--ink);border-left-width:4px;border-left-color:var(--edge);transition:border-color .12s}
+  a.card:hover{border-color:var(--acc);border-left-color:var(--acc)}
+  a.card.up{border-left-color:var(--ok)} a.card.down{border-left-color:var(--live)} a.card.nv{border-left-color:var(--nv)}
+  .card .t{font-weight:700;display:flex;align-items:center;gap:8px}
+  .card .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--nv)}
+  .card .dot.up{background:var(--ok)} .card .dot.down{background:var(--live)} .card .dot.nv{background:var(--nv)}
+  .card .name{color:var(--acc);font-size:12px;font-family:"Cascadia Code",Consolas,monospace;margin-top:4px;word-break:break-all}
+  .card .what{color:var(--dim);font-size:12px;margin-top:4px}
+  .card .badge{margin-left:auto;font-size:10px;letter-spacing:.08em;color:var(--dim);border:1px solid var(--edge);border-radius:999px;padding:1px 7px}
+  .hero{background:#0f2318;border:1px solid var(--ok);border-radius:12px;padding:16px;margin-bottom:8px}
+  .hero h3{color:var(--ok)}
+  .hero .grid a.card{background:#12301f;border-color:#1c5236;border-left-color:#1c5236}
+  .hero .grid a.card:hover{border-color:var(--ok);border-left-color:var(--ok)}
+  .note{color:var(--dim);font-size:12px;margin-top:6px}
+  .info{background:#0e141c;border:1px solid var(--edge);border-radius:11px;padding:13px 14px;border-left:4px solid var(--edge)}
+  .info .t{font-weight:700} .info .name{color:var(--gold);font-size:12px;font-family:"Cascadia Code",Consolas,monospace;margin-top:4px;word-break:break-all}
+  .info .what{color:var(--dim);font-size:12px;margin-top:4px}
+  .foot{color:var(--nv);font-size:11px;margin-top:22px;line-height:1.6}
+  .foot code{color:var(--dim)}
+  #err{color:var(--warn);font-size:12px;margin:8px 0}
+</style>
+</head>
+<body>
+<h1><span class="u">UNI</span> — all the tools, by name</h1>
+<div class="sub">Every surface, reachable by its <b>name</b> on the lab DNS &mdash; <b>except the three loopback ones, which say so on their card</b>. TRACK, Answer&nbsp;a&nbsp;question and the lab have no lab-DNS name yet; they run on this box only. Click a card to open it.</div>
+<div class="zone" id="zone">zone: uni-lab.local &middot; served by launcher.uni-lab.local</div>
+<div id="err"></div>
+
+<!-- OPERATOR SURFACES — the things you run the show from -->
+<div class="hero">
+  <h3>Run the show</h3>
+  <div class="grid">
+    <a class="card up" href="http://launcher.uni-lab.local:8090/infra">
+      <div class="t"><span class="dot up"></span>Run of show</div>
+      <div class="name">launcher.uni-lab.local:8090/infra</div>
+      <div class="what">Rundown &middot; teleprompter &middot; gate ladder &middot; fleet &middot; pre-flight checklist</div>
+    </a>
+    <a class="card up" href="http://studio.uni-lab.local:8098">
+      <div class="t"><span class="dot up"></span>Command center</div>
+      <div class="name">studio.uni-lab.local:8098</div>
+      <div class="what">The mixer console: template grid, TAKE, cameras, music bed, go-live</div>
+    </a>
+    <a class="card up" href="http://colony.uni-lab.local:4000/stream">
+      <div class="t"><span class="dot up"></span>Producer feed (health cards)</div>
+      <div class="name">colony.uni-lab.local:4000/stream</div>
+      <div class="what">The live UNI health cards, per-agent action + mood, narration ticker</div>
+    </a>
+    <a class="card up" href="http://launcher.uni-lab.local:8090/firstrun">
+      <div class="t"><span class="dot up"></span>First-run room</div>
+      <div class="name">launcher.uni-lab.local:8090/firstrun</div>
+      <div class="what">The room before the room &mdash; ladders, honesty card, desk sheet</div>
+    </a>
+    <a class="card" href="https://glass.uni-lab.local/glass/">
+      <div class="t"><span class="dot"></span>Glass cockpit</div>
+      <div class="name">glass.uni-lab.local/glass/</div>
+      <div class="what">The UNI-OS glass cockpit (self-signed cert &mdash; accept once)</div>
+    </a>
+    <a class="card up" href="http://launcher.uni-lab.local:8090/">
+      <div class="t"><span class="dot up"></span>Mission control</div>
+      <div class="name">launcher.uni-lab.local:8090</div>
+      <div class="what">Bring the whole studio up / down &middot; real health tiles</div>
+    </a>
+    <!--
+      THE THREE BELOW ARE THE EXCEPTION TO THIS PAGE'S OWN RULE, AND THEY SAY SO ON THEIR FACE.
+      The subtitle above promises "every surface, reachable by its NAME on the lab DNS. No IP
+      addresses." TRACK and the lab have NO lab-DNS name — measured 2026-07-31, `track.uni-lab`,
+      `lab.uni-lab` and `decide.uni-lab` appear nowhere in the tree, while launcher, studio, colony
+      and glass all do. They are loopback-only surfaces on this box.
+
+      There WAS already a violation here: a bare 127.0.0.1:8102 anchor bolted in ABOVE the <h1>,
+      outside the layout, contradicting the sentence one line beneath it and explaining nothing. It
+      is removed. Declaring the exception on the card is honest; hiding it above the title was not.
+
+      When these two get names, the hrefs change and this comment goes with them.
+    -->
+    <a class="card up" href="http://127.0.0.1:8102/">
+      <div class="t"><span class="dot up"></span>UNI TRACK</div>
+      <div class="name">127.0.0.1:8102 &mdash; loopback only, no lab-DNS name yet</div>
+      <div class="what">Where the work came from, where it is, where it is going &mdash; the plan rendered live from the real artifacts</div>
+    </a>
+    <a class="card up" href="http://127.0.0.1:8102/decide">
+      <div class="t"><span class="dot up"></span>Answer a question</div>
+      <div class="name">127.0.0.1:8102/decide &mdash; loopback only</div>
+      <div class="what">RECORD a decision the plan is waiting on. It records; it never acts &mdash; the only surface where the answer is yours and not an agent's</div>
+    </a>
+    <a class="card up" href="http://127.0.0.1:8103/">
+      <div class="t"><span class="dot up"></span>The lab</div>
+      <div class="name">127.0.0.1:8103 &mdash; loopback only, no lab-DNS name yet</div>
+      <div class="what">L0&ndash;L6 &mdash; the instruments, the desk that prints each ledger line, and Checkpoint E</div>
+    </a>
+  </div>
+  <div class="note"><b>Music bed:</b> control it from the Command center (the "Music bed" slider &mdash; on/off + volume, live). The album loops under every scene.</div>
+</div>
+
+<!-- LIVE SERVICE MAP — rendered from /api/infra, grouped by box, DNS names + live status -->
+<div id="boxes"></div>
+
+<div class="foot" id="foot">
+  Loading live status from <code>/api/infra</code>&hellip;
+</div>
+
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+// Which protocols open in a browser; others are shown as a copyable address (not a dead link).
+const CLICKABLE = { http: (n,p,path) => `http://${n}:${p}${path||""}`, https: (n,p,path) => `https://${n}${p===443?"":":"+p}${path||""}` };
+// Known useful paths per service name (so a card lands somewhere real, not a bare root that 404s).
+const PATHS = { colony: "/stream", glass: "/glass/", launcher: "/", masterplan: "/", studio: "/", cams: "/" };
+const BOX_TITLE = { "uni-lab": "The chip (UNI-LAB) — colony + appliance", "thinker": "THINKER — the portable studio", "node2": "node2 — the fan-out relay" };
+const BOX_ORDER = ["thinker", "uni-lab", "node2"];
+
+function dotClass(state){ return state === "fresh" ? "up" : state === "unreachable" ? "down" : "nv"; }
+
+async function load(){
+  let snap;
+  try {
+    const r = await fetch("/api/infra", { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    snap = await r.json();
+  } catch (e) {
+    $("#err").textContent = "Could not load live status (" + e.message + "). The names below are still correct; open them directly.";
+    snap = null;
+  }
+  const snapR = (snap && snap.result) ? snap.result : snap;
+  const names = (snapR && snapR.names) || [];
+  const health = (snapR && snapR.health) || [];
+  const zone = (snapR && snapR.zone) || "uni-lab.local";
+  // health rows key by SHORT name ("colony"); names use FULL ("colony.uni-lab.local"). Key by short.
+  const stateByName = {};
+  for (const h of health) stateByName[h.name] = h.state;
+  const zoneSuffix = "." + ((snapR && snapR.zone) || "uni-lab.local");
+
+  // If /api/infra failed, fall back to a static name list so the page is never empty.
+  const list = names.length ? names : STATIC_NAMES;
+
+  const byBox = {};
+  for (const s of list) { (byBox[s.box] = byBox[s.box] || []).push(s); }
+
+  let html = "";
+  const boxes = BOX_ORDER.filter((b) => byBox[b]).concat(Object.keys(byBox).filter((b) => !BOX_ORDER.includes(b)));
+  for (const box of boxes){
+    html += `<h3>${BOX_TITLE[box] || box}</h3><div class="grid">`;
+    for (const s of byBox[box]){
+      const short = s.name.replace(zoneSuffix, "");
+      const state = stateByName[short] || (s.nv ? "not_verified" : "");
+      const proto = s.proto || "";
+      const path = PATHS[short] || "";
+      const builder = CLICKABLE[proto];
+      if (builder){
+        const href = builder(s.name, s.port, path);
+        const disp = href.replace(/^https?:\/\//, "");
+        html += `<a class="card ${dotClass(state)}" href="${href}">
+          <div class="t"><span class="dot ${dotClass(state)}"></span>${short}${s.nv?'<span class="badge">NV</span>':''}</div>
+          <div class="name">${disp}</div>
+          <div class="what">${s.what || ""}</div></a>`;
+      } else {
+        // ws / rtmp / tcp / udp — not a browser link; show the address to copy.
+        const addr = `${s.name}:${s.port} (${proto})`;
+        html += `<div class="info">
+          <div class="t"><span class="dot ${dotClass(state)}"></span>${short}${s.nv?'<span class="badge">NV</span>':''}</div>
+          <div class="name">${addr}</div>
+          <div class="what">${s.what || ""}</div></div>`;
+      }
+    }
+    html += `</div>`;
+  }
+  $("#boxes").innerHTML = html;
+  $("#zone").innerHTML = "zone: " + zone + " &middot; served by launcher.uni-lab.local";
+  const up = health.filter((h) => h.state === "fresh").length;
+  $("#foot").innerHTML = health.length
+    ? `${up} of ${health.length} probed surfaces reachable right now &middot; live status refreshes every 5s &middot; a grey dot = name is correct but not live-probed. ` +
+      `Green dot = reachable, red = down. Every link above is a DNS name, never an IP.`
+    : `Names shown from the static registry (live probe unavailable). Every link is a DNS name, never an IP.`;
+}
+
+// Minimal static fallback so the page is never blank if /api/infra is down.
+const STATIC_NAMES = [
+  { name:"studio.uni-lab.local", box:"thinker", port:8098, proto:"http", what:"command center console" },
+  { name:"launcher.uni-lab.local", box:"thinker", port:8090, proto:"http", what:"Mission Control + /infra" },
+  { name:"colony.uni-lab.local", box:"uni-lab", port:4000, proto:"http", what:"Phoenix/SP.Producer FEP brain" },
+  { name:"glass.uni-lab.local", box:"uni-lab", port:443, proto:"https", what:"glass cockpit" },
+  { name:"masterplan.uni-lab.local", box:"uni-lab", port:4100, proto:"http", what:"master plan" },
+  { name:"relay.uni-lab.local", box:"node2", port:1935, proto:"rtmp", what:"fan-out relay to YouTube+Twitch" }
+];
+
+load();
+setInterval(load, 5000);
+</script>
+</body>
+</html>

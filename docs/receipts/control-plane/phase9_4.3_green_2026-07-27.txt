@@ -1,0 +1,5 @@
+PHASE 9 STEP 4.3 - Phase 8 items 8.1-8.4. GREEN RECEIPT, 2026-07-27.
+
+$ python -m pytest tests/motor_stack_aif/test_phase8_silent_collapses.py -q
+...............                                                          [100%]
+15 passed in 8.25s

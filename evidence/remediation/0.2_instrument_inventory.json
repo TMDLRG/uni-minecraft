@@ -1,0 +1,94 @@
+{
+ "schema": "uni.remediation.prefix_census.instruments.v1",
+ "captured_at": "2026-07-26T19:17:35.021Z",
+ "method": "Each gate spawned directly with stdout captured to a buffer. NEVER piped — piping is how I produced a false 'exits 0' report about verify_host_tracking.cjs by reading tail's status.",
+ "invoked": [
+  {
+   "id": "gaia",
+   "file": "viewer/gaia/verify_gaia.cjs",
+   "file_sha256": "ce5e5c7744fb0aac042f789fec91de0968632da02cec5576fb3eb6ce589b7b0d",
+   "present": true,
+   "exit_code": 0,
+   "verdict_line": "GAIA GATE: PASS — 12 check(s) PASS, 0 SKIP (not-yet-built/pre-DD), 0 FAIL.",
+   "verdict_is_pass": true,
+   "exit_carries_verdict": true,
+   "timed_out": null
+  },
+  {
+   "id": "gaia_lint",
+   "file": "viewer/gaia/gaia_lint.cjs",
+   "file_sha256": "3cb8cf856f453143ba53df9447a120288adc4af3a31b5ff56af5e16045c6775e",
+   "present": true,
+   "exit_code": 0,
+   "verdict_line": "RESULT: PASS — 0 violations",
+   "verdict_is_pass": true,
+   "exit_carries_verdict": true,
+   "timed_out": null
+  },
+  {
+   "id": "lint_bites",
+   "file": "viewer/gaia/verify_lint_bites.cjs",
+   "file_sha256": "08d98a97ad3cb7f1549ec6d47767054dbfdc1e825e000d165c53a1ab3a03e19c",
+   "present": true,
+   "exit_code": 0,
+   "verdict_line": "RESULT: PASS — the lint refuses a summarizing seat on every check it should.",
+   "verdict_is_pass": true,
+   "exit_carries_verdict": true,
+   "timed_out": null
+  },
+  {
+   "id": "schema_pointers",
+   "file": "viewer/verify_schema_pointers.cjs",
+   "file_sha256": "92f3d51ea69f82b16501dd087189c471736973802012614e50b29c29b183b0c4",
+   "present": true,
+   "exit_code": 0,
+   "verdict_line": "RESULT: PASS — all 152 cited schema paths resolve on disk.",
+   "verdict_is_pass": true,
+   "exit_carries_verdict": true,
+   "timed_out": null
+  },
+  {
+   "id": "host_tracking",
+   "file": "viewer/verify_host_tracking.cjs",
+   "file_sha256": "74cc7eacc0bc5a5208b08e8765848a6a2fbff28cfdf8f5391343b447f0ab1b06",
+   "present": true,
+   "exit_code": 1,
+   "verdict_line": "HOST-TRACKING GATE: FAIL — 6 check(s) PASS, 1 FAIL.",
+   "verdict_is_pass": false,
+   "exit_carries_verdict": true,
+   "timed_out": null
+  }
+ ],
+ "measured_but_not_invoked": [
+  {
+   "id": "witness_probe",
+   "file": "viewer/gaia/witness_probe.cjs",
+   "why": "writes viewer/gaia/witness.json — running it overwrites the capture Stage 0 is freezing",
+   "file_sha256": "25fc5ebe7a6fb0d308cb11f2a7eae8b7ddba83fb5ed610b83f521860a1aac4b4"
+  },
+  {
+   "id": "render_gates",
+   "file": "viewer/render_gates.cjs",
+   "why": "writes docs/GATES.md",
+   "file_sha256": "0c2f488d6a0bddd537dac83141cebd4e95efaa22cc0fd431fdc43a0b1b5f7874"
+  },
+  {
+   "id": "replica_ledger_probe",
+   "file": "viewer/gaia/replica_ledger_probe.cjs",
+   "why": "sshes to the chip — S2, a write to a host",
+   "file_sha256": "0b6a8a6ee3928bacd2dd4e0d949054d828897caba962fb2d3cb3486d98853879"
+  },
+  {
+   "id": "verify_overlays",
+   "file": "viewer/verify_overlays.cjs",
+   "why": "requires :8099, which is down; would report BLOCKED not PASS",
+   "file_sha256": "8cbe2e204e8f0c6f51fff9217b311cfd45b3dde17167bb07da8c7c528c9720e5"
+  },
+  {
+   "id": "verify_colony",
+   "file": "viewer/verify_colony.cjs",
+   "why": "LAN-dependent",
+   "file_sha256": "cfba4df0aed924755af7040d3d73d3ec5fdeb49a8ed70fbb3449bf3870c109d0"
+  }
+ ]
+}

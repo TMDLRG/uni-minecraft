@@ -1,0 +1,608 @@
+Running ExUnit with seed: 787214, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test ADVERSE — tail truncation is NOT detected by verify/1, and this is stated rather than papered over (SP.ControlPlane.LedgerChainTamperTest)
+     test/sp/control_plane/ledger_chain_tamper_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: full = chain(4)
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_chain_tamper_test.exs:41: SP.ControlPlane.LedgerChainTamperTest.chain/1
+       test/sp/control_plane/ledger_chain_tamper_test.exs:73: (test)
+
+
+
+  2) test F7 — editing a past entry's content makes verify/1 fail (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:90
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: entries = Ledger.entries(chain())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:91: (test)
+
+
+
+  3) test F6 — GateRow exposes no in-place mutation path at all (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:55
+     ** (ArgumentError) could not load module SP.ControlPlane.GateRow due to reason :nofile
+     code: Code.ensure_loaded!(GateRow)
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/gate_row_supersedes_test.exs:56: (test)
+
+
+
+  4) test a chain built only through Command verifies (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:63
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: assert :ok = Ledger.verify(chain())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:64: (test)
+
+
+
+  5) test F8 — deleting an entry from the middle makes verify/1 fail (SP.ControlPlane.LedgerChainTamperTest)
+     test/sp/control_plane/ledger_chain_tamper_test.exs:43
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: entries = Ledger.entries(chain(4))
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_chain_tamper_test.exs:41: SP.ControlPlane.LedgerChainTamperTest.chain/1
+       test/sp/control_plane/ledger_chain_tamper_test.exs:44: (test)
+
+
+
+  6) test F9 — a non-contiguous seq makes verify/1 fail (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:111
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: chain()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:113: (test)
+
+
+
+  7) test an anchor that names the wrong head is refused even when the chain is internally sound (SP.ControlPlane.LedgerChainTamperTest)
+     test/sp/control_plane/ledger_chain_tamper_test.exs:92
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: full = chain(3)
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_chain_tamper_test.exs:41: SP.ControlPlane.LedgerChainTamperTest.chain/1
+       test/sp/control_plane/ledger_chain_tamper_test.exs:93: (test)
+
+
+
+  8) test F10 — the ledger module itself exposes no unguarded append (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:66
+     ** (ArgumentError) could not load module SP.ControlPlane.Ledger due to reason :nofile
+     code: Code.ensure_loaded!(Ledger)
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/command_is_only_writer_test.exs:67: (test)
+
+
+
+  9) test seq is contiguous from 1 and prev_hash links each entry to the one before it (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:67
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: entries = Ledger.entries(chain())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:68: (test)
+
+
+
+ 10) test F8 — deleting the first entry makes verify/1 fail (SP.ControlPlane.LedgerChainTamperTest)
+     test/sp/control_plane/ledger_chain_tamper_test.exs:51
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: entries = Ledger.entries(chain(3))
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_chain_tamper_test.exs:41: SP.ControlPlane.LedgerChainTamperTest.chain/1
+       test/sp/control_plane/ledger_chain_tamper_test.exs:52: (test)
+
+
+
+ 11) test a write through Command succeeds and lands one entry (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:38
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: assert {:ok, ledger} = Command.submit(Ledger.new(), valid_attrs())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:39: (test)
+
+
+
+ 12) test every entry carries the twelve fields the data spec requires (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:79
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: for e <- Ledger.entries(chain()) do
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:80: (test)
+
+
+
+ 13) test F8 — replacing an entry with a re-hashed forgery still fails, because the successor's prev_hash no longer resolves (SP.ControlPlane.LedgerChainTamperTest)
+     test/sp/control_plane/ledger_chain_tamper_test.exs:56
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: entries = Ledger.entries(chain(3))
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_chain_tamper_test.exs:41: SP.ControlPlane.LedgerChainTamperTest.chain/1
+       test/sp/control_plane/ledger_chain_tamper_test.exs:57: (test)
+
+
+
+ 14) test a command outside the vocabulary is refused (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:92
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: assert {:error, _} = Command.submit(Ledger.new(), %{valid_attrs() | command: :delete_gate})
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:93: (test)
+
+
+
+ 15) test hashing is content-addressed — the same content in a different key order hashes the same (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:126
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: [e1 | _] = Ledger.entries(chain())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:127: (test)
+
+
+
+ 16) test tail truncation IS detected by verify/2 against an out-of-chain anchor (SP.ControlPlane.LedgerChainTamperTest)
+     test/sp/control_plane/ledger_chain_tamper_test.exs:80
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: full = chain(4)
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_chain_tamper_test.exs:41: SP.ControlPlane.LedgerChainTamperTest.chain/1
+       test/sp/control_plane/ledger_chain_tamper_test.exs:81: (test)
+
+
+
+ 17) test F10 — appending without a writ is refused (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:44
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: for impostor <- [nil, :writ, %{}, %{command: :register_gate}, "writ", {:writ, 1}] do
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:46: anonymous fn/2 in SP.ControlPlane.CommandIsOnlyWriterTest."test F10 — appending without a writ is refused"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/command_is_only_writer_test.exs:45: (test)
+
+
+
+ 18) test F7 — editing a past entry's actor makes verify/1 fail (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:102
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: chain()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:104: (test)
+
+
+
+ 19) test F9 — reordering entries makes verify/1 fail (SP.ControlPlane.LedgerAppendOnlyTest)
+     test/sp/control_plane/ledger_append_only_test.exs:121
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: [e1, e2, e3] = Ledger.entries(chain())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/ledger_append_only_test.exs:22: SP.ControlPlane.LedgerAppendOnlyTest.chain/0
+       test/sp/control_plane/ledger_append_only_test.exs:122: (test)
+
+
+
+ 20) test a revision reuses the name and records the row it supersedes (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:20
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.supersede/2 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: GateRow.supersede(prior(), %{
+     stacktrace:
+       SP.ControlPlane.GateRow.supersede(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"}, %{"evidence_class" => "C", "last_updated" => "2026-07-26", "notes" => "Green after the seven red tests.", "verdict" => "PASS"})
+       test/sp/control_plane/gate_row_supersedes_test.exs:22: (test)
+
+
+
+ 21) test a revision that changes nothing is refused — a no-op is not a revision (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:73
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.supersede/2 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert {:error, _} = GateRow.supersede(prior(), %{})
+     stacktrace:
+       SP.ControlPlane.GateRow.supersede(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"}, %{})
+       test/sp/control_plane/gate_row_supersedes_test.exs:74: (test)
+
+
+
+ 22) test F6 — the superseded row's bytes do not change (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:35
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.encode/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: before_bytes = GateRow.encode(prior())
+     stacktrace:
+       SP.ControlPlane.GateRow.encode(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_supersedes_test.exs:36: (test)
+
+
+
+ 23) test F6 — appending a revision preserves the prior row verbatim in the ndjson (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:41
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.encode/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: prior_line = GateRow.encode(p)
+     stacktrace:
+       SP.ControlPlane.GateRow.encode(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_supersedes_test.exs:43: (test)
+
+
+
+ 24) test encode/1 is canonical — key order does not depend on map iteration order (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:83
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.encode/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert GateRow.encode(shuffled) == GateRow.encode(p)
+     stacktrace:
+       SP.ControlPlane.GateRow.encode(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_supersedes_test.exs:86: (test)
+
+
+
+ 25) test supersedes accumulates across successive revisions rather than being overwritten (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.supersede/2 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: {:ok, r1} = GateRow.supersede(prior(), %{"verdict" => "PARTIAL", "evidence_class" => "C"})
+     stacktrace:
+       SP.ControlPlane.GateRow.supersede(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"}, %{"evidence_class" => "C", "verdict" => "PARTIAL"})
+       test/sp/control_plane/gate_row_supersedes_test.exs:65: (test)
+
+
+
+ 26) test a revision that would produce an invalid row is refused (SP.ControlPlane.GateRowSupersedesTest)
+     test/sp/control_plane/gate_row_supersedes_test.exs:78
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.supersede/2 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert {:error, errors} = GateRow.supersede(prior(), %{"verdict" => "MOSTLY_PASS"})
+     stacktrace:
+       SP.ControlPlane.GateRow.supersede(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"}, %{"verdict" => "MOSTLY_PASS"})
+       test/sp/control_plane/gate_row_supersedes_test.exs:79: (test)
+
+
+
+ 27) test F5 — a key outside the schema is refused (additionalProperties: false) (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:47
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert {:error, errors} = GateRow.validate(fixture("gate_row_extra_key.json"))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — score_percent is not in the schema and the schema sets additionalProperties:false. A percent is also forbidden vocabulary.", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "score_percent" => 93.5, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:48: (test)
+
+.
+
+ 28) test every verdict in the enum is accepted and nothing else is (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:57
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: for v <- ~w(PASS PARTIAL FAIL WITHHELD PENDING) do
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PASS"})
+       test/sp/control_plane/gate_row_schema_test.exs:61: anonymous fn/3 in SP.ControlPlane.GateRowSchemaTest."test every verdict in the enum is accepted and nothing else is"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/gate_row_schema_test.exs:60: (test)
+
+
+
+ 29) test every row already in the canonical ledger passes this validator (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:118
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: for {row, idx} <- Enum.with_index(rows, 1) do
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "B", "falsifies_condition" => "Any live run where the trained motor cannot close the reach-and-strike gap and the shuffled control matches or exceeds it.", "last_updated" => "2026-07-11", "name" => "motor-red", "notes" => "Behavioral K-of-6 tally over N-hour window RUNNING. Live ablation shuffle = the next run (B-B2 in the deepening plan).", "pass_condition" => "Offline: motor factors learn A/B; inner-loop convergence proven; shuffled control collapses 700x. LIVE: end-to-end mechanism PASS (UNI-9-2 bootstrapped wood -> planks -> sticks -> tools, RCON-confirmed).", "phase" => "Motor P4", "receipt_path" => "docs/MOTOR_RED_TEST.md", "schema_version" => 1, "verdict" => "PASS"})
+       test/sp/control_plane/gate_row_schema_test.exs:130: anonymous fn/2 in SP.ControlPlane.GateRowSchemaTest."test every row already in the canonical ledger passes this validator"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/gate_row_schema_test.exs:129: (test)
+
+
+
+ 30) test a well-formed row validates (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:37
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert :ok = GateRow.validate(fixture("gate_row_valid.json"))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:38: (test)
+
+
+
+ 31) test F5 — a verdict outside the enum is refused, and the refusal names the field (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:41
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert {:error, errors} = GateRow.validate(fixture("gate_row_bad_verdict.json"))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — the verdict is outside the enum on purpose. Accepting this row is the falsifier for F5.", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "MOSTLY_PASS"})
+       test/sp/control_plane/gate_row_schema_test.exs:42: (test)
+
+
+
+ 32) test schema_version is const 1 (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:81
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert {:error, errors} = GateRow.validate(Map.put(base, "schema_version", 2))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 2, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:83: (test)
+
+
+
+ 33) test F5 — a missing required key is refused, and the refusal names it (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:52
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert {:error, errors} = GateRow.validate(fixture("gate_row_missing_required.json"))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — receipt_path is absent. A row with no receipt is a claim with no evidence.", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:53: (test)
+
+
+
+ 34) test supersedes, when present, is a list of strings (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:109
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert :ok = GateRow.validate(Map.put(base, "supersedes", []))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "supersedes" => [], "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:112: (test)
+
+
+
+ 35) test last_updated must be a real ISO date (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:99
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: assert :ok = GateRow.validate(Map.put(base, "last_updated", "2026-02-28"))
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-02-28", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:102: (test)
+
+
+
+ 36) test every evidence class in the enum is accepted and nothing else is (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:69
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: for c <- ~w(A B C Sec pending) do
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "A", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "control-plane-ledger-appendable", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:73: anonymous fn/3 in SP.ControlPlane.GateRowSchemaTest."test every evidence class in the enum is accepted and nothing else is"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/gate_row_schema_test.exs:72: (test)
+
+
+
+ 37) test name must be kebab-case (SP.ControlPlane.GateRowSchemaTest)
+     test/sp/control_plane/gate_row_schema_test.exs:87
+     ** (UndefinedFunctionError) function SP.ControlPlane.GateRow.validate/1 is undefined (module SP.ControlPlane.GateRow is not available)
+     code: for good <- ~w(motor-red g-pa gaia-slice1-live a) do
+     stacktrace:
+       SP.ControlPlane.GateRow.validate(%{"evidence_class" => "pending", "falsifies_condition" => "verify/1 returns :ok after any past entry is edited, deleted, or re-sequenced.", "last_updated" => "2026-07-25", "name" => "motor-red", "notes" => "FIXTURE ONLY — never appended to evidence/gates.ndjson. Used by test/sp/control_plane/*.", "pass_condition" => "SP.ControlPlane.Ledger.verify/1 returns :ok over a chain built only through SP.ControlPlane.Command.", "phase" => "Control Plane Phase 2", "pre_registration_path" => "", "receipt_path" => "docs/GATES.md", "schema_version" => 1, "verdict" => "PENDING"})
+       test/sp/control_plane/gate_row_schema_test.exs:91: anonymous fn/3 in SP.ControlPlane.GateRowSchemaTest."test name must be kebab-case"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/gate_row_schema_test.exs:90: (test)
+
+
+
+ 38) test F23 — every cross-kind pairing is refused, in both directions (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:56
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: for ka <- kinds, kb <- kinds, ka != kb do
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", "x", :sha256)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:60: anonymous fn/3 in SP.ControlPlane.DriftLikeForLikeTest."test F23 — every cross-kind pairing is refused, in both directions"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/drift_like_for_like_test.exs:59: (test)
+
+
+
+ 39) test like-for-like, equal (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:27
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: a = obs("evidence/gates.ndjson", String.duplicate("a", 64), :sha256)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("evidence/gates.ndjson", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", :sha256)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:28: (test)
+
+.
+
+ 40) test an observation of an unknown kind cannot be built (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:75
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: assert {:error, {:unknown_kind, :vibes}} = Drift.observation("a", "x", :vibes)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", "x", :vibes)
+       test/sp/control_plane/drift_like_for_like_test.exs:76: (test)
+
+
+
+ 41) test an authorization missing kind or granted_by is refused (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:108
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: Command.submit(Ledger.new(), %{valid_attrs() | authorization: %{"ref" => "x"}})
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:110: (test)
+
+
+
+ 42) test like-for-like, unequal — and both sides are carried, never a bare boolean (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:35
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: a = obs("evidence/gates.ndjson", String.duplicate("a", 64), :sha256)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("evidence/gates.ndjson", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", :sha256)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:36: (test)
+
+
+
+ 43) test every entry records actor, role, utc, unix_ns, prior, transition, authorization, evidence, resulting, hash (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:76
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: {:ok, ledger} = Command.submit(Ledger.new(), valid_attrs())
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:77: (test)
+
+
+
+ 44) test F23 — a prose line may not be compared to a file listing, and the refusal is at construction (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:48
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: prose = obs("docs/GAIA.md#resolver", "The resolver is planned but not yet built.", :prose)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("docs/GAIA.md#resolver", "The resolver is planned but not yet built.", :prose)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:49: (test)
+
+
+
+ 45) test a command with no actor, no role, or no authorization is refused (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:97
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: for key <- [:actor, :role, :transition, :resulting, :authorization, :evidence] do
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:101: anonymous fn/2 in SP.ControlPlane.CommandIsOnlyWriterTest."test a command with no actor, no role, or no authorization is refused"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/command_is_only_writer_test.exs:98: (test)
+
+
+
+ 46) test the relation must be one of the four Gaia uses (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:85
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: a = obs("a", "x", :sha256)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", "x", :sha256)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:86: (test)
+
+
+
+ 47) test evidence entries must carry a path and a sha256 (SP.ControlPlane.CommandIsOnlyWriterTest)
+     test/sp/control_plane/command_is_only_writer_test.exs:116
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: assert {:error, _} = Command.submit(Ledger.new(), attrs)
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/command_is_only_writer_test.exs:118: (test)
+
+
+
+ 48) test F23 — identical raw bytes do not excuse a kind mismatch (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: a = obs("a", "192.168.1.1", :prose)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", "192.168.1.1", :prose)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:69: (test)
+
+
+
+ 49) test the four Gaia slice-1 drift pairings this type would have refused are named, not summarised (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:107
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: for {ka, kb} <- refused do
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", "x", :prose)
+       test/sp/control_plane/drift_like_for_like_test.exs:119: anonymous fn/2 in SP.ControlPlane.DriftLikeForLikeTest."test the four Gaia slice-1 drift pairings this type would have refused are named, not summarised"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/drift_like_for_like_test.exs:118: (test)
+
+
+
+ 50) test an observation with a non-binary raw or locator cannot be built (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:80
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: assert {:error, _} = Drift.observation("a", 42, :integer)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", 42, :integer)
+       test/sp/control_plane/drift_like_for_like_test.exs:81: (test)
+
+
+
+ 51) test a comparison result never reduces to a boolean — the shape always carries both sides (SP.ControlPlane.DriftLikeForLikeTest)
+     test/sp/control_plane/drift_like_for_like_test.exs:98
+     ** (UndefinedFunctionError) function SP.ControlPlane.Drift.observation/3 is undefined (module SP.ControlPlane.Drift is not available)
+     code: a = obs("a", "x", :sha256)
+     stacktrace:
+       SP.ControlPlane.Drift.observation("a", "x", :sha256)
+       test/sp/control_plane/drift_like_for_like_test.exs:23: SP.ControlPlane.DriftLikeForLikeTest.obs/3
+       test/sp/control_plane/drift_like_for_like_test.exs:99: (test)
+
+
+
+ 52) test F11 — no read changes the term it was given (SP.ControlPlane.ReadNeverActuatesTest)
+     test/sp/control_plane/read_never_actuates_test.exs:85
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: l = ledger()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/read_never_actuates_test.exs:23: SP.ControlPlane.ReadNeverActuatesTest.ledger/0
+       test/sp/control_plane/read_never_actuates_test.exs:86: (test)
+
+
+
+ 53) test F11 — no read spawns a process (SP.ControlPlane.ReadNeverActuatesTest)
+     test/sp/control_plane/read_never_actuates_test.exs:55
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: l = ledger()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/read_never_actuates_test.exs:23: SP.ControlPlane.ReadNeverActuatesTest.ledger/0
+       test/sp/control_plane/read_never_actuates_test.exs:56: (test)
+
+.
+
+ 54) test F11 — no read sends this process a message (SP.ControlPlane.ReadNeverActuatesTest)
+     test/sp/control_plane/read_never_actuates_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: l = ledger()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/read_never_actuates_test.exs:23: SP.ControlPlane.ReadNeverActuatesTest.ledger/0
+       test/sp/control_plane/read_never_actuates_test.exs:69: (test)
+
+
+
+ 55) test F11 — every read is pure: three calls, identical results (SP.ControlPlane.ReadNeverActuatesTest)
+     test/sp/control_plane/read_never_actuates_test.exs:74
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: l = ledger()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/read_never_actuates_test.exs:23: SP.ControlPlane.ReadNeverActuatesTest.ledger/0
+       test/sp/control_plane/read_never_actuates_test.exs:75: (test)
+
+
+
+ 56) test F11 — no read writes to disk, and the canonical gate ledger is byte-identical afterwards (SP.ControlPlane.ReadNeverActuatesTest)
+     test/sp/control_plane/read_never_actuates_test.exs:96
+     ** (UndefinedFunctionError) function SP.ControlPlane.Ledger.new/0 is undefined (module SP.ControlPlane.Ledger is not available)
+     code: l = ledger()
+     stacktrace:
+       SP.ControlPlane.Ledger.new()
+       test/sp/control_plane/read_never_actuates_test.exs:23: SP.ControlPlane.ReadNeverActuatesTest.ledger/0
+       test/sp/control_plane/read_never_actuates_test.exs:97: (test)
+
+
+Finished in 0.7 seconds (0.7s async, 0.00s sync)
+59 tests, 56 failures

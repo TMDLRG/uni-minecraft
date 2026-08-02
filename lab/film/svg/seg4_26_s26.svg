@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g25" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g25)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="360" text-anchor="middle" font-family="Georgia,serif" font-size="130" letter-spacing="14" fill="#e6edf3" font-weight="bold">TRAVELERS</text>
+  <rect x="660" y="420" width="600" height="3" fill="#89b4fa" opacity="0.55"/>
+  <text x="960" y="500" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="32" fill="#9aa7b4" letter-spacing="3">two yeses, two nos, two preserved</text>
+  <rect x="0" y="825" width="1920" height="255" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="825" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="887" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="38" fill="#e6edf3">People must see to learn, and learn to see. Three claims have had their hearings. The</text>
+  <text x="960" y="933" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="38" fill="#e6edf3">honest gift is just ahead.</text>
+  <rect x="800" y="947" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="995" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="34" fill="#cdd6f4">शिकण्यासाठी माणसाने पाहिले पाहिजे, आणि पाहण्यासाठी शिकले पाहिजे. तीन दाव्यांची</text>
+  <text x="960" y="1040" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="34" fill="#cdd6f4">सुनावणी झाली. प्रामाणिक भेट पुढेच आहे.</text>
+</svg>

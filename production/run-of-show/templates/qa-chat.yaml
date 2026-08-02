@@ -1,0 +1,142 @@
+# UNI Production Platform - run-of-show template: QA-CHAT (read audience chat + lower-thirds)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# Host (and optionally the UNI-expert Claude persona) reads audience questions from
+# chat and answers from the desk, surfacing each question as a lower-third "from the
+# chat" card. Audience questions are treated as untrusted input - no PII on screen,
+# CLAIMS_AND_FENCES lints every answer.
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck
+params:
+  language: en
+
+beats:
+  - id: qa-01-open
+    name: Q and A title open
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: title
+        payload:
+          visible: true
+          kicker: Q AND A
+          text: Your questions
+          subtitle: Live from the chat
+      - layer: nowPlaying
+        payload: { segment: Q and A, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.26, duck: false }
+    clip: null
+    notes: cut_to TITLE; set_overlay title; invite the audience to ask.
+
+  - id: qa-02-host-frame
+    name: Host opens the mailbag
+    scene: NEWSDESK
+    durationSec: 20
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: Q AND A
+          title: Reading the chat
+          subtitle: Questions answered honestly, fences on
+          tone: ok
+      - layer: ticker
+        payload:
+          - { text: "Ask in the chat - we read live - no personal info on screen", tone: ok }
+    narrate: null
+    music: { volume: 0.12, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; duck(on); host frames the segment live.
+
+  - id: qa-03-question-1
+    name: First question from the chat
+    scene: NEWSDESK
+    durationSec: 60
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: FROM THE CHAT
+          title: "Q: How is this different from the hype?"
+          subtitle: Answered with sources, not slogans
+          tone: ok
+    narrate: null
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: >
+      set_overlay(lowerThird,...) with the (sanitized) chat question; host answers live. The chat text is
+      untrusted - producer strips PII/links before it hits the lower-third. Answer is CLAIMS_AND_FENCES-linted.
+
+  - id: qa-04-question-2
+    name: Second question from the chat
+    scene: NEWSDESK
+    durationSec: 60
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: FROM THE CHAT
+          title: "Q: What can one operator actually run?"
+          subtitle: A one-person broadcast, by voice and text
+          tone: ok
+    narrate: null
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: Repeat the pattern - swap the lower-third per question. Producer cycles as many question beats as time allows.
+
+  - id: qa-05-uni-expert
+    name: UNI-expert take (Claude persona)
+    scene: NEWSDESK
+    durationSec: 45
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: UNI EXPERT
+          title: A grounded answer
+          subtitle: No AGI claims - UNI math stays private
+          tone: ok
+      - layer: caption
+        payload: { visible: true, lang: en, text: "" }
+    narrate:
+      text: A fair question - here is what the evidence supports, and here is exactly where it stops.
+      lang: en
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: >
+      Optional UNI-expert beat - narrate or live Claude-persona voice. Hard fences from CLAIMS_AND_FENCES.md
+      ("cache hit" not "memory", no "beats LLMs"). Live captions on.
+
+  - id: qa-06-out
+    name: Q and A out
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: caption
+        payload: { visible: false }
+      - layer: lowerThird
+        payload: { visible: false }
+      - layer: title
+        payload:
+          visible: true
+          kicker: Q AND A
+          text: Thanks for your questions
+          subtitle: Keep them coming
+    narrate: null
+    music: { volume: 0.26, duck: false }
+    clip: null
+    notes: cut_to TITLE; lift the music; hand off to the slot.

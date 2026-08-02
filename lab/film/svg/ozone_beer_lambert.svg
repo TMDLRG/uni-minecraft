@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c2433"/>
+      <stop offset="100%" stop-color="#0b0e14"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <text x="120" y="120" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="52" font-weight="bold" fill="#e6edf3">The sky's ultraviolet shield</text>
+  <text x="120" y="172" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="30" fill="#9aa7b4">Beer&#8211;Lambert law: I = I&#8320;&#183;e&#8315;&#7427;, &#964; = &#963;&#183;N. (Source: NASA Ozone Watch; Hodges 2019)</text>
+
+  <!-- incoming UV arrows -->
+  <g stroke="#cba6f7" stroke-width="4">
+    <line x1="300" y1="240" x2="360" y2="430"/><line x1="500" y1="240" x2="560" y2="430"/>
+    <line x1="700" y1="240" x2="760" y2="430"/><line x1="900" y1="240" x2="960" y2="430"/>
+    <line x1="1100" y1="240" x2="1160" y2="430"/><line x1="1300" y1="240" x2="1360" y2="430"/>
+  </g>
+  <text x="120" y="300" font-family="ui-sans-serif,sans-serif" font-size="30" fill="#cba6f7">UV-C from the Sun</text>
+
+  <!-- ozone layer band -->
+  <rect x="120" y="440" width="1680" height="120" rx="14" fill="#1e2a4a" stroke="#89b4fa" stroke-width="3"/>
+  <text x="960" y="492" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="34" fill="#89b4fa">OZONE COLUMN  ~300 Dobson Units  (8.07&#215;10&#185;&#8312; molecules/cm&#178;)</text>
+  <text x="960" y="535" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="28" fill="#cdd6f4">&#963; = 1.1&#215;10&#8315;&#185;&#8311; cm&#178;   &#8594;   optical depth &#964; &#8776; 88.8</text>
+
+  <!-- almost nothing through -->
+  <g stroke="#3b3450" stroke-width="2" stroke-dasharray="4 14">
+    <line x1="360" y1="560" x2="360" y2="760"/><line x1="960" y1="560" x2="960" y2="760"/><line x1="1360" y1="560" x2="1360" y2="760"/>
+  </g>
+  <text x="120" y="640" font-family="ui-sans-serif,sans-serif" font-size="30" fill="#6c7393">at the ground:</text>
+
+  <text x="960" y="700" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="40" fill="#a6e3a1">transmittance e&#8315;&#8312;&#8312;&#183;&#8312; &#8776; 3&#215;10&#8315;&#179;&#8313;</text>
+  <text x="960" y="752" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="30" fill="#9aa7b4">&#8212; less than one part in a trillion-trillion-trillion reaches the surface.</text>
+
+  <rect x="120" y="840" width="560" height="64" rx="10" fill="#1c2128" stroke="#3b82f6" stroke-width="2"/>
+  <text x="150" y="881" font-family="ui-sans-serif,sans-serif" font-size="30" fill="#3b82f6" font-weight="bold">SHIELD: SUPPORTED &#183; Class B</text>
+  <text x="120" y="960" font-family="ui-sans-serif,sans-serif" font-size="28" fill="#9aa7b4">But "shield" is not "life": ozone also forms abiotically on Venus and Mars. A shield is not a soul.</text>
+  <text x="120" y="1010" font-family="ui-monospace,Consolas,monospace" font-size="22" fill="#6c7393">verify: mix sp.lab.validate &#183; lab/proofs/uv_filtering.md</text>
+</svg>

@@ -1,0 +1,8 @@
+NAMES               STATUS                IMAGE
+uni-colony          Up 19 hours           localhost/uni-colony:v2
+mc-server           Up 2 weeks (healthy)  docker.io/itzg/minecraft-server:java11
+uni-viewer-fwd      Up 19 hours           docker.io/alpine/socat:latest
+uni-viewer-in       Up 19 hours           docker.io/alpine/socat:latest
+uni-viewer-mc-fwd   Up 17 hours           docker.io/alpine/socat:latest
+uni-cam             Up 17 hours           localhost/uni-cam:v1
+uni-viewer-cam-fwd  Up 17 hours           docker.io/alpine/socat:latest

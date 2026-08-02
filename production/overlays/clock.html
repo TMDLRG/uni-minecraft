@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - World clock strap</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* Multi-zone world-clock strap, top-left, transparent. */
+      .clk-wrap {
+        position: fixed;
+        top: 26px;
+        left: 36px;
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .zone {
+        background: var(--panel);
+        backdrop-filter: blur(8px) saturate(120%);
+        -webkit-backdrop-filter: blur(8px) saturate(120%);
+        border: 1px solid var(--hair);
+        border-radius: 8px;
+        padding: 7px 14px 8px;
+        min-width: 96px;
+        text-align: center;
+      }
+      .zone .label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .zone .time {
+        font-family: var(--mono);
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.1;
+        margin-top: 2px;
+      }
+      .zone .date {
+        font-size: 11px;
+        color: var(--ink-dim);
+        margin-top: 1px;
+      }
+      .empty {
+        color: var(--ink-faint);
+        font-style: italic;
+        padding: 8px 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clk-wrap view" id="wrap"></div>
+
+    <script>
+      // ---- World-clock strap ----
+      // Renders one cell per IANA zone in state.clock.zones using Intl.DateTimeFormat
+      // (+ tabular-nums for stable digits). The CLOCK is driven by the browser's own
+      // wall time (updated ~250ms), so it stays live even between state polls; the
+      // ZONE LIST comes from state.json. A bad zone id is shown muted, never faked.
+
+      var STALE_MS = 30000; // the zone list changes rarely; tolerate older snapshots
+      var DEFAULT_ZONES = ['UTC'];
+
+      var wrap = document.getElementById('wrap');
+
+      // Cache of {zone -> {timeFmt, dateFmt, valid}} so we build formatters once.
+      var fmtCache = Object.create(null);
+      var zones = DEFAULT_ZONES.slice();
+      var haveFeed = false;
+
+      function shortLabel(zone) {
+        if (zone === 'UTC') return 'UTC';
+        var parts = String(zone).split('/');
+        return parts[parts.length - 1].replace(/_/g, ' ');
+      }
+
+      function formatters(zone) {
+        if (fmtCache[zone]) return fmtCache[zone];
+        var entry = { valid: true, timeFmt: null, dateFmt: null };
+        try {
+          entry.timeFmt = new Intl.DateTimeFormat('en-GB', {
+            timeZone: zone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+          });
+          entry.dateFmt = new Intl.DateTimeFormat('en-GB', {
+            timeZone: zone,
+            weekday: 'short',
+            day: '2-digit',
+            month: 'short',
+          });
+        } catch (e) {
+          entry.valid = false; // invalid IANA id -> render muted, do not fake a time
+        }
+        fmtCache[zone] = entry;
+        return entry;
+      }
+
+      function buildCells() {
+        wrap.innerHTML = '';
+        if (!zones.length) {
+          var ph = document.createElement('div');
+          ph.className = 'empty';
+          ph.textContent = 'no zones configured';
+          wrap.appendChild(ph);
+          return;
+        }
+        zones.forEach(function (zone) {
+          var cell = document.createElement('div');
+          cell.className = 'zone';
+          cell.setAttribute('data-zone', zone);
+          cell.innerHTML =
+            '<div class="label">' +
+            shortLabel(zone) +
+            '</div><div class="time tnum">--:--:--</div><div class="date"></div>';
+          wrap.appendChild(cell);
+        });
+        wrap.classList.add('on');
+      }
+
+      function paint() {
+        var now = new Date();
+        var cells = wrap.querySelectorAll('.zone');
+        for (var i = 0; i < cells.length; i++) {
+          var cell = cells[i];
+          var zone = cell.getAttribute('data-zone');
+          var f = formatters(zone);
+          var t = cell.querySelector('.time');
+          var d = cell.querySelector('.date');
+          if (!f.valid) {
+            t.textContent = '--:--:--';
+            t.classList.add('placeholder');
+            d.textContent = 'invalid zone';
+            continue;
+          }
+          t.textContent = f.timeFmt.format(now);
+          d.textContent = f.dateFmt.format(now);
+        }
+      }
+
+      function applyZones(state) {
+        var list =
+          state && state.clock && Array.isArray(state.clock.zones)
+            ? state.clock.zones.filter(function (z) {
+                return typeof z === 'string' && z.trim() !== '';
+              })
+            : null;
+        var next = list && list.length ? list : DEFAULT_ZONES.slice();
+        if (JSON.stringify(next) !== JSON.stringify(zones)) {
+          zones = next;
+          buildCells();
+        }
+        haveFeed = true;
+      }
+
+      function poll() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(applyZones)
+          .catch(function () {
+            // No feed: keep showing the default UTC clock (still a real time),
+            // do not invent zones.
+            if (!haveFeed) {
+              zones = DEFAULT_ZONES.slice();
+              buildCells();
+            }
+          });
+      }
+
+      buildCells();
+      paint();
+      setInterval(paint, 250); // smooth seconds
+      poll();
+      setInterval(poll, 5000); // zone list rarely changes
+    </script>
+  </body>
+</html>

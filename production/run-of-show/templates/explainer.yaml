@@ -1,0 +1,146 @@
+# UNI Production Platform - run-of-show template: EXPLAINER (host + graphics + colony cut-ins)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# A teaching segment. Host explains a topic from the desk and the GLASS cockpit,
+# carrying title-card "key points" graphics, with COLONY cut-ins as a live model,
+# and UNI narration. CLAIMS_AND_FENCES lints every on-air word (no AGI claims;
+# UNI math stays private; "cache hit" not "memory").
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck set_layout
+
+template: explainer
+description: >
+  Host-led explainer with title-card key-point graphics, a GLASS-cockpit visual,
+  and COLONY cut-ins as a live cooperation model, plus UNI narration. Honesty
+  fences applied to every on-air word.
+defaultLanguage: en
+
+beats:
+  - id: ex-01-open
+    name: Explainer title open
+    scene: TITLE
+    durationSec: 7
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: title
+        payload:
+          visible: true
+          kicker: EXPLAINER
+          text: How it works
+          subtitle: The science, in plain language
+      - layer: nowPlaying
+        payload: { segment: Explainer, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; set_overlay title.
+
+  - id: ex-02-host-setup
+    name: Host sets up the question
+    scene: NEWSDESK
+    durationSec: 30
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: EXPLAINER
+          title: Todays question
+          subtitle: Aligning mental-health care to nature
+          tone: ok
+    narrate: null
+    music: { volume: 0.12, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; duck(on); host poses the question live.
+
+  - id: ex-03-glass-visual
+    name: Show it on the glass cockpit
+    scene: GLASS
+    durationSec: 60
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: VISUAL
+          title: On the glass
+          subtitle: A 2D-canvas view - no WebGL, captures clean
+          tone: ok
+      - layer: title
+        payload:
+          visible: true
+          kicker: KEY POINTS
+          text: Three things to know
+          subtitle: 1) the loop  2) the evidence  3) the limits
+    narrate:
+      text: Here is the idea, drawn on the glass - a working picture, not a proof. Watch how the parts connect.
+      lang: en
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: cut_to GLASS (the real /glass browser-source); narrate (Piper auto-ducks); key-point title card carries the structure.
+
+  - id: ex-04-colony-model
+    name: Colony as a live model
+    scene: COLONY
+    durationSec: 40
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: LIVE MODEL - COLONY
+          title: Cooperation, running live
+          subtitle: A small system doing the thing we just described
+          tone: ok
+    narrate:
+      text: And here it is in motion - a live colony cooperating, the same pattern at a different scale.
+      lang: en
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: cut_to COLONY (consumes :3020, never edits it); narrate over the live feed.
+
+  - id: ex-05-payoff
+    name: Bring it home at the desk
+    scene: NEWSDESK
+    durationSec: 30
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: WHY IT MATTERS
+          title: From the lab to the mission
+          subtitle: Care aligned to nature, evidence kept honest
+          tone: ok
+    narrate: null
+    music: { volume: 0.14, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; host closes the loop live; fences keep claims inside CLAIMS_AND_FENCES.
+
+  - id: ex-06-out
+    name: Explainer out
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: title
+        payload:
+          visible: true
+          kicker: EXPLAINER
+          text: More on the feed
+          subtitle: Stay with us
+      - layer: lowerThird
+        payload: { visible: false }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; lift the music; hand off to the slot.

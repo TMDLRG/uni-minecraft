@@ -1,0 +1,506 @@
+{
+ "schema": "uni.film.forensic.v1",
+ "what_this_is": [
+  "The measured substrate for the film WELCOME TO UNI LABS. Every probe below was EXECUTED at the",
+  "recorded instant, in the recorded directory, and its exit code and stdout digest recorded.",
+  "The film may render nothing that is not here. Nothing here is recalled, inferred, or carried",
+  "over from a previous session."
+ ],
+ "captured_utc": "2026-08-02T01:03:41.885Z",
+ "captured_unix_ms": 1785632621885,
+ "host_note": "Measured on the operator's machine. A capture is a fact about ONE run on ONE box.",
+ "probes": [
+  {
+   "id": "golive.refuses_me",
+   "asks": "Can an agent reach air down any path in this codebase?",
+   "command": "node viewer/prove_golive_refuses_me.cjs",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:02:45.256Z",
+   "elapsed_ms": 101,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "6a54f9cfe8c95a2e58422e41d2975b60dcf80e5c7cf360f03a0658875866eb00",
+   "stdout_bytes": 2603,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "so four lines of Node that never import this guard reach the same actuator directly.",
+    "F31 binds this codebase's paths to air. It does not bind the box. Closing that means",
+    "enabling auth on the OBS WebSocket server, which is your studio and your call (S2).",
+    "RESULT: no path through"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "golive.gate",
+   "asks": "Does the go-live guard refuse a stale, forged, non-interactive or replayed token?",
+   "command": "node viewer/verify_golive_refuses_agents.cjs",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:02:45.358Z",
+   "elapsed_ms": 428,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "33aad45f73a3754999aff5f43f6ec0e1c9681b7edfd376560c2a6f9a5fef26cf",
+   "stdout_bytes": 2552,
+   "stderr_bytes": 0,
+   "verdict_line": "GATE: PASS - golive-refuses-agents, 14/14 checks",
+   "tail": [
+    "  and it does not bind the box. Closing that means enabling auth on the OBS WebSocket server,",
+    "  which is a change to the operator's studio configuration and is his (S2), not an agent's.",
+    "  Claim level throughout: presence_evident. NOT unforgeable.",
+    "GATE: PASS - golive-refuses-agents, 14/14 checks"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "witness.blocked",
+   "asks": "Is the off-box witness independent?",
+   "command": "node viewer/gaia/verify_witness_blocked.cjs",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:02:45.787Z",
+   "elapsed_ms": 111,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "0d2e49f516c82e68c86db6b5495138758b44fce78ee349928f75c6c63774e49c",
+   "stdout_bytes": 1759,
+   "stderr_bytes": 0,
+   "verdict_line": "WITNESS-BLOCKED GATE: PASS — 7 check(s) PASS, 0 FAIL.",
+   "tail": [
+    "  [PASS] the-number-has-a-consumer          collectors.cjs reads independent_custodians and projects it — the number written by witness_probe.cjs:169 finally has a reader",
+    "  [PASS] the refusal is load-bearing        with the custodian test removed from the REAL collectors.cjs (compiled in place, 46b280ad3017), a capture with independent_custodians=0 CLEARS; with the shipped code it is blocked (independent_custodians=0 — no custodian sits in a failure domain the w…). Until 2026-07-28 this gate's only tie to the shipped code was a substring search that a comment would have satisfied.",
+    "WITNESS-BLOCKED GATE: PASS — 7 check(s) PASS, 0 FAIL.",
+    "(This gate proves the REFUSAL works. It does not repair the witness: removing the writer's key from node2 is STOP S1, a human's to do.)"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "pureworld.scaffold",
+   "asks": "Does the colony science gate actually run, or does its runner refuse?",
+   "command": "node -e const L=require('fs').readFileSync('runs/pureworld_qa_gate.exs','utf8').split(/\\r?\\n/);const i=L.findIndex(function(l){return /^\\s*raise\\b/.test(l);});console.log('raises='+(i>=0));console.log('raise_at_line='+(i<0?'NONE':i+1));if(i>=0) console.log('block='+JSON.stringify(L.slice(i,i+3)));",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:02:45.898Z",
+   "elapsed_ms": 92,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "20602a86347ce607f6c7b26f829d2a62782c769a65d8a74d73617215682afa6f",
+   "stdout_bytes": 79,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "raises=true",
+    "raise_at_line=39",
+    "block=[\"    raise \\\"\\\"\\\"\",\"    #{@scaffold}.\",\"\"]"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "gap.registry_ledger",
+   "asks": "How many registered gates have a row in the canonical ledger?",
+   "command": "node -e console.log(JSON.stringify(require('./viewer/lab/desk.cjs').theGap(),null,1))",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:02:45.991Z",
+   "elapsed_ms": 3563,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "192b9006e6b0028a593485f16fdd748d6155780193195aea714f9cd3b8bcc9ec",
+   "stdout_bytes": 1064,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    " \"so\": \"1 of 34 are. 33 are not.\",",
+    " \"why_it_has_stayed_that_way\": \"Writing evidence/gates.ndjson is S4 — a stop condition. An agent cannot author these rows, and should not. The desk's whole job is to show the exact line and stop.\",",
+    " \"and_one_consequence_worth_naming\": \"canRun's SEALED_BY_S10 branch is currently UNREACHABLE for every registered gate: 1 of 34 registered gate_row(s) appear in the ledger at all, and NONE of them names a row whose latest verdict is PENDING (the 1 present read PASS). The seal is proved to bite by injection in the L5 gate rather than by anything on this floor, and that is said out loud because a guard nobody has seen fire is a guard nobody should trust.\"",
+    "}"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "film.tokens",
+   "asks": "Does every number the film may render resolve from a live artifact?",
+   "command": "node lab/film/welcome/qc/tokens.cjs",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:02:49.555Z",
+   "elapsed_ms": 14310,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "1935ab0060ec89631cd1a872425a8f65e8d1c652aeac6a61779581369bc10ee2",
+   "stdout_bytes": 2320,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "ok   n.corpus.recipes                   = 13",
+    "ok   n.corpus.concepts                  = 130",
+    "ok   n.corpus.domains                   = 8",
+    "49 tokens, 0 failed to measure"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "film.qc",
+   "asks": "Does the film's own QC gate pass, and are its mutations caught?",
+   "command": "node lab/film/welcome/qc/verify_welcome_film.cjs --prove",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:03.865Z",
+   "elapsed_ms": 15206,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "2dc9c0ea675313565400a7dd8e3421233bf9bb0debff89031aafabf18020bbc7",
+   "stdout_bytes": 15393,
+   "stderr_bytes": 0,
+   "verdict_line": "GATE: PASS - welcome-film-qc, 20/20 checks, 17/17 mutations caught, --prove clean",
+   "tail": [
+    "    must work at render time; nothing here opens a socket or runs one.",
+    "  · These are the operator's, and no gate stands in for them.",
+    "  elapsed 15123 ms (budget 30000)",
+    "GATE: PASS - welcome-film-qc, 20/20 checks, 17/17 mutations caught, --prove clean"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "gates.runner",
+   "asks": "Do the registered gates hold their own law, and what is the tally?",
+   "status": "SKIPPED_BY_FLAG",
+   "note": "--quick was passed. A skipped probe is NOT a passing probe."
+  },
+  {
+   "id": "elixir.suite",
+   "asks": "Does the Elixir suite pass?",
+   "status": "SKIPPED_BY_FLAG",
+   "note": "--quick was passed. A skipped probe is NOT a passing probe."
+  },
+  {
+   "id": "public.gate",
+   "asks": "Do the public site's safety, coverage, provenance and reading-lane gates pass?",
+   "status": "SKIPPED_BY_FLAG",
+   "note": "--quick was passed. A skipped probe is NOT a passing probe."
+  },
+  {
+   "id": "public.lens",
+   "asks": "Is the Precise lane the document, and did the authored prose reach the shipped pages?",
+   "command": "node generators/verify_lenses.cjs",
+   "cwd": "UNI.Public",
+   "started_utc": "2026-08-02T01:03:19.072Z",
+   "elapsed_ms": 3591,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "1c41ae9afbf613c5c2c4454abf8a746b1f285d1def0978e32282932216f7c2ca",
+   "stdout_bytes": 4539,
+   "stderr_bytes": 0,
+   "verdict_line": "GATE: PASS - reading-lane, 14/14 checks",
+   "tail": [
+    "  person on a named date. It is recorded, it is published, and it is not a measurement.",
+    "  And it proves out/ matches docs.json — that docs.json matches a named commit is",
+    "  safety/verify_provenance.cjs's claim, which needs the private clones. Both are the chain.",
+    "GATE: PASS - reading-lane, 14/14 checks"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "engine.no_reward",
+   "asks": "Is there a reward signal anywhere in the engine?",
+   "command": "node -e const cp=require('child_process');const r=cp.spawnSync('git',['grep','-nE','\\\\breward\\\\b','--','lib/sp/brain'],{encoding:'utf8'});const L=(r.stdout||'').split(/\\r?\\n/).filter(Boolean);const neg=L.filter(function(l){return /\\bno\\b[^.]{0,24}reward|reward[- ]smuggl|dispreferred/i.test(l);});console.log('lines_naming_reward='+L.length);console.log('of_those_saying_there_is_none='+neg.length);L.slice(0,5).forEach(function(x){console.log('  '+x.replace(/^lib\\/sp\\/brain\\//,''));});",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:22.664Z",
+   "elapsed_ms": 134,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "1523230432839b3db76bb660e19ffedb0f48d04fe4f655dc3034e0bcf264eb5a",
+   "stdout_bytes": 585,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "  curriculum.ex:92:  # bin-0 still steeply dispreferred (the agent STILL eats/stays alive) but reward keeps RISING toward 'full'",
+    "  curriculum.ex:101:  # saturable foil = reward-smuggling). This is the depth the single 4-bin setpoint scalar lacked.",
+    "  factors.ex:27:  # actually taken — pure model-learning, no reward. Uniform `e` ⇒ ln E is constant ⇒",
+    "  factors.ex:142:  @doc \"Per-factor Dirichlet model learning (no reward).\""
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "engine.zero_deps",
+   "asks": "How many third-party dependencies does the engine carry?",
+   "command": "node -e const L=require('fs').readFileSync('mix.exs','utf8').split(/\\r?\\n/);const i=L.findIndex(function(l){return /defp?\\s+deps\\b/.test(l);});const block=L.slice(i,i+3);console.log('deps_declaration:');block.forEach(function(l){console.log('  '+l);});",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:22.799Z",
+   "elapsed_ms": 72,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "16df1ba39c4d9b9534e6e0e4c353e7e016a097cce061784f2fb27d8046065df2",
+   "stdout_bytes": 52,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "deps_declaration:",
+    "    defp deps do",
+    "      []",
+    "    end"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "ledger.chain",
+   "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+   "command": "node -e const fs=require('fs'),c=require('crypto');const L=fs.readFileSync('evidence/control_plane/ledger.ndjson','utf8').split(/\\r?\\n/).filter(Boolean).map(JSON.parse);let broken=0,prev=null;for(const e of L){ if(prev&&e.prev_hash!==prev) broken++; prev=e.hash; }const a=JSON.parse(fs.readFileSync('evidence/control_plane/anchor.json','utf8'));console.log('entries='+L.length);console.log('broken_links='+broken);console.log('anchor_length='+a.length+' anchor_head='+String(a.head).slice(0,16)+'...');console.log('tip_hash='+String(L[L.length-1].hash).slice(0,16)+'...');console.log('anchor_agrees='+(a.length===L.length&&a.head===L[L.length-1].hash));",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:22.871Z",
+   "elapsed_ms": 80,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "0305654c487bb47bdffc0d3efdd9b42e55996e86059111646259829b01be6e0e",
+   "stdout_bytes": 123,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "broken_links=0",
+    "anchor_length=32 anchor_head=b90b74980f47b93a...",
+    "tip_hash=b90b74980f47b93a...",
+    "anchor_agrees=true"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "limitations.declared",
+   "asks": "What does this project say it cannot do?",
+   "command": "node -e const s=require('fs').readFileSync('docs/control-plane/LIMITATIONS.md','utf8');const ids=(s.match(/^##\\s+`([^`]+)`/gm)||[]).map(function(x){return x.replace(/^##\\s+`|`$/g,'');});console.log('declared_limitations='+ids.length);ids.forEach(function(i){console.log('  '+i);});",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:22.951Z",
+   "elapsed_ms": 87,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "eec28e4826de2d56b9e41aa77d5d4b36996c35f14de8e8bfd1b485fe6cafec3e",
+   "stdout_bytes": 313,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "  f31.obs-unauthenticated",
+    "  f31.presence-evident",
+    "  gates.attempts.inferred-from-record",
+    "  gates.attempts.result-document-is-a-judgment"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "public.coverage",
+   "asks": "Is every declared subsystem, entry point and page covered or explicitly excluded?",
+   "command": "node safety/verify_coverage.cjs",
+   "cwd": "UNI.Public",
+   "started_utc": "2026-08-02T01:03:23.039Z",
+   "elapsed_ms": 424,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "4477042c2a9e7b3c1bde85528640e7a3a5205d0a63a00d07b9a7376001b6d409",
+   "stdout_bytes": 2026,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "  100% cannot COLLAPSE (a shrinking denominator) or REDUCE (work moved into exclusions),",
+    "  because both keep the percentage at 1.0 and neither is visible to the table above.",
+    "  · AMENDMENT 2026-08-01 — Lowered floors pages_total (292 -> 291) and corpora_pages.workbench (2 -> 1).: A forensic pass held all 292 published pages against the commit each citation names and found ONE whose published bytes were an uncommitted working-tree edit published under a commit sha that does not contain them (workbench/living-science-walkthrough). The ingest now fences any document whose own bytes are uncommitted, per path, so it cannot assert a provenance it does not have. The page count falls by one because a page that was making a false claim stopped being published. This is a REDUCTION IN COUNT AND AN INCREASE IN CORRECTNESS, which is why the floor is lowered deliberately rather than the fence being weakened to preserve a number. The remaining four fenced documents return the moment the workbench worktree is committed.",
+    "COVERAGE 100%."
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "public.provenance",
+   "asks": "Do the published bytes match the commit they name?",
+   "command": "node safety/verify_provenance.cjs",
+   "cwd": "UNI.Public",
+   "started_utc": "2026-08-02T01:03:23.463Z",
+   "elapsed_ms": 17038,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "2d5c8c4f66e2b87ec330ed69a4bd91ef0444ed2978f1661ac0ed58aaa624b213",
+   "stdout_bytes": 1599,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "PROVENANCE: PASS — 0 claim(s) of origin do not hold",
+    "  This proves published bytes match a named commit IN THIS CLONE. It cannot prove that",
+    "  commit is what a third party would receive, and no amount of code here can. Only",
+    "  publishing the source repositories, or an independent custodian, closes that gap."
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "public.a11y",
+   "asks": "Does the site meet its own contrast, landmark and reduced-motion floor?",
+   "command": "node generators/verify_a11y.cjs",
+   "cwd": "UNI.Public",
+   "started_utc": "2026-08-02T01:03:40.502Z",
+   "elapsed_ms": 434,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "aa283d5fcdc0b5f3b5cc082af49d3b60bc5d9466cc8ca246dc30da2588e3ec5a",
+   "stdout_bytes": 3136,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "A11Y: PASS - 5/5 checks",
+    "  Contrast is COMPUTED over a declared pairing table; structure is read from the built",
+    "  export. What no gate can measure: whether the prose actually reads gently to a 7-year-old",
+    "  or a frightened adult. That is human, and the reading-lane and on-ramp exist to serve it."
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "bag.roundtrip",
+   "asks": "Does an evidence pack survive a round trip, and is a forged one caught?",
+   "command": "node viewer/verify_bag.cjs --mutate",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:40.937Z",
+   "elapsed_ms": 468,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "72169f20b92660773cf47e45e9181cd52d62ae5eabf48c48286205de109f0607",
+   "stdout_bytes": 5155,
+   "stderr_bytes": 0,
+   "verdict_line": "GATE: PASS - bagit (--mutate), 12/12 checks · 12 mutations, each required to fail verification",
+   "tail": [
+    "  TAMPER-EVIDENT and PORTABLE; it does not make it WITNESSED. M12 proves that a coherent forgery",
+    "  — payload edited, manifest and tagmanifest recomputed — verifies CLEAN. The estate's off-box",
+    "  witness is COMPROMISED (independent_custodians: 0) and nothing here changes that.",
+    "  Claim level: tamper_evident. Never authenticated, never independent."
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "concepts.locators",
+   "asks": "Does every concept in the registry point at a line that exists?",
+   "command": "node viewer/verify_concepts.cjs --mutate",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:41.405Z",
+   "elapsed_ms": 98,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "198493cb2caf2a311043550eb220cf1d864475f86c86ead5357dc8941f3037aa",
+   "stdout_bytes": 1938,
+   "stderr_bytes": 0,
+   "verdict_line": "GATE: PASS - concepts, 9/9 checks",
+   "tail": [
+    "  Whether `porta` is the right anchor for `door` is a human's call, and `reviewer` is a",
+    "  CLAIM by a named person, not a measurement. Most rows here have no reviewer yet, and",
+    "  that is rendered rather than hidden.",
+    "GATE: PASS - concepts, 9/9 checks"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "tree.mc",
+   "asks": "Is UNI.Minecraft clean, and level with its remote?",
+   "command": "git status -sb",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:41.503Z",
+   "elapsed_ms": 83,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "7a387bed7845fdeabd815dd27eab07f77d55131184652633821fa0b8dcfc857a",
+   "stdout_bytes": 293,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    " M lab/film/welcome/capture/forensic_sweep.cjs",
+    " M lab/film/welcome/render/build_cut.cjs",
+    " M lab/film/welcome/render/plate_lib.cjs",
+    "?? lab/film/welcome/capture/forensic_2026-08-02T01-01-53-423Z.json"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "tree.pub",
+   "asks": "Is UNI.Public clean, and level with its remote?",
+   "command": "git status -sb",
+   "cwd": "UNI.Public",
+   "started_utc": "2026-08-02T01:03:41.587Z",
+   "elapsed_ms": 62,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "5fbcb2990ad25e368c12219bf3ddca36e464d044e7acac16696fa8cd54159185",
+   "stdout_bytes": 22,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "## main...origin/main"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "tree.fl",
+   "asks": "Is UNI-FLAGELLUM clean, and level with its remote?",
+   "command": "git status -sb",
+   "cwd": "UNI-Flagellum/UNI-FLAGELLUM",
+   "started_utc": "2026-08-02T01:03:41.649Z",
+   "elapsed_ms": 80,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "c759da92d552368e74a05fe6b008fb10b20aa238898a6fafcdc4d4d10884ef2e",
+   "stdout_bytes": 80,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "## hierarchical-aif/motor-stack...origin/hierarchical-aif/motor-stack [ahead 1]"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "head.mc",
+   "asks": "What commit is UNI.Minecraft at?",
+   "command": "git log -1 --format=%H %cI %s",
+   "cwd": "UNI.Minecraft",
+   "started_utc": "2026-08-02T01:03:41.730Z",
+   "elapsed_ms": 55,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "f877fb81aaceca7d3ca2f65d45c19d7cb7fee0857105864992676553bce36ce7",
+   "stdout_bytes": 166,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "762eda7f07a1d432f5a296f16a3e396ecf9b6c4e 2026-08-01T19:31:41-05:00 WELCOME TO UNI LABS — the short cut, built from measured evidence, and the lint that was missing"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "head.pub",
+   "asks": "What commit is UNI.Public at?",
+   "command": "git log -1 --format=%H %cI %s",
+   "cwd": "UNI.Public",
+   "started_utc": "2026-08-02T01:03:41.786Z",
+   "elapsed_ms": 47,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "d93943be535b4be8aa2811032d79f6c743094572f83f9b3f3145f43718bddca6",
+   "stdout_bytes": 140,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "485d4d047455dcc323b7b0e88a97896a8d8e009e 2026-08-01T18:44:09-05:00 the gate was green over a site that did not contain the feature it gates"
+   ],
+   "status": "EXIT_0"
+  },
+  {
+   "id": "head.fl",
+   "asks": "What commit is UNI-FLAGELLUM at?",
+   "command": "git log -1 --format=%H %cI %s",
+   "cwd": "UNI-Flagellum/UNI-FLAGELLUM",
+   "started_utc": "2026-08-02T01:03:41.834Z",
+   "elapsed_ms": 50,
+   "exit_code": 0,
+   "timed_out": false,
+   "stdout_sha256": "35ef175553a64e907269364ad2c8092c5669256a57e75ab8b0e305e5b21e24e9",
+   "stdout_bytes": 132,
+   "stderr_bytes": 0,
+   "verdict_line": null,
+   "tail": [
+    "b909801f3db41da6c6c80e3fa672365e24350c04 2026-08-01T19:16:13-05:00 regenerate the state blocks after the registry moved to 34 gates"
+   ],
+   "status": "EXIT_0"
+  }
+ ],
+ "limits": [
+  "A green probe is a fact about THIS RUN at THIS INSTANT. The gate-runner answer in this estate",
+  "has previously been false 176 seconds after it was recorded.",
+  "This sweep proves commands ran and what they printed. It does NOT prove the commands ask the",
+  "right questions -- that is what the gates' own mutation suites are for, and what a human read is for.",
+  "SKIPPED and NOT_RUN are recorded as themselves. Neither is a pass."
+ ]
+}

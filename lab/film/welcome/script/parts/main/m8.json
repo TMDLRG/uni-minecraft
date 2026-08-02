@@ -1,0 +1,41 @@
+[
+  {
+    "id": "m8_doors",
+    "plate": "title",
+    "kicker": "HOW TO ENGAGE — FOUR DOORS",
+    "line1": "Watch. Question. Falsify. Contribute.",
+    "line2": "Every command in this film is one you can run yourself.",
+    "narration": "Four ways in. Watch the work on its own surface. Ask a question — it lands in an append-only file under version control. Try to break something. Or take a piece of work. The third door is where the rest of this chapter goes.",
+    "tail_silence": 1.2
+  },
+  {
+    "id": "m8_already_checkable",
+    "plate": "measurement",
+    "probe": "public.coverage",
+    "asks": "What can somebody outside this project already check, today, without asking anyone?",
+    "source": "UNI.Public safety/verify_coverage.cjs — the declared universe of pages and subsystems, and the floors under it",
+    "note": "A floor that can only be lowered deliberately is a floor somebody has to sign for.",
+    "narration": "Nothing here needs an account or permission. This one reads the published site and prints its floors. It also printed an amendment: a page was withdrawn because its bytes were not in the commit it cited, so the floor was lowered rather than the fence weakened.",
+    "tail_silence": 1.3
+  },
+  {
+    "id": "m8_falsify",
+    "plate": "measurement",
+    "probe": "public.provenance",
+    "asks": "Which command would be worth the most to us if it printed something else on your machine?",
+    "source": "UNI.Public safety/verify_provenance.cjs — every published page held against the commit its citation names",
+    "note": "The last lines are the check naming the one gap that no code inside it can close.",
+    "narration": "Every command in this film runs on a clone. This one holds each published page against the commit it names, then says what it cannot reach from inside that clone. If yours prints something else, that difference is the most useful thing anyone could send back.",
+    "tail_silence": 1.6
+  },
+  {
+    "id": "m8_contribute",
+    "plate": "measurement",
+    "probe": "public.a11y",
+    "asks": "What is left for a person once every check on screen has gone green?",
+    "source": "UNI.Public generators/verify_a11y.cjs — contrast computed over a declared pairing table, structure read from the built export",
+    "note": "@n.gap.absent of @n.gap.registered registered checks still have no row in the permanent record, and writing those rows is the operator's.",
+    "narration": "The fourth door. This check computes contrast, reads structure, then names what it cannot measure — whether the words land for a frightened reader. That part is a person's. So are the @n.plan.operator steps in the plan that no agent, and no stranger, may take.",
+    "tail_silence": 1.6
+  }
+]

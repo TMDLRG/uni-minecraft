@@ -1,0 +1,20 @@
+[Unit]
+Description=UNI daily backup (broadcast spool + /etc/uni + quadlets + uni-* units -> UNI_BACKUP_DEST)
+# Oneshot, triggered by uni-backup.timer (04:00 UTC daily). Mirrors the uni-production-mcp.service
+# house style: shared /etc/uni/runtime.env, host service (not a container). Can also be run
+# ad hoc: `systemctl start uni-backup.service` for an out-of-band snapshot.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/uni
+# UNI_BACKUP_DEST (the rsync target, e.g. user@uni-tab-arm-1:/var/lib/uni/backups/uni-lab-79740c)
+# is REQUIRED and comes from the shared runtime env file; backup.sh fails closed if it is unset
+# rather than inventing a default remote host.
+EnvironmentFile=-/etc/uni/runtime.env
+ExecStart=/opt/uni/production/scripts/backup.sh
+StandardOutput=append:/var/log/uni/uni-backup.log
+StandardError=append:/var/log/uni/uni-backup.log
+
+# No [Install] section: this unit is driven by uni-backup.timer, not enabled directly.

@@ -1,0 +1,22 @@
+PHASE 9 STEP 2.7 — the ledger's evidence is content-addressed. GREEN RECEIPT, 2026-07-27.
+
+$ node viewer/verify_control_plane_evidence.cjs
+  ok  chain recomputes and links — 12 entries, hashes re-derived in Node
+  ok  every object is named by its own content — 15 objects, all self-verifying
+  ok  every reference retrievable, every current one in place — 15 references (2 superseded, retrievable as objects)
+  ok  superseded, and said out loud — seq 9  c09b5146  docs/receipts/control-plane/phase7_item710_green_2026-07-26.txt
+  ok  superseded, and said out loud — seq 10  6d9e1e0d  evidence/remediation/prelude.ndjson
+  ok  MUTATION caught: a receipt edited after the fact — live_mismatch r.txt
+  ok  MUTATION caught: evidence deleted while its object survives — live_missing r.txt
+  ok  MUTATION caught: the object lost while the live file is untouched — unretrievable 323dec08 (r.txt, current)
+  ok  MUTATION caught: a SUPERSEDED reference whose object is gone — unretrievable 3bfc2695 (r.txt, superseded)
+  ok  MUTATION caught: an object planted under a name it does not hash to — unretrievable 323dec08 (r.txt, current); 323dec08d8ff27b01b7ffe366aee9e8670fb786723d27b5c40d1846d6c8f1fe7 does not contain what it claims
+  ok  supersession needs a later entry — a single reference is current, never superseded
+
+GATE: PASS — control-plane-evidence, 11/11 checks
+exit=0
+
+$ mix test test/sp/control_plane/evidence_is_content_addressed_test.exs
+...............
+Finished in 0.3 seconds (0.00s async, 0.3s sync)
+15 tests, 0 failures

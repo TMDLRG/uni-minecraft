@@ -1,0 +1,11 @@
+{"envelope":{"evidence_class":"C","git_commit":null,"instrument_version":"phase5_premise_probe@1","server":"uni-gaia-ingest","timestamp":"2026-07-26T00:00:00.000Z"},
+ "result":{"signals":[
+  {"evidence_class":"C","id":"control-plane.ledger.total","kind":"file","seat":"control-plane",
+   "provenance":{"byte_len":12,"captured_at":"2026-07-26T00:00:00.000Z","instrument":"phase5_premise_probe@1",
+                 "locator":"lib/sp/control_plane/store.ex","reverify":"n/a",
+                 "sha256":"0000000000000000000000000000000000000000000000000000000000000000","truncated":false},
+   "value":{"encoding":"utf8","raw":"11 entries"},
+   "total":11,
+   "health_percent":92,
+   "rank":1}
+ ]}}

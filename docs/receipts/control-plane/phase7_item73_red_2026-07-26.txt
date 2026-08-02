@@ -1,0 +1,122 @@
+Running ExUnit with seed: 961395, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test the refusal is renderable without this module — a surface can show it verbatim (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:186
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entry/1 is undefined or private
+     code: {:refused, why} = Scene.entry(node!("gate:x", %{truth_class: :UNKNOWN}))
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entry(%{id: "gate:x", truth_class: :UNKNOWN, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:187: (test)
+
+
+
+  2) test entrances/1 and fogged/1 partition the scene — nothing is in both, nothing in neither (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:134
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entrances/1 is undefined or private
+     code: doors = MapSet.new(Scene.entrances(scene), & &1.id)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entrances(%SP.ControlPlane.Scene{nodes: [%{id: "gate:a", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"}, %{id: "gate:b", truth_class: :UNKNOWN, receipt_ref: nil, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"}, %{id: "gate:c", truth_class: :SIMULATED, receipt_ref: "docs/GATES.md", evidence_class: "C", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:160: (test)
+
+
+
+  3) test enterable? and fog are the SAME judgement, not two that can drift apart (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:83
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.enterable?/1 is undefined or private
+     code: for tc <- Scene.truth_classes(), ref <- ["docs/GATES.md", nil] do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.enterable?(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:87: anonymous fn/3 in SP.ControlPlane.AbsentEvidenceRefusesEntryTest."test enterable? and fog are the SAME judgement, not two that can drift apart"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:84: (test)
+
+
+
+  4) test the unbacked node is STILL IN THE SCENE — absent as a door, present as fog (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:117
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entrances/1 is undefined or private
+     code: assert Scene.entrances(scene) == []
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entrances(%SP.ControlPlane.Scene{nodes: [%{id: "gate:unbacked", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:130: (test)
+
+
+
+  5) test a backed node's entry is plainly :ok (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:182
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entry/1 is undefined or private
+     code: assert Scene.entry(node!("gate:x", %{})) == :ok
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entry(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:183: (test)
+
+
+
+  6) test F25 — a fogged node does not appear among the entrances at all (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:94
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entrances/1 is undefined or private
+     code: assert Enum.map(Scene.entrances(scene), & &1.id) == ["gate:backed"],
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entrances(%SP.ControlPlane.Scene{nodes: [%{id: "gate:backed", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"}, %{id: "gate:unbacked", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:113: (test)
+
+
+
+  7) test entrances/1 is a pure read that never raises, on any scene including an empty one (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:206
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entrances/1 is undefined or private
+     code: assert Scene.entrances(scene!([])) == []
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entrances(%SP.ControlPlane.Scene{nodes: []})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:207: (test)
+
+
+
+  8) test F25 — an UNKNOWN truth class is not enterable even with a receipt (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.enterable?/1 is undefined or private
+     code: refute Scene.enterable?(node!("gate:x", %{truth_class: :UNKNOWN}))
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.enterable?(%{id: "gate:x", truth_class: :UNKNOWN, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:73: (test)
+
+
+
+  9) test F25 — a node with no receipt is NOT enterable, however it labels itself (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:63
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.enterable?/1 is undefined or private
+     code: for tc <- Scene.truth_classes() do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.enterable?(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:67: anonymous fn/2 in SP.ControlPlane.AbsentEvidenceRefusesEntryTest."test F25 — a node with no receipt is NOT enterable, however it labels itself"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:64: (test)
+
+
+
+ 10) test a backed node IS enterable — the refusal is not blanket (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:76
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.enterable?/1 is undefined or private
+     code: for tc <- [:OBSERVED, :STRUCTURAL_RECONSTRUCTION, :REDUCED_MODEL, :DERIVED, :SIMULATED] do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.enterable?(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:78: anonymous fn/2 in SP.ControlPlane.AbsentEvidenceRefusesEntryTest."test a backed node IS enterable — the refusal is not blanket"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:77: (test)
+
+.
+
+ 11) test asking about a specific node gives a REASON, not a silent false (SP.ControlPlane.AbsentEvidenceRefusesEntryTest)
+     test/sp/control_plane/absent_evidence_refuses_entry_test.exs:170
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.entry/1 is undefined or private
+     code: assert {:refused, why} = Scene.entry(n)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.entry(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/absent_evidence_refuses_entry_test.exs:173: (test)
+
+
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+12 tests, 11 failures

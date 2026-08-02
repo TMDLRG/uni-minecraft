@@ -1,0 +1,146 @@
+# UNI Production Platform - run-of-show template: NEWS-DESK
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# A news-desk segment: anchor at the NEWSDESK scene reads the mission feed,
+# with a title card cold-open, lower-third for the anchor, a running ticker,
+# and a colony cut-in for B-roll. Producer/playout executes the beats in order.
+#
+# Beat schema (consistent across all templates):
+#   { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#     narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes are the FIXED set: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Overlay layers map 1:1 to broadcast.json keys: onAir lowerThird title ticker caption music nowPlaying
+# MCP verbs the producer emits per beat: cut_to set_overlay narrate set_music_volume duck roll_clip start_segment set_layout
+
+template: news-desk
+description: >
+  Anchored news-desk read of the EducateWright / UNI science feed. Title cold-open,
+  anchor lower-third, mission ticker, a colony B-roll cut-in, then back to desk and out.
+defaultLanguage: en
+
+beats:
+  - id: nd-01-title
+    name: Cold open title card
+    scene: TITLE
+    durationSec: 8
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: title
+        payload:
+          visible: true
+          kicker: EDUCATEWRIGHT
+          text: The Science Feed
+          subtitle: Back on the air, every day, every time zone
+      - layer: music
+        payload: { volume: 0.30, ducked: false }
+    narrate: null
+    music: { volume: 0.30, duck: false }
+    clip: null
+    notes: Producer cut_to TITLE; set_overlay title + onAir; set_music_volume 0.30 (no duck, no speech yet).
+
+  - id: nd-02-anchor-intro
+    name: Anchor welcome at the desk
+    scene: NEWSDESK
+    durationSec: 25
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: UNI ANCHOR
+          title: Today on the feed
+          subtitle: Ending school shootings, trauma science, world understanding
+          tone: ok
+      - layer: ticker
+        payload:
+          - { text: "EducateWright - the science feed, back on air", tone: ok }
+          - { text: "Mission - end school shootings - solve trauma - align care to nature", tone: ok }
+      - layer: nowPlaying
+        payload: { segment: News Desk, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.12, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; lower-third for the anchor; duck(on) as the host speaks live; ticker carries mission lines.
+
+  - id: nd-03-lead-story
+    name: Lead story read
+    scene: NEWSDESK
+    durationSec: 90
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: LEAD STORY
+          title: The feed, drowned out - and back
+          subtitle: Why a 7-day science broadcast matters now
+          tone: ok
+    narrate: null
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: Host reads live; producer keeps duck on. UNI-expert words are CLAIMS_AND_FENCES-linted before air.
+
+  - id: nd-04-colony-cutin
+    name: Colony B-roll cut-in
+    scene: COLONY
+    durationSec: 30
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: LIVE - COLONY
+          title: The UNI colony, live
+          subtitle: A working model of cooperation
+          tone: ok
+      - layer: nowPlaying
+        payload: { segment: News Desk, lang: en, clipId: null }
+    narrate:
+      text: While we talk, the colony keeps building - a small live model of the cooperation this feed is about.
+      lang: en
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: cut_to COLONY (consumes :3020 cam, never edits it); narrate over the live feed (Piper auto-ducks).
+
+  - id: nd-05-back-to-desk
+    name: Back to the desk - look-ahead
+    scene: NEWSDESK
+    durationSec: 20
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: COMING UP
+          title: Next on the feed
+          subtitle: An interview, then an explainer segment
+          tone: ok
+    narrate: null
+    music: { volume: 0.14, duck: true }
+    clip: null
+    notes: cut_to NEWSDESK; coming-up lower-third; host hands off to the next template (start_segment).
+
+  - id: nd-06-out
+    name: Desk out - title sting
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: title
+        payload:
+          visible: true
+          kicker: EDUCATEWRIGHT
+          text: Stay with us
+          subtitle: The science feed continues
+      - layer: lowerThird
+        payload: { visible: false }
+      - layer: music
+        payload: { volume: 0.28, ducked: false }
+    narrate: null
+    music: { volume: 0.28, duck: false }
+    clip: null
+    notes: cut_to TITLE; lift the music bed (no speech); producer hands control to the slot's next template.

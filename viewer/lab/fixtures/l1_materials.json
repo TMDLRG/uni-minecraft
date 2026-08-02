@@ -1,0 +1,103 @@
+{
+  "fixture": "l1_materials",
+  "why": [
+    "SOCKET-FREE. L1 stands the render contract on a floor and nothing more. It reads THIS FILE",
+    "and no live state — the projection is L3's build, and a renderer that reached for real gates",
+    "before anything could say what a fogged one looks like would be showing you a claim it had",
+    "not earned.",
+    "",
+    "Every node below exists to produce ONE material by SP.ControlPlane.Scene.material/1, and the",
+    "gate cross-checks that mapping against the Elixir itself rather than against this comment."
+  ],
+  "contract": "material/1: no receipt_ref -> fog; OBSERVED -> lit_solid; STRUCTURAL_RECONSTRUCTION -> seamed_solid; REDUCED_MODEL|DERIVED -> translucent; SIMULATED -> staged; UNKNOWN -> fog",
+  "nodes": [
+    {
+      "id": "measured-motor-trace",
+      "truth_class": "OBSERVED",
+      "receipt_ref": "docs/receipts/control-plane/phase9_2.7_green_2026-07-27.txt",
+      "evidence_class": "A",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 9, "y": 8,
+      "expect_material": "lit_solid"
+    },
+    {
+      "id": "reconstructed-hook",
+      "truth_class": "STRUCTURAL_RECONSTRUCTION",
+      "receipt_ref": "docs/receipts/control-plane/phase9_3.2_green_2026-07-27.txt",
+      "evidence_class": "B",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 15, "y": 8,
+      "expect_material": "seamed_solid"
+    },
+    {
+      "id": "reduced-two-state",
+      "truth_class": "REDUCED_MODEL",
+      "receipt_ref": "docs/receipts/control-plane/phase9_3.5_green_2026-07-27.txt",
+      "evidence_class": "C",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 21, "y": 8,
+      "expect_material": "translucent"
+    },
+    {
+      "id": "derived-residual",
+      "truth_class": "DERIVED",
+      "receipt_ref": "docs/receipts/control-plane/phase9_3.6_green_2026-07-27.txt",
+      "evidence_class": "C",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 27, "y": 8,
+      "expect_material": "translucent"
+    },
+    {
+      "id": "simulated-run",
+      "truth_class": "SIMULATED",
+      "receipt_ref": "docs/receipts/control-plane/phase9_4.1_green_2026-07-27.txt",
+      "evidence_class": "C",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 33, "y": 8,
+      "expect_material": "staged"
+    },
+    {
+      "id": "no-receipt-at-all",
+      "truth_class": "OBSERVED",
+      "receipt_ref": "",
+      "evidence_class": "pending",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 15, "y": 20,
+      "expect_material": "fog",
+      "note": "F24. It CLAIMS to be observed. It has no receipt, so it is fog — the claim does not survive the missing receipt, and the render is where that becomes visible without reading a word."
+    },
+    {
+      "id": "class-unknown",
+      "truth_class": "UNKNOWN",
+      "receipt_ref": "docs/receipts/control-plane/phase9_4.2_green_2026-07-27.txt",
+      "evidence_class": "pending",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 27, "y": 20,
+      "expect_material": "fog",
+      "note": "F24 again, the other half: a receipt it has, a truth_class it does not."
+    },
+    {
+      "id": "probed-and-up",
+      "truth_class": "OBSERVED",
+      "receipt_ref": "docs/receipts/control-plane/phase9_4.4_green_2026-07-27.txt",
+      "evidence_class": "A",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "live": { "up": true },
+      "x": 9, "y": 14,
+      "expect_material": "lit_solid",
+      "expect_liveness": "up",
+      "note": "F26. Liveness is drawn ONLY because a real probe answered."
+    },
+    {
+      "id": "never-probed",
+      "truth_class": "OBSERVED",
+      "receipt_ref": "docs/receipts/control-plane/phase9_4.5_green_2026-07-27.txt",
+      "evidence_class": "A",
+      "captured_at": "2026-07-27T00:00:00Z",
+      "x": 33, "y": 14,
+      "expect_material": "lit_solid",
+      "expect_liveness": "not_probed",
+      "note": "F26's refusal. Same material as the one beside it, and NO liveness mark — because nothing probed it. Absence of a probe is not evidence of health."
+    }
+  ]
+}

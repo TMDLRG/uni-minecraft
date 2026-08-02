@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNI Broadcast - On-Air Stage (OBS capture)</title>
+<!--
+  stage.html - the ON-AIR guest layout page. OBS captures this as the GUESTS scene (browser-source, 1920x1080).
+  Authored against docs/UNI_PRODUCTION_PLATFORM.md:
+    - subscribe to the ON-AIR LiveKit room only (uni-bcast-livekit, ws :7880), subscribe-only viewer token.
+    - lay remote participant video tiles out talking-head (1) or panel (N) with CSS GRID / 2D only (NO WebGL),
+      per ADR-PROD-005 (WebGL renders black in OBS capture; 2D-canvas/CSS captures cleanly).
+    - draw a name lower-third per tile.
+    - TRANSPARENT background so OBS composites it over the underlying scene.
+    - poll :8099/overlays/state.json (the broadcast.json alias) for the layout hint + show staleness honestly.
+
+  Served by uni-bcast-overlays at :8099/overlays/stage.html
+  Loaded with: ?room=onair&ws=<livekit-ws>&token=<subscribe-only viewer token>
+
+  Status: DESIGN / reference. Not deployed. In-broadcast behavior pending confirmation on a real run.
+-->
+<!-- SRI: real SHA-384 of the vendored livekit-client 2.5.7 UMD (production/overlays/vendor/), computed 2026-07-12 from cdn.jsdelivr.net; see that dir's README.md for provenance -->
+<script src="/vendor/livekit-client-2.5.7.umd.min.js" integrity="sha384-8MchKu+uhKf1LR8KGk472KudVHw8lg9vmXj/XW6mPzWLSXlVTlnW/+oJixUtGYbX" crossorigin="anonymous"></script>
+<style>
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden;
+    font:16px/1.3 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:#fff}
+  /* The stage fills the OBS canvas; background stays transparent for compositing. */
+  #grid{
+    position:fixed; inset:0; display:grid; gap:14px; padding:28px;
+    grid-template-columns:1fr;                 /* default talking-head; JS overrides */
+    align-content:center; justify-items:center;
+  }
+  .tile{
+    position:relative; width:100%; height:100%; background:#000; border-radius:12px; overflow:hidden;
+    box-shadow:0 8px 30px rgba(0,0,0,.45); aspect-ratio:16/9; max-height:100%;
+  }
+  .tile video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+  /* name lower-third per tile */
+  .l3{
+    position:absolute; left:14px; bottom:14px; max-width:70%;
+    background:linear-gradient(90deg, rgba(8,12,22,.92), rgba(8,12,22,.55));
+    border-left:4px solid #4da3ff; border-radius:6px; padding:7px 12px;
+    backdrop-filter:blur(2px);
+  }
+  .l3 .name{font-weight:700; font-size:20px; letter-spacing:.2px; text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .l3 .role{font-size:13px; color:#bcd2f2; margin-top:1px}
+  .tile.compact .l3{left:8px;bottom:8px;padding:4px 9px}
+  .tile.compact .l3 .name{font-size:15px}
+  .tile.compact .l3 .role{display:none}
+  /* "speaking" emphasis (LiveKit active speaker) - subtle ring, no layout shift */
+  .tile.speaking{outline:3px solid #3ddc84; outline-offset:-3px}
+  /* honest staleness / diagnostic - tiny, corner, only meaningful to the operator */
+  #diag{position:fixed; right:8px; bottom:6px; font-size:11px; color:rgba(255,255,255,.5);
+    background:rgba(0,0,0,.25); padding:2px 6px; border-radius:4px; pointer-events:none}
+  #diag.warn{color:#ffcc4d}
+  /* when no guests are on air, render nothing (transparent) so OBS shows the underlying scene */
+  #grid:empty + #diag{color:rgba(255,255,255,.35)}
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<div id="diag">stage: starting</div>
+
+<script>
+(function(){
+  "use strict";
+  const LK = window.LivekitClient || window.LiveKitClient;
+  const qs = new URLSearchParams(location.search);
+  // Unconditionally wss:// - this carries live on-air media; never fall back to plaintext ws://.
+  const WS_URL = qs.get("ws") || "wss://" + location.hostname + ":7880";
+  const TOKEN = qs.get("token") || "";
+  const ROOM_HINT = qs.get("room") || "onair";
+  const STATE_URL = qs.get("state") || "/overlays/state.json";
+
+  const grid = document.getElementById("grid");
+  const diag = document.getElementById("diag");
+
+  // tiles keyed by participant identity
+  const tiles = new Map();   // identity -> { el, video, nameEl }
+  let layoutHint = null;     // from broadcast.json guests.layout, if any
+  let lastStateOk = 0;
+
+  function setDiag(text, warn){
+    diag.textContent = text;
+    diag.className = warn ? "warn" : "";
+  }
+
+  // ---- layout: count-driven grid, optional broadcast.json override ----------
+  function relayout(){
+    const n = tiles.size;
+    let cols = 1, compact = false;
+    const hint = layoutHint;
+    if(hint === "talking-head"){ cols = 1; }
+    else if(hint === "panel-2"){ cols = 2; }
+    else if(hint === "panel-grid"){ cols = n <= 4 ? 2 : 3; }
+    else if(hint === "panel-wall"){ cols = Math.ceil(Math.sqrt(n)); compact = true; }
+    else {
+      // no hint -> derive from count (DESIGN.md section 5 table)
+      if(n <= 1) cols = 1;
+      else if(n === 2) cols = 2;
+      else if(n <= 4) cols = 2;
+      else if(n <= 6) cols = 3;
+      else { cols = Math.ceil(Math.sqrt(n)); compact = true; }
+    }
+    grid.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+    // talking-head: constrain the single tile so it does not fill the whole frame edge to edge
+    if(n === 1 && (hint === "talking-head" || hint === null)){
+      grid.style.gridTemplateColumns = "minmax(0, 70vw)";
+    }
+    tiles.forEach(t=>{ t.el.classList.toggle("compact", compact); });
+    setDiag("stage: " + n + " on air | " + (cols) + " col" + (hint ? " | " + hint : ""), false);
+  }
+
+  function addTile(participant){
+    if(tiles.has(participant.identity)) return tiles.get(participant.identity);
+    const el = document.createElement("div"); el.className = "tile";
+    const video = document.createElement("video"); video.autoplay = true; video.playsInline = true; video.muted = true;
+    const l3 = document.createElement("div"); l3.className = "l3";
+    const name = document.createElement("div"); name.className = "name";
+    const role = document.createElement("div"); role.className = "role";
+    name.textContent = participant.name || participant.identity || "Guest";
+    // role/kicker can be carried in participant metadata (JSON) if the adapter sets it
+    try { const md = participant.metadata ? JSON.parse(participant.metadata) : null; if(md && md.role) role.textContent = md.role; }
+    catch(_){}
+    l3.appendChild(name); l3.appendChild(role);
+    el.appendChild(video); el.appendChild(l3);
+    grid.appendChild(el);
+    const rec = { el, video, nameEl:name };
+    tiles.set(participant.identity, rec);
+    relayout();
+    return rec;
+  }
+
+  function removeTile(identity){
+    const rec = tiles.get(identity);
+    if(!rec) return;
+    rec.el.style.transition = "opacity .35s ease";
+    rec.el.style.opacity = "0";
+    setTimeout(()=>{ try{ rec.el.remove(); }catch(_){}; }, 360);
+    tiles.delete(identity);
+    relayout();
+  }
+
+  function attachTrack(participant, track){
+    if(track.kind !== "video") return;            // audio goes to the program via OBS/mixer, not this page
+    const rec = addTile(participant);
+    track.attach(rec.video);
+  }
+
+  // ---- LiveKit connect (subscribe-only) -------------------------------------
+  async function connect(){
+    if(typeof LK === "undefined"){ setDiag("stage: livekit lib failed to load", true); return; }
+    if(!TOKEN){ setDiag("stage: no viewer token", true); return; }
+    const room = new LK.Room({ adaptiveStream: true });
+
+    room.on(LK.RoomEvent.TrackSubscribed, (track, pub, participant)=> attachTrack(participant, track));
+    room.on(LK.RoomEvent.TrackUnsubscribed, (track, pub, participant)=>{
+      if(track.kind === "video"){
+        // if the participant has no more video, drop the tile
+        const stillHasVideo = Array.from(participant.videoTrackPublications.values()).some(p=>p.isSubscribed && p.track);
+        if(!stillHasVideo) removeTile(participant.identity);
+      }
+    });
+    room.on(LK.RoomEvent.ParticipantDisconnected, (participant)=> removeTile(participant.identity));
+    room.on(LK.RoomEvent.ActiveSpeakersChanged, (speakers)=>{
+      const ids = new Set(speakers.map(s=>s.identity));
+      tiles.forEach((rec, id)=> rec.el.classList.toggle("speaking", ids.has(id)));
+    });
+    room.on(LK.RoomEvent.Disconnected, ()=> setDiag("stage: disconnected", true));
+
+    try {
+      await room.connect(WS_URL, TOKEN, { autoSubscribe: true });
+      setDiag("stage: connected, waiting for guests", false);
+      // render any participants already publishing
+      room.remoteParticipants.forEach(p=>{
+        p.videoTrackPublications.forEach(pub=>{ if(pub.track) attachTrack(p, pub.track); });
+      });
+    } catch(e){
+      setDiag("stage: connect failed (" + String(e && e.message || e) + ")", true);
+    }
+  }
+
+  // ---- broadcast.json poll for the layout hint (honest staleness) -----------
+  async function pollState(){
+    try {
+      const r = await fetch(STATE_URL + "?t=" + Date.now(), { cache:"no-store" });
+      if(r.ok){
+        const s = await r.json();
+        const hint = (s && s.guests && s.guests.layout) ? s.guests.layout
+                   : (s && s.nowPlaying && s.nowPlaying.layout) ? s.nowPlaying.layout : null;
+        if(hint !== layoutHint){ layoutHint = hint; relayout(); }
+        lastStateOk = Date.now();
+      }
+    } catch(_){ /* state is advisory; count-driven layout still works without it */ }
+    // staleness honesty: if state has not been read in >5s, note it (but keep rendering)
+    if(lastStateOk && Date.now() - lastStateOk > 5000 && tiles.size > 0){
+      setDiag("stage: " + tiles.size + " on air | state stale", true);
+    }
+    setTimeout(pollState, 1000);
+  }
+
+  connect();
+  pollState();
+})();
+</script>
+</body>
+</html>
