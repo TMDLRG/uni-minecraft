@@ -1,0 +1,26 @@
+erl_crash.dump — EXAMINED 2026-07-28, and it is benign.
+
+A work-left-behind sweep found a 4,852,467-byte BEAM crash dump at the repository root, dated
+2026-07-27 21:40 — the middle of the L4/L5 work. Gitignored, therefore invisible to `git status`,
+therefore never accounted for. An unexamined crash from the middle of a build is not something to
+leave lying there on the assumption that it does not matter.
+
+WHAT IT WAS, decoded from the dump's own slogan:
+
+  Runtime terminating during boot ({badarg,[{io,put_chars,[standard_error, ...
+
+  ** (EXIT from #PID<0.94.0>) an exception was raised:
+      ** (ArgumentError) errors were found at the given arguments:
+    * 1st argument: the device does not exist
+      (stdlib 7.3) io.erl:202: :io.put_chars(:standard_error, ...)
+
+The VM died while trying to WRITE AN ERROR MESSAGE to `standard_error`, and standard_error did
+not exist. That is a stdio artefact of running `mix` under a shell that closed or redirected the
+handle — not a defect in any code under test, and not a lost result: the underlying ArgumentError
+was itself already being reported when the write failed.
+
+CONCLUSION: no action required in the codebase. The file is build detritus. Deleting it is the
+operator's call and not an agent's, so it stays where it is, now with an account of what it was.
+
+WHAT THIS DOES NOT ESTABLISH: which command produced it. The dump records the failure, not the
+invocation, and guessing would be worse than saying so.

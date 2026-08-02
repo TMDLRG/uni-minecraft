@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - Lower-third overlay</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* Animated lower-third (name strap). Crossfades + rises on visible. */
+      .l3-wrap {
+        position: fixed;
+        left: 64px;
+        bottom: 96px;
+        max-width: 56vw;
+      }
+      .l3 {
+        background: var(--panel);
+        backdrop-filter: blur(8px) saturate(120%);
+        -webkit-backdrop-filter: blur(8px) saturate(120%);
+        border-left: 5px solid var(--accent);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 14px 22px 16px 20px;
+      }
+      .l3 .kicker {
+        margin-bottom: 6px;
+      }
+      .l3 .title {
+        font-size: 34px;
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: 0.01em;
+      }
+      .l3 .subtitle {
+        margin-top: 4px;
+        font-size: 19px;
+        font-weight: 500;
+        color: var(--ink-dim);
+      }
+      /* Tone overrides the left border + the kicker colour. */
+      .l3.tone-ok {
+        border-left-color: var(--ok);
+      }
+      .l3.tone-warn {
+        border-left-color: var(--warn);
+      }
+      .l3.tone-crit {
+        border-left-color: var(--crit);
+      }
+      .l3.tone-unknown {
+        border-left-color: var(--unknown);
+      }
+      .l3.tone-ok .kicker {
+        color: var(--ok);
+      }
+      .l3.tone-warn .kicker {
+        color: var(--warn);
+      }
+      .l3.tone-crit .kicker {
+        color: var(--crit);
+      }
+      .l3.tone-unknown .kicker {
+        color: var(--unknown);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="l3-wrap">
+      <div class="l3 view rise" id="l3">
+        <div class="kicker" id="kicker"></div>
+        <div class="title" id="title"></div>
+        <div class="subtitle" id="subtitle"></div>
+      </div>
+    </div>
+
+    <script>
+      // ---- Lower-third overlay ----
+      // Renders state.lowerThird {visible,kicker,title,subtitle,tone}.
+      // Crossfades in when visible & has a title; out otherwise. Honest: if the
+      // feed is stale or missing, hide (a name strap must never linger on fake data).
+
+      var STALE_MS = 8000;
+      var TONES = ['ok', 'warn', 'crit', 'unknown'];
+
+      var el = {
+        box: document.getElementById('l3'),
+        kicker: document.getElementById('kicker'),
+        title: document.getElementById('title'),
+        subtitle: document.getElementById('subtitle'),
+      };
+
+      function setText(node, value) {
+        var v = value == null ? '' : String(value);
+        if (node.textContent !== v) node.textContent = v;
+        node.style.display = v.trim() === '' ? 'none' : '';
+      }
+
+      function setTone(tone) {
+        TONES.concat(['accent']).forEach(function (t) {
+          el.box.classList.remove('tone-' + t);
+        });
+        el.box.classList.add('tone-' + (TONES.indexOf(tone) >= 0 ? tone : 'accent'));
+      }
+
+      function show(on) {
+        el.box.classList.toggle('on', !!on);
+      }
+
+      function fresh(updatedUtc) {
+        var t = updatedUtc ? Date.parse(updatedUtc) : NaN;
+        return isFinite(t) && Date.now() - t < STALE_MS;
+      }
+
+      function render(state) {
+        var l3 = (state && state.lowerThird) || null;
+        var ok = !!l3 && l3.visible === true && fresh(state.updatedUtc);
+        var hasContent =
+          ok && ((l3.title && String(l3.title).trim()) || (l3.kicker && String(l3.kicker).trim()));
+
+        if (!hasContent) {
+          show(false);
+          return;
+        }
+        setText(el.kicker, l3.kicker);
+        setText(el.title, l3.title);
+        setText(el.subtitle, l3.subtitle);
+        setTone(l3.tone);
+        show(true);
+      }
+
+      function tick() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(render)
+          .catch(function () {
+            show(false);
+          });
+      }
+
+      tick();
+      setInterval(tick, 600);
+    </script>
+  </body>
+</html>

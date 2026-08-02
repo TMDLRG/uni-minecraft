@@ -1,0 +1,178 @@
+{
+ "schema": "uni.film.cut_manifest.v1",
+ "cut": "short",
+ "built_utc": "2026-08-02T02:01:43.168Z",
+ "forensic_capture_utc": "2026-08-02T01:10:13.645Z",
+ "voice": "en_US-lessac-medium.onnx",
+ "scenes": [
+  {
+   "id": "s01_title",
+   "plate": "title",
+   "png": "lab/film/welcome/frames/short_s01_title.png",
+   "wav": "lab/film/welcome/audio/short_s01_title.wav",
+   "narration": "This is a laboratory that is built to be caught being wrong. Nothing in the next few minutes is a claim you are asked to accept. Every frame shows a question, the command that answers it, and exactly what that command printed.",
+   "words": 42,
+   "audio_seconds": 11.668027,
+   "hold_seconds": 12.568,
+   "png_sha256": "4fc638c058ed0a4d54ed86535c9223401d1f29bea935470c4280224ed00e1a81",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": null
+  },
+  {
+   "id": "s02_mission",
+   "plate": "intent",
+   "png": "lab/film/welcome/frames/short_s02_mission.png",
+   "wav": "lab/film/welcome/audio/short_s02_mission.wav",
+   "narration": "That is what this work is for. It is stated in full, and it is marked on screen as intent, because none of it has been measured. An aspiration presented without saying which kind of statement it is would be the first overstatement in the film.",
+   "words": 46,
+   "audio_seconds": 13.049615,
+   "hold_seconds": 14.45,
+   "png_sha256": "0f22f87888f39883878b00f1ae2b85105e08103961b79a318fa9ed61719af701",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": null
+  },
+  {
+   "id": "s03_gates",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s03_gates.png",
+   "wav": "lab/film/welcome/audio/short_s03_gates.wav",
+   "narration": "Here is the first one. The question, the command, and the line it printed. The rule being enforced is narrow: a check must exit zero only when it also printed the word PASS. A green light wired to nothing is the thing this refuses to allow.",
+   "words": 46,
+   "audio_seconds": 13.374694,
+   "hold_seconds": 14.275,
+   "png_sha256": "e7be6a0e51c88ee520104a8521b2051469dcc930114d2ade5f40e1bee9ee86ba",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "gates.runner"
+  },
+  {
+   "id": "s04_gap",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s04_gap.png",
+   "wav": "lab/film/welcome/audio/short_s04_gap.wav",
+   "narration": "The same instrument, asked a harder question. Of the checks this project registers, that is how many appear in its permanent evidence record. You can see the number. Nobody is going to characterise it for you.",
+   "words": 36,
+   "audio_seconds": 10.971429,
+   "hold_seconds": 12.571,
+   "png_sha256": "09e81b4e16a0bd8baf28c391b6b21f9f07d92185770987ac2a372690d95f85e3",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "gap.registry_ledger"
+  },
+  {
+   "id": "s05_door",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s05_door.png",
+   "wav": "lab/film/welcome/audio/short_s05_door.wav",
+   "narration": "This one is a program attempting to broadcast, deliberately, and recording what stops it. The line on screen is its own result, in its own words. It is the program naming its limit rather than its strength.",
+   "words": 37,
+   "audio_seconds": 11.052698,
+   "hold_seconds": 12.353,
+   "png_sha256": "ca1b21f43f4625e1e190f2a93b9a34d80c4ce4467e7edd3f0957237b5541a1a4",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "golive.refuses_me"
+  },
+  {
+   "id": "s06_witness",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s06_witness.png",
+   "wav": "lab/film/welcome/audio/short_s06_witness.wav",
+   "narration": "A record that only its author can vouch for is worth less than one a stranger can check. This command counts the independent parties corroborating this project's evidence. The count is on screen.",
+   "words": 33,
+   "audio_seconds": 10.46059,
+   "hold_seconds": 11.961,
+   "png_sha256": "fc8f3f2dda2e665067b9d340d100642c441486a0376feb81839a629e7c62cb95",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "witness.blocked"
+  },
+  {
+   "id": "s07_scaffold",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s07_scaffold.png",
+   "wav": "lab/film/welcome/audio/short_s07_scaffold.wav",
+   "narration": "This is the check that would test the colony — the part that runs inside a world. What you are looking at is its own source, printed as it is written. It refuses to run, and it says so in the file rather than anywhere more comfortable.",
+   "words": 47,
+   "audio_seconds": 13.548844,
+   "hold_seconds": 14.949,
+   "png_sha256": "1e7fb4586f7ea987112f96a134c352ca13a6c941100f48e08285311dfe7d9341",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "pureworld.scaffold"
+  },
+  {
+   "id": "s08_self",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s08_self.png",
+   "wav": "lab/film/welcome/audio/short_s08_self.wav",
+   "narration": "The film is subject to the same treatment. This check forbids certain words, requires every claim to carry a receipt, and re-runs every number against the file it came from. The second figure counts deliberate sabotage it was required to catch.",
+   "words": 41,
+   "audio_seconds": 13.212154,
+   "hold_seconds": 14.512,
+   "png_sha256": "298c69ff18c6c5adb2528c4d69b8d2a4e178c75c1da8ce0a3e8d95b07f014cd0",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "film.qc"
+  },
+  {
+   "id": "s09_tokens",
+   "plate": "measurement",
+   "png": "lab/film/welcome/frames/short_s09_tokens.png",
+   "wav": "lab/film/welcome/audio/short_s09_tokens.wav",
+   "narration": "Not one number in this film was typed. Each is an expression evaluated against a real file while the film was being built. This project has already published counts that were false within hours of being written, which is why they are no longer written.",
+   "words": 45,
+   "audio_seconds": 12.921905,
+   "hold_seconds": 14.322,
+   "png_sha256": "061e9d7cd5bd821254f74f5062340958e44532282f37320c02c9104a48d920f5",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": "film.tokens"
+  },
+  {
+   "id": "s10_falsify",
+   "plate": "title",
+   "png": "lab/film/welcome/frames/short_s10_falsify.png",
+   "wav": "lab/film/welcome/audio/short_s10_falsify.wav",
+   "narration": "Everything you have just seen is a command you can run. If one of them prints something different on your machine, that is the most valuable thing you could send back. Being caught being wrong is not the failure here. It is the product working.",
+   "words": 45,
+   "audio_seconds": 12.341406,
+   "hold_seconds": 13.941,
+   "png_sha256": "5ad0ee5f77160f4e92421a846e86ed32f9d6d1651997d7b7c7ecc71f076ef933",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": null
+  },
+  {
+   "id": "s11_close",
+   "plate": "title",
+   "png": "lab/film/welcome/frames/short_s11_close.png",
+   "wav": "lab/film/welcome/audio/short_s11_close.wav",
+   "narration": "That is the honest position. The instruments are built, the record is kept, and the hardest questions are still open and still marked open. You have seen the evidence for that in the same form as everything else. Come and check it yourself.",
+   "words": 43,
+   "audio_seconds": 12.527166,
+   "hold_seconds": 14.527,
+   "png_sha256": "15530a21ae2cc1ee0a5d109cf126048fb8bd92842d4562e00e21764a28d5b8e9",
+   "voice": "en_US-lessac-medium.onnx",
+   "probe": null
+  }
+ ],
+ "output": "lab/film/welcome/output/WELCOME_TO_UNI_LABS_short.mp4",
+ "output_sha256": "3739bcf02e45e395af83c064955303aa4ea3f7f7dde9312a02239d22b3585669",
+ "ffprobe": {
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+   {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "r_frame_rate": "30/1"
+   },
+   {
+    "codec_name": "aac",
+    "r_frame_rate": "0/0"
+   }
+  ],
+  "format": {
+   "duration": "150.418667",
+   "size": "4520122"
+  }
+ },
+ "note": [
+  "Every frame's numbers were resolved from tokens.cjs at build time and every PRINTS band is the",
+  "recorded stdout of a probe in capture/forensic_latest.json. No number in this film was typed."
+ ]
+}

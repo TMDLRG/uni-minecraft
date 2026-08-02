@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <rect x="0" y="0" width="14" height="1080" fill="#9a92ee"/>
+  <text x="120" y="122" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3"
+        fill="#9a92ee" font-weight="600">VERBATIM FROM THE SOURCE</text>
+  <text x="120" y="176" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="32" fill="#dfe5ee">The verdict words a ledger row may carry, and the description shipped beside them</text>
+  <rect x="112" y="214" width="1696" height="142" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="140" y="260" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "enum": ["PASS", "PARTIAL", "FAIL", "WITHHELD", "PENDING"],</text>
+  <text x="140" y="294" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "description": "Honest verdict vocabulary. Never percent-scored. WITHHELD = a</text>
+  <text x="140" y="328" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">claim was withdrawn; PENDING = registered but not run."</text>
+  <text x="120" y="984" font-family="Consolas,Menlo,monospace" font-size="22" fill="#9aa6b6">production/schemas/gate_row.schema.json:37-38</text>
+  <text x="120" y="1022" font-family="Consolas,Menlo,monospace" font-size="19" fill="#9aa6b6">sha256 7b879b357c2cb8ea8629e6fbf6c7805a725bc64032cbd75e…</text>
+</svg>

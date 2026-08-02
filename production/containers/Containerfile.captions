@@ -1,0 +1,52 @@
+# Containerfile.captions -- the uni-bcast-captions image: faster-whisper (CTranslate2) live captioner,
+# built to localhost/uni-bcast-captions:latest.
+#
+# DESIGN/REFERENCE, status: pending (authored, not yet built/validated on a node). Pulls the program
+# audio from the relay, transcribes it with faster-whisper, and writes caption lines into the shared
+# broadcast.json spool for the caption overlay (+ optionally a YouTube caption track). Real-time
+# MULTILINGUAL caption latency/quality is GAP G-CAP -- unmeasured until run on the node hardware.
+#
+# Encoder/compute: CPU int8 is the zero-GPU floor (UNI_CAP_COMPUTE_TYPE=int8); on a GPU node set
+# UNI_CAP_COMPUTE_TYPE=float16 and pass the device via the quadlet PodmanArgs (DEPLOY.md step 10).
+
+FROM python:3.12-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    UNI_CAP_MODEL=small \
+    UNI_CAP_COMPUTE_TYPE=int8 \
+    UNI_CAP_LANG=en \
+    UNI_CAP_TRANSLATE_LANGS=es,fr,it,pt,hi \
+    UNI_BROADCAST_DIR=/var/lib/uni/broadcast
+
+# ffmpeg pulls the program audio (SRT/RTMP) and decodes to PCM for the worker; faster-whisper +
+# ctranslate2 do the transcription with no torch dependency (small, CPU-friendly). argos-translate is
+# the CPU-only offline translation floor (GAP G-CAP: wired here, latency/quality unmeasured on node
+# hardware until a captured run exists).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ffmpeg ca-certificates tini \
+    && pip install --no-cache-dir "faster-whisper>=1.0" \
+    && pip install --no-cache-dir "argostranslate>=1.9" \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Pre-cache the default model into the image so first boot is offline (charter: the box does not
+# auto-pull at run time). Override UNI_CAP_MODEL at build to bake a different size.
+RUN python -c "from faster_whisper import WhisperModel; WhisperModel('${UNI_CAP_MODEL}', compute_type='int8')" || \
+    echo "[build] model pre-cache skipped (no network in build chroot); it will download on first run"
+
+# Pre-install argos-translate en->{es,fr,it,pt,hi} language packages (matching tts.py's VOICE_MAP
+# languages) into the image so the running container is offline-capable, same charter as the whisper
+# model pre-cache above. Best-effort: the build chroot may have no network.
+RUN python -c "\
+import argostranslate.package as p; \
+p.update_package_index(); \
+avail = p.get_available_packages(); \
+targets = '${UNI_CAP_TRANSLATE_LANGS}'.split(','); \
+[p.install_from_path(m.download()) for t in targets for m in avail if m.from_code == 'en' and m.to_code == t]" || \
+    echo "[build] argos-translate language packages skipped (no network in build chroot); they will download on first run"
+
+COPY caption_worker.py /opt/caption_worker.py
+
+# The spool is a read-WRITE bind (the worker updates broadcast.json caption.* in place).
+VOLUME ["/var/lib/uni/broadcast"]
+
+ENTRYPOINT ["/usr/bin/tini", "--", "python", "/opt/caption_worker.py"]

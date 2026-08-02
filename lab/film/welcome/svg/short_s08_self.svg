@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">Is this film itself checked?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node lab/film/welcome/qc/verify_welcome_film.cjs --prove</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="154" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">GATE: PASS - welcome-film-qc, 20/20 checks, 17/17 mutations caught, --prove clean</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">    must work at render time; nothing here opens a socket or runs one.</text>
+  <text x="136" y="554" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  · These are the operator's, and no gate stands in for them.</text>
+  <text x="136" y="584" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  elapsed 14004 ms (budget 30000)</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">lab/film/welcome/qc/verify_welcome_film.cjs — and its mutation suite, which breaks the film on purpose to see whether the check notices</text>
+  
+</svg>

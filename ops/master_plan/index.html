@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI · Master Plan (live)</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#141922; --panel2:#1b212c; --ink:#e6edf3; --dim:#8b98a9;
+    --line:#242c38; --accent:#5eb0ff; --gold:#ffcf5e;
+    --ok:#3fb950; --warn:#e3a008; --bad:#f85149; --grey:#6e7b8c;
+    --proven:#3fb950; --designed:#5eb0ff; --hypo:#c778dd; --nyb:#6e7b8c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 22px 80px}
+  header{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 18px;border-bottom:1px solid var(--line);padding-bottom:16px}
+  h1{font-size:26px;margin:0;letter-spacing:.2px}
+  h1 .sub{color:var(--dim);font-weight:400;font-size:15px}
+  .meta{margin-left:auto;color:var(--dim);font-size:13px;text-align:right}
+  .meta code{color:var(--ink)}
+  .northstar{margin:18px 0 6px;color:var(--ink);font-size:15px}
+  .fence-banner{margin:16px 0 8px;padding:12px 16px;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;background:var(--panel);color:var(--ink);font-size:14px}
+  .fence-banner b{color:var(--gold)}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:.14em;color:var(--dim);margin:34px 0 12px;font-weight:700}
+  .track{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin:12px 0;overflow:hidden}
+  .track > .thead{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}
+  .track .tid{font-weight:800;color:var(--accent);font-size:15px}
+  .track .ttitle{font-weight:600}
+  .track .twhen{margin-left:auto;color:var(--dim);font-size:12px}
+  .item{display:flex;gap:12px;align-items:flex-start;padding:11px 16px;border-top:1px solid var(--line)}
+  .item:first-child{border-top:none}
+  .item .iid{color:var(--dim);font-variant-numeric:tabular-nums;min-width:26px;font-weight:700;font-size:13px;padding-top:2px}
+  .item .ibody{flex:1;min-width:0}
+  .item .ititle{font-weight:600}
+  .item .inote{color:var(--dim);font-size:13px;margin-top:3px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip{font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:20px;border:1px solid var(--line);white-space:nowrap}
+  .chip.status{color:#0b0e14}
+  .s-DONE,.v-PASS{background:var(--ok);border-color:var(--ok)}
+  .s-IN_PROGRESS,.v-PARTIAL{background:var(--warn);border-color:var(--warn)}
+  .s-BLOCKED,.v-FAIL,.v-\.FAIL{background:var(--bad);border-color:var(--bad)}
+  .s-PENDING,.v-WITHHELD{background:var(--grey);border-color:var(--grey)}
+  .fence{background:transparent}
+  .f-proven{color:var(--proven);border-color:var(--proven)}
+  .f-designed{color:var(--designed);border-color:var(--designed)}
+  .f-hypothesized{color:var(--hypo);border-color:var(--hypo)}
+  .f-not-yet-built{color:var(--nyb);border-color:var(--nyb)}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  .ledger-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  th,td{text-align:left;padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);color:var(--dim);text-transform:uppercase;font-size:11px;letter-spacing:.1em;border-top:none}
+  td.ph{font-weight:700;color:var(--accent);white-space:nowrap}
+  td .rc{color:var(--dim);font-size:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}.meta{margin-left:0;text-align:left}}
+  .card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 16px}
+  .card h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim)}
+  .card ul{margin:0;padding-left:18px} .card li{margin:5px 0;font-size:13.5px;color:var(--ink)}
+  .card .role{color:var(--dim)}
+  footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--dim);font-size:12px}
+  .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;box-shadow:0 0 0 0 rgba(63,185,80,.6);animation:p 2.4s infinite}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(63,185,80,.5)}70%{box-shadow:0 0 0 7px rgba(63,185,80,0)}100%{box-shadow:0 0 0 0 rgba(63,185,80,0)}}
+  .err{color:var(--warn);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>UNI · Master Plan <span class="sub">live collaboration surface</span></h1>
+    <div class="meta">
+      <div><span class="pulse"></span><span id="fresh">loading…</span></div>
+      <div>branch <code id="branch">—</code> · head <code id="head">—</code></div>
+    </div>
+  </header>
+
+  <p class="northstar" id="northstar"></p>
+  <div class="fence-banner"><b>Claim fence (binding):</b> <span id="claimfence"></span></div>
+
+  <h2>Tracks</h2>
+  <div id="tracks"></div>
+
+  <h2>Science ledger <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--dim)">— honest, 4-value fenced</span></h2>
+  <div class="ledger-wrap"><table id="ledger">
+    <thead><tr><th>Phase</th><th>Result</th><th>Fence</th><th>What / receipt</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h2>Collaborate here</h2>
+  <div class="grid">
+    <div class="card" id="collab"><h3>How agents work on this page</h3><ul></ul></div>
+    <div class="card" id="constellation"><h3>The constellation — 4 repos, one math</h3><ul></ul></div>
+  </div>
+
+  <footer>
+    <div id="legend"></div>
+    <div style="margin-top:8px">Sources at this URL: <code>index.html</code> (stream/human) · <code>plan.md</code> (LLM text) · <code>state.json</code> (machine). No MCP, no login. Where prose and a committed receipt disagree, the receipt wins.</div>
+    <div id="genby" style="margin-top:6px"></div>
+  </footer>
+</div>
+
+<script>
+/* Embedded fallback so the page renders even without a fetchable state.json (file://, offline).
+   A live fetch of ./state.json overrides this when served. */
+const FALLBACK = {"schema":"uni.masterplan.v1","generated_at":"2026-07-11T02:20:00Z","generated_by":"embedded self-contained snapshot (served state.json overrides live)","authoritative_clock_note":"fleet UTC confirmed via uni-lab podman_ps envelope at 2026-07-11T02:09Z","branch":"lab/ozone-life-uni-hard-science","head":"ff6924f","claim_fence":"Passing a gate demonstrates behaviour / viability-learning, never experience / consciousness / humanness. Every float is a model variable, never a felt state.","north_star":"Inference from the deepest/slowest viability core outward; a full human body in a true-signal world; prove UNI learns to keep its body viable, without goal-setting or forced priors.","tracks":[{"id":"A","title":"Tonight (bounded)","when":"2026-07-11","items":[{"id":"A1","title":"Honesty lock","status":"DONE","fence":"proven","evidence":"commit ff6924f","note":"P1 magnitude corrected to its receipt (~4.5x, not 25x); Phase-2 §16 = PROVISIONAL PARTIAL/FAIL on G6; ground-model brief banner-corrected."},{"id":"A2","title":"Live master-plan page","status":"IN_PROGRESS","fence":"not-yet-built","note":"This surface; deploy to uni-lab at a plain URL. Live-update timer follow-on."},{"id":"A3","title":"Conclude Phase-2 RED (evidence-first)","status":"BLOCKED","fence":"not-yet-built","note":"Blocked on colony lab-box (uni@10.190.245.122) SSH access. Pull ~14-day JSONL, save minds, commit instruments, then tear down (keep volumes+baselines)."},{"id":"A4","title":"Survival-C true-signal lineage spec","status":"PENDING","fence":"designed","note":"Curriculum-free, vision-primary, epistemic-drive. No FE-code until /lab-team-review + equivalence gate."}]},{"id":"B","title":"The deeper design (program; validate THRICE)","when":"multi-week","items":[{"id":"B1","title":"Developmental-ladder architecture (tail-up, multi-frequency, growing)","status":"PENDING","fence":"designed"},{"id":"B2","title":"Full human sensorium: binocular eyes x2 -> learned :scene port","status":"PENDING","fence":"designed"},{"id":"B3","title":"Survival-only priors + epistemic info-gain drive + morphogenesis","status":"PENDING","fence":"hypothesized","note":"The plateau-break bet: to prove, not assume."},{"id":"B4","title":"Full UNI.Mind integration + C10 equivalence gate","status":"PENDING","fence":"designed"},{"id":"B5","title":"Prove it the cookbook's way (M1-M24 harmonized)","status":"PENDING","fence":"designed"}]},{"id":"C","title":"Pause -> streaming -> weekend live OS upgrade","when":"tonight + weekend","items":[{"id":"C1","title":"Pause criterion: a valuable run validated THRICE","status":"PENDING","fence":"not-yet-built","note":"Does NOT block the midnight stream."},{"id":"C2","title":"Streaming handoff: live YT+Twitch by midnight","status":"PENDING","fence":"not-yet-built","note":"Producer/studio track; my part = keep world+page live + a work-order prompt. Honest captions."},{"id":"C3","title":"Weekend live no-reboot OS upgrade; this page is the shared surface","status":"PENDING","fence":"not-yet-built"}]}],"science_ledger":[{"phase":"P0","title":"plateau diagnosis","verdict":"PASS","fence":"proven","receipt":"lib/sp/brain/diagnose.ex","note":"epistemic_starvation; not gamma-runaway, not curriculum-ceiling."},{"phase":"P1","title":"novelty RED (curiosity vs control)","verdict":"PARTIAL","fence":"proven","receipt":"docs/receipts/phase1_curiosity_red.log","note":"HOARD suppressed ~4.5x (direction only; 25x withdrawn 2026-07-11). PLATEAU-BREAK FAIL."},{"phase":"P2","title":"metabolism RED (kin-12 vs kin-13)","verdict":"PARTIAL/FAIL(G6)","fence":"hypothesized","receipt":"PENDING docs/receipts/phase2_metabolism_red.md","note":"PROVISIONAL: foraging-homeostat plateau; raw JSONL not yet committed. metabolism.md §16."},{"phase":"Next","title":"survival-C + epistemic drive + true-signal vision","verdict":"WITHHELD","fence":"hypothesized","note":"The plateau-break bet. Earn with a paired RED; gain must collapse under IG-zero/shuffle ablations."}],"constellation":[{"repo":"UNI.MineCraft / Strings","role":"the body+mind embodied in Minecraft (this repo)"},{"repo":"UNI.Mind / UNI.GPT","role":"exact no-backprop AIF engine (core.py) + TickAdapter continuity"},{"repo":"UNI.Sensorium","role":"the body made for a world; the active binocular eye"},{"repo":"Cookbook + UNI.OS","role":"design law (L0-L12 + Method Constitution) + patch-Markov vision cortex"}],"collaboration":{"how_to_read":"Open the plain URL: index.html (human/stream), plan.md (LLM text), state.json (machine). No MCP, no login.","rules":["Gate vocabulary: PASS / PARTIAL / FAIL / WITHHELD. Claim fence: proven / designed / hypothesized / not-yet-built.","One cure at a time: no second cure deploys until the prior has a recorded verdict.","Never weaken a gate to make something pass. No headline outruns its committed receipt.","Weekend OS upgrade: MineCraft run + this page must survive the no-reboot upgrade; this page carries the honest live status all agents coordinate on."]}};
+
+const esc = s => String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const chip = (cls,txt)=>`<span class="chip ${cls}">${esc(txt)}</span>`;
+const statusCls = s => "status s-"+String(s||"").replace(/[^A-Za-z_]/g,"_");
+const verdictCls = v => "status v-"+String(v||"").replace(/[^A-Za-z_]/g,"_");
+const fenceCls = f => "fence f-"+String(f||"").replace(/[^a-z-]/g,"");
+
+function render(d){
+  document.getElementById("branch").textContent = d.branch||"—";
+  document.getElementById("head").textContent = d.head||"—";
+  document.getElementById("northstar").textContent = d.north_star||"";
+  document.getElementById("claimfence").textContent = d.claim_fence||"";
+  const ga = d.generated_at||"";
+  document.getElementById("fresh").textContent = ga ? ("updated "+ga+" UTC") : "—";
+  document.getElementById("genby").textContent = "generated_by: "+(d.generated_by||"—")+(d.authoritative_clock_note?(" · "+d.authoritative_clock_note):"");
+
+  document.getElementById("tracks").innerHTML = (d.tracks||[]).map(t=>`
+    <div class="track">
+      <div class="thead"><span class="tid">Track ${esc(t.id)}</span><span class="ttitle">${esc(t.title)}</span><span class="twhen">${esc(t.when||"")}</span></div>
+      ${(t.items||[]).map(i=>`
+        <div class="item">
+          <div class="iid">${esc(i.id)}</div>
+          <div class="ibody">
+            <div class="ititle">${esc(i.title)}</div>
+            ${i.note?`<div class="inote">${esc(i.note)}</div>`:""}
+            <div class="chips">
+              ${chip(statusCls(i.status), i.status||"")}
+              ${i.fence?chip(fenceCls(i.fence), i.fence):""}
+              ${i.evidence?chip("fence f-proven", i.evidence):""}
+            </div>
+          </div>
+        </div>`).join("")}
+    </div>`).join("");
+
+  document.querySelector("#ledger tbody").innerHTML = (d.science_ledger||[]).map(r=>`
+    <tr>
+      <td class="ph">${esc(r.phase)}</td>
+      <td>${chip(verdictCls(r.verdict), r.verdict||"")}</td>
+      <td>${r.fence?chip(fenceCls(r.fence), r.fence):""}</td>
+      <td>${esc(r.title)}${r.note?`<div class="rc">${esc(r.note)}</div>`:""}${r.receipt?`<div class="rc">receipt: ${esc(r.receipt)}</div>`:""}</td>
+    </tr>`).join("");
+
+  const collab = d.collaboration||{};
+  document.querySelector("#collab ul").innerHTML =
+    (collab.how_to_read?`<li>${esc(collab.how_to_read)}</li>`:"") +
+    (collab.rules||[]).map(r=>`<li>${esc(r)}</li>`).join("");
+  document.querySelector("#constellation ul").innerHTML = (d.constellation||[]).map(c=>
+    `<li><b>${esc(c.repo)}</b> — <span class="role">${esc(c.role)}</span></li>`).join("");
+
+  document.getElementById("legend").innerHTML =
+    "status: "+["DONE","IN_PROGRESS","BLOCKED","PENDING"].map(s=>chip(statusCls(s),s)).join(" ")+
+    " &nbsp; gate: "+["PASS","PARTIAL","FAIL","WITHHELD"].map(v=>chip(verdictCls(v),v)).join(" ")+
+    "<br>fence: "+["proven","designed","hypothesized","not-yet-built"].map(f=>chip(fenceCls(f),f)).join(" ");
+}
+
+async function load(){
+  try{
+    const r = await fetch("./state.json?_="+(location.hash.slice(1)||"0"), {cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    render(await r.json());
+  }catch(e){
+    render(FALLBACK);
+    document.getElementById("fresh").innerHTML = '<span class="err">static fallback ('+esc(e.message)+')</span>';
+  }
+}
+load();
+setInterval(load, 30000); // live: re-read state.json every 30s (picks up the regeneration timer)
+</script>
+</body>
+</html>

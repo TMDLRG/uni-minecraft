@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>UNI — Door offline</title>
+<style>
+  body{background:#120b0e;color:#e6f0fa;font:14px/1.6 "Segoe UI",system-ui,sans-serif;padding:40px;max-width:860px;margin:0 auto}
+  h1{color:#e5484d;font-size:26px;letter-spacing:.05em}
+  h2{color:#3fd2ff;font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin-top:26px}
+  code,pre{background:#0b1016;border:1px solid #26323f;border-radius:8px;padding:2px 7px;color:#bfe3ff}
+  pre{padding:10px 14px;overflow-x:auto}
+  .why{border-left:3px solid #e5484d;background:#1a1013;border-radius:8px;padding:10px 14px;margin-top:10px}
+  .muted{color:#8296ab}
+</style></head><body>
+  <h1>⛔ The door server is not answering</h1>
+  <p class="why">This static page opened because <b>launcher.cjs (:8090) did not come up within ~14 seconds</b>
+  even after the icon tried to start the watchdog. That means the failure is BELOW the door itself —
+  usually node.exe, the repo path, or the machine. This page is the honest last resort; nothing on it is live.</p>
+
+  <h2>Observed risk (what this state means)</h2>
+  <p>The one-click chain is: icon → <code>door_open.ps1</code> → <code>door_watchdog.ps1</code> →
+  <code>node viewer\launcher.cjs</code> → <code>http://127.0.0.1:8090/door</code>. You are here because the
+  last link never answered. The studio may be fine or dead — the door cannot see it from here.</p>
+
+  <h2>Known-good restore ladder (run in PowerShell, in order, stop when the door opens)</h2>
+  <pre>cd C:\Users\mpolz\Documents\UNI.Minecraft
+
+# 1. Is node alive at all?
+node -v
+
+# 2. Start the launcher by hand and READ ITS ERROR if it dies:
+node viewer\launcher.cjs
+#    (if it prints an error, that error is the root cause - fix that first)
+
+# 3. Start the supervisor (it will keep the launcher alive from now on):
+powershell -File viewer\door_watchdog.ps1 -Once
+#    exit 0 = launcher running; then reopen the door icon
+
+# 4. Watchdog + boot-leg state:
+powershell -File viewer\door_boot_install.ps1 -Status
+
+# 5. Full studio bring-up (only if you also want the room, not just the door):
+powershell -File viewer\studio_up.ps1
+
+# 6. Logs (the trace of what happened):
+notepad logs\door_watchdog.log
+notepad logs\launcher.err.log</pre>
+
+  <h2>Prior-known failure causes on this box</h2>
+  <p class="muted">· node_modules missing after a fresh clone (npm install ws --prefix viewer) ·
+  a syntax error introduced in launcher.cjs (check logs\launcher.err.log) ·
+  node.exe not on PATH for a non-login shell · the repo moved (shortcuts point at viewer\door_open.vbs
+  inside the repo — recreate them if the repo path changed).</p>
+
+  <p class="muted">When :8090 answers again, this page is obsolete — click the door icon again and the
+  live flight-check, history, and resonance panels take over.</p>
+</body></html>

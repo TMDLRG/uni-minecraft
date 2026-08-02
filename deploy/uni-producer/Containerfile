@@ -1,0 +1,43 @@
+# uni-producer — the HEAD show-runner node (fenced observer) + its camera stack.
+# Reviewed: docs/specs/producer_remote_sense_observe_only.md · gate: producer-camera-attached.
+# Base = elixir on Debian bookworm (glibc — required by the canvas/gl prebuilds) + NodeSource
+# node 20 (the exact major running the proven uni-cam camera today, v20.20.2).
+FROM elixir:1.18
+
+ENV MIX_ENV=dev DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg xvfb socat \
+      libgl1 libglu1-mesa libxi6 libxext6 libx11-6 \
+      python3 build-essential pkg-config \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Pure core first (no hex deps), then the ui (phoenix deps), mirroring the repo layout the
+# brain expects (@repo_root = /app: Director spawns /app/viewer/director.js as its Port child).
+COPY mix.exs .formatter.exs ./
+COPY config ./config
+COPY lib ./lib
+COPY scripts ./scripts
+RUN mix local.hex --force && mix local.rebar --force && mix compile
+
+COPY ui ./ui
+RUN cd ui && mix deps.get && mix compile
+
+# Camera stack BAKED at build (the uni-cam:v1 install-at-first-run lesson, WS1) — pinned to the
+# exact versions rendering on the chip today (read from the live uni-cam 2026-07-15).
+COPY viewer/director.js ./viewer/director.js
+RUN cd viewer && npm install --omit=dev --no-audit --no-fund --no-save \
+      mineflayer@4.37.1 prismarine-viewer@1.33.0 canvas@3.2.3 gl@8.1.6
+
+COPY deploy/uni-producer/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 4001 = socat bridge to the loopback-bound phx :4000 (ui/config/config.exs pins ip 127.0.0.1);
+# 3020 = prismarine-viewer (binds *:3020 itself).
+EXPOSE 4001 3020
+
+ENTRYPOINT ["/entrypoint.sh"]

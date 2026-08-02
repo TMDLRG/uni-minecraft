@@ -1,0 +1,57 @@
+[
+  {
+    "id": "m2_title",
+    "plate": "title",
+    "kicker": "THE ESTATE — FIVE BODIES",
+    "line1": "Five bodies, kept apart on purpose.",
+    "line2": "Each one is shown in its own source, then tested.",
+    "narration": "Five bodies. A colony that acts inside a world, a producer that would direct a broadcast, a laboratory that models a bacterial motor, a control plane that records what the others did, and a public record. They are kept apart on purpose. Each one is about to be shown in its own source.",
+    "tail_silence": 1.2,
+    "_from_documentary": "d_m2_title"
+  },
+  {
+    "id": "m2_colony_boundary",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/bridge.ex",
+    "from": 7,
+    "to": 14,
+    "why": "Body one, the colony — the two messages that cross between brain and body, and nothing else",
+    "narration": "Body one is a colony acting inside a world. This is its boundary, in the file that enforces it. Senses go in on one line, one action comes back, and the code puts the word ONLY in capitals. The brain never sees raw world state. The body never sees beliefs.",
+    "tail_silence": 1.4,
+    "_from_documentary": "d_m2_colony_boundary"
+  },
+  {
+    "id": "m2_producer",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/producer/brain.ex",
+    "from": 5,
+    "to": 7,
+    "why": "Body two, the producer — the header of the module that would choose every shot",
+    "narration": "Body two would direct a broadcast: which shot, which cut, when to hold. Read what it runs on. Expected free energy minimisation, no scripted rules, no reward. The thing that would point the camera runs the same mathematics as the thing it would broadcast. That is the sentence on screen, not a summary of it.",
+    "tail_silence": 1.4,
+    "_from_documentary": "d_m2_producer"
+  },
+  {
+    "id": "m2_one_engine",
+    "plate": "measurement",
+    "probe": "engine.zero_deps",
+    "asks": "How many third-party dependencies does the engine those two bodies share carry?",
+    "source": "mix.exs — the dependency declaration itself, printed rather than described",
+    "note": "Hex dependencies declared: @n.engine.hex_deps",
+    "narration": "Both of those bodies run one engine, and this is its dependency list. Nothing between the brackets. It declares @n.engine.hex_deps hex dependencies. That is not offered here as a virtue. It is what makes the no-language-model claim checkable in one command instead of by trust, because there is no library an inference call could hide inside.",
+    "tail_silence": 1.3,
+    "_from_documentary": "d_m2_one_engine"
+  },
+  {
+    "id": "m2_control_plane",
+    "plate": "measurement",
+    "probe": "ledger.chain",
+    "asks": "Does the evidence chain verify, and does its anchor agree with it?",
+    "source": "evidence/control_plane/ledger.ndjson and anchor.json — each entry naming the hash of the entry before it",
+    "narration": "Body four records what the other four did, including what they got wrong. Every entry names the hash of the entry before it. The command counted @n.cp.entries entries, no broken links, and an anchor whose declared length and head match the chain it anchors. Watch the next frame before you carry that agreement anywhere.",
+    "tail_silence": 1.4,
+    "_from_documentary": "d_m2_control_plane"
+  }
+]

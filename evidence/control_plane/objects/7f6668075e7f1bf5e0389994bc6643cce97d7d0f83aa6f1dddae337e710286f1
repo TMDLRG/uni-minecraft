@@ -1,0 +1,22 @@
+PHASE 9 STEP 3.1 — F29/F30, release_verdict gains a third word. GREEN RECEIPT, 2026-07-27.
+
+$ python hierarchical-aif/scripts/prove_unverified_bites.py   (PROOF 4, A2)
+
+==============================================================================
+PROVING F29/F30 - the guard needs THREE words, and the exit code needs three too
+==============================================================================
+  ok   we looked everywhere and found nothing          
+       expected PASS        rc 0
+       observed PASS        rc 0
+  ok   WE COULD NOT LOOK - an archive that will not open
+       expected UNVERIFIED  rc 1
+       observed UNVERIFIED  rc 1
+  ok   we looked and found something                   
+       expected FAIL        rc 1
+       observed FAIL        rc 1
+------------------------------------------------------------------------------
+EXPECTED OUTPUT: three 'ok' lines, and this command exits 0.
+A middle case reading PASS / rc 0 is F29 and F30 violated - that is what it did before.
+RESULT: all three bite as declared
+
+exit=0

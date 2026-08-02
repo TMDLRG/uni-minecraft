@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <rect x="0" y="0" width="14" height="1080" fill="#9a92ee"/>
+  <text x="120" y="122" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3"
+        fill="#9a92ee" font-weight="600">VERBATIM FROM THE SOURCE</text>
+  <text x="120" y="176" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="32" fill="#dfe5ee">How the corpus ends: provenance, and a standing invitation to knock it down</text>
+  <rect x="112" y="214" width="1696" height="278" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="140" y="260" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">This is the last page of a literal cook book. Every chapter before it told you which</text>
+  <text x="140" y="294" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">pantry engines to</text>
+  <text x="140" y="328" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">reach for, the exact build steps, the gate to clear, the falsifier that would sink it,</text>
+  <text x="140" y="362" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">and the recorded</text>
+  <text x="140" y="396" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">negatives that sit beside it. This chapter does the one thing a recipe book owes its</text>
+  <text x="140" y="430" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">reader at the end:</text>
+  <text x="140" y="464" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">it shows where the numbers came from, and it hands you the knife.</text>
+  <text x="120" y="984" font-family="Consolas,Menlo,monospace" font-size="22" fill="#9aa6b6">cookbook/99-closing.md:7-10</text>
+  <text x="120" y="1022" font-family="Consolas,Menlo,monospace" font-size="19" fill="#9aa6b6">sha256 3a0841c01cdf7e0e9eb3472b7951378199d39e6eac91518a…</text>
+</svg>

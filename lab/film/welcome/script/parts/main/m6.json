@@ -1,0 +1,102 @@
+[
+  {
+    "id": "m6_open",
+    "plate": "title",
+    "kicker": "M6 — THE HONEST STATE",
+    "line1": "What is not true here today.",
+    "line2": "One fact. One command. One frame.",
+    "narration": "This next stretch is not a disclaimer reel at the end of a pitch. It is the part of the film the rest of the film is for. Every fact in it gets its own frame, its own command and its own output, at the same size as everything you have already been shown.",
+    "tail_silence": 1.5,
+    "_from_documentary": "d_m6_open"
+  },
+  {
+    "id": "m6_golive_run",
+    "plate": "measurement",
+    "probe": "golive.refuses_me",
+    "asks": "Can this software put itself on air?",
+    "source": "viewer/prove_golive_refuses_me.cjs — an agent walking every path to air in this codebase and recording what stops it",
+    "note": "Paths the guard recognises: @n.golive.paths — paths it permits right now: @n.golive.allowed_now",
+    "narration": "A program here attempts to broadcast, deliberately, down every route this codebase has, and records what refuses it. The count of routes and the count it is allowed down are both under the frame. The last line the program printed is its own limit, not its own strength.",
+    "tail_silence": 1.4,
+    "_from_documentary": "d_m6_golive_run",
+    "prints_tail": 1,
+    "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+  },
+  {
+    "id": "m6_gap_run",
+    "plate": "measurement",
+    "probe": "gap.registry_ledger",
+    "asks": "How many registered gates have a row in the permanent record?",
+    "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call, cached nowhere",
+    "note": "@n.gap.in_ledger of @n.gap.registered registered gates. @n.gap.absent have no row at all.",
+    "narration": "This is the sharpest number in the film, and it is put on screen without a sentence wrapped around it. Of the gates this project registers, that many appear in its canonical evidence record. The rest do not appear in it at all. The instrument recomputes both counts every time it is asked.",
+    "tail_silence": 1.7,
+    "_from_documentary": "d_m6_gap_run"
+  },
+  {
+    "id": "m6_witness_run",
+    "plate": "measurement",
+    "probe": "witness.blocked",
+    "asks": "Is there an independent party corroborating this record?",
+    "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from the capture rather than recalled",
+    "note": "Independent custodians: @n.witness.independent_custodians — custodians qualifying as a witness: @n.witness.qualifying",
+    "narration": "A record only its author can vouch for is worth less than one a stranger can check. This counts the parties outside this machine that corroborate the evidence here. The box that was meant to be the second domain answers the writer's own key, so no custodian sits anywhere the writer cannot reach.",
+    "tail_silence": 1.6,
+    "_from_documentary": "d_m6_witness_run"
+  },
+  {
+    "id": "m6_witness_forgery",
+    "plate": "measurement",
+    "probe": "bag.roundtrip",
+    "asks": "Is a forged evidence pack caught?",
+    "source": "viewer/verify_bag.cjs --mutate — the pack is tampered with on purpose and every mutation is required to fail verification",
+    "note": "Claim level: @n.witness.claim_level — never authenticated, never independent",
+    "narration": "The pack survives a round trip and a tampered one is refused. The same run records the case it cannot catch: edit the payload, recompute the manifest and the tag manifest, and the forgery verifies clean. The gate says that itself, at the foot of its own passing output.",
+    "tail_silence": 1.6,
+    "_from_documentary": "d_m6_witness_forgery"
+  },
+  {
+    "id": "m6_pureworld_run",
+    "plate": "measurement",
+    "probe": "pureworld.scaffold",
+    "asks": "Does the colony's science gate actually run?",
+    "source": "runs/pureworld_qa_gate.exs — the file is read and its first raise located by line number",
+    "note": "The road to air for the colony's forage claim runs through this file.",
+    "narration": "This is the check that would graduate the colony's forage claim. The command opens its runner, finds the first raise, prints the line number it sits on and the block that follows. It does not run the check. There is nothing in there yet to run.",
+    "tail_silence": 1.5,
+    "_from_documentary": "d_m6_pureworld_run"
+  },
+  {
+    "id": "m6_pladder_receipt",
+    "plate": "quotation",
+    "root": "flagellum",
+    "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+    "from": 573,
+    "to": 575,
+    "why": "The parity ladder, as the strongest result in this programme states it in its own code",
+    "narration": "The strongest result here reaches held-out duration prediction and stops. @n.pladder.unclosed levels above it are named in the same string and marked untouched, in either direction. That clause is doing real work. Untouched is not weak support. It is no evidence at all, for or against.",
+    "tail_silence": 1.6,
+    "_from_documentary": "d_m6_pladder_receipt"
+  },
+  {
+    "id": "m6_limitations_run",
+    "plate": "measurement",
+    "probe": "limitations.declared",
+    "asks": "What does this project say it cannot do?",
+    "source": "docs/control-plane/LIMITATIONS.md — every declared limitation, listed by its identifier",
+    "note": "@n.limitations.declared declared, and derived from one repository of the three.",
+    "narration": "Each identifier on screen names a thing this project states it does not do, carried in the document that collects them. The count under the frame is for one repository out of three. The document says that about itself, and records the omission as one of its own limitations.",
+    "tail_silence": 1.5,
+    "_from_documentary": "d_m6_limitations_run"
+  },
+  {
+    "id": "m6_no_verdict",
+    "plate": "title",
+    "kicker": "THE FIGURE THIS WORK EXISTS TO MOVE",
+    "line1": "No verdict has yet been authored",
+    "line2": "about a real scientific claim.",
+    "narration": "That is the honest position, and it is the last thing this movement says. There is also no register of scientific verdicts anywhere in this estate to count, so this is the one figure in the film that is declared rather than measured. The missing instrument is the harder finding.",
+    "tail_silence": 2,
+    "_from_documentary": "d_m6_no_verdict"
+  }
+]

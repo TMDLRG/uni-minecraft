@@ -1,0 +1,43 @@
+{
+ "schema": "uni.control_plane.witness.v1",
+ "captured_at": "2026-07-26T17:05:09.004Z",
+ "captured_by": "witness_probe.cjs@2",
+ "claim_level": "tamper_evident",
+ "claim_note": "the off-box refusal is a CURRENT CONFIGURATION FACT, not a structural law; adding the writer's key to that box would end it silently, which is why it is re-measured on every capture",
+ "custodians": [
+  {
+   "id": "offbox:node2",
+   "domain": "offbox",
+   "box": "node2",
+   "addressed_as": "10.190.245.149",
+   "port_open": true,
+   "writer_reachable": true,
+   "refusal": null,
+   "locator": "ssh uni@10.190.245.149",
+   "qualifies_as_witness": false
+  },
+  {
+   "id": "git",
+   "domain": "git",
+   "writer_reachable": true,
+   "writer_reachable_note": "the writer CAN force-push; a rewrite is VISIBLE and other clones retain the prior history",
+   "head": "e055180bb8c1e63f6c50ab51b5c0f22b1e08ec80",
+   "branch": "gen2-runtime",
+   "locator": "git -C UNI.Minecraft rev-parse HEAD"
+  }
+ ],
+ "controls": [
+  {
+   "id": "control:chip",
+   "domain": "offbox",
+   "box": "uni-lab",
+   "addressed_as": "uni-lab-lan.uni-lab.local",
+   "port_open": true,
+   "writer_reachable": true,
+   "refusal": null,
+   "locator": "ssh uni@uni-lab-lan.uni-lab.local",
+   "qualifies_as_witness": false
+  }
+ ],
+ "independent_custodians": 0
+}

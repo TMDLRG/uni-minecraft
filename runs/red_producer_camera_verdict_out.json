@@ -1,0 +1,472 @@
+{
+  "file": "runs/red_producer_camera_20260715T040735Z.ndjson",
+  "window": {
+    "start": "2026-07-15T04:07:36.839Z",
+    "end": "2026-07-15T04:21:08.237Z",
+    "minutes": 13.5,
+    "samples": 163
+  },
+  "gate1_last_health": {
+    "verdict": "LIVE",
+    "driver": "producer",
+    "colony_count": 6,
+    "frame": 155
+  },
+  "gate2": {
+    "star_change_events": 31,
+    "discriminating_events": 18,
+    "discriminating_reattached": 18,
+    "wide_altitude_samples": 0,
+    "events": [
+      {
+        "frame": 2,
+        "action": "cut_to_subject",
+        "from": "UNI-1-1",
+        "to": "UNI-1-2",
+        "first_seen_ts": "2026-07-15T04:13:47.408Z",
+        "separation": 15.1,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:13:47.408Z",
+          "director_star_dist": 7
+        }
+      },
+      {
+        "frame": 3,
+        "action": "b_roll",
+        "from": "UNI-1-2",
+        "to": "UNI-1-3",
+        "first_seen_ts": "2026-07-15T04:13:52.521Z",
+        "separation": 63.5,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:13:52.521Z",
+          "director_star_dist": 10.1
+        }
+      },
+      {
+        "frame": 9,
+        "action": "cut_to_drama",
+        "from": "UNI-1-3",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:14:07.403Z",
+        "separation": 69.8,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:14:07.403Z",
+          "director_star_dist": 7.2
+        }
+      },
+      {
+        "frame": 16,
+        "action": "cut_to_subject",
+        "from": "UNI-0-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:14:27.965Z",
+        "separation": 23.2,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:14:27.965Z",
+          "director_star_dist": 5.7
+        }
+      },
+      {
+        "frame": 23,
+        "action": "cut_to_subject",
+        "from": "UNI-1-1",
+        "to": "UNI-1-3",
+        "first_seen_ts": "2026-07-15T04:14:52.626Z",
+        "separation": 62.9,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:14:52.626Z",
+          "director_star_dist": 5.6
+        }
+      },
+      {
+        "frame": 29,
+        "action": "cut_to_drama",
+        "from": "UNI-1-3",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:15:08.741Z",
+        "separation": 69.7,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:15:08.741Z",
+          "director_star_dist": 3.4
+        }
+      },
+      {
+        "frame": 36,
+        "action": "cut_to_subject",
+        "from": "UNI-0-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:15:27.478Z",
+        "separation": 23.2,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:15:27.478Z",
+          "director_star_dist": 4.2
+        }
+      },
+      {
+        "frame": 42,
+        "action": "cut_to_subject",
+        "from": "UNI-1-1",
+        "to": "UNI-1-2",
+        "first_seen_ts": "2026-07-15T04:15:47.537Z",
+        "separation": 14.9,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:15:47.537Z",
+          "director_star_dist": 5.3
+        }
+      },
+      {
+        "frame": 49,
+        "action": "b_roll",
+        "from": "UNI-1-2",
+        "to": "UNI-2-1",
+        "first_seen_ts": "2026-07-15T04:16:07.493Z",
+        "separation": 149,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:16:07.493Z",
+          "director_star_dist": 10
+        }
+      },
+      {
+        "frame": 56,
+        "action": "cut_to_drama",
+        "from": "UNI-2-1",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:16:24.044Z",
+        "separation": 153.1,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:16:24.044Z",
+          "director_star_dist": 8.4
+        }
+      },
+      {
+        "frame": 63,
+        "action": "b_roll",
+        "from": "UNI-0-1",
+        "to": "UNI-1-3",
+        "first_seen_ts": "2026-07-15T04:16:47.657Z",
+        "separation": 69.8,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:16:47.657Z",
+          "director_star_dist": 9.9
+        }
+      },
+      {
+        "frame": 69,
+        "action": "b_roll",
+        "from": "UNI-1-3",
+        "to": "UNI-2-1",
+        "first_seen_ts": "2026-07-15T04:17:02.705Z",
+        "separation": 89.7,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:17:02.705Z",
+          "director_star_dist": 10.3
+        }
+      },
+      {
+        "frame": 76,
+        "action": "b_roll",
+        "from": "UNI-2-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:17:22.672Z",
+        "separation": 151.6,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:17:22.672Z",
+          "director_star_dist": 10.3
+        }
+      },
+      {
+        "frame": 83,
+        "action": "b_roll",
+        "from": "UNI-1-1",
+        "to": "UNI-1-3",
+        "first_seen_ts": "2026-07-15T04:17:44.091Z",
+        "separation": 62.9,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:17:44.091Z",
+          "director_star_dist": 10.3
+        }
+      },
+      {
+        "frame": 90,
+        "action": "cut_to_drama",
+        "from": "UNI-1-3",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:18:02.824Z",
+        "separation": 69.8,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:18:02.824Z",
+          "director_star_dist": 5.6
+        }
+      },
+      {
+        "frame": 110,
+        "action": "b_roll",
+        "from": "UNI-0-1",
+        "to": "UNI-3-1",
+        "first_seen_ts": "2026-07-15T04:07:36.839Z",
+        "separation": null,
+        "discriminating": false,
+        "reattached": false,
+        "reattach_receipt": null
+      },
+      {
+        "frame": 116,
+        "action": "cut_to_subject",
+        "from": "UNI-3-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:07:36.839Z",
+        "separation": null,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:07:36.839Z",
+          "director_star_dist": 7.8
+        }
+      },
+      {
+        "frame": 123,
+        "action": "cut_to_drama",
+        "from": "UNI-1-1",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:07:57.698Z",
+        "separation": 23.1,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:07:57.698Z",
+          "director_star_dist": 4.8
+        }
+      },
+      {
+        "frame": 130,
+        "action": "cut_to_subject",
+        "from": "UNI-0-1",
+        "to": "UNI-3-1",
+        "first_seen_ts": "2026-07-15T04:08:17.254Z",
+        "separation": 8.9,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:08:17.254Z",
+          "director_star_dist": 3.2
+        }
+      },
+      {
+        "frame": 137,
+        "action": "cut_to_drama",
+        "from": "UNI-3-1",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:08:37.066Z",
+        "separation": 8.9,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:08:37.066Z",
+          "director_star_dist": 5.3
+        }
+      },
+      {
+        "frame": 149,
+        "action": "b_roll",
+        "from": "UNI-0-1",
+        "to": "UNI-2-1",
+        "first_seen_ts": "2026-07-15T04:09:11.924Z",
+        "separation": 153.1,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:09:11.924Z",
+          "director_star_dist": 6.8
+        }
+      },
+      {
+        "frame": 156,
+        "action": "b_roll",
+        "from": "UNI-2-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:09:31.964Z",
+        "separation": 151.6,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:09:31.964Z",
+          "director_star_dist": 10.3
+        }
+      },
+      {
+        "frame": 163,
+        "action": "cut_to_drama",
+        "from": "UNI-1-1",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:09:52.142Z",
+        "separation": 23.2,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:09:52.142Z",
+          "director_star_dist": 7.6
+        }
+      },
+      {
+        "frame": 177,
+        "action": "b_roll",
+        "from": "UNI-0-1",
+        "to": "UNI-1-2",
+        "first_seen_ts": "2026-07-15T04:10:32.038Z",
+        "separation": 9,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:10:32.038Z",
+          "director_star_dist": 8.7
+        }
+      },
+      {
+        "frame": 184,
+        "action": "cut_to_subject",
+        "from": "UNI-1-2",
+        "to": "UNI-2-1",
+        "first_seen_ts": "2026-07-15T04:10:52.361Z",
+        "separation": 149.1,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:10:52.361Z",
+          "director_star_dist": 6.2
+        }
+      },
+      {
+        "frame": 191,
+        "action": "cut_to_subject",
+        "from": "UNI-2-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:11:12.256Z",
+        "separation": 151.6,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:11:12.256Z",
+          "director_star_dist": 5.6
+        }
+      },
+      {
+        "frame": 197,
+        "action": "cut_to_drama",
+        "from": "UNI-1-1",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:11:27.680Z",
+        "separation": 23.1,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:11:27.680Z",
+          "director_star_dist": 5.1
+        }
+      },
+      {
+        "frame": 211,
+        "action": "cut_to_subject",
+        "from": "UNI-0-1",
+        "to": "UNI-1-1",
+        "first_seen_ts": "2026-07-15T04:12:07.299Z",
+        "separation": 23,
+        "discriminating": false,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:12:07.299Z",
+          "director_star_dist": 4.8
+        }
+      },
+      {
+        "frame": 218,
+        "action": "cut_to_subject",
+        "from": "UNI-1-1",
+        "to": "UNI-1-3",
+        "first_seen_ts": "2026-07-15T04:12:28.867Z",
+        "separation": 62.9,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:12:28.867Z",
+          "director_star_dist": 5.6
+        }
+      },
+      {
+        "frame": 225,
+        "action": "cut_to_drama",
+        "from": "UNI-1-3",
+        "to": "UNI-0-1",
+        "first_seen_ts": "2026-07-15T04:12:47.332Z",
+        "separation": 69.8,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:12:47.332Z",
+          "director_star_dist": 4.4
+        }
+      },
+      {
+        "frame": 239,
+        "action": "b_roll",
+        "from": "UNI-0-1",
+        "to": "UNI-2-1",
+        "first_seen_ts": "2026-07-15T04:13:28.153Z",
+        "separation": 153.1,
+        "discriminating": true,
+        "reattached": true,
+        "reattach_receipt": {
+          "ts": "2026-07-15T04:13:28.153Z",
+          "director_star_dist": 9.8
+        }
+      }
+    ]
+  },
+  "gate3": {
+    "uni_rosters_seen": [
+      "UNI-0-1,UNI-1-1,UNI-1-2,UNI-1-3,UNI-2-1,UNI-3-1"
+    ],
+    "uni_roster_stable": true,
+    "director_flaps": 0,
+    "fenced_counters_final": {}
+  },
+  "gate4": {
+    "legacy_200_samples": 163,
+    "total": 163
+  },
+  "inconclusive_checks": {
+    "cut_directives_in_window": 38,
+    "zero_directives": false,
+    "max_same_fenced_run": 0,
+    "perseveration_tripped": false
+  }
+}

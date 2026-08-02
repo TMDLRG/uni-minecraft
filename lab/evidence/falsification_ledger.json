@@ -1,0 +1,51 @@
+[
+  {
+    "id": "FAL-PRESSURE-GRAVITY",
+    "claim_id": "pressure_replaces_gravity",
+    "test": "Pressure-vs-gravity calibrate-on-Earth-fail-everywhere test. Calibrate k = g_Earth/P_Earth = 9.820/1.014e5 m/s^2/Pa on Earth, then predict g = k*P for every other body in the 7-body reference table and compare to g = GM/R^2 and to the reference g.",
+    "expectation": "If gravity were pressure-proportional, g=k*P would reproduce all bodies. INSTEAD it must fail catastrophically while g=GM/R^2 holds to sub-percent — falsifying the pressure-replaces-gravity hard boundary (class X).",
+    "predicted": "g=GM/R^2 reproduces all 7 bodies to <=0.36% (binding residual Moon 0.360%, g_pred=1.6258 vs ref 1.62; next Jupiter 0.095%). g=k*P FAILS by ~14-15 orders: Moon ~2.9e-14 m/s^2 (P=3e-15 bar) vs real 1.62; Mercury ~4.8e-14 (P=5e-15 bar) vs real 3.70; Mars ratio 1.65e-2; Venus 100.4x overshoot (891 vs 8.87 — 91x pressure yet g<Earth); Titan 10.49x overshoot (14.2 vs 1.354 — thicker atmosphere yet lowest g). Pressure spans ~16.5 orders (log10(92/5e-15)), gravity only a factor ~19. CONTRADICTED-BY-TEST: gravity is set by M and R, not surface pressure."
+  },
+  {
+    "id": "FAL-PMF-MEMBRANE-COLLAPSE",
+    "claim_id": "proton_gradients_foundational",
+    "test": "Membrane-collapse PMF test. Compute the proton-motive force dp = dpsi - (2.303RT/F)dpH for a respiring membrane (dpsi=160 mV, dpH=0.75, T=298 K), then collapse the gradient (dpsi->0, dpH->0, e.g. via an uncoupler/ionophore) and compute the energy available for ATP synthesis via dG = -nF*dp.",
+    "expectation": "If the proton-motive force is the foundational energy currency, collapsing it must abolish the available free energy and halt ATP synthesis — confirming proton gradients (B), and confirming the result is oxygen-INDEPENDENT (the same collapse halts ATP whether the terminal acceptor is O2, sulfate, nitrate, fumarate, CO2, or light).",
+    "predicted": "Energized: dp = 160 + 59.16*0.75 = 204.4 mV; dG(n=3) = -3*96485*0.2044 = -59.2 kJ/mol (matches the ~50-60 kJ/mol ATP cost -> synthesis proceeds). Collapsed (dp->0): dG -> 0, no ATP synthesis. The mechanism is oxygen-independent, so this confirms proton gradients are foundational (B) WITHOUT supporting 'oxygen=life' or 'ozone=life' (ozone has no bioenergetic role; outside-model-scope). Sign convention (matrix-alkaline -> dpH term adds) must be declared; factor is T-dependent (61.51 mV/pH at 310 K). n is system-dependent (C) — no universal ATP yield."
+  },
+  {
+    "id": "FAL-OZONE-ABIOTIC-CONTROL",
+    "claim_id": "ozone_eq_life_literal",
+    "test": "Abiotic-ozone dead-planet control. Check for an ozone signature on planets with no known biosphere (Venus, Mars) and confirm a viable abiotic photochemical formation pathway.",
+    "expectation": "If ozone literally equals/requires life, no ozone should appear on sterile planets. INSTEAD ozone is observed on both Venus and Mars via abiotic Chapman-type photochemistry — falsifying the literal identity.",
+    "predicted": "Venus: SPICAV nightside layer, mean ~100 km, ~1e7-1e8 cm^-3, abiotic (CO2-photolysis O atoms, chlorine-catalyzed destruction). Mars: SPICAM column ~0.4-4 DU, anti-correlated with water vapor (HOx), seasonal S-polar-night layer ~40-60 km from three-body recombination of transport-supplied O. Both sterile. CONTRADICTED-BY-TEST: ozone forms in any UV-irradiated O/O2 atmosphere, biotic or not."
+  },
+  {
+    "id": "FAL-O3-O2-PROXY",
+    "claim_id": "ozone_eq_life_biosignature",
+    "test": "O2->O3 monotonicity / proxy-reliability test. Model O3 column abundance vs O2 level (% PAL) across host-star types and check whether a detected O3 column pins a unique O2 level (and hence life).",
+    "expectation": "If O3 were a clean O2 (hence life) proxy, the O2->O3 mapping would be monotonic and host-independent. INSTEAD it is non-monotonic and host-UV-dependent — demoting O3 to a conditional, context-gated proxy.",
+    "predicted": "For hotter hosts (G0V-K2V) O3 counter-intuitively INCREASES as O2 falls from 100% PAL, peaking at only 25-55% PAL O2; an Earth-Sun analog gives a similar O3 column at (reportedly) ~10% and ~100% PAL O2 (this specific dual value is UNDER-SOURCED, class U — soften to the verified general non-monotonicity). CH4/N2O further distort the mapping. SURVIVES-AS-NARROWED-HYPOTHESIS only: O3 is a context-dependent biosignature (C), never a clean quantitative O2/life proxy."
+  },
+  {
+    "id": "FAL-DISEQUILIBRIUM-BIOSIG",
+    "claim_id": "disequilibrium_proves_life",
+    "test": "Atmospheric-disequilibrium model-comparison test. Compute Phi = G(observed) - G(reacted-to-equilibrium) for a candidate atmosphere and feed it (with context) to the Bayesian biosignature posterior; ask whether large Phi alone reaches the top confidence band.",
+    "expectation": "If disequilibrium proved life, any large Phi would yield posterior ~1. INSTEAD abiotic settings sustain modest disequilibria and the false-positive likelihood stays finite, so Phi is necessary-not-sufficient.",
+    "predicted": "Modern Earth gas-phase Phi ~1.5 J/mol (O2-CH4 pair; NOT large vs other solar-system bodies — magnitude is not the signature); full-fluid Phi ~2326 J/mol (largest, life-driven, but hard to infer remotely). Bayes with finite P(D|not-life): LR=1.2/2/5 from prior 0.5 -> posterior 0.545/0.667/0.833, all <90% -> never the top band. NOT-YET-SHOWN that disequilibrium (or O3) alone proves life; it can only move a graded posterior."
+  },
+  {
+    "id": "FAL-VACUUM-RADIATIVE-FLOOR",
+    "claim_id": "vacuum_unlimited_energy",
+    "test": "Vacuum radiative-floor test. In the steady-state heat balance, take the convective coefficient h->0 (perfect evacuation) and check whether total loss vanishes (would permit unbounded heat retention / 'free energy').",
+    "expectation": "If vacuum erased thermodynamics, loss->0 and stagnation T would be unbounded. INSTEAD loss asymptotes to the strictly-positive radiative term — falsifying unlimited/free energy.",
+    "predicted": "At T=400 K, T_env=300 K, eps=0.9, A=1 m^2: P_rad floor = eps*sigma*A*(T^4-T_env^4) = 893.1 W > 0 regardless of evacuation depth. Equilibrium T rises only incrementally, 369.1 K (h=10) -> 423.3 K (vacuum). CONTRADICTED-BY-TEST: vacuum suppresses only the convective h-term; the eps*sigma radiative floor is irreducible. No unlimited energy; energy conservation holds."
+  },
+  {
+    "id": "FAL-AIF-BOUND-TIGHTNESS",
+    "claim_id": "aif_proves_physics",
+    "test": "VFE bound-tightness / model-comparison-not-truth test. On a tractable factorization, drive max|q_BP - q_enumerated| < 1e-10 and confirm F[q] -> -ln p(y|m) (KL->0); then check whether minimizing F establishes any physical fact about the data-generating world.",
+    "expectation": "VFE/ELBO is an upper bound on surprisal / lower bound on log-evidence that ranks models WITHIN an assumed hypothesis space. The bound being tight certifies q=posterior-under-model, NOT that the model is physically true.",
+    "predicted": "Toy q=0.5,p=0.8 -> KL = 0.223144 nats; q=0.8 -> KL=0, F = -ln p(y|m) (bound tight). EXACT only relative to a DECLARED factorization (tree/junction-tree); on loopy graphs the <1e-10 identity is a regression check, not a theorem. p(eta|y,m) is model-internal, NOT the world. OUTSIDE-MODEL-SCOPE: free-energy minimization is information-theoretic model comparison, proves no physical mechanism; 'a simulation proves reality' is forbidden."
+  }
+]

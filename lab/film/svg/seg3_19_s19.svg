@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g18" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g18)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="130" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#a6e3a1" letter-spacing="3">Newton's GM/R² — every body, no tuning</text>
+  <text x="320" y="180" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">BODY</text>
+    <text x="780" y="180" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">MEASURED g</text>
+    <text x="1240" y="180" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">GM/R² PREDICTED</text>
+    <text x="1640" y="180" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">ERROR</text>
+  <line x1="280" y1="200" x2="1680" y2="200" stroke="#30363d" stroke-width="2"/>
+    <text x="320" y="240" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Earth</text>
+    <text x="780" y="240" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">9.82</text>
+    <text x="1240" y="240" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">9.82</text>
+    <text x="1640" y="240" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">0.0%</text>
+    <text x="320" y="296" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Moon</text>
+    <text x="780" y="296" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">1.62</text>
+    <text x="1240" y="296" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">1.63</text>
+    <text x="1640" y="296" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">0.4%</text>
+    <text x="320" y="352" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Mars</text>
+    <text x="780" y="352" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">3.73</text>
+    <text x="1240" y="352" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">3.73</text>
+    <text x="1640" y="352" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">0.0%</text>
+    <text x="320" y="408" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Venus</text>
+    <text x="780" y="408" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">8.87</text>
+    <text x="1240" y="408" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">8.87</text>
+    <text x="1640" y="408" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">0.0%</text>
+    <text x="320" y="464" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Mercury</text>
+    <text x="780" y="464" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">3.70</text>
+    <text x="1240" y="464" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">3.70</text>
+    <text x="1640" y="464" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">0.0%</text>
+    <text x="320" y="520" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Jupiter</text>
+    <text x="780" y="520" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">25.92</text>
+    <text x="1240" y="520" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">26.18</text>
+    <text x="1640" y="520" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">1.0%</text>
+    <text x="320" y="576" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">Titan</text>
+    <text x="780" y="576" text-anchor="end" fill="#cdd6f4" font-size="26" font-family="ui-monospace,Consolas,monospace">1.354</text>
+    <text x="1240" y="576" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">1.354</text>
+    <text x="1640" y="576" text-anchor="end" fill="#a6e3a1" font-size="26" font-family="ui-monospace,Consolas,monospace">0.0%</text>
+  <line x1="280" y1="602" x2="1680" y2="602" stroke="#30363d" stroke-width="2"/>
+  <text x="960" y="662" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="26" fill="#a6e3a1">max error ≤ 0.36% across all seven worlds.</text>
+  <rect x="0" y="633" width="1920" height="447" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="633" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">And here is what Newton's GM-over-R-squared predicts. Earth gravity? Nine-point-eight-two.</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Match. Moon? One-point-six-three. The real answer is one-point-six-two. A</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">four-tenths-of-one-percent error. Mars — match. Venus — match. Mercury — match. Jupiter,</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">off by less than one percent. Titan — match. Across all seven worlds, with no per-planet</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">tuning, the worst miss is one-point-zero percent and most of the others are essentially</text>
+  <text x="960" y="855" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">exact.</text>
+  <rect x="800" y="869" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">आणि इथे आहे न्यूटनच्या GM/R² चे भाकीत. पृथ्वीचे गुरुत्वाकर्षण? नऊ-पूर्णांक-आठ-दोन.</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">जुळते. चंद्र? एक-दशांश-सहा-तीन. खरे उत्तर एक-दशांश-सहा-दोन. चार-दशांश-एक-टक्का</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">त्रुटी. मंगळ — जुळते. शुक्र — जुळते. बुध — जुळते. गुरू, एक टक्क्यापेक्षा कमी</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">चुकतो. टायटन — जुळते. सर्व सात जगांवर, प्रत्येक ग्रहासाठी जुळवणीशिवाय, सर्वात वाईट</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">चूक एक-दशांश-शून्य टक्के आहे आणि बाकीच्या जवळजवळ अचूक आहेत.</text>
+</svg>

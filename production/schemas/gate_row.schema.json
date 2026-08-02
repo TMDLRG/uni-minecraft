@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/gate_row.v1.json",
+  "title": "UNI gate row",
+  "description": "One row of the append-only gate ledger at evidence/gates.ndjson. Every gate the project claims to have passed, partially passed, failed, withheld, or has open MUST be represented here, keyed to a real receipt on disk.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "name", "verdict", "receipt_path", "evidence_class", "last_updated"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "name": {
+      "type": "string",
+      "description": "Short unique identifier. Kebab-case. Examples: motor-red, curiosity-phase1-novelty, forage-runway-closed, forage-pureworld-graduation, g-pa, verdict-live-real-driver, metabolism-activation."
+    },
+    "phase": {
+      "type": "string",
+      "description": "Optional phase pointer (e.g. 'Phase 3', 'Phase 4', 'Phase 5') per docs/UNI_MISSION_DEEPENING.md."
+    },
+    "pass_condition": {
+      "type": "string",
+      "description": "Verbatim, machine-checkable PASS statement. Quote the receipt or pre-registration verbatim; do not paraphrase."
+    },
+    "falsifies_condition": {
+      "type": "string",
+      "description": "Verbatim, machine-checkable FALSIFIES statement. The gate FAILS if this is observed."
+    },
+    "receipt_path": {
+      "type": "string",
+      "description": "Repo-relative path to the receipt establishing the current verdict. MUST exist. CI test at test/gate_registry_integrity_test.exs enforces this."
+    },
+    "pre_registration_path": {
+      "type": "string",
+      "description": "Repo-relative path to the docs/receipts/red_preregistration_*.md that named the RED before the run. Empty for corroborated infra gates (G-PA) or gates preregistered inside their main doc (Motor RED)."
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["PASS", "PARTIAL", "FAIL", "WITHHELD", "PENDING"],
+      "description": "Honest verdict vocabulary. Never percent-scored. WITHHELD = a claim was withdrawn; PENDING = registered but not run."
+    },
+    "evidence_class": {
+      "type": "string",
+      "enum": ["A", "B", "C", "Sec", "pending"],
+      "description": "Per production/docs/GAPS_REGISTER.md: A = independently reproduced, B = observed-with-artifact, C = command-output, Sec = security-relevant-unproven, pending = not-yet-established."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date of the verdict-establishing receipt."
+    },
+    "supersedes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Names of prior rows this row supersedes (kept for the audit trail; do not delete supersede-target rows)."
+    },
+    "notes": {
+      "type": "string",
+      "description": "One-line honest context (why PARTIAL, what's the fix-forward, what's the confounder)."
+    }
+  }
+}

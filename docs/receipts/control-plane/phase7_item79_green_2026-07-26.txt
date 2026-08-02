@@ -1,0 +1,66 @@
+PHASE 7 ITEM 7.9 — GREEN
+date: 2026-07-26
+red commit: 3ff0dc9
+git status --short at capture:
+   M lib/sp/control_plane/scene.ex
+  D  test/sp/control_plane/absent_evidence_refuses_entry_test.exs
+   M test/sp/control_plane/material_comes_from_truth_class_test.exs
+  ?? docs/receipts/control-plane/phase7_item79_green_2026-07-26.txt
+  ?? test/sp/control_plane/unbacked_state_refuses_authoring_test.exs
+MUTATIONS: M1-M5 all KILLED (authorable?->true, actions always offered, revert walkability, desks=all nodes, F25 reverted)
+cmd: mix test
+======================================================================
+Running ExUnit with seed: 947160, max_cases: 32
+Excluding tags: [:skip]
+
+......................................................warning: SP.Interface.Audit.forbidden_output_keys/1 not implemented yet. This is A-A6 in the deepening plan — queued to /lab-team-review. See production/mcp/SPEC_log_sensor_organ.md for the paired seam.
+  test/sp/brain/output_side_leak_audit_test.exs:80: SP.Brain.OutputSideLeakAuditTest."test SP.Interface.Audit exposes forbidden_output_keys/1 (soft check for now)"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+................................................................................................................................................................................................................................................................................................................................................................................................................................    warning: default values for the optional arguments in the private function custodian!/4 are never used
+    │
+ 92 │   defp custodian!(id, domain, anchor, opts \\ []) do
+    │        ~
+    │
+    └─ test/sp/control_plane/witness_out_of_reach_test.exs:92:8: SP.ControlPlane.WitnessOutOfReachTest (module)
+
+..................................................................................................................................................................................................................................................................................................................................     warning: incompatible types given to SP.ControlPlane.Scene.entry/1:
+
+         SP.ControlPlane.Scene.entry(%{truth_class: :REAL, receipt_ref: "x"})
+
+     given types:
+
+         -%{id: not_set(), receipt_ref: binary(), truth_class: :REAL}-
+
+     but expected one of:
+
+         dynamic(%{..., id: term()})
+
+     typing violation found at:
+     │
+ 497 │     assert_raise FunctionClauseError, fn -> Scene.entry(%{truth_class: :REAL, receipt_ref: "x"}) end
+     │                                                   ~
+     │
+     └─ test/sp/control_plane/material_comes_from_truth_class_test.exs:497:51: SP.ControlPlane.MaterialComesFromTruthClassTest."test 7.6 REPAIR — making material/1 total moved entry/1's crash LATER; the head now refuses an id-less map"/1
+
+...................................................................warning: has_food MASKED: inventory_index(%{"tools" => 1, "food" => 2}) == 2, not 3.
+A tool-holding UNI cannot observe has_food, so B[:attack] can never learn
+attack->has_food (docs/receipts/emergent_forage_cure1.md §2 steps 4-5) and the
+forage/graduation gates are unpassable for that lineage.
+Repair is an observation-space change (mc_codec.ex:118) — queued to /lab-team-review
+for a MERGED VERDICT. Do NOT edit the cond without one.
+
+  test/sp/brain/mc_test.exs:79: SP.Brain.MCTest."test MCCodec — sense discretisation matches the curriculum's outcome semantics TRIPWIRE: report whether a held tool masks has_food (soft check for now)"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+.........................
+[W4] self-loop entropy drop — v1 posterior-feedback=0.6561 vs v2 extrinsic-likelihood=-0.0008 (Q2 fix ⇒ v2 ≈ 0)
+.....
+[P2] motor config posterior peak over life = 0.75 (uniform ⇒ 0)
+...................................................................
+Finished in 124.8 seconds (114.3s async, 10.4s sync)
+4 doctests, 952 tests, 0 failures (4 excluded)

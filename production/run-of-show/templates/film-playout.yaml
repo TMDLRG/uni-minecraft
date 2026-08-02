@@ -1,0 +1,97 @@
+# UNI Production Platform - run-of-show template: FILM-PLAYOUT (catalog segment + bumpers + captions)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# Rolls one pre-recorded segment from the FINAL catalog into the CLIP scene, wrapped
+# by intro/outro title bumpers, with the segment's baked + live captions. Used as a
+# show segment AND as the "break" in a 4-hour slot. clipId + language are params the
+# slot passes in; the FINAL pool is mostly vertical 9:16 (GAP G-9x16: pillarbox/shorts-wall).
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck roll_clip
+
+template: film-playout
+description: >
+  Roll a catalog clip into the CLIP scene with intro/outro bumpers and captions.
+  clipId, language, and durationSec are passed by the slot. Vertical clips are
+  pillarboxed / shorts-walled (G-9x16). Doubles as the slot break segment.
+defaultLanguage: en
+
+# Params the slot supplies (referenced as {{param}} in beats):
+#   clipId        - catalog id of the segment to roll (e.g. BNB-P1-03)
+#   clipTitle     - human title for the bumper / lower-third
+#   clipLang      - language of the clip (en/es/fr/it/pt/hi)
+#   clipDuration  - segment length in seconds (from manifest.json total_duration_s)
+params:
+  clipId: PLACEHOLDER-CLIP-ID
+  clipTitle: Catalog segment
+  clipLang: en
+  clipDuration: 90
+
+beats:
+  - id: fp-01-intro-bumper
+    name: Intro bumper
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: title
+        payload:
+          visible: true
+          kicker: NOW PLAYING
+          text: "{{clipTitle}}"
+          subtitle: From the UNI catalog
+      - layer: nowPlaying
+        payload: { segment: Film Playout, lang: "{{clipLang}}", clipId: "{{clipId}}" }
+    narrate: null
+    music: { volume: 0.26, duck: false }
+    clip: null
+    notes: cut_to TITLE; set_overlay title (bumper); set_overlay nowPlaying with the clip id + language.
+
+  - id: fp-02-roll-clip
+    name: Roll the catalog segment
+    scene: CLIP
+    durationSec: 90
+    language: en
+    overlays:
+      - layer: title
+        payload: { visible: false }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: CATALOG
+          title: "{{clipTitle}}"
+          subtitle: Pre-recorded - captions baked + live
+          tone: ok
+      - layer: caption
+        payload: { visible: true, lang: "{{clipLang}}", text: "" }
+    narrate: null
+    music: { volume: 0.0, duck: true }
+    clip: { clipId: "{{clipId}}", mode: fullframe }
+    notes: >
+      roll_clip(clipId, mode=fullframe) into the CLIP scene; cut_to CLIP. Music bed off (clip carries its own
+      audio). durationSec is overridden by the slot from manifest.json total_duration_s. Vertical clips: G-9x16 pillarbox.
+
+  - id: fp-03-outro-bumper
+    name: Outro bumper
+    scene: TITLE
+    durationSec: 6
+    language: en
+    overlays:
+      - layer: caption
+        payload: { visible: false }
+      - layer: lowerThird
+        payload: { visible: false }
+      - layer: title
+        payload:
+          visible: true
+          kicker: EDUCATEWRIGHT
+          text: That was the science feed
+          subtitle: More after this
+    narrate: null
+    music: { volume: 0.26, duck: false }
+    clip: null
+    notes: cut_to TITLE; hide caption + lower-third; bumper out; music back up; hand off to the slot.

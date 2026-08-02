@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <rect x="0" y="0" width="14" height="1080" fill="#9a92ee"/>
+  <text x="120" y="122" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3"
+        fill="#9a92ee" font-weight="600">VERBATIM FROM THE SOURCE</text>
+  <text x="120" y="176" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="32" fill="#dfe5ee">The corpus grading itself, printed in its first chapter and never softened</text>
+  <rect x="112" y="214" width="1696" height="414" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="140" y="260" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">The honest program position, printed plainly and never softened: **~2 of 11+</text>
+  <text x="140" y="294" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">developmental</text>
+  <text x="140" y="328" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">rungs earned.** The whole thing is a **developmental active-inference SIMULATION** — a</text>
+  <text x="140" y="362" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">bounded peek, a toy world, never a person. "Active inference" is the framing *lens*</text>
+  <text x="140" y="396" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">only:</text>
+  <text x="140" y="430" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">no AIF loop exists in the Rust crate, and the live UNI.OS loop is a separate</text>
+  <text x="140" y="464" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">reimplementation,</text>
+  <text x="140" y="498" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">not gate-matched. The mathematical foundation (Polzin et al. 2026, Zenodo DOI</text>
+  <text x="140" y="532" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">10.5281/zenodo.19785799, MIT) is cited as *foundation only* and always fenced</text>
+  <text x="140" y="566" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">**unrefereed**</text>
+  <text x="140" y="600" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">(Layer-1 AI-executable audit complete; Layer-2 human expert review PENDING).</text>
+  <text x="120" y="984" font-family="Consolas,Menlo,monospace" font-size="22" fill="#9aa6b6">cookbook/01-kitchen-rules.md:20-26</text>
+  <text x="120" y="1022" font-family="Consolas,Menlo,monospace" font-size="19" fill="#9aa6b6">sha256 369df7b8afe48e8cacf660f022b8c1910014f6debdf54197…</text>
+</svg>

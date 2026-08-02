@@ -1,0 +1,120 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "d_m7",
+  "movement": "M7",
+  "design_rule": [
+    "M7 — THE COOKBOOK, documentary treatment. The same rule as every other movement: expose the",
+    "measurement, never assert the conclusion. Seven frames are the corpus's own source, verbatim,",
+    "with file, line range and sha256 recomputed at render time. Two are recorded stdout. Every",
+    "figure is a token id resolved from a live artifact, and the adverse frames sit in the middle."
+  ],
+  "scenes": [
+    {
+      "id": "d_m7_title",
+      "plate": "title",
+      "kicker": "THE METHOD, WRITTEN DOWN",
+      "line1": "The Cookbook",
+      "line2": "A corpus this film can count, and you cannot yet clone.",
+      "narration": "The method behind this laboratory is written down. Not as a paper, but as an encyclopedia and a cookbook — chapters, recipes and a lexicon, in a repository of their own. The next frames count it, quote it, and then say plainly what stands between that corpus and you.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m7_counted",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "How large is the written corpus, and what counted it?",
+      "source": "lab/film/welcome/qc/tokens.cjs — the corpus figures are directory walks and a lexicon read, evaluated when the frame is built",
+      "note": "Chapters are markdown files counted on disk. Concepts and domains are read out of the lexicon's own file.",
+      "narration": "@n.corpus.chapters chapters. @n.corpus.concepts concepts in the lexicon, across @n.corpus.domains registered domains. Not one of those figures is typed into this film. On screen is the tail of the run that resolved every number you will hear: its first three lines are corpus counts, and its last is how many figures the register resolved without failing.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m7_kitchen_rules",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/01-kitchen-rules.md",
+      "from": 3,
+      "to": 5,
+      "why": "What the first chapter of the cookbook says it is building",
+      "narration": "This is how the corpus opens. Not with a result, but with the kitchen: the governance discipline, the pantry, and the fence vocabulary that binds every recipe. Read this before you cook anything. Under the frame is the file, the line range, and a digest recomputed from those bytes as the frame was made.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m7_ledger_wins",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/99-closing.md",
+      "from": 19,
+      "to": 21,
+      "why": "Rule one of six, from the corpus's closing chapter",
+      "narration": "The corpus keeps a claim ledger separate from the chapters that read it, and it writes down in advance which of the two loses. Where a recipe and the ledger disagree, the ledger wins and the recipe is wrong. That sentence is in the book itself, not in a policy note filed beside it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m7_no_licence",
+      "plate": "measurement",
+      "runs": "git ls-files | grep -ciE \"licen[cs]e|copying\"; grep -m1 \"^## STATUS\" deploy/PUBLISH-DECISION.md",
+      "prints_literal": "0\n## STATUS: STAGED, NOT DEPLOYED. NOTHING IS EXPOSED.",
+      "asks": "Can you take this corpus home today?",
+      "source": "run at the root of the UNI-Encyclopedia-Cookbook repository — a count of tracked licence files, then the corpus's own exposure decision",
+      "note": "No licence file yet. That the repository is not public is stated by the operator, not counted by this frame.",
+      "narration": "The mission clause says free and open. Here is where the corpus stands against it today. Zero files tracked in that repository match a licence or a copying notice, and its own exposure document opens with the words on screen. It is not public, and that part is the operator's statement rather than something this frame counts.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m7_not_public",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "deploy/PUBLISH-DECISION.md",
+      "from": 22,
+      "to": 26,
+      "why": "Why it has not simply been opened — from the corpus's own exposure decision",
+      "narration": "And here is the reason it has not simply been opened. Making it public is one command. Making it private again is also one command, and that second command does not undo the first. What was already fetched stays fetched. The decision is the operator's, and the document says so in its title.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m7_honest_position",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/01-kitchen-rules.md",
+      "from": 20,
+      "to": 26,
+      "why": "The corpus grading itself, printed in its first chapter and never softened",
+      "narration": "This is the corpus grading itself, on its own first page. It names how many developmental rungs it counts as earned, out of how many it lists. It calls the whole thing a simulation, a bounded peek, a toy world, never a person. And it fences its mathematical foundation as unrefereed, with the human review still pending.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m7_calibration",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "encyclopedia/CLAIM-LEDGER.md",
+      "from": 13,
+      "to": 13,
+      "why": "The rule that decides which direction a correction is allowed to move",
+      "narration": "That last frame did not happen by accident. This is the rule that produced it. Wording is calibrated down to the measured value and never up, including under urgency. The sentence at the end is the corpus's own summary of what that costs: the fence gets louder under pressure, not wider.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m7_count_correction",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "lexicon/CONCEPTS.json",
+      "from": 26,
+      "to": 26,
+      "why": "The same rule, applied by the corpus to its own count of itself",
+      "narration": "The lexicon holds @n.corpus.concepts concepts today. On screen is the note recording how it got there: a hand count, a validator that disagreed with it, and then a cut. The wrong figure was not overwritten. It sits in the file, on the same line as the correction, where anyone reading the count reads it too.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m7_knife",
+      "plate": "quotation",
+      "root": "cookbook",
+      "file": "cookbook/99-closing.md",
+      "from": 7,
+      "to": 10,
+      "why": "How the corpus ends: provenance, and a standing invitation to knock it down",
+      "narration": "And this is how it ends. The last chapter does two things: it shows where the numbers came from, and it hands you the knife. That is the same move this film makes. On the day the corpus opens, that closing chapter is the one to read first.",
+      "tail_silence": 1.8
+    }
+  ]
+}

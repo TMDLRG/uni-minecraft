@@ -1,0 +1,153 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "doc_m5",
+  "movement": "M5 — THE TRUTH MACHINE (documentary treatment)",
+  "design_rule": [
+    "EXPOSE THE MEASUREMENT, NEVER ASSERT THE CONCLUSION. The operator's instruction, verbatim:",
+    "'only ever shown and presented for others to observe of the signal and calibrate for them selves'.",
+    "The long treatment goes DEEPER, never wider: where the main cut states the mapping once, this",
+    "shows the mapping, then the module heading that says it cannot be read backwards, then the",
+    "order of checks that makes relabelling useless. Eight frames are the project's own source,",
+    "re-read and re-hashed at render time. Three are recorded stdout. Every figure is a token id."
+  ],
+  "scenes": [
+    {
+      "id": "d_m5_title",
+      "plate": "title",
+      "kicker": "MOVEMENT FIVE — THE TRUTH MACHINE",
+      "line1": "One word decides how a claim is drawn.",
+      "line2": "@n.truth.classes classes, @n.truth.materials materials, @n.truth.verdict_words verdict words, one ledger.",
+      "narration": "A claim in this project carries one word that says what kind of claim it is, and that word decides how it is drawn. This movement shows the vocabulary, the drawing rule, the verdict words, and the ledger they land in. Each one is read out of the file that enforces it.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_picture_persuades",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 3,
+      "to": 9,
+      "why": "Why the module that draws the operator's world is a pure function",
+      "narration": "Before the vocabulary, the reason for it. This is the opening of the module documentation of the thing that decides what an operator is shown. The second paragraph names the risk it was built against. The file, the line range, and the digest of those exact bytes are underneath.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_classes",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 40,
+      "to": 40,
+      "why": "The vocabulary a claim may declare, read from the module that enforces it",
+      "narration": "Here is the whole vocabulary, on one line. @n.truth.classes words, and a claim carries exactly one of them. What is on screen is not a summary of that attribute. It is the attribute, at that line number, with the digest of those bytes beside it. Count them yourself.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "d_m5_materials",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 257,
+      "to": 263,
+      "why": "The function that turns a truth class into a material — every clause of it",
+      "narration": "And this is what the word does. One clause per class, each naming a material, and a final clause that catches everything the function could not read and sends it to fog. That last clause is on screen with the rest. It was dropped from a first draft of this film and the re-hash caught it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m5_not_injective",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 238,
+      "to": 242,
+      "why": "The module's own heading — not injective, a material cannot be read backwards",
+      "narration": "@n.truth.classes classes went into @n.truth.materials materials on the frame before. Two of them share a row and a material, so the picture cannot be read backwards to the word behind it. The module says so in its own heading, and the sentence under it names what a surface must not do.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m5_fog_is_checked_first",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 246,
+      "to": 255,
+      "why": "The receipt is checked before the truth class, and absent is not nil",
+      "narration": "The order on this frame is the part that carries the weight. The receipt is tested first, and the class only after. A node with no receipt draws as fog whatever word it declares. Underneath are the three ways a receipt can fail to be there, and why absent and nil are kept apart.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m5_no_caption",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 48,
+      "to": 60,
+      "why": "The claim fence as structure rather than as a word filter",
+      "narration": "This is why there is nowhere on a node to write a sentence. The comment names the obvious implementation, a word filter over a caption, and says what it would get wrong in both directions. What follows is the closed list of keys a node may carry. There is no prose key in it.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m5_verdict_words",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 37,
+      "to": 38,
+      "why": "The verdict words a ledger row may carry, and the description shipped beside them",
+      "narration": "A gate's outcome uses a different vocabulary, and this is all of it. @n.truth.verdict_words words, and no percentage anywhere in the schema. A score can be averaged until a failure disappears into it; these cannot be averaged at all. The description defining the two least comfortable of them is the schema's own, not ours.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_one_ledger",
+      "plate": "measurement",
+      "probe": "gates.runner",
+      "asks": "Can a check exit zero without printing the word PASS?",
+      "source": "viewer/gate_runner.cjs — the law it asserts: exit zero if and only if the printed verdict is PASS",
+      "note": "Canonical ledger, last row per name: @n.ledger.pass PASS · @n.ledger.partial PARTIAL · @n.ledger.pending PENDING · @n.ledger.fail FAIL.",
+      "narration": "One command, one law, across every gate the registry holds. A check may exit zero only when it also printed the word PASS. The line on screen is what the runner printed. The note underneath is the ledger's own count, last row per name, and the FAIL is in it at the same size.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m5_must_be_represented",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "production/schemas/gate_row.schema.json",
+      "from": 5,
+      "to": 5,
+      "why": "What the schema says every gate the project claims MUST do",
+      "narration": "Now the sentence governing that ledger, quoted from the schema itself. Every gate the project claims must be represented there, keyed to a receipt on disk. Measured while this frame was being made: @n.gap.in_ledger of @n.gap.registered registered gates have a row. The rest do not.",
+      "tail_silence": 1.8
+    },
+    {
+      "id": "d_m5_bag",
+      "plate": "measurement",
+      "probe": "bag.roundtrip",
+      "asks": "Does an evidence pack survive a round trip, and is a forged one caught?",
+      "source": "viewer/verify_bag.cjs --mutate — each mutation is required to FAIL verification",
+      "note": "Independent custodians: @n.witness.independent_custodians — the pack's claim level is @n.witness.claim_level, and not unforgeable.",
+      "narration": "This packs the evidence, ships it, unpacks it, then forges it on purpose and requires the forgery to be refused. One line came back and it is on screen. The note underneath is what the pack is worth: tamper-evident, and not unforgeable, with the count of independent custodians beside it.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m5_locators",
+      "plate": "measurement",
+      "probe": "concepts.locators",
+      "asks": "Does every concept in the registry point at a line that exists?",
+      "source": "viewer/verify_concepts.cjs --mutate — the registry is broken on purpose and the check is required to notice",
+      "note": "Whether an anchor is the RIGHT anchor is a human's call, and most rows carry no reviewer yet.",
+      "narration": "A receipt is a file and a line. This opens every one in the registry, then breaks the registry on purpose to check that the opening notices. One line came back. The note underneath is what the check says it cannot settle: whether an anchor is the right anchor.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m5_fog_walkable",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "lib/sp/control_plane/scene.ex",
+      "from": 277,
+      "to": 280,
+      "why": "Fog is walkable, and a verdict may not be authored from inside it",
+      "narration": "The last frame of this movement is the rule about the word that means somebody looked and could not tell. You may stand in it; you may not author a verdict from inside it. About a real scientific claim, this project has authored no verdict at all. The next movement starts here.",
+      "tail_silence": 2.0
+    }
+  ]
+}

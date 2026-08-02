@@ -1,0 +1,77 @@
+==== 16:45 cycle 1 ====
+UNI-10-1 pick=0 cobble=0 plank=1 log=0 tool=1
+UNI-10-2 pick=11 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=1 cobble=0 plank=0 log=0 tool=1
+UNI-11-1 pick=3 cobble=0 plank=1 log=2 tool=1
+UNI-11-2 pick=1 cobble=0 plank=0 log=0 tool=1
+UNI-11-3 pick=1 cobble=0 plank=1 log=0 tool=0
+==== 16:55 cycle 2 ====
+UNI-10-1 pick=0 cobble=0 plank=1 log=0 tool=1
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=1 cobble=0 plank=0 log=0 tool=1
+UNI-11-1 pick=16 cobble=0 plank=1 log=0 tool=2
+UNI-11-2 pick=1 cobble=0 plank=0 log=0 tool=1
+UNI-11-3 pick=1 cobble=0 plank=0 log=0 tool=1
+==== 17:05 cycle 3 ====
+UNI-10-1 pick=2 cobble=0 plank=1 log=0 tool=1
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=1 cobble=0 plank=0 log=0 tool=1
+UNI-11-1 pick=16 cobble=0 plank=0 log=0 tool=4
+UNI-11-2 pick=1 cobble=0 plank=1 log=1 tool=1
+UNI-11-3 pick=1 cobble=0 plank=0 log=0 tool=1
+==== 17:15 cycle 4 ====
+UNI-10-1 pick=2 cobble=0 plank=1 log=0 tool=1
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=1 cobble=0 plank=0 log=0 tool=1
+UNI-11-1 pick=16 cobble=0 plank=0 log=0 tool=4
+UNI-11-2 pick=2 cobble=0 plank=1 log=0 tool=1
+UNI-11-3 pick=3 cobble=0 plank=1 log=1 tool=0
+==== 17:25 cycle 5 ====
+UNI-10-1 pick=4 cobble=0 plank=1 log=0 tool=1
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=16 cobble=0 plank=0 log=1 tool=4
+UNI-11-2 pick=2 cobble=0 plank=0 log=0 tool=3
+UNI-11-3 pick=10 cobble=0 plank=2 log=2 tool=1
+==== 17:35 cycle 6 ====
+UNI-10-1 pick=0 cobble=0 plank=0 log=1 tool=0
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=23 cobble=0 plank=1 log=0 tool=4
+UNI-11-2 pick=4 cobble=0 plank=0 log=0 tool=3
+UNI-11-3 pick=13 cobble=0 plank=2 log=2 tool=2
+==== 17:45 cycle 7 ====
+UNI-10-1 pick=0 cobble=0 plank=0 log=1 tool=0
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=24 cobble=0 plank=0 log=0 tool=4
+UNI-11-2 pick=4 cobble=0 plank=0 log=0 tool=2
+UNI-11-3 pick=16 cobble=0 plank=1 log=2 tool=2
+==== 17:55 cycle 8 ====
+UNI-10-1 pick=0 cobble=0 plank=0 log=1 tool=0
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=24 cobble=0 plank=0 log=0 tool=4
+UNI-11-2 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-3 pick=22 cobble=0 plank=1 log=0 tool=3
+==== 18:05 cycle 9 ====
+UNI-10-1 pick=0 cobble=0 plank=0 log=1 tool=0
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=24 cobble=0 plank=0 log=0 tool=4
+UNI-11-2 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-3 pick=22 cobble=0 plank=1 log=0 tool=2
+==== 18:15 cycle 10 ====
+UNI-10-1 pick=0 cobble=0 plank=0 log=1 tool=0
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=24 cobble=0 plank=0 log=0 tool=4
+UNI-11-2 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-3 pick=21 cobble=0 plank=1 log=0 tool=3
+==== 18:25 cycle 11 ====
+UNI-10-1 pick=0 cobble=0 plank=0 log=1 tool=0
+UNI-10-2 pick=10 cobble=0 plank=0 log=0 tool=4
+UNI-10-3 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-1 pick=24 cobble=0 plank=0 log=0 tool=3
+UNI-11-2 pick=0 cobble=0 plank=0 log=0 tool=0
+UNI-11-3 pick=21 cobble=0 plank=1 log=0 tool=3

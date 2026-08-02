@@ -1,0 +1,1146 @@
+{
+  "schema": "uni.film.spine.v1",
+  "title": "Welcome to UNI Labs",
+  "authored_utc": "2026-08-01",
+  "authored_on": "THINKER",
+  "sibling_of": "lab/film/{svg,script,render,dgst,drafts} — the TRAVELERS assets. This film shares nothing with them and touches none of them.",
+  "what_this_file_is": {
+    "one_line": "The ONE truth ledger for the film. Beats only. NO PROSE FOR ANY CUT lives here.",
+    "the_rule": "A beat is a fact, plus its epistemic status, plus its receipt. A cut is a PROJECTION of beats. Narration, captions and on-screen text are authored in a cut file, are derived from beats, and may never introduce a fact this spine does not carry.",
+    "why_no_prose": "Prose is where a claim quietly gains a modifier. TRAVELERS' own QC sheet states `Total scenes 143` while its segment table sums to 157 (lab/film/QC.md) — a hand-typed sentence contradicting its own table. This spine holds no sentence a gate cannot check.",
+    "why_no_numbers": "There is not one numeric literal in any beat. Every number is a `numbers` token resolved at build time by `lab/film/welcome/qc/tokens.cjs`. This estate's governing banner carried six hand-typed numbers that were wrong within six hours and one that was wrong within 176 seconds (CLAUDE.md, 'Corrected AGAIN 2026-07-29'). A banner can be corrected in a day. A film is rendered once and watched for a year."
+  },
+  "registers": {
+    "claim": {
+      "means": "a statement about the world",
+      "requires": [
+        "truth_class",
+        "receipt"
+      ],
+      "receipt_must_be": "a real path:line, or a command that can be re-executed now",
+      "on_screen": "rendered plainly; the truth_class governs its material per lib/sp/control_plane/scene.ex"
+    },
+    "intent": {
+      "means": "what we are trying to do",
+      "requires": [],
+      "truth_class": "null, always — an intent is not a claim about the world and must never be given one",
+      "on_screen": "MUST carry the marker INTENT, NOT A MEASURED CLAIM. A cut that renders an intent beat without it is a failing cut."
+    },
+    "invitation": {
+      "means": "what a viewer can do",
+      "requires": [
+        "a working URL or a runnable command"
+      ],
+      "on_screen": "the URL or command is shown verbatim; if it does not work at render time the QC gate fails the cut"
+    },
+    "quotation": {
+      "means": "verbatim from a repo file",
+      "requires": [
+        "receipt",
+        "sha256"
+      ],
+      "extraction_rule": "read the file as utf8, split on /\\r?\\n/, take lines [a-1 .. b-1] inclusive, join with \"\\n\", sha256 the utf8 bytes. Line endings are normalised on purpose: a CRLF checkout must not change a quotation's identity.",
+      "helper": "lab/film/welcome/qc/tokens.cjs → quote(root, rel, a, b)",
+      "on_screen": "verbatim or not at all. No ellipsis, no tidying, no re-wrapping that changes bytes."
+    }
+  },
+  "roots": {
+    "minecraft": "C:/Users/mpolz/Documents/UNI.Minecraft",
+    "flagellum": "C:/Users/mpolz/Documents/UNI-Flagellum",
+    "cookbook": "C:/Users/mpolz/Documents/UNI.Architect/UNI-Encyclopedia-Cookbook",
+    "note": "Receipts are written `<path>:<line>` when they live in this repository, and `<root>/<path>:<line>` when they do not — `flagellum/…` or `cookbook/…`. The default root is `minecraft`, and its prefix is omitted so that an in-repo receipt is directly stat-able by a gate rooted here. The three roots are named because the estate is three repositories and a film that implies one repository implies a coherence the estate has not got."
+  },
+  "truth_classes": {
+    "source": "lib/sp/control_plane/scene.ex:40 — @truth_classes. READ, not invented.",
+    "vocabulary": [
+      "OBSERVED",
+      "STRUCTURAL_RECONSTRUCTION",
+      "REDUCED_MODEL",
+      "DERIVED",
+      "SIMULATED",
+      "UNKNOWN"
+    ],
+    "how_this_film_uses_them": {
+      "OBSERVED": "a fact read directly off an artifact or off a live process by a re-executable command in the beat's receipt",
+      "STRUCTURAL_RECONSTRUCTION": "structure inferred from artifacts rather than read from one of them",
+      "REDUCED_MODEL": "a statement describing the engine's design as a model of something, not a measurement of it",
+      "DERIVED": "a fact computed by aggregating other measured facts",
+      "SIMULATED": "a fact about a simulated world, never about the world",
+      "UNKNOWN": "somebody looked and could not tell. Renders as fog. Absent is a different state and is refused."
+    },
+    "fence": "A beat may not carry a truth_class its receipt cannot bear. Nothing in this film is OBSERVED about biology; the only OBSERVED claims here are about this estate's own artifacts and processes."
+  },
+  "movements": {
+    "M0": "THE INVITATION — you are looking at a laboratory built to be caught being wrong",
+    "M1": "THE MISSION — stated in full, unhedged, and marked as INTENT",
+    "M2": "THE ESTATE — the bodies: a colony, a producer, a flagellar-motor lab, a control plane, a public record",
+    "M3": "HOW TO WATCH — the surfaces, and what 'live' does and does not mean today",
+    "M4": "HOW IT WORKS — no reward anywhere; expected free energy; a Markov blanket implemented as a pipe",
+    "M5": "THE TRUTH MACHINE — truth classes, verdict words, one ledger, and fog",
+    "M6": "THE HONEST STATE — what is NOT true today. THE LOAD-BEARING MOVEMENT",
+    "M7": "THE COOKBOOK — the encyclopedia + cookbook corpus and how to take it home",
+    "M8": "HOW TO ENGAGE — watch, question, FALSIFY, contribute",
+    "M9": "THE CLOSE — what you would be joining, and what it is honestly worth today"
+  },
+  "cut_contract": {
+    "every_cut_is_a_projection": "A cut selects beats and orders them. It may drop beats from M0..M5 and M7..M9 freely.",
+    "M6_is_not_optional": "Every cut MUST cover every fact marked mandatory:true in lab/film/welcome/qc/honest_state.json → facts[]. A cut that shortens M6 is not a shorter film; it is a different claim.",
+    "no_new_facts": "A cut may not state anything this spine does not carry. If a cut needs a fact, the fact is added here first, with a receipt, and only then rendered.",
+    "numbers": "A cut renders `numbers` tokens only. A numeric literal in a cut file is a QC failure with no exception.",
+    "prohibitions": "Beats with register `claim` and `prohibition: true` describe what must NOT appear. They are enforced against the rendered cut, not merely read.",
+    "covers_must_resolve": "Every string in a beat's  array must exist as an id in qc/honest_state.json → facts[]. The gate refuses a beat that claims to cover a fact that does not exist, and refuses a mandatory fact no beat covers."
+  },
+  "beats": [
+    {
+      "id": "m0.1",
+      "movement": "M0",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "docs/FALSIFICATION.md:3-5",
+      "sha256": "85328005f8bb346cdbb21f55d87367dd235ed3990c102df7dc4e96eb176f5c0a",
+      "text": "This project lives or dies by being **falsifiable**. Nothing here asks for trust: every claim is\nrecomputed from the running code, and below is exactly how to **break** each one if it were false.\nA claim you cannot imagine falsifying is not science.",
+      "covers": [
+        "topic.falsifiability"
+      ],
+      "covers_prose": [
+        "the invitation",
+        "falsifiability as the entry condition"
+      ],
+      "numbers": [],
+      "note": "The film opens in the repository's own words, not in ours. This is the estate's oldest standing promise and the whole film is a test of whether it is kept."
+    },
+    {
+      "id": "m0.2",
+      "movement": "M0",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "docs/control-plane/LIMITATIONS.md:1-9",
+      "receipt_detail": "The file declares itself GENERATED from @limitation annotations in source, regenerated and diffed by the `limitations-doc` gate.",
+      "reprove": "node viewer/generate_limitations.cjs",
+      "covers": [
+        "topic.limits-derived"
+      ],
+      "covers_prose": [
+        "built to be caught being wrong",
+        "limits are derived, not written"
+      ],
+      "numbers": [
+        "n.limitations.declared"
+      ],
+      "note": "A hand-written limitations page drifts one way: nobody forgets to delete a limit that was fixed and everybody forgets to add the one they just found. This one is not written, so it cannot drift."
+    },
+    {
+      "id": "m0.3",
+      "movement": "M0",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "lab/film/welcome/qc/tokens.cjs",
+      "receipt_detail": "Every number in this film is an expression in that file.",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs",
+      "covers": [
+        "topic.no-typed-numbers"
+      ],
+      "covers_prose": [
+        "the film holds no typed numbers",
+        "why"
+      ],
+      "numbers": [],
+      "note": "Say this on screen early. It is the film's own falsifier: if a rendered figure and a recomputed token disagree, the film is wrong and the QC gate says so before anyone watches it."
+    },
+    {
+      "id": "m0.4",
+      "movement": "M0",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation is an act a viewer can take, not a statement about the world",
+      "receipt": "command: node lab/film/welcome/qc/tokens.cjs — verified on THINKER 2026-08-01, all tokens measured, none failed",
+      "covers": [
+        "topic.audit-the-film"
+      ],
+      "covers_prose": [
+        "check the film against the repository yourself"
+      ],
+      "numbers": [],
+      "note": "First act offered to the viewer is auditing the film, not watching it."
+    },
+    {
+      "id": "m1.1",
+      "movement": "M1",
+      "register": "intent",
+      "truth_class": null,
+      "why_null": "the mission is what we are trying to do. It is not a measured claim and must never be dressed as one.",
+      "receipt": null,
+      "text": "worldwide peace through free and open understanding; the public pursuit and ownership of General Universal Natural Intelligence; the end of extract and extortion; making safe all wombs and Gaia — earth, our solar system and beyond.",
+      "covers": [
+        "mission.whole"
+      ],
+      "covers_prose": [
+        "the mission, whole, unhedged"
+      ],
+      "numbers": [],
+      "on_screen_marker": "INTENT, NOT A MEASURED CLAIM",
+      "note": "Verbatim and unsoftened. It is not shortened, not paraphrased, and not qualified with 'aims to' or 'hopes to'. The honesty is not in trimming the mission; it is in the marker beside it and in M6 further down.",
+      "intent_marked": true
+    },
+    {
+      "id": "m1.2",
+      "movement": "M1",
+      "register": "intent",
+      "truth_class": null,
+      "why_null": "clause of m1.1",
+      "receipt": null,
+      "text": "worldwide peace through free and open understanding",
+      "covers": [
+        "mission.peace"
+      ],
+      "covers_prose": [
+        "mission clause 1"
+      ],
+      "numbers": [],
+      "on_screen_marker": "INTENT, NOT A MEASURED CLAIM",
+      "note": "The four clauses are carried separately so a cut can pace them without re-typing the mission. A cut that shows the clauses must also show m1.1 whole, in one frame, at least once.",
+      "intent_marked": true
+    },
+    {
+      "id": "m1.3",
+      "movement": "M1",
+      "register": "intent",
+      "truth_class": null,
+      "why_null": "clause of m1.1",
+      "receipt": null,
+      "text": "the public pursuit and ownership of General Universal Natural Intelligence",
+      "covers": [
+        "mission.public-ownership"
+      ],
+      "covers_prose": [
+        "mission clause 2"
+      ],
+      "numbers": [],
+      "on_screen_marker": "INTENT, NOT A MEASURED CLAIM",
+      "note": "Public pursuit AND public ownership. Both words carry weight and neither is dropped.",
+      "intent_marked": true
+    },
+    {
+      "id": "m1.4",
+      "movement": "M1",
+      "register": "intent",
+      "truth_class": null,
+      "why_null": "clause of m1.1",
+      "receipt": null,
+      "text": "the end of extract and extortion",
+      "covers": [
+        "mission.end-extraction"
+      ],
+      "covers_prose": [
+        "mission clause 3"
+      ],
+      "numbers": [],
+      "on_screen_marker": "INTENT, NOT A MEASURED CLAIM",
+      "intent_marked": true
+    },
+    {
+      "id": "m1.5",
+      "movement": "M1",
+      "register": "intent",
+      "truth_class": null,
+      "why_null": "clause of m1.1",
+      "receipt": null,
+      "text": "making safe all wombs and Gaia — earth, our solar system and beyond",
+      "covers": [
+        "mission.safe-wombs-gaia"
+      ],
+      "covers_prose": [
+        "mission clause 4"
+      ],
+      "numbers": [],
+      "on_screen_marker": "INTENT, NOT A MEASURED CLAIM",
+      "intent_marked": true
+    },
+    {
+      "id": "m1.6",
+      "movement": "M1",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "command: grep -rl \"worldwide peace through free and open\" --include=*.md --include=*.json --include=*.txt --exclude-dir=welcome UNI.Minecraft/ UNI-Flagellum/ UNI.Public/",
+      "receipt_detail": "Run from C:/Users/mpolz/Documents. NO MATCHES, verified 2026-08-01. Three distinctive fragments return the same empty result — \"extract and extortion\", \"safe all wombs\", \"General Universal Natural Intelligence\". THE --exclude-dir=welcome IS LOAD-BEARING AND IS ITSELF PART OF THE FINDING: without it the command now matches three files, and all three are this film's own — SPINE.json, qc/honest_state.json and script/MASTER_SCRIPT_EN.md. Writing the film is what put the mission into the tree. The receipt excludes the film so it keeps measuring the estate rather than measuring itself, and a negative receipt that quietly starts matching its own author is worse than no receipt.",
+      "reprove": "grep -rl \"extract and extortion\" --include=*.md --include=*.json --include=*.txt --exclude-dir=welcome UNI.Minecraft/ UNI-Flagellum/ UNI.Public/",
+      "covers": [
+        "mission.provenance"
+      ],
+      "covers_prose": [
+        "the mission's provenance",
+        "an adverse finding about the mission itself"
+      ],
+      "numbers": [],
+      "note": "ADVERSE, AND IT BELONGS IN M1 RATHER THAN M6 BECAUSE IT IS ABOUT THE MISSION. As measured on 2026-08-01, this mission statement exists in no file of any of the three repositories outside this film's own directory. It arrived by conversation. THIS FILM IS ITS FIRST WRITTEN HOME. A film that states a mission the repository has never recorded is stating something the repository cannot corroborate, and a viewer is entitled to know that. The repair is the operator's: commit the mission to a governed file, then this beat's receipt becomes that file and this note is retired."
+    },
+    {
+      "id": "m2.1",
+      "movement": "M2",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/brain/bridge.ex:3-19",
+      "receipt_detail": "The active-inference colony lives under lib/sp/brain/ and lib/sp/runtime/; the cited lines are its brain-to-body boundary.",
+      "covers": [
+        "estate.colony"
+      ],
+      "covers_prose": [
+        "body 1: the colony"
+      ],
+      "numbers": [],
+      "note": "Embodied agents whose life is a predict-act tick. What is claimed here is that the code exists and what shape it has. Nothing about awareness, experience or life is claimed anywhere in this film, and the scene module is built so that it structurally cannot be — there is no caption channel to say it in (scene.ex:48-59)."
+    },
+    {
+      "id": "m2.2",
+      "movement": "M2",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/producer/brain.ex:5-7",
+      "sha256": "4caf49ca706c819d3b80ae7dde9d28865885529b68b7a171f358c6afa5018368",
+      "text": "  telemetry, choosing a production action by EXPECTED FREE ENERGY minimisation — the same\n  active inference as every UNI, no scripted rules, no reward. Pure decide: identical\n  `(brain, telemetry)` ⇒ identical action.",
+      "covers": [
+        "estate.producer"
+      ],
+      "covers_prose": [
+        "body 2: the producer"
+      ],
+      "numbers": [],
+      "note": "The thing that would direct a broadcast runs the same mathematics as the thing being broadcast. That is the estate's most unusual structural fact and it is quoted rather than described."
+    },
+    {
+      "id": "m2.3",
+      "movement": "M2",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "flagellum/UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py:566-567",
+      "sha256": "ed58938878f37c87e71b53b231845ac242d0402419cb1b63db307f0156aae948",
+      "text": "        \"scope\": (\"Held-out DURATION prediction on the frozen derived_eligible_1_to_8 cohort of \"\n                  \"Wadhwa-2022, 19 holdout motors, motor-equal NLPD, seconds scale.\"),",
+      "covers": [
+        "estate.flagellum-lab"
+      ],
+      "covers_prose": [
+        "body 3: the flagellar-motor lab",
+        "the exact scope of its strongest result"
+      ],
+      "numbers": [],
+      "note": "The lab's strongest result states its own boundary in code. Show the scope, not a summary of it. E. coli BEHAVIOURAL evidence only — this film never places it beside Salmonella or Bacillus structural evidence, because doing so would imply one measured specimen."
+    },
+    {
+      "id": "m2.4",
+      "movement": "M2",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "evidence/control_plane/ledger.ndjson",
+      "receipt_detail": "The control plane is lib/sp/control_plane/; the ledger and its anchor.json sit beside the cited file.",
+      "reprove": "node -e \"console.log(JSON.stringify(require('./viewer/state_blocks.cjs').measure().controlPlane))\"",
+      "covers": [
+        "estate.control-plane"
+      ],
+      "covers_prose": [
+        "body 4: the control plane",
+        "the ledger and its anchor agree"
+      ],
+      "numbers": [
+        "n.cp.entries",
+        "n.cp.anchor_agrees"
+      ],
+      "note": "The body whose only job is to record what the others did, including what they got wrong. The anchor agreeing with the ledger is a real, checkable property — and it is NOT the same as the ledger being unforgeable. See honest.witness."
+    },
+    {
+      "id": "m2.5",
+      "movement": "M2",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "evidence/gates.ndjson",
+      "receipt_detail": "Schema at production/schemas/gate_row.schema.json.",
+      "reprove": "node -e \"console.log(JSON.stringify(require('./viewer/state_blocks.cjs').measure().gateLedger))\"",
+      "covers": [
+        "estate.public-record"
+      ],
+      "covers_prose": [
+        "body 5: the public record"
+      ],
+      "numbers": [
+        "n.ledger.rows",
+        "n.ledger.unique_names",
+        "n.ledger.sha256"
+      ],
+      "note": "Rows are history; names are the backlog. BOTH numbers are stated and each is labelled, because a count whose derivation is unstated is exactly how a backlog and the history of a backlog came to be reported as one word in this estate's own banner."
+    },
+    {
+      "id": "m2.6",
+      "movement": "M2",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/control_plane/scene.ex:33-37",
+      "sha256": "d924f2818b50781b9195f0be16ab3a7beb1a69e7007c9658cdb0a6c07400e672",
+      "text": "  ## A malformed node fails the whole scene\n\n  It is not dropped. A scene missing a node it could not draw shows the operator a\n  world with a hole in it, and a hole is invisible — you cannot notice what was\n  never rendered.",
+      "covers": [
+        "estate.separation"
+      ],
+      "covers_prose": [
+        "why the bodies are kept separate",
+        "the design principle behind the whole estate"
+      ],
+      "numbers": [],
+      "note": "The single sentence that explains why this film is built the way it is. You cannot notice what was never rendered — so nothing is dropped, and M6 is not optional."
+    },
+    {
+      "id": "m3.1",
+      "movement": "M3",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "url: http://127.0.0.1:{n.surface.track_port}/ — port read from viewer/track/track_server.cjs:44. TCP probe on THINKER 2026-08-01: OPEN.",
+      "covers": [
+        "watch.track"
+      ],
+      "covers_prose": [
+        "surface 1: UNI TRACK"
+      ],
+      "numbers": [
+        "n.surface.track_port"
+      ],
+      "note": "The persistent project surface. It reads the real plan file and caches nothing; when a step completes, the file is edited and the surface follows."
+    },
+    {
+      "id": "m3.2",
+      "movement": "M3",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "url: http://127.0.0.1:{n.surface.lab_port}/lab — port read from viewer/lab/lab_server.cjs:36. TCP probe on THINKER 2026-08-01: OPEN.",
+      "covers": [
+        "watch.lab"
+      ],
+      "covers_prose": [
+        "surface 2: the lab floor"
+      ],
+      "numbers": [
+        "n.surface.lab_port",
+        "n.lab.rooms_served",
+        "n.gates.lab"
+      ],
+      "note": "Two counts appear here and they legitimately differ: rooms the server routes, and lab GATES registered. L0 is served at /lab and L2 is an image endpoint rather than a page. Neither number stands in for the other and the film says which is which."
+    },
+    {
+      "id": "m3.3",
+      "movement": "M3",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "viewer/track/track_server.cjs",
+      "receipt_detail": "The surface re-reads its source artifacts per request; evidence/remediation/phase9_plan.json is the artifact it renders.",
+      "reprove": "node viewer/track/verify_track.cjs",
+      "covers": [
+        "watch.live-means"
+      ],
+      "covers_prose": [
+        "what 'live' means here"
+      ],
+      "numbers": [
+        "n.plan.stages",
+        "n.plan.steps",
+        "n.plan.done",
+        "n.plan.blocked",
+        "n.plan.operator"
+      ],
+      "note": "'Live' means the surface re-reads the artifact and shows you what is on disk now. It does not mean a running colony, and it does not mean a broadcast."
+    },
+    {
+      "id": "m3.4",
+      "movement": "M3",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "viewer/golive_guard.cjs",
+      "receipt_detail": "Exit 0 with every path REFUSED, verified on THINKER 2026-08-01.",
+      "reprove": "node viewer/prove_golive_refuses_me.cjs",
+      "covers": [
+        "watch.not-on-air"
+      ],
+      "covers_prose": [
+        "what 'live' does NOT mean today",
+        "hands off to M6"
+      ],
+      "numbers": [
+        "n.golive.allowed_now",
+        "n.golive.paths"
+      ],
+      "note": "Nothing is on the air. Say it here, plainly, at the moment the viewer might assume otherwise — not in a footnote. The full statement of what the guard is and is not worth is honest.golive."
+    },
+    {
+      "id": "m4.1",
+      "movement": "M4",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/brain/mc.ex:9",
+      "sha256": "51dbebe52a02d9f59e4037c32b92251afd3e9f1887a0f0e1a6c395a7a44e75f4",
+      "text": "  death (P6). There is no reward and no RL anywhere.",
+      "covers": [
+        "engine.no-reward"
+      ],
+      "covers_prose": [
+        "no reward anywhere"
+      ],
+      "numbers": [],
+      "note": "The claim in the code's own words. The next beat is the thing that makes it more than a comment."
+    },
+    {
+      "id": "m4.2",
+      "movement": "M4",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "test/sp/invariants_test.exs:122-124",
+      "receipt_detail": "Invariant #15, 'eval metrics do not backdoor a reward signal'.",
+      "reprove": "mix test test/sp/invariants_test.exs",
+      "covers": [
+        "engine.no-reward-enforced"
+      ],
+      "covers_prose": [
+        "the no-reward claim is enforced, not asserted"
+      ],
+      "numbers": [
+        "n.engine.reward_backdoor_keys"
+      ],
+      "note": "A comment saying 'no reward' is worth nothing. A test that fails when a reward-shaped key appears in eval metrics is worth something. Show the test, not the comment. And say what it does NOT cover: it fences the eval surface, not every conceivable channel."
+    },
+    {
+      "id": "m4.3",
+      "movement": "M4",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/brain/plan.ex:12-16",
+      "sha256": "c1f1c41a34a006147f16b991bdc75838fd394ef44d4e120969c9194fa7c34d38",
+      "text": "  What \"reasoning\" means here (the fence): this is **Class B/C planning** — recursive\n  evaluation of expected free energy over future *beliefs* the agent expects to hold.\n  It is NOT Class U cognition/understanding. It branches on actions (rolling beliefs\n  through the expected transition), not yet on every possible future observation (full\n  sophisticated inference is `O((nu·no)^depth)` and is flagged as heavier).",
+      "covers": [
+        "engine.efe"
+      ],
+      "covers_prose": [
+        "expected free energy",
+        "and the fence around what it is not"
+      ],
+      "numbers": [],
+      "note": "EFE is introduced together with the sentence that says what it is NOT. Those two never appear apart in this film."
+    },
+    {
+      "id": "m4.4",
+      "movement": "M4",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/brain/bridge.ex:3-5",
+      "sha256": "a12baa8f6320dba79dba4cd877dc68d850452c2eae106d1633524a04238c6a41",
+      "text": "  The live Markov blanket in code: a `Port`-owning `GenServer` that connects the\n  Elixir active-inference brain to a Node `mineflayer` body over stdio. It lives\n  OUTSIDE the pure core (it performs effects), exactly like `SP.Sim`/`SP.Runtime`.",
+      "covers": [
+        "engine.markov-blanket"
+      ],
+      "covers_prose": [
+        "a Markov blanket implemented as a pipe"
+      ],
+      "numbers": [
+        "n.blanket.channels_out"
+      ],
+      "note": "The most filmable idea in the estate: an abstraction from theoretical biology that is, literally, a stdio pipe. Two message kinds cross it and nothing else — senses in, one action out (bridge.ex:7-18). The brain never sees raw world state; the body never sees beliefs."
+    },
+    {
+      "id": "m4.5",
+      "movement": "M4",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "mix.exs",
+      "receipt_detail": "`defp deps` is empty.",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs  (read n.engine.hex_deps)",
+      "covers": [
+        "engine.cpu-only"
+      ],
+      "covers_prose": [
+        "CPU-only, no foreign computation, nowhere for a foreign mind to hide"
+      ],
+      "numbers": [
+        "n.engine.hex_deps"
+      ],
+      "note": "Zero package dependencies is not a virtue by itself. It is stated because it is what makes the no-LLM claim checkable in one command instead of by trust: there is no library an inference call could hide inside."
+    },
+    {
+      "id": "m5.1",
+      "movement": "M5",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/control_plane/scene.ex:40",
+      "sha256": "74df44a604adb12f12dd710332b6dba2acf1cd5a81e5fddba703364da8bc44f3",
+      "text": "  @truth_classes [:OBSERVED, :STRUCTURAL_RECONSTRUCTION, :REDUCED_MODEL, :DERIVED, :SIMULATED, :UNKNOWN]",
+      "covers": [
+        "truth.classes"
+      ],
+      "covers_prose": [
+        "the truth classes, from the module that enforces them"
+      ],
+      "numbers": [
+        "n.truth.classes"
+      ],
+      "note": "This film's own beats are classified with this vocabulary and no other. Reading it on screen is the moment the viewer is handed the key to auditing everything that follows."
+    },
+    {
+      "id": "m5.2",
+      "movement": "M5",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/control_plane/scene.ex:257-263",
+      "sha256": "05ce3b1e36e8b3992e0768e991b73ef580743dbd2f2e7a2a7282bbcb89c0935c",
+      "text": "  defp by_truth_class(%{truth_class: :OBSERVED}), do: :lit_solid\n  defp by_truth_class(%{truth_class: :STRUCTURAL_RECONSTRUCTION}), do: :seamed_solid\n  defp by_truth_class(%{truth_class: :REDUCED_MODEL}), do: :translucent\n  defp by_truth_class(%{truth_class: :DERIVED}), do: :translucent\n  defp by_truth_class(%{truth_class: :SIMULATED}), do: :staged\n  defp by_truth_class(%{truth_class: :UNKNOWN}), do: :fog\n  defp by_truth_class(_unreadable), do: :fog",
+      "covers": [
+        "truth.materials"
+      ],
+      "covers_prose": [
+        "truth class decides material",
+        "provenance is visible without reading",
+        "unreadable falls to fog"
+      ],
+      "numbers": [
+        "n.truth.classes",
+        "n.truth.materials"
+      ],
+      "note": "Six classes onto five materials, deliberately: appearance must not determine provenance, so a surface can never infer a truth class back out of a material. This is the estate's answer to the fact that a picture persuades faster than it can be checked. THE LAST CLAUSE MUST BE ON SCREEN WITH THE REST: anything unreadable falls to fog rather than to a default. It was dropped from this beat's first draft and the re-hash caught it, which is the quotation rule earning its keep inside the file that defines it."
+    },
+    {
+      "id": "m5.3",
+      "movement": "M5",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "lib/sp/control_plane/scene.ex:248",
+      "receipt_detail": "`if backed?(n), do: by_truth_class(n), else: :fog`, with backed?/1 at lib/sp/control_plane/scene.ex:253-254 refusing absent, nil and blank receipts alike.",
+      "covers": [
+        "truth.fog"
+      ],
+      "covers_prose": [
+        "fog",
+        "a claim without a receipt cannot be drawn as more than its evidence"
+      ],
+      "numbers": [],
+      "note": "Fog is the default, not the error case. A node with no receipt renders as fog no matter what truth class it declares — the receipt is checked FIRST. This is the mechanism that makes the whole ladder non-gameable by relabelling."
+    },
+    {
+      "id": "m5.4",
+      "movement": "M5",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "production/schemas/gate_row.schema.json:37-38",
+      "sha256": "7b879b357c2cb8ea8629e6fbf6c7805a725bc64032cbd75ecb489c5c2e173785",
+      "text": "      \"enum\": [\"PASS\", \"PARTIAL\", \"FAIL\", \"WITHHELD\", \"PENDING\"],\n      \"description\": \"Honest verdict vocabulary. Never percent-scored. WITHHELD = a claim was withdrawn; PENDING = registered but not run.\"",
+      "covers": [
+        "truth.verdict-words"
+      ],
+      "covers_prose": [
+        "the verdict words"
+      ],
+      "numbers": [
+        "n.truth.verdict_words"
+      ],
+      "note": "Five words and no percentage. A score would let a failure average away against successes; these words cannot be averaged, which is the point."
+    },
+    {
+      "id": "m5.5",
+      "movement": "M5",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "evidence/gates.ndjson",
+      "receipt_detail": "One ledger, last row per name.",
+      "reprove": "node -e \"console.log(JSON.stringify(require('./viewer/state_blocks.cjs').measure().gateLedger.latestTally))\"",
+      "covers": [
+        "truth.one-ledger"
+      ],
+      "covers_prose": [
+        "one ledger",
+        "a FAIL stays visible"
+      ],
+      "numbers": [
+        "n.ledger.pass",
+        "n.ledger.partial",
+        "n.ledger.pending",
+        "n.ledger.fail"
+      ],
+      "note": "Show the FAIL and the PENDINGs on screen beside the PASSes, at the same size. A failed, blocked or not-run gate staying visible is the product working, and a cut that renders only the PASS count is a failing cut."
+    },
+    {
+      "id": "m6.0",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "lab/film/welcome/qc/honest_state.json",
+      "receipt_detail": "The enumerated fact ids every cut must cover; lib/sp/control_plane/scene.ex:33-37 is why nothing may be dropped.",
+      "covers": [
+        "honest.framing"
+      ],
+      "covers_prose": [
+        "M6 is load-bearing",
+        "the contract on every cut"
+      ],
+      "numbers": [],
+      "note": "FRAMING BEAT. Say it out loud before the list: what follows is not a disclaimer reel, it is the part of the film the rest of the film is for. Every fact below is enumerated in honest_state.json and every cut must carry all of them."
+    },
+    {
+      "id": "honest.golive",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "viewer/golive_guard.cjs:38-43",
+      "receipt_detail": "The token is not minted here, on purpose; the @limitation f31.presence-evident block is at viewer/golive_guard.cjs:46-50. Exit 0, every path REFUSED, verified on THINKER 2026-08-01. n.golive.minters and n.golive.presence_dir_exists verify the absence of a minter.",
+      "reprove": "node viewer/prove_golive_refuses_me.cjs",
+      "covers": [
+        "honest.golive"
+      ],
+      "covers_prose": [
+        "go-live is refused for every agent path",
+        "no presence-token minter exists",
+        "and the guard's real claim level"
+      ],
+      "numbers": [
+        "n.golive.paths",
+        "n.golive.allowed_now",
+        "n.golive.minters",
+        "n.golive.presence_dir_exists",
+        "n.golive.claim_level"
+      ],
+      "quotation_support": {
+        "receipt": "viewer/golive_guard.cjs:30-36",
+        "sha256": "1c5bba5f75f04e37e214e51b819c073f1aa0c9e5d0f77f73ae575a38bb1c9d65",
+        "text": "// CLAIM LEVEL: `presence_evident`. NOT unforgeable, and that word is in every refusal and every\n// grant this module emits. An agent running in the operator's own interactive session, with read\n// access to the token, can replay it. This buys: a headless agent, a service-session process, a\n// scheduled task, a remote shell, and every one of this repository's own scripts cannot go live.\n// It does not buy: protection from an agent already sitting inside the operator's live desktop\n// session. Saying so is the point; a guard that overstates itself is worse than none, because it\n// is trusted further than it can carry."
+      },
+      "note": "Every path to air through this codebase is refused, and it is refused for the least flattering reason: the door has no key. No minter exists and the presence directory is not on disk, so the guard currently refuses everything including a human. The claim level is presence_evident and the film uses that exact word — NEVER 'secure', never 'locked', never 'unforgeable'."
+    },
+    {
+      "id": "honest.pureworld",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "runs/pureworld_qa_gate.exs:28",
+      "receipt_detail": "The @scaffold attribute; the raise it feeds is at runs/pureworld_qa_gate.exs:39-56.",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs  (read n.pureworld.raises)",
+      "covers": [
+        "honest.pureworld"
+      ],
+      "covers_prose": [
+        "the colony science gate does not run"
+      ],
+      "numbers": [
+        "n.pureworld.raises"
+      ],
+      "quotation_support": {
+        "receipt": "runs/pureworld_qa_gate.exs:28",
+        "sha256": "1d86981c1e693d5b24499f9af132787766eaa0c5a4ff226b85fcf7e0b7f239bf",
+        "text": "  @scaffold \"SCAFFOLD — this launcher is not yet implemented against the live colony\""
+      },
+      "note": "The gate that would graduate the colony's forage claim raises before it touches the colony. It is a named shape with a pre-registration and a contract, and it has never produced a result. The road to air runs through this file and it is not open."
+    },
+    {
+      "id": "honest.ledger-disjoint",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "viewer/lab/desk.cjs:664-707",
+      "receipt_detail": "theGap(), computed on every call, measured on THINKER 2026-08-01.",
+      "reprove": "node -e \"console.log(JSON.stringify(require('./viewer/lab/desk.cjs').theGap(),null,1))\"",
+      "covers": [
+        "honest.ledger-disjoint"
+      ],
+      "covers_prose": [
+        "the registry and the canonical ledger are all but disjoint"
+      ],
+      "numbers": [
+        "n.gap.registered",
+        "n.gap.in_ledger",
+        "n.gap.absent"
+      ],
+      "quotation_support": {
+        "receipt": "production/schemas/gate_row.schema.json:5 — the schema's own description",
+        "sha256": "b4b5b7d900e06e811e721adc36527fd20c260b407b791a715e0c0362a1872b5c",
+        "text": "  \"description\": \"One row of the append-only gate ledger at evidence/gates.ndjson. Every gate the project claims to have passed, partially passed, failed, withheld, or has open MUST be represented here, keyed to a real receipt on disk.\",",
+        "note": "CORRECTED WHILE AUTHORING, and the correction is left on the record. This was first written with sha256 null and a stated reason: that theGap() assembles the sentence by string concatenation at viewer/lab/desk.cjs:674-677 and therefore has no contiguous byte range. That is true of the INSTRUMENT and false of the SCHEMA — the sentence is contiguous at gate_row.schema.json:5 and hashes fine. The first version was a plausible reason for a missing hash, offered without checking whether the hash was actually unavailable. That is the exact failure mode this film is about, committed in the file about it."
+      },
+      "note": "THE SHARPEST NUMBER IN THE FILM. The schema says every gate the project claims MUST be represented in the canonical ledger. Almost none are. This is not a bug an agent may fix: authoring those rows is a stop condition, the operator's, and the lab desk exists to print each exact line and then stop. The brief for this film named the count as `1 of 32`; the instrument answered `1 of 33` while this spine was being written. The registry grew between the brief and the file. That is precisely why the film holds tokens and not numbers.",
+      "numeric_mention_archived": {
+        "why": "This note MENTIONS two stale figures rather than USING them. The mention is the evidence — deleting the digits to satisfy a no-literals scan would destroy the only record that the number moved mid-authoring, which is the beat's whole argument. This estate has convicted its own honest documentation for use-versus-mention six recorded times.",
+        "rendered": "NEVER. A cut may render this beat's tokens and may say in its own words that the count changed during authoring. It may not put either archived figure on screen.",
+        "enforcement": "The QC gate reads this field, exempts the note from the no-literals scan, and separately asserts that neither archived string appears in any rendered artifact."
+      }
+    },
+    {
+      "id": "honest.witness",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "viewer/gaia/witness.json",
+      "receipt_detail": "independent_custodians and the per-custodian qualifies_as_witness flags; consumed and blocked on by viewer/gaia/verify_witness_blocked.cjs; cross-checked at docs/control-plane/LIMITATIONS.md:35.",
+      "reprove": "node viewer/gaia/verify_witness_blocked.cjs",
+      "covers": [
+        "honest.witness"
+      ],
+      "covers_prose": [
+        "the off-box witness is compromised",
+        "the anchor is tamper-evident, NOT unforgeable"
+      ],
+      "numbers": [
+        "n.witness.independent_custodians",
+        "n.witness.qualifying",
+        "n.witness.claim_level",
+        "n.cp.anchor_agrees"
+      ],
+      "quotation_support": {
+        "receipt": "docs/control-plane/LIMITATIONS.md:35",
+        "sha256": "e4e535d66c9bf8850c34c29bcda53b140d1940c002ee0a95d9de4f9a8b8461c5",
+        "text": "- **Why it stands:** the closure rested on two-domain corroboration whose off-box custodian, node2, ACCEPTS the writer's key -- viewer/gaia/witness.json reports independent_custodians: 0 and qualifies_as_witness: false. A second domain the writer can reach is not a second domain."
+      },
+      "note": "The off-box box answers the writer's own key, so no custodian sits in a failure domain the writer cannot reach. THE ANCHOR AGREES WITH THE LEDGER AND THAT IS STILL NOT PROOF: an adversary with write access to the store can rewrite both in one move. The film must place m2.4's 'they agree' and this beat close enough together that no viewer can carry the first away without the second. Note also that the defect was never a wrong value — the number was measured and stored correctly for months and NOTHING READ IT. Removing that key from the far box is the one repair an agent must not perform, because using write access to erase the evidence of write access destroys the last proof."
+    },
+    {
+      "id": "honest.p-ladder",
+      "movement": "M6",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "flagellum/UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py:573-575",
+      "sha256": "69a89437fbecb41a1d3f979c6e3e27a3b1f10d57796e96dfd08edcc68bed15d5",
+      "text": "        \"parityLadder\": (\"P3 duration-only ONLY. P4 transfer, P5 intervention, P6 mechanism, \"\n                         \"P7 independent replication, P8 full verdict are untouched by this \"\n                         \"result in either direction.\"),",
+      "covers": [
+        "honest.p-ladder"
+      ],
+      "covers_prose": [
+        "P4 transfer, P5 intervention and P7 independent replication are irreducibly external and unclosed",
+        "P8 full parity is false"
+      ],
+      "numbers": [
+        "n.pladder.unclosed"
+      ],
+      "note": "The strongest scientific result this estate has reaches P3 and stops. P4, P5 and P7 cannot be closed from inside this estate at all — transfer needs another dataset, intervention needs an apparatus, and independent replication needs somebody who is not us. P8 full parity is NOT claimed and is FALSE. Two further facts belong on screen beside this: these levels were once written off by one, reading as a stronger claim than the evidence licensed, and P7 had been omitted from the list entirely — the correction is at compare.py:568-572 and the comment recording the old wording stays, because a correction that cannot say what it corrected is a worse document."
+    },
+    {
+      "id": "honest.no-verdict",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "UNKNOWN",
+      "receipt": "CLAUDE.md:798",
+      "receipt_detail": "The estate's own standing declaration. There is NO machine-readable register of scientific verdicts to count, which is itself the finding; tokens.cjs marks n.verdicts.authored operator_owned for exactly that reason.",
+      "covers": [
+        "honest.no-verdict"
+      ],
+      "covers_prose": [
+        "no verdict has yet been authored about a real scientific claim"
+      ],
+      "numbers": [
+        "n.verdicts.authored"
+      ],
+      "quotation_support": {
+        "receipt": "CLAUDE.md:798",
+        "sha256": "b4de1083b5e7119ba2318b89158503b7abcd3fb3e952768247b1094b1a9fcd9e",
+        "text": "> `@scaffold`**. And **no verdict has yet been authored about a real scientific claim.**"
+      },
+      "note": "TRUTH CLASS IS UNKNOWN AND THAT IS DELIBERATE — somebody looked and could not tell, which per scene.ex renders as fog. Every other number in this film is an expression; this one is a declared constant, because there is no register of scientific verdicts to count. The absence of the instrument IS the adverse result, and it is worse than the number. This is the last thing said in M6 and the first thing the close comes back to."
+    },
+    {
+      "id": "honest.obs-not-shown",
+      "movement": "M6",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "viewer/golive_guard.cjs:51-56",
+      "receipt_detail": "@limitation f31.obs-unauthenticated, owner S2, RISK ACCEPTED BY THE OPERATOR 2026-07-29.",
+      "prohibition": true,
+      "quotation_forbidden": true,
+      "covers": [
+        "honest.obs-not-shown"
+      ],
+      "covers_prose": [
+        "the unauthenticated studio control port is NEVER named or shown on screen"
+      ],
+      "numbers": [],
+      "note": "A PROHIBITION, ENFORCED AGAINST THE RENDERED CUT, NOT MERELY READ. There is an unauthenticated control surface on the operator's studio machine that bypasses every guard in M6. It is declared in the repository, it is the operator's to close, and he has recorded an acceptance rather than a mitigation. THE FILM STATES THAT SUCH A SURFACE EXISTS AND STATES WHOSE IT IS — and never gives its port, its address, its config path, or a screenshot in which any of those are legible. That is why this beat carries no quotation and no numbers: the annotation it cites contains the exact values, so quoting it would defeat it. A film that hardens a system by naming its open door is not honest, it is careless. Enforcement: the QC gate scans every rendered caption, every narration line, every SVG and every frame's OCR-able text for the declared forbidden tokens held in lab/film/welcome/qc/honest_state.json → prohibitions.obs.token_source, which reads them from the repository at gate time so this file never holds them either."
+    },
+    {
+      "id": "m7.1",
+      "movement": "M7",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "cookbook/lexicon/CONCEPTS.json",
+      "receipt_detail": "Chapters are counted on disk under cookbook/encyclopedia/ and cookbook/cookbook/; the lexicon is the cited file.",
+      "reprove": "node lab/film/welcome/qc/tokens.cjs  (read the n.corpus.* tokens)",
+      "covers": [
+        "corpus.size"
+      ],
+      "covers_prose": [
+        "the encyclopedia + cookbook corpus, measured"
+      ],
+      "numbers": [
+        "n.corpus.chapters",
+        "n.corpus.encyclopedia",
+        "n.corpus.cookbook",
+        "n.corpus.recipes",
+        "n.corpus.concepts",
+        "n.corpus.domains"
+      ],
+      "note": "The written body of the method: wings, recipes, and a lexicon. Counted, not recalled."
+    },
+    {
+      "id": "m7.2",
+      "movement": "M7",
+      "register": "quotation",
+      "truth_class": "OBSERVED",
+      "receipt": "cookbook/cookbook/01-kitchen-rules.md:3-5",
+      "sha256": "6b675facaa135e40d4a9dba2e06a5b743eabb6346440d54c6c54b317fd894854",
+      "text": "**What you are building:** not a dish yet, but the *kitchen* — the governance discipline,\nthe pantry, and the fence vocabulary that bind every recipe in this book. Read this before\nyou cook anything.",
+      "covers": [
+        "corpus.purpose"
+      ],
+      "covers_prose": [
+        "what the cookbook is for"
+      ],
+      "numbers": [],
+      "note": "The corpus opens by refusing to give you a result. It gives you the kitchen rules first. That is the same move this film makes by putting M6 before M9."
+    },
+    {
+      "id": "m7.3",
+      "movement": "M7",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "cookbook/lexicon/CONCEPTS.json",
+      "receipt_detail": "counts_at_authorship.count_correction_note records that a hand-count was measured higher by the validator and then cut, and keeps the prior figure on record.",
+      "covers": [
+        "corpus.self-correction"
+      ],
+      "covers_prose": [
+        "the corpus corrects itself down and keeps the record"
+      ],
+      "numbers": [
+        "n.corpus.concepts"
+      ],
+      "note": "A small thing that says more than the chapter count: a hand-count was wrong, the validator caught it, the correction is calibration-down-only, and the wrong figure was NOT quietly overwritten. Show the note itself."
+    },
+    {
+      "id": "m7.4",
+      "movement": "M7",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "command: git clone the UNI-Encyclopedia-Cookbook repository, or take the pre-built pack at cookbook/dist/UNI-Encyclopedia-Cookbook-GPT-Pack.zip. Build it yourself with the corpus's own stdlib-only Python generator at cookbook/deploy/deploy_cookbook.py. Verified present on THINKER 2026-08-01.",
+      "covers": [
+        "corpus.take-it-home"
+      ],
+      "covers_prose": [
+        "how to take it home"
+      ],
+      "numbers": [],
+      "note": "Free and open is a mission clause, so the film must end this movement with the actual way to leave with the thing. The generator is standard-library-only on purpose: taking it home must not require trusting a dependency tree."
+    },
+    {
+      "id": "m8.1",
+      "movement": "M8",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "url: http://127.0.0.1:{n.surface.track_port}/ — TCP probe on THINKER 2026-08-01: OPEN",
+      "covers": [
+        "engage.watch"
+      ],
+      "covers_prose": [
+        "engage step 1: WATCH"
+      ],
+      "numbers": [
+        "n.surface.track_port"
+      ],
+      "note": "Watching is the lowest rung and it is offered without conditions. The surface shows the plan, including what is blocked."
+    },
+    {
+      "id": "m8.2",
+      "movement": "M8",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "command: node viewer/track/track_server.cjs is running; comments are posted by POST http://127.0.0.1:{n.surface.track_port}/api/comment {target,text} and appended to evidence/track_comments.ndjson, append-only and version-controlled, never edited",
+      "covers": [
+        "engage.question"
+      ],
+      "covers_prose": [
+        "engage step 2: QUESTION"
+      ],
+      "numbers": [
+        "n.surface.track_port"
+      ],
+      "note": "Questions land in an append-only file under version control. Nothing you ask can be quietly deleted, which is the only reason asking is worth anything."
+    },
+    {
+      "id": "m8.3",
+      "movement": "M8",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "command: mix sp.uni.prove (recomputes six claim-groups with PASS/FAIL and evidence, no live Minecraft required) — documented at docs/FALSIFICATION.md:7-13, with a named falsifier for each claim at :17-40",
+      "covers": [
+        "engage.falsify"
+      ],
+      "covers_prose": [
+        "engage step 3: FALSIFY — the load-bearing rung"
+      ],
+      "numbers": [],
+      "note": "THE CENTRE OF M8. Every claim in the estate ships with the exact edit that would break it: perturb an update equation and gate 2's Jensen gap vanishes; add a network call to a brain module and gates 14 and 18 fail. The film hands the viewer the crowbar and says where to put it. Give this rung more screen time than the other three combined.",
+      "numeric_mention_archived": {
+        "why": "The digits here are GATE IDENTIFIERS quoted from docs/FALSIFICATION.md:17-40, not counts. `gate 2` is a name. The no-literals rule governs figures presented as facts about the estate; a named gate is neither a figure nor a fact that can go stale by counting.",
+        "rendered": "Permitted verbatim, as names.",
+        "enforcement": "The QC gate reads this field and treats these as identifiers rather than as numeric claims."
+      }
+    },
+    {
+      "id": "m8.4",
+      "movement": "M8",
+      "register": "claim",
+      "truth_class": "OBSERVED",
+      "receipt": "viewer/lab/desk.cjs:684-686",
+      "receipt_detail": "The desk's own answer to why the gate ledger stays empty: writing evidence/gates.ndjson is S4, a stop condition an agent may not take.",
+      "reprove": "node -e \"console.log(require('./viewer/lab/desk.cjs').theGap().why_it_has_stayed_that_way)\"",
+      "covers": [
+        "engage.contribute"
+      ],
+      "covers_prose": [
+        "engage step 4: CONTRIBUTE",
+        "and the honest shape of what contribution means here"
+      ],
+      "numbers": [
+        "n.gap.absent",
+        "n.plan.operator"
+      ],
+      "note": "Contribution is not framed as a welcome mat. Some of the most valuable open work in this estate is work no agent may do and no stranger may do either — it is signed by the operator. Say which parts those are. A film that invites contribution without naming the stop conditions is recruiting, not inviting."
+    },
+    {
+      "id": "m9.1",
+      "movement": "M9",
+      "register": "claim",
+      "truth_class": "DERIVED",
+      "receipt": "evidence/remediation/phase9_plan.json",
+      "receipt_detail": "What is declared broken is at docs/control-plane/LIMITATIONS.md.",
+      "reprove": "node -e \"console.log(JSON.stringify(require('./viewer/state_blocks.cjs').measure().plan.byStatus))\"",
+      "covers": [
+        "close.measured-state"
+      ],
+      "covers_prose": [
+        "what you would be joining, stated as measured state"
+      ],
+      "numbers": [
+        "n.plan.steps",
+        "n.plan.done",
+        "n.plan.blocked",
+        "n.plan.operator",
+        "n.limitations.declared",
+        "n.ledger.fail",
+        "n.ledger.pending"
+      ],
+      "note": "The close opens with the measured picture and nothing else: how many steps done, how many blocked, how many limitations declared, how many gates failing or unrun. No adjectives. The numbers are the argument."
+    },
+    {
+      "id": "m9.2",
+      "movement": "M9",
+      "register": "claim",
+      "truth_class": "UNKNOWN",
+      "receipt": "CLAUDE.md:798",
+      "receipt_detail": "See honest.no-verdict, of which this is the deliberate restatement at the close.",
+      "covers": [
+        "close.worth-today",
+        "honest.no-verdict"
+      ],
+      "covers_prose": [
+        "what it is honestly worth today"
+      ],
+      "numbers": [
+        "n.verdicts.authored",
+        "n.pladder.unclosed"
+      ],
+      "note": "THE ADVERSE RESULT IS THE CLOSE, NOT A CAVEAT BEFORE IT. What this is honestly worth today: a working instrument, a method written down, a record that catches itself — and zero verdicts about a real scientific claim, with the five parity levels above duration-only untouched. That sentence is said plainly, at full size, and is not followed by a recovery line."
+    },
+    {
+      "id": "m9.3",
+      "movement": "M9",
+      "register": "intent",
+      "truth_class": null,
+      "why_null": "an intent",
+      "receipt": null,
+      "text": "worldwide peace through free and open understanding; the public pursuit and ownership of General Universal Natural Intelligence; the end of extract and extortion; making safe all wombs and Gaia — earth, our solar system and beyond.",
+      "covers": [
+        "close.mission-returns",
+        "mission.whole"
+      ],
+      "covers_prose": [
+        "the mission returns, unchanged, after the honest state"
+      ],
+      "numbers": [],
+      "on_screen_marker": "INTENT, NOT A MEASURED CLAIM",
+      "note": "The same words as m1.1, byte for byte, with the same marker. The film's structure is the argument: the mission is not smaller after M6 and it is not larger. It is the same, and now the viewer knows exactly what stands between it and the world.",
+      "intent_marked": true
+    },
+    {
+      "id": "m9.4",
+      "movement": "M9",
+      "register": "invitation",
+      "truth_class": null,
+      "why_null": "an invitation",
+      "receipt": "command: mix sp.uni.prove — and, for this film specifically, node lab/film/welcome/qc/tokens.cjs. Both verified runnable on THINKER 2026-08-01.",
+      "covers": [
+        "close.falsifier-last"
+      ],
+      "covers_prose": [
+        "the last frame is a command, not a logo"
+      ],
+      "numbers": [],
+      "note": "End on the falsifier. The last thing on screen is the command that would prove the film wrong, because that is the only closing line consistent with the first quotation in M0."
+    }
+  ],
+  "beat_count_by_movement": {
+    "M0": 4,
+    "M1": 6,
+    "M2": 6,
+    "M3": 4,
+    "M4": 5,
+    "M5": 5,
+    "M6": 8,
+    "M7": 4,
+    "M8": 4,
+    "M9": 4,
+    "total": 50,
+    "how_to_verify": "node -e \"const s=require('./lab/film/welcome/SPINE.json'); const t={}; for(const b of s.beats) t[b.movement]=(t[b.movement]||0)+1; console.log(t, s.beats.length)\"",
+    "why_this_is_written_here_at_all": "It is a hand-typed number in a file that forbids hand-typed numbers, and it is confined to this metadata block rather than to any beat. A cut may never render it. The QC gate recomputes it and fails on disagreement, which is the only thing that makes writing it defensible."
+  },
+  "known_gaps": [
+    {
+      "id": "gap.mission-uncommitted",
+      "what": "The mission text is carried by no file in any of the three repositories OUTSIDE this film own directory.",
+      "measured": "2026-08-01, by grep across UNI.Minecraft, UNI-Flagellum and UNI.Public for the full sentence and for three distinctive fragments, with --exclude-dir=welcome. No matches. Without that exclusion the same grep now matches three files and all three are this film own — which is the finding restated, not a contradiction of it.",
+      "consequence": "m1.1 and m9.3 are register:intent, which requires no receipt, so the spine is valid — but the film states a mission its own repositories cannot corroborate.",
+      "owner": "the operator. Commit the mission to a governed file; then m1.6's receipt becomes that file."
+    },
+    {
+      "id": "gap.verdict-register-absent",
+      "what": "n.verdicts.authored cannot be measured, because no machine-readable register of scientific verdicts exists to count.",
+      "measured": "2026-08-01. Its authority is a sentence in CLAUDE.md, not an artifact.",
+      "consequence": "One token in this film is a declared constant while every other is an expression. That is a real weakness in the film's own honesty machinery and it is declared rather than hidden.",
+      "owner": "the operator, then engineering: build the register, and the token becomes an expression like the rest."
+    },
+    {
+      "id": "gap.schema-sentence-restated-in-the-instrument",
+      "what": "theGap() does not read the schema's MUST sentence from the schema file. It restates it as a string literal at viewer/lab/desk.cjs:674-677, so the instrument that reports the gap carries its own copy of the rule it is measuring against.",
+      "measured": "2026-08-01. The schema's authoritative copy is production/schemas/gate_row.schema.json:5; the instrument's copy is a concatenated literal.",
+      "consequence": "Two copies of one sentence, and nothing compares them. The film quotes the SCHEMA (hashed) and not the instrument. This is the same restated-fact defect that produced this estate's generated state blocks, one layer down and not yet fixed.",
+      "owner": "engineering: have theGap() read the sentence from the schema file.",
+      "found_how": "By trying to hash it. This gap entry replaces an earlier one that asserted the sentence was unhashable — an assertion made without checking. The wrong version is described in honest.ledger-disjoint.quotation_support.note rather than deleted."
+    },
+    {
+      "id": "gap.cross-repo-limitations",
+      "what": "docs/control-plane/LIMITATIONS.md is derived from UNI.Minecraft only. Limitations declared in UNI-FLAGELLUM are not in it, and that gap is itself recorded there as doc.limitations.single-repo.",
+      "measured": "2026-08-01, LIMITATIONS.md:12-18.",
+      "consequence": "n.limitations.declared is a count for one repository, not for the estate. Any cut rendering it must say so.",
+      "owner": "engineering."
+    }
+  ],
+  "covers_contract": {
+    "what": "`covers` is an ARRAY OF DECLARED FACT IDS, every one of which must exist in qc/honest_state.json → facts[]. It is machine-checkable. The human-readable phrasing that used to live here is preserved beside it as `covers_prose`, which no gate reads.",
+    "why": "A coverage field of free prose cannot be checked, and an unchecked coverage field is how a cut comes to drop a fact while still claiming to carry it. The ids are also what the QC gate at qc/verify_welcome_film.cjs reads.",
+    "changed": "2026-08-01, during authoring, on discovering that the QC gate being built alongside this file reads `covers` as fact ids. `covers_prose` keeps the original wording so nothing was lost in the conversion."
+  },
+  "receipt_contract": {
+    "receipt": "A PURE `<root>/<path>[:<line>[-<line>]]` that a gate can stat, or — where no file can carry the fact — a string beginning `command:` or `url:`. Nothing else. It must never end in prose, because a gate that path-checks receipts will try to stat the sentence.",
+    "receipt_detail": "What the receipt shows, and any SECONDARY paths. Prose. Never stat-checked.",
+    "reprove": "The re-executable command that recomputes the fact. Present only where one exists.",
+    "changed": "2026-08-01, during authoring. Receipts first carried path, prose and command in one string; the QC gate at qc/verify_welcome_film.cjs stats the whole string and correctly reported four of them as `not on disk`. The gate was right and the format was wrong."
+  }
+}

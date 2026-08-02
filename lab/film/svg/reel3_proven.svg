@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920">
+  <defs><radialGradient id="bg" cx="50%" cy="32%" r="80%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <g fill="#cdd6f4" opacity="0.5"><circle cx="140" cy="180" r="2"/><circle cx="380" cy="120" r="1.4"/><circle cx="700" cy="220" r="1.8"/><circle cx="940" cy="140" r="1.4"/><circle cx="240" cy="520" r="1.6"/><circle cx="820" cy="480" r="1.8"/><circle cx="540" cy="360" r="1.4"/><circle cx="980" cy="640" r="1.5"/><circle cx="120" cy="760" r="1.4"/></g>
+  <text x="540" y="180" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="30" letter-spacing="6" fill="#6c7393">TRAVELERS · प्रवासी</text>
+  <text x="540" y="360" text-anchor="middle" font-family="Georgia,serif" font-size="76" font-weight="bold" fill="#e6edf3">We tested 3 big ideas.</text>
+<text x="540" y="452" text-anchor="middle" font-family="Georgia,serif" font-size="76" font-weight="bold" fill="#e6edf3">We never said</text>
+<text x="540" y="544" text-anchor="middle" font-family="Georgia,serif" font-size="76" font-weight="bold" fill="#e6edf3">"proven."</text>
+  
+  <text x="540" y="1120" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="40" fill="#cdd6f4">Some survived. Some didn't. All of it</text>
+<text x="540" y="1172" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="40" fill="#cdd6f4">honest, all of it sourced.</text>
+  <text x="540" y="1252" text-anchor="middle" font-family="Nirmala UI,'Mangal',sans-serif" font-size="36" fill="#9aa7b4">काही टिकले. काही नाही. सर्व</text>
+<text x="540" y="1302" text-anchor="middle" font-family="Nirmala UI,'Mangal',sans-serif" font-size="36" fill="#9aa7b4">प्रामाणिक, सर्व स्रोतासह.</text>
+  <!-- CTA banner -->
+  <rect x="0" y="1640" width="1080" height="280" fill="#05070b" opacity="0.9"/>
+  <rect x="0" y="1640" width="1080" height="4" fill="#89b4fa"/>
+  <rect x="240" y="1690" width="600" height="84" rx="42" fill="#89b4fa"/>
+  <text x="540" y="1745" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="40" font-weight="bold" fill="#0b0e12">▶  Watch the full film</text>
+  <text x="540" y="1830" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="34" fill="#e6edf3">youtube.com/watch?v=82yGA5KXYEw</text>
+  <text x="540" y="1882" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="26" fill="#6c7393">an honest science film · EN · मराठी · हिंदी</text>
+</svg>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>UNI watermarks</title>
+<style>
+  html,body{margin:0;height:100%;width:100%;overflow:hidden;background:transparent}
+  #wrap{position:fixed;inset:0}
+  img.wm{position:absolute;object-fit:contain;pointer-events:none;image-rendering:auto}
+</style></head>
+<body><div id="wrap"></div>
+<script>
+// Up to 3 watermark images, positioned as % of the 1920x1080 canvas, driven live from the
+// broadcast.json spool (command center "Watermarks" panel). 2D-only, OBS-CEF-safe.
+const wrap = document.getElementById('wrap');
+let last = "";
+async function tick(){
+  try {
+    const s = await fetch('/state.json', { cache: 'no-store' }).then(r => r.json());
+    const wms = (s.watermarks || []).filter(w => w && w.enabled && w.url).slice(0, 3);
+    const sig = JSON.stringify(wms);
+    if (sig !== last) {
+      last = sig;
+      wrap.innerHTML = wms.map(w => {
+        const x = (+w.x || 0), y = (+w.y || 0), wd = (+w.w || 12);
+        const op = (w.opacity == null ? 0.85 : +w.opacity);
+        const u = String(w.url).replace(/"/g, '&quot;');
+        return `<img class="wm" src="${u}" style="left:${x}%;top:${y}%;width:${wd}%;opacity:${op}">`;
+      }).join('');
+    }
+  } catch (e) {}
+}
+tick(); setInterval(tick, 1000);
+</script></body></html>

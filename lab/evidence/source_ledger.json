@@ -1,0 +1,344 @@
+[
+  {
+    "id": "SRC-JACOB-ACMG",
+    "title": "Introduction to Atmospheric Chemistry, Ch. 10 (stratospheric ozone / Chapman mechanism)",
+    "type": "textbook",
+    "authors": "D. J. Jacob (Harvard ACMG)",
+    "year": "1999",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-CHAPMAN-1930",
+    "title": "A theory of upper-atmospheric ozone (the Chapman mechanism)",
+    "type": "primary_journal",
+    "authors": "S. Chapman",
+    "year": "1930",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-JPL-TERMOLEC",
+    "title": "JPL Chemical Kinetics and Photochemical Data — termolecular reactions (k2, O+O2+M)",
+    "type": "agency_evaluation",
+    "authors": "JPL Data Evaluation Panel (Sander et al.); Lin & Leu basis",
+    "year": "varies by edition",
+    "url": "https://jpldataeval.jpl.nasa.gov/pdf/JPL_02-25_3_termolec_rev01.pdf",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-JPL-BIMOLEC",
+    "title": "JPL Chemical Kinetics and Photochemical Data — bimolecular reactions (k4, O+O3)",
+    "type": "agency_evaluation",
+    "authors": "JPL Data Evaluation Panel (Sander et al.)",
+    "year": "2015 (JPL 15-10)",
+    "url": "https://jpldataeval.jpl.nasa.gov/pdf/JPL_15_AllInOne.pdf",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-NASA-OZONEWATCH",
+    "title": "NASA Ozone Watch — Ozone facts / Dobson Unit facts",
+    "type": "agency_web",
+    "authors": "NASA GSFC Ozone Watch",
+    "year": "2024",
+    "url": "https://ozonewatch.gsfc.nasa.gov/facts/SH.html",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-NASA-EO-UVB",
+    "title": "Ultraviolet Radiation: How It Affects Life on Earth",
+    "type": "agency_web",
+    "authors": "NASA Earth Observatory",
+    "year": "2001",
+    "url": "https://earthobservatory.nasa.gov/features/UVB/uvb_radiation3.php",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-MONTMESSIN-2011",
+    "title": "A layer of ozone detected in the nightside upper atmosphere of Venus",
+    "type": "primary_journal",
+    "authors": "F. Montmessin et al. (Venus Express / SPICAV)",
+    "year": "2011",
+    "url": "https://sci.esa.int/web/venus-express/-/49383-montmessin-f-et-al-2011",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-MARS-SPICAM-OZONE",
+    "title": "Mars Express / SPICAM ozone results; transport-driven polar ozone layer on Mars",
+    "type": "primary_journal",
+    "authors": "Perrier et al. 2006; Lefevre et al. 2021; Nature Geoscience polar-ozone study",
+    "year": "2006-2021",
+    "url": "https://sci.esa.int/web/mars-express/-/52881-a-seasonal-ozone-layer-over-the-martian-south-pole",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-KOZAKIS-2022",
+    "title": "Is ozone a reliable proxy for molecular oxygen? I. The O2-O3 relationship for Earth-like atmospheres (and Parts II/III)",
+    "type": "primary_journal",
+    "authors": "K. Kozakis, J. M. Mendonca, L. A. Buchhave (A&A 665:A156)",
+    "year": "2022",
+    "url": "https://arxiv.org/abs/2208.09415",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-BEER-LAMBERT",
+    "title": "Beer-Lambert-Bouguer law (radiative transfer / spectroscopy)",
+    "type": "reference_encyclopedia",
+    "authors": "(standard)",
+    "year": "n/a",
+    "url": "https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-GORSHELEV-ORPHAL",
+    "title": "High spectral resolution ozone absorption cross-sections (Hartley/Huggins/Chappuis)",
+    "type": "primary_journal",
+    "authors": "Gorshelev et al. (AMT 7:609, 2014); Orphal (2003)",
+    "year": "2014",
+    "url": "https://amt.copernicus.org/articles/7/609/2014/amt-7-609-2014.pdf",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-HODGES-2019",
+    "title": "Recommended reference value of the ozone absorption cross-section at 253.65 nm (consensus 1.1329e-17 cm^2)",
+    "type": "primary_journal",
+    "authors": "J. T. Hodges et al. (Metrologia)",
+    "year": "2019",
+    "url": "https://iopscience.iop.org/article/10.1088/1681-7575/ab0bdd",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-JANSSEN-AMT-2015",
+    "title": "Absolute ozone absorption cross-section in the Hartley band (single-lab determination; 1.127e-17 at 253.65 nm, 11.07e-18 at 257.34 nm)",
+    "type": "primary_journal",
+    "authors": "C. Janssen, J. Viallon et al. (AMT 8:1245)",
+    "year": "2015",
+    "url": "https://amt.copernicus.org/articles/7/609/2014/amt-7-609-2014.pdf",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-ICNIRP-UV",
+    "title": "UV wavelength band definitions (UVA 315-400, UVB 280-315, UVC 100-280 nm)",
+    "type": "agency_standard",
+    "authors": "ICNIRP / CIE / WHO",
+    "year": "2004",
+    "url": "https://www.icnirp.org/en/frequencies/uv/index.html",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-NSSDCA-FACTSHEET",
+    "title": "NSSDCA Planetary Fact Sheets (g, M, R, P, GM per body)",
+    "type": "agency_web",
+    "authors": "D. R. Williams (NASA GSFC NSSDCA)",
+    "year": "2024",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-CODATA-G",
+    "title": "CODATA 2018 Newtonian constant of gravitation G",
+    "type": "agency_standard",
+    "authors": "NIST / CODATA",
+    "year": "2018",
+    "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-HUNTEN-1973",
+    "title": "The Escape of Light Gases from Planetary Atmospheres (diffusion-limited escape)",
+    "type": "primary_journal",
+    "authors": "D. M. Hunten (J. Atmos. Sci. 30(8):1481-1494)",
+    "year": "1973",
+    "url": "https://ui.adsabs.harvard.edu/abs/1973JAtS...30.1481H",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-DIFFLIM-ESCAPE",
+    "title": "Diffusion-limited escape (canonical b, f_H, limiting-flux numbers)",
+    "type": "reference_encyclopedia",
+    "authors": "(after Hunten; Catling & Kasting)",
+    "year": "n/a",
+    "url": "https://en.wikipedia.org/wiki/Diffusion-limited_escape",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-WORDSWORTH-2013",
+    "title": "Water Loss from Terrestrial Planets with CO2-rich Atmospheres (cold trap control)",
+    "type": "primary_journal",
+    "authors": "R. Wordsworth, R. Pierrehumbert (ApJ 778:154)",
+    "year": "2013",
+    "url": "https://iopscience.iop.org/article/10.1088/0004-637X/778/2/154",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-CATLING-KASTING",
+    "title": "Atmospheric Evolution on Inhabited and Lifeless Worlds",
+    "type": "textbook",
+    "authors": "D. C. Catling, J. F. Kasting",
+    "year": "2017",
+    "url": "https://www.liebertpub.com/doi/10.1089/ast.2014.1231",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-NOBEL-1978",
+    "title": "The Nobel Prize in Chemistry 1978 — Peter Mitchell, chemiosmotic theory",
+    "type": "official_citation",
+    "authors": "NobelPrize.org",
+    "year": "1978",
+    "url": "https://www.nobelprize.org/prizes/chemistry/1978/summary/",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-NICHOLLS-FERGUSON",
+    "title": "Bioenergetics (5th ed.) — proton-motive force, chemiosmosis",
+    "type": "textbook",
+    "authors": "D. G. Nicholls, S. J. Ferguson",
+    "year": "2013",
+    "url": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/proton-motive-force",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-LIBRETEXTS-RESPIRATION",
+    "title": "Biology LibreTexts — Respiration / redox tower (O2/H2O +0.82 V) and Anaerobic Respiration",
+    "type": "educational_reference",
+    "authors": "Biology LibreTexts / Boundless Microbiology",
+    "year": "n/a",
+    "url": "https://bio.libretexts.org/Courses/University_of_California_Davis/BIS_2A%3A_Introductory_Biology_-_Molecules_to_Cell/BIS_2A%3A_Introductory_Biology_(Britt)/01%3A_Readings/1.15%3A_Respiration",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-GOE",
+    "title": "Great Oxidation Event (~2.4 Ga; life predates atmospheric O2)",
+    "type": "reference_encyclopedia",
+    "authors": "(review-sourced); NASA Astrobiology",
+    "year": "n/a",
+    "url": "https://en.wikipedia.org/wiki/Great_Oxidation_Event",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-FARADAY",
+    "title": "Faraday constant (exact post-2019 SI, F = e x N_A = 96485.33212... C/mol)",
+    "type": "reference_encyclopedia",
+    "authors": "(SI/CODATA)",
+    "year": "2019",
+    "url": "https://en.wikipedia.org/wiki/Faraday_constant",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-NIST-R",
+    "title": "Molar gas constant R (exact post-2019 SI)",
+    "type": "agency_standard",
+    "authors": "NIST / CODATA",
+    "year": "2018",
+    "url": "https://physics.nist.gov/cgi-bin/cuu/Value?r",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-NIST-SIGMA",
+    "title": "Stefan-Boltzmann constant sigma (exact post-2019 SI)",
+    "type": "agency_standard",
+    "authors": "NIST / CODATA",
+    "year": "2022",
+    "url": "https://physics.nist.gov/cgi-bin/cuu/Value?sigma",
+    "reliability_class": "A"
+  },
+  {
+    "id": "SRC-SOLAR-CONSTANT",
+    "title": "Solar constant / Total Solar Irradiance (~1361 W/m^2; IAU 2015 B3 nominal; NASA SORCE)",
+    "type": "reference_encyclopedia",
+    "authors": "IAU 2015 Resolution B3; NASA SORCE",
+    "year": "2015",
+    "url": "https://en.wikipedia.org/wiki/Solar_constant",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-SHOCKLEY-QUEISSER",
+    "title": "Detailed Balance Limit of Efficiency of p-n Junction Solar Cells (Shockley-Queisser limit)",
+    "type": "primary_journal",
+    "authors": "W. Shockley, H. J. Queisser (J. Appl. Phys. 32:510)",
+    "year": "1961",
+    "url": "https://en.wikipedia.org/wiki/Shockley%E2%80%93Queisser_limit",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-DUFFIE-BECKMAN",
+    "title": "Solar Engineering of Thermal Processes (collector energy balance) / evacuated-tube collector overview",
+    "type": "textbook",
+    "authors": "J. A. Duffie, W. A. Beckman; ScienceDirect topic page",
+    "year": "2013",
+    "url": "https://www.sciencedirect.com/topics/engineering/evacuated-tube-solar-collector",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-MEADOWS-2018",
+    "title": "Exoplanet Biosignatures: Understanding Oxygen as a Biosignature in the Context of Its Environment",
+    "type": "primary_journal",
+    "authors": "V. S. Meadows et al. (Astrobiology 18(6):630-662)",
+    "year": "2018",
+    "url": "https://www.liebertpub.com/doi/10.1089/ast.2017.1727",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-CATLING-2018",
+    "title": "Exoplanet Biosignatures: A Framework for Their Assessment (graded Bayesian confidence levels)",
+    "type": "primary_journal",
+    "authors": "D. C. Catling et al. (Astrobiology 18(6):709-738)",
+    "year": "2018",
+    "url": "https://arxiv.org/abs/1705.06381",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-KRISSANSEN-TOTTON-2018",
+    "title": "Disequilibrium biosignatures over Earth history (gas-phase 1.5 J/mol; full-fluid 2326 J/mol)",
+    "type": "primary_journal",
+    "authors": "J. Krissansen-Totton, S. Olson, D. C. Catling (Science Advances 4:eaao5747)",
+    "year": "2018",
+    "url": "https://www.science.org/doi/10.1126/sciadv.aao5747",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-SCHWIETERMAN-2018",
+    "title": "Exoplanet Biosignatures: A Review of Remotely Detectable Signs of Life",
+    "type": "primary_journal",
+    "authors": "E. W. Schwieterman et al. (Astrobiology 18(6):663-708)",
+    "year": "2018",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6014570/",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-FRISTON-2010",
+    "title": "The free-energy principle: a unified brain theory? (VFE/ELBO bound)",
+    "type": "primary_journal",
+    "authors": "K. Friston (Nature Reviews Neuroscience 11:127-138)",
+    "year": "2010",
+    "url": "https://www.nature.com/articles/nrn2787",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-SAJID-2021",
+    "title": "Active Inference: Demystified and Compared (EFE decomposition)",
+    "type": "primary_journal",
+    "authors": "N. Sajid, P. J. Ball, T. Parr, K. Friston (Neural Computation 33(3):674-712; arXiv:1909.10863 2019)",
+    "year": "2021",
+    "url": "https://arxiv.org/abs/1909.10863",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-PARR-2022",
+    "title": "Active Inference: The Free Energy Principle in Mind, Brain, and Behavior",
+    "type": "textbook",
+    "authors": "T. Parr, G. Pezzulo, K. Friston (MIT Press)",
+    "year": "2022",
+    "url": "https://mitpress.mit.edu/9780262045353/active-inference/",
+    "reliability_class": "B"
+  },
+  {
+    "id": "SRC-CLAUDEMD-REPO",
+    "title": "UNI.GPT repo build contract + math derivations (CLAUDE.md, docs/MATH_DERIVATIONS.md) — AIF sign conventions, exactness fence, parked-loop status",
+    "type": "repo_internal",
+    "authors": "UNI.GPT project (mpolz)",
+    "year": "2026",
+    "url": "",
+    "reliability_class": "C"
+  }
+]

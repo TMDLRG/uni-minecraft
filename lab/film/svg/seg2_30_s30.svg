@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g29" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g29)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="120" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="38" fill="#9aa7b4" letter-spacing="4">"Ozone = Life" — the honest verdict</text>
+
+  <g font-family="ui-sans-serif,sans-serif" font-size="26">
+    <line x1="160" y1="210" x2="1760" y2="210" stroke="#30363d" stroke-width="2"/>
+
+    <text x="220" y="270" fill="#e6edf3">1. LITERAL — ozone is alive</text>
+    <rect x="1260" y="240" width="120" height="40" rx="6" fill="#f85149"/><text x="1320" y="268" text-anchor="middle" fill="#0b0e12" font-weight="bold" font-size="22">X</text>
+    <text x="1420" y="268" fill="#f85149">contradicted</text>
+
+    <text x="220" y="340" fill="#e6edf3">2. NECESSARY — for all life</text>
+    <rect x="1260" y="310" width="120" height="40" rx="6" fill="#f85149"/><text x="1320" y="338" text-anchor="middle" fill="#0b0e12" font-weight="bold" font-size="22">X</text>
+    <text x="1420" y="338" fill="#f85149">contradicted</text>
+
+    <text x="220" y="410" fill="#e6edf3">3. SHIELD — UV protection on Earth</text>
+    <rect x="1260" y="380" width="120" height="40" rx="6" fill="#3b82f6"/><text x="1320" y="408" text-anchor="middle" fill="#fff" font-weight="bold" font-size="22">B</text>
+    <text x="1420" y="408" fill="#3b82f6">supported</text>
+
+    <text x="220" y="480" fill="#e6edf3">4. BIOSIGNATURE — alien skies</text>
+    <rect x="1260" y="450" width="120" height="40" rx="6" fill="#d29922"/><text x="1320" y="478" text-anchor="middle" fill="#0b0e12" font-weight="bold" font-size="22">C</text>
+    <text x="1420" y="478" fill="#d29922">narrowed hypothesis</text>
+
+    <text x="220" y="550" fill="#e6edf3">5. METAPHOR — breath of the world</text>
+    <rect x="1260" y="520" width="120" height="40" rx="6" fill="#a371f7"/><text x="1320" y="548" text-anchor="middle" fill="#fff" font-weight="bold" font-size="22">D</text>
+    <text x="1420" y="548" fill="#a371f7">metaphor preserved</text>
+
+    <line x1="160" y1="580" x2="1760" y2="580" stroke="#30363d" stroke-width="2"/>
+  </g>
+
+  <text x="960" y="660" text-anchor="middle" font-family="Georgia,serif" font-size="32" fill="#cdd6f4" font-style="italic">One reading survives in its narrowed form. The grandest do not.</text>
+  <rect x="0" y="633" width="1920" height="447" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="633" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Two of the five — the literal and the universal — were contradicted, by ozone on dead</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">worlds and by life on a young Earth without an ozone shield. One — the modern shield on</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">this planet — is supported within our model. One — biosignature — survives only as a</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">narrowed, conditional hypothesis. And one — the metaphor — is preserved with respect,</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">where it always belonged. Two clear nos, one clear yes, one disciplined maybe, and one</text>
+  <text x="960" y="855" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">beautiful image. That is the honest accounting.</text>
+  <rect x="800" y="869" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">पाचपैकी दोन — शाब्दिक आणि सार्वत्रिक — मृत जगांवरील ओझोनने आणि ओझोन कवचाशिवाय तरुण</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">पृथ्वीवरील जीवनाने खोडले गेले. एक — या ग्रहावरील आधुनिक कवच — आपल्या प्रतिकृतीत</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">समर्थित आहे. एक — जीवचिन्ह — फक्त संकुचित, सशर्त गृहीतक म्हणून टिकते. आणि एक —</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">रूपक — आदराने जपले, जिथे ते नेहमीच होते. दोन स्पष्ट 'नाही', एक स्पष्ट 'होय', एक</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">शिस्तबद्ध 'कदाचित', आणि एक सुंदर प्रतिमा. हीच प्रामाणिक नोंद आहे.</text>
+</svg>

@@ -1,0 +1,8 @@
+{
+  "description": "Canonical seed sets for reproducible benchmark runs and regression bands.",
+  "reference_world": 101,
+  "regression_batch": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112],
+  "ablation_batch": [201, 202, 203, 204, 205, 206, 207, 208],
+  "soak": 8675,
+  "golden_episode": { "seed": 314, "agent": "morphology_seeking", "max_ticks": 250 }
+}

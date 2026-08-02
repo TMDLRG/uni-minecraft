@@ -1,0 +1,137 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "d_m8",
+  "movement": "M8 — HOW TO ENGAGE (documentary treatment)",
+  "design_rule": [
+    "EXPOSE THE MEASUREMENT, NEVER ASSERT THE CONCLUSION. The operator's instruction, verbatim:",
+    "'only ever shown and presented for others to observe of the signal and calibrate for them selves'.",
+    "M8 is the four doors — watch, question, falsify, contribute — and it is not a level playing field:",
+    "the third door is where an outsider is worth most, so it gets the middle of the movement and the",
+    "adverse facts are placed inside it rather than after it. Every frame is either a recorded command",
+    "from capture/forensic_latest.json or the project's own source, re-hashed at render time."
+  ],
+  "scenes": [
+    {
+      "id": "d_m8_01_four_doors",
+      "plate": "title",
+      "kicker": "HOW TO ENGAGE — FOUR DOORS",
+      "line1": "Watch. Question. Falsify. Contribute.",
+      "line2": "They are not worth the same, and this chapter says which is which.",
+      "narration": "Four ways in, and they are not equal. Watching costs nothing. Asking a question lands it somewhere it cannot be quietly removed. Trying to break something is worth more to this project than the other three together, and most of this chapter is about why that is.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "d_m8_02_watch_the_commit",
+      "plate": "measurement",
+      "probe": "head.mc",
+      "asks": "What exactly are you watching, and can you take a copy of it?",
+      "source": "git log in the estate's main repository — the commit every command in this film ran against",
+      "note": "A commit identifier is checkable by anyone who clones. A screenshot is not.",
+      "narration": "The first door. Watching starts by naming the thing watched, so here is the commit, printed by the repository rather than by us. Clone at that line and every frame after this one is yours to rebuild. Nothing on this screen needs an account or a request.",
+      "tail_silence": 1.2
+    },
+    {
+      "id": "d_m8_03_question_append_only",
+      "plate": "measurement",
+      "probe": "ledger.chain",
+      "asks": "If you ask a question here, can it be quietly removed later?",
+      "source": "evidence/control_plane/ledger.ndjson — each entry naming the digest of the one before it, walked now",
+      "note": "Comments posted to the project surface are appended to a version-controlled file and never edited.",
+      "narration": "The second door. A question you ask lands in an append-only file under version control, which is worth something only if append-only is enforced rather than promised. On screen is the strictest form of that shape in this estate: a chain walked end to end, and its count of broken links.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m8_04_falsify_the_promise",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 3,
+      "to": 5,
+      "why": "The third door, and the entry condition it rests on — the repository's own words",
+      "narration": "The third door. Here is the standing promise it rests on, quoted from the file that carries it, with its line range and digest beside it. Read that rather than take it from me. A claim nobody can imagine breaking is not science — and that sentence is the project's, not this film's.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m8_05_outsider_coverage",
+      "plate": "measurement",
+      "probe": "public.coverage",
+      "asks": "What can somebody outside this project check today, without asking anyone?",
+      "source": "UNI.Public safety/verify_coverage.cjs — the declared universe of pages and subsystems, and the floors under each",
+      "note": "A floor that can only be lowered deliberately is a floor somebody has to sign for.",
+      "narration": "Start with what is already outside. This reads the published site against a declared list of everything it should carry, then prints the floors under it. Its last lines record a page withdrawn because its bytes were not in the commit it cited. The count fell rather than the fence bending.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "d_m8_06_outsider_provenance",
+      "plate": "measurement",
+      "probe": "public.provenance",
+      "asks": "Do the published bytes match the commit they name?",
+      "source": "UNI.Public safety/verify_provenance.cjs — every published page held against the commit its citation names",
+      "note": "The closing lines are the check naming a gap that no code inside it can close.",
+      "narration": "Then the harder one. This holds each published page against the commit its citation names, and afterwards says what it cannot reach from inside a single clone. Read those last three lines. They are a check declining to claim something, and the next four frames are what that declining leaves open.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m8_07_the_vacancy",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is anybody outside this estate corroborating its record?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted from viewer/gaia/witness.json",
+      "note": "Independent custodians: @n.witness.independent_custodians — claim level @n.witness.claim_level, never authenticated, never independent.",
+      "narration": "Here is the adverse one, and it is also the widest opening. The count of independent parties corroborating this record is @n.witness.independent_custodians — the far machine accepts the writer's own key, so a second domain the writer can reach is not a second domain. Standing outside this estate is a thing nobody inside it can do.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m8_08_rows_nobody_may_write",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many of the registered checks have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call",
+      "note": "The schema governing that record says every gate the project claims MUST be represented in it.",
+      "narration": "The second adverse one. Of @n.gap.registered registered checks, @n.gap.in_ledger appears in the permanent evidence record. The schema says every gate this project claims must be represented there. Both are on screen. Authoring the missing rows is signed by the operator, so it is open work no agent and no stranger may take.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "d_m8_09_open_work_that_raises",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the line number and the block it stops on, printed from the file itself",
+      "note": "The road from the colony to any published result runs through this file, and it is not open.",
+      "narration": "The third adverse one, and it is a piece of work with its shape already written and nothing behind it. This reads the runner for the colony's science gate and prints the line where it stops. It raises before it reaches the colony. The pre-registration exists. The result does not.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m8_10_replication_needs_a_stranger",
+      "plate": "quotation",
+      "root": "flagellum",
+      "file": "UNI-FLAGELLUM/hierarchical-aif/src/motor_stack_aif/compare.py",
+      "from": 573,
+      "to": 575,
+      "why": "The strongest result in the motor lab, stating its own ceiling in code — @n.pladder.unclosed rungs untouched",
+      "narration": "The fourth adverse one, and the reason a stranger is worth more here than another engineer. The strongest result this programme holds reaches one rung of a ladder and says so in its own code. @n.pladder.unclosed rungs above it are untouched, and independent replication is not a rung anyone inside can climb.",
+      "tail_silence": 1.7
+    },
+    {
+      "id": "d_m8_11_where_to_put_the_crowbar",
+      "plate": "quotation",
+      "root": "minecraft",
+      "file": "docs/FALSIFICATION.md",
+      "from": 30,
+      "to": 33,
+      "why": "One claim, and the exact edit that would break it — carried beside the claim, not in a footnote",
+      "narration": "So here is the specific part. Every claim in the estate ships with the edit that would break it, and this is one of them, verbatim, with its digest. Perturb an update equation and a named gate's Jensen gap vanishes. Or recompute the same equations yourself and diff them against these.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "d_m8_12_what_no_gate_measures",
+      "plate": "measurement",
+      "probe": "public.a11y",
+      "asks": "What is left for a person once every check on screen has gone green?",
+      "source": "UNI.Public generators/verify_a11y.cjs — contrast computed over a declared pairing table, structure read from the built export",
+      "note": "@n.plan.operator steps in the plan are marked as nobody's to take but the operator's.",
+      "narration": "The fourth door. This computes contrast, reads structure from the built pages, then names what it cannot measure at all: whether the words land gently for a frightened reader. That part stays a person's. And if any command in this film prints something else on your machine, send that back.",
+      "tail_silence": 1.8
+    }
+  ]
+}

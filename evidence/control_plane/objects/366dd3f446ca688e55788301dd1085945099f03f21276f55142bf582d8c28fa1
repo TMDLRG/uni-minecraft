@@ -1,0 +1,16 @@
+PHASE 9 STEP 3.2 — F28, frozen-evidence drift halts. GREEN RECEIPT, 2026-07-27.
+
+$ python hierarchical-aif/src/motor_stack_aif/frozen_evidence_guard.py   (PROOF 4, A1)
+frozen evidence intact: 250 file(s) verified
+
+EXPECTED OUTPUT: `frozen evidence intact: 250 file(s) verified`, and exit 0.
+
+RECOMPUTE THE NUMBER YOURSELF, with an instrument that shares nothing with this one:
+    sha256sum -c C:\Users\mpolz\Documents\UNI-Flagellum\UNI-FLAGELLUM\hierarchical-aif\reports\frozen-evidence-baseline.sha256 | grep -c ': OK$'
+  It must print 250. If the two disagree, TRUST sha256sum and not this program.
+  (sha256sum cannot see an ADDED file, which is why this program also walks the tree;
+   so this side may legitimately refuse where sha256sum is content, never the reverse.)
+exit=0
+
+$ sha256sum -c hierarchical-aif/reports/frozen-evidence-baseline.sha256 | grep -c ': OK$'   (independent recompute)
+250

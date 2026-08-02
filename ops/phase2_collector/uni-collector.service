@@ -1,0 +1,53 @@
+# =============================================================================
+# L1 — rootless `uni` systemd USER service for the Phase-2 RED collector.
+#
+# Installs under ~/.config/systemd/user/uni-collector.service on the colony box
+# (uni@10.190.245.122, rootless — see memory/ops_colony_lab_rootless.md). Driven
+# by uni-collector.timer (every 10 min). Type=oneshot: one tick per fire, the
+# scheduler owns the cadence so a crashed tick cannot wedge the loop.
+#
+# This is the PRIMARY layer. It survives LLM-session death, SSH disconnect, and
+# context compaction because the cadence lives in systemd, not in any chat.
+# linger MUST be enabled so it runs with no logged-in session:
+#     loginctl enable-linger uni
+#
+# DEPLOY (owner go-ahead required; do NOT auto-deploy):
+#   scp ops/phase2_collector/collect.exs           uni@10.190.245.122:~/phase2_collector/
+#   scp ops/phase2_collector/uni-collector.service uni@10.190.245.122:~/.config/systemd/user/
+#   scp ops/phase2_collector/uni-collector.timer   uni@10.190.245.122:~/.config/systemd/user/
+#   ssh uni@10.190.245.122 'loginctl enable-linger uni && \
+#       systemctl --user daemon-reload && \
+#       systemctl --user enable --now uni-collector.timer'
+#
+# The collect.exs needs the repo's mix project on the box to resolve
+# SP.Minecraft.Rcon / SP.Runtime.Supervisor. WorkingDirectory points at the
+# checked-out repo (adjust REPO path to the actual clone on the box).
+# =============================================================================
+[Unit]
+Description=Phase-2 RED evidence collector (rootless uni, L1 systemd timer)
+Documentation=file:docs/specs/collector.md
+# do not pile up if a prior tick somehow overruns the 10-min interval
+After=network-online.target
+
+[Service]
+Type=oneshot
+# --- adjust these two to the actual checkout + elixir on the colony box ---
+WorkingDirectory=%h/strings
+Environment=MIX_ENV=prod
+Environment=COLLECTOR_ID=L1-systemd@colony
+Environment=SP_NODE=unicur@uni-colony-curiosity
+Environment=MC_HOST=mc-server
+Environment=RCON_PORT=25575
+Environment=RCON_PASS=sp
+Environment=ARMS=treatment:10,control:11
+Environment=N_PER_ARM=6
+Environment=OUT_DIR=%h/.claude-evidence/phase2
+# attach distributed Erlang with the fixed :sp cookie (probe_curiosity.exs:9)
+ExecStart=/usr/bin/env elixir --sname uc_l1 --cookie sp -S mix run --no-start ops/phase2_collector/collect.exs
+# a single tick is fast; cap it so a hung RCON socket cannot stall the unit
+TimeoutStartSec=120
+# read-only collector; nothing to clean up
+Nice=10
+
+[Install]
+WantedBy=default.target

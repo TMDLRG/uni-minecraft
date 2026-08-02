@@ -1,0 +1,62 @@
+# =============================================================================
+# L2 — podman QUADLET sidecar collector container (rootless uni).
+#
+# A SECOND, INDEPENDENT collector that lives in its own container on the same
+# rootless network (uni-colony-net) as mc-server + the RED arm containers. It
+# does NOT share a fate with the L1 systemd-timer-on-the-host: if the host user
+# session, the timer, or the repo checkout breaks, this container keeps polling;
+# if the container engine dies, L1 keeps polling. Restart=always makes a crash
+# self-heal, and a gap in THIS collector's heartbeat is an independent death
+# signal distinct from L1's.
+#
+# Quadlet install (owner go-ahead required; do NOT auto-deploy):
+#   scp ops/phase2_collector/collector.container uni@10.190.245.122:~/.config/containers/systemd/
+#   ssh uni@10.190.245.122 'systemctl --user daemon-reload && \
+#       systemctl --user start collector.service'   # quadlet name -> <stem>.service
+#
+# The container runs the same collect.exs in a loop (10-min sleep), so it needs
+# the repo + elixir in the image. Reuse the colony image (localhost/uni-colony:v2)
+# which already has the mix project baked, and OVERRIDE the entrypoint to the
+# loop below. The image is headless (UNI_CAM=0) so no extra deps are pulled.
+#
+# Why a loop INSIDE the container (vs a systemd timer): the container has no user
+# systemd of its own; an in-container `while sleep 600` is the simplest durable
+# cadence, and Restart=always covers the only failure (the loop process dying).
+# The 10-min sleep is wall-clock-aligned-enough; exact alignment is L1's job —
+# L2 only needs to be INDEPENDENTLY alive, not phase-locked.
+# =============================================================================
+[Unit]
+Description=Phase-2 RED evidence collector sidecar (L2 podman quadlet)
+Documentation=file:docs/specs/collector.md
+After=network-online.target
+
+[Container]
+Image=localhost/uni-colony:v2
+ContainerName=uni-collector-sidecar
+# join the rootless colony network so mc-server + the RED node names resolve
+Network=uni-colony-net
+# the BEAM node to attach (the curiosity/Phase-2 RED container's node)
+Environment=COLLECTOR_ID=L2-sidecar@uni-colony-net
+Environment=SP_NODE=unicur@uni-colony-curiosity
+Environment=MC_HOST=mc-server
+Environment=RCON_PORT=25575
+Environment=RCON_PASS=sp
+Environment=ARMS=treatment:10,control:11
+Environment=N_PER_ARM=6
+Environment=OUT_DIR=/evidence
+Environment=MIX_ENV=prod
+# evidence persists on a named volume so it survives container recreation and is
+# readable by the reconciler (podman volume inspect uni-phase2-evidence)
+Volume=uni-phase2-evidence:/evidence:Z
+# read-only collector: connects RCON + distributed Erlang only, mutates nothing.
+# loop: one tick, then sleep 600s; Restart=always heals a dead loop.
+Exec=/bin/sh -c 'cd /app && while true; do elixir --sname uc_l2 --cookie sp -S mix run --no-start ops/phase2_collector/collect.exs || true; sleep 600; done'
+
+[Service]
+Restart=always
+RestartSec=30
+# do not give up — a collector that backs off permanently defeats the purpose
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=default.target

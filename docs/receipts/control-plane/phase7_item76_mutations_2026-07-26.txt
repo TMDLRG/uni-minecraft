@@ -1,0 +1,98 @@
+PHASE 7 ITEM 7.6 — MUTATION MATRIX
+date: 2026-07-26
+
+Eleven of sixteen tests passed in RED. None is counted until a mutation proves it
+bites. Each mutation was applied to lib/sp/control_plane/scene.ex, the file's tests
+were run at --seed 0, and the file was restored from a backup before the next.
+
+id   mutation                                                         result
+---- ---------------------------------------------------------------- --------
+M01  node/2: only_allowed(id, attrs) -> :ok                            KILLED
+M02  add a public function: def style(_n, s), do: s                    KILLED
+M03  defstruct [:nodes] -> defstruct [:nodes, :theme]                  KILLED
+M04  add clause: material(%{evidence_class: "pending"}) -> :staged     KILLED
+M05  add clause: material(%{id: "room:a"}) -> :fog                     KILLED
+M06  add clause: material(%{captured_at: "1999-..."}) -> :fog          KILLED
+M07  SIMULATED -> :lit_solid                                           KILLED
+M08  DERIVED -> :staged (breaks the §8.2 collision)                    KILLED
+M09  drop :receipt_ref from @required                                  KILLED
+M10  delete the :SIMULATED clause, let the fallback serve it           KILLED
+M11  SIMULATED -> Application.get_env(:sp, :scene_material, :staged)   KILLED
+M12  delete the absent-receipt_ref clause (the 7.6 fix itself)         KILLED
+M13  delete the total fallback (the 7.6 fix itself)                    KILLED
+
+Which test each mutation killed:
+  M01 no style channel can be opened on a node
+  M02 the exported surface is exactly this
+  M03 the scene struct carries nodes and nothing else
+  M04 evidence_class does not reach the material
+  M05 the id does not reach the material
+  M06 captured_at does not reach the material
+  M07 PRECISE CLAIM — the material is a function of exactly two things
+  M08 STATED LIMIT — the map is NOT injective
+  M09 construction still refuses the absent key
+  M10 every truth class in the vocabulary keeps its OWN clause
+  M11 depends on nothing outside its argument
+  M12 a map where NOBODY CONSIDERED the receipt must not draw lit and solid
+  M13 material/1 is documented 'Never an error'  (+2 more: the fallback pair)
+
+HARNESS DEFECT, CORRECTED
+  M13 first reported *** SURVIVED ***. It had not survived. The harness compared the
+  test output against a grep -F literal in which I had escaped a forward slash
+  ("material\/1"), a sequence that appears nowhere in ExUnit's output. The mutation
+  had in fact failed three tests. Re-run with the correct literal: KILLED by
+    1) 7.6 ADVERSE — material/1 is documented 'Never an error' ...
+    2) the fallback is conservative — an input it cannot read never draws stronger than fog
+    3) the fallback exists and is fog, so the two claims above are not in tension
+  Recorded because a harness that can report a false SURVIVED can also report a
+  false KILLED, and the reader is entitled to know which kind of instrument this was.
+
+M09 NOTE — the mutation kills by raising, not by returning
+  Relaxing @required lets a receipt-less map reach receipt_ref/2, which has no clause
+  for an absent key, so it raises FunctionClauseError rather than returning {:error, _}.
+  The test fails either way and the guard is real, but it is killed by a crash rather
+  than by the refusal it asserts. Stated rather than left to look tidier than it is.
+
+
+================================================================================
+PASS 2 — AGAINST THE REPAIRED IMPLEMENTATION
+================================================================================
+
+Pass 1 above is STALE EVIDENCE and is kept only as history. It exercised clauses
+that no longer exist: an adversarial audit found the first 7.6 fix was itself
+defective (see the commit message), the implementation was restructured, and a
+mutation matrix that tests deleted code proves nothing about shipped code.
+
+id   mutation                                                          result
+---- ----------------------------------------------------------------- --------
+M01  node/2: only_allowed(id, attrs) -> :ok                             KILLED
+M02  add a public function: def style(_n, s), do: s                     KILLED
+M03  defstruct [:nodes] -> defstruct [:nodes, :theme]                   KILLED
+M04  by_truth_class keyed on evidence_class "pending" -> :staged        KILLED
+M05  by_truth_class keyed on id "room:a" -> :fog                        KILLED
+M06  by_truth_class keyed on captured_at "1999-..." -> :fog             KILLED
+M07  SIMULATED -> :lit_solid                                            KILLED
+M08  DERIVED -> :staged (breaks the §8.2 collision)                     KILLED
+M09  drop :receipt_ref from @required                                   KILLED
+M10  delete the :SIMULATED clause, let the fallback serve it            KILLED
+M11  SIMULATED -> Application.get_env(:sp, :scene_material, :staged)    KILLED
+M12  backed?(_no_receipt) -> true (absent receipt earns a material)     KILLED
+M13  delete by_truth_class(_unreadable) -> :fog                         KILLED
+M14  material/1 entry guard -> is_map(n) or not is_map(n)               KILLED
+M15  backed?: String.trim(r) != "" -> r != ""  (blank is a receipt)     KILLED
+M16  node/2 receipt_ref: String.trim(r) == "" -> r == ""                KILLED
+M17  entry/1: drop the %{id: id} head, use Map.get(n, :id)              KILLED
+M18  refusal_detail: absent branch returns nil's wording                KILLED
+
+18 of 18 killed. M14-M18 guard behaviour that did not exist before the repair.
+
+HARNESS DEFECT, SECOND OCCURRENCE, SAME CAUSE
+  M17 first reported *** SURVIVED *** for exactly the reason M13 did in pass 1: an
+  escaped forward slash inside a `grep -F` literal ("entry\/1"), a sequence that
+  appears nowhere in ExUnit output. Re-run with the correct literal: KILLED by
+    1) 7.6 REPAIR — making material/1 total moved entry/1's crash LATER; the head
+       now refuses an id-less map
+  Twice in one item, from the same mistake, after it had already been written down.
+  A harness that can report a false SURVIVED can report a false KILLED, and this
+  one is now known to mis-report in a direction that flatters nothing but is not
+  self-correcting. Every SURVIVED in this file was re-checked by hand.

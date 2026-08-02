@@ -1,0 +1,23 @@
+PHASE 9 STEP 4.6 BUILD L3
+captured 2026-07-28  ·  HEAD 81feb53
+
+CAPTURED LATE, AND SAYING SO IS THE POINT. Builds L0-L3 shipped green with NO RECEIPT:
+the convention only started at L4, and nothing noticed because the anti-silence guard read
+steps and never builds. Step 4.6 is IN_PROGRESS, so its six DONE builds were filtered out
+entirely -- the Phase 5 failure mode reappearing one level down, inside the guard built to
+prevent it. This receipt is the gate re-run at the commit above, not a reconstruction of
+the original run.
+
+  ok  every node is a real gate from the real ledger - 109 gates projected from 206 rows — ONE NODE PER GATE NAME, because a gate revised three times is one gate and counting rows would put the same thing on the floor three times
+  ok  NO truth_class IS INVENTED - the ledger supplies none and the projection claims none. evidence_class says how STRONG the evidence is; truth_class says what KIND of thing it is. Mapping A->OBSERVED would relabel a strength as a kind, which the truth contract names as laundering.
+  ok  no evidence_class -> truth_class table exists in the source - there is nothing to switch on later
+  ok  every fogged node is fogged for a stated reason - 109 fog · 109 lack truth_class · 0 lack a receipt on disk. F24 covers both, and no node is fog for a third reason nobody named.
+  ok  the reason travels IN the payload - every surface that renders this has to carry the explanation with it — a floor of fog with no reason attached reads as a broken renderer
+  ok  the page says the fog is the finding - a viewer is never left wondering whether it broke
+  ok  1 Hz, and diff-suppressed - first emits; +400ms is THROTTLED; the next two are UNCHANGED. A surface that re-sends a still world every second teaches its reader that motion means nothing, and then real motion goes unnoticed.
+  ok  MUTATION: a REAL change gets through the suppression - a modified copy of the ledger emits, repeats as unchanged, and switching back to the real one emits again. Suppression that suppresses everything is a dead feed, and a dead feed looks exactly like a still one.
+  ok  the projection writes nothing - it opens the gate ledger and returns. A surface that renders evidence must not be able to change it by rendering it.
+
+GATE: PASS - lab-l3, 9/9 checks
+  109 gates on the floor, 109 in fog.
+  Walk it: node viewer/lab/lab_server.cjs  ->  http://127.0.0.1:8103/lab/l3

@@ -1,0 +1,122 @@
+{
+  "schema": "uni.film.cues.v1",
+  "cut": "short",
+  "target_seconds": 200,
+  "design_rule": [
+    "EXPOSE THE MEASUREMENT, NEVER ASSERT THE CONCLUSION. The operator's instruction, verbatim:",
+    "'only ever shown and presented for others to observe of the signal and calibrate for them selves'.",
+    "So the narration NAMES what is on screen. It does not tell you what it means. Every PRINTS band",
+    "is the recorded stdout of a probe in capture/forensic_latest.json, and every number is a token",
+    "resolved from a live artifact at build time. A literal digit in this file is refused by the builder."
+  ],
+  "scenes": [
+    {
+      "id": "s01_title",
+      "plate": "title",
+      "kicker": "A LABORATORY BUILT TO BE CAUGHT BEING WRONG",
+      "line1": "Welcome to UNI Labs",
+      "line2": "Everything after this frame is a command and its output.",
+      "narration": "This is a laboratory that is built to be caught being wrong. Nothing in the next few minutes is a claim you are asked to accept. Every frame shows a question, the command that answers it, and exactly what that command printed."
+    },
+    {
+      "id": "s02_mission",
+      "plate": "intent",
+      "lines": [
+        "Worldwide peace through free and open understanding.",
+        "The public pursuit and ownership of",
+        "General Universal Natural Intelligence.",
+        "The end of extract and extortion.",
+        "Making safe all wombs, and Gaia —",
+        "earth, our solar system, and beyond."
+      ],
+      "narration": "That is what this work is for. It is stated in full, and it is marked on screen as intent, because none of it has been measured. An aspiration presented without saying which kind of statement it is would be the first overstatement in the film.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "s03_gates",
+      "plate": "measurement",
+      "probe": "gates.runner",
+      "asks": "Do the checks this project runs hold their own law?",
+      "source": "viewer/gate_runner.cjs — the law: exit code zero if and only if the printed verdict is PASS",
+      "narration": "Here is the first one. The question, the command, and the line it printed. The rule being enforced is narrow: a check must exit zero only when it also printed the word PASS. A green light wired to nothing is the thing this refuses to allow."
+    },
+    {
+      "id": "s04_gap",
+      "plate": "measurement",
+      "probe": "gap.registry_ledger",
+      "asks": "How many of those registered checks have a row in the permanent record?",
+      "source": "viewer/lab/desk.cjs — theGap(), recomputed on every call",
+      "note": "The schema says every gate the project claims MUST be represented in that record.",
+      "narration": "The same instrument, asked a harder question. Of the checks this project registers, that is how many appear in its permanent evidence record. You can see the number. Nobody is going to characterise it for you.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "s05_door",
+      "plate": "measurement",
+      "probe": "golive.refuses_me",
+      "asks": "Can the software put itself on air?",
+      "source": "viewer/prove_golive_refuses_me.cjs — an agent trying every path to air. The full output is in capture/forensic_latest.json; this band shows its result line.",
+      "narration": "This one is a program attempting to broadcast, deliberately, and recording what stops it. The line on screen is its own result, in its own words. It is the program naming its limit rather than its strength.",
+      "tail_silence": 1.3,
+      "prints_tail": 1,
+      "_fence_note": "The full tail names a component the film may never show. The band is narrowed to the result line rather than the fence being weakened — the frame loses nothing, because the result IS the answer to the question the frame asks."
+    },
+    {
+      "id": "s06_witness",
+      "plate": "measurement",
+      "probe": "witness.blocked",
+      "asks": "Is there an independent party corroborating this record?",
+      "source": "viewer/gaia/verify_witness_blocked.cjs — independent_custodians, counted",
+      "note": "A record verified only by the machine that wrote it is self-certified.",
+      "narration": "A record that only its author can vouch for is worth less than one a stranger can check. This command counts the independent parties corroborating this project's evidence. The count is on screen.",
+      "tail_silence": 1.5
+    },
+    {
+      "id": "s07_scaffold",
+      "plate": "measurement",
+      "probe": "pureworld.scaffold",
+      "asks": "Does the colony's science gate actually run?",
+      "source": "runs/pureworld_qa_gate.exs — the block is printed verbatim so you read the code, not a summary of it",
+      "narration": "This is the check that would test the colony — the part that runs inside a world. What you are looking at is its own source, printed as it is written. It refuses to run, and it says so in the file rather than anywhere more comfortable.",
+      "tail_silence": 1.4,
+      "_lint_note": "An earlier draft called the colony 'the living part of the system'. The estate's own claim fence caught the word 'living' — a life claim this project explicitly disclaims — in the film's narration, which is precisely where it would have done the most damage."
+    },
+    {
+      "id": "s08_self",
+      "plate": "measurement",
+      "probe": "film.qc",
+      "asks": "Is this film itself checked?",
+      "source": "lab/film/welcome/qc/verify_welcome_film.cjs — and its mutation suite, which breaks the film on purpose to see whether the check notices",
+      "narration": "The film is subject to the same treatment. This check forbids certain words, requires every claim to carry a receipt, and re-runs every number against the file it came from. The second figure counts deliberate sabotage it was required to catch.",
+      "tail_silence": 1.3
+    },
+    {
+      "id": "s09_tokens",
+      "plate": "measurement",
+      "probe": "film.tokens",
+      "asks": "Where did the numbers in this film come from?",
+      "source": "lab/film/welcome/qc/tokens.cjs — each number is an expression over a real file, never a literal",
+      "note": "A number typed into a film has no half-life. It simply becomes wrong at an unannounced moment.",
+      "narration": "Not one number in this film was typed. Each is an expression evaluated against a real file while the film was being built. This project has already published counts that were false within hours of being written, which is why they are no longer written.",
+      "tail_silence": 1.4
+    },
+    {
+      "id": "s10_falsify",
+      "plate": "title",
+      "kicker": "HOW TO BE USEFUL HERE",
+      "line1": "Try to prove it wrong.",
+      "line2": "Clone it. Run the commands. Bring back the one that disagrees.",
+      "narration": "Everything you have just seen is a command you can run. If one of them prints something different on your machine, that is the most valuable thing you could send back. Being caught being wrong is not the failure here. It is the product working.",
+      "tail_silence": 1.6
+    },
+    {
+      "id": "s11_close",
+      "plate": "title",
+      "kicker": "WHAT THIS IS HONESTLY WORTH TODAY",
+      "line1": "No verdict has yet been authored",
+      "line2": "about a real scientific claim.",
+      "narration": "That is the honest position. The instruments are built, the record is kept, and the hardest questions are still open and still marked open. You have seen the evidence for that in the same form as everything else. Come and check it yourself.",
+      "tail_silence": 2.0
+    }
+  ]
+}

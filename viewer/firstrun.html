@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI — the room before the room</title>
+<style>
+  /* Warm cream-on-warm-black — deliberately different from /infra's cool grey.
+     His body must know at a glance which room he is in. This is NOT the operator seat. */
+  :root{
+    --bg:#141210; --panel:#1c1916; --edge:#2a2622; --edge-soft:#38312a;
+    --ink:#f0e6d6; --dim:#a8998a; --gold:#e0b876; --gold-soft:#3b3122;
+    --warn:#c48a5a; --quiet-red:#a86152; --nv:#6b6154;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font:16px/1.65 "Iowan Old Style","Palatino Linotype","Georgia",serif;min-height:100%}
+  body{padding:24px;max-width:1360px;margin:0 auto}
+  a{color:var(--gold)}
+  a:hover{color:var(--ink)}
+  h1,h2,h3{font-weight:400;letter-spacing:.01em}
+  .mono{font-family:"Cascadia Code","Consolas","Menlo",monospace}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:18px;margin-bottom:14px}
+  .quiet{color:var(--dim);font-size:14px}
+  .very-quiet{color:var(--nv);font-size:12px}
+  .gold{color:var(--gold)}
+  .gold-em{color:var(--gold);font-style:italic}
+  .warn{color:var(--warn)}
+  .quiet-red{color:var(--quiet-red)}
+
+  /* ---- GREETING STRIP ---- */
+  .greeting{padding:22px 24px 18px}
+  .greeting .name{font-size:26px;color:var(--gold);letter-spacing:.01em}
+  .greeting .subline{font-size:15px;color:var(--ink);margin-top:6px;max-width:820px}
+  .greeting .aside{color:var(--dim);font-size:13px;margin-top:10px}
+  .greeting .aside a{color:var(--gold);text-decoration:none;border-bottom:1px dashed var(--edge-soft);padding-bottom:1px}
+  .greeting .aside a:hover{border-bottom-color:var(--gold)}
+
+  /* ---- META STRIP — three promises, plain text (no percent bar, no completion gauge) ---- */
+  .meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 6px;margin-bottom:14px}
+  .meta .rung{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:12px 14px}
+  .meta .rung .txt{color:var(--ink);font-size:15px}
+  .meta .rung .who{color:var(--dim);font-size:11px;margin-top:3px}
+
+  /* ---- MAIN GRID: LEFT bookshelf / CENTER stage / RIGHT rail ---- */
+  .stage{display:grid;grid-template-columns:200px 1fr 320px;gap:14px}
+  @media (max-width:980px){ .stage{grid-template-columns:1fr} .left-rail{display:none} .right-rail{display:none} }
+
+  /* left rail — 21 mini thermometers */
+  .left-rail h3{font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin:10px 0 6px}
+  .bookshelf{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .close-shelf{display:grid;grid-template-columns:1fr;gap:6px;margin-top:6px}
+  .minibar{background:#0f0d0b;border:1px solid var(--edge);border-radius:6px;padding:5px 4px 6px;cursor:pointer;text-align:center;transition:border-color .12s}
+  .minibar:hover{border-color:var(--gold)}
+  .minibar.cur{border-color:var(--gold);background:#1a1611;box-shadow:inset 3px 0 0 var(--gold)}
+  .minibar .cue{font-size:10px;color:var(--gold);letter-spacing:.02em;font-family:"Cascadia Code","Consolas",monospace}
+  .minibar .dots{display:flex;justify-content:center;gap:2px;margin:5px 0 3px}
+  .minibar .dot{width:5px;height:5px;border-radius:50%;background:transparent;border:1px solid var(--nv)}
+  .minibar .dot.on{background:var(--gold);border-color:var(--gold)}
+  .minibar .ttl{font-size:9px;color:var(--dim);line-height:1.2;height:22px;overflow:hidden}
+
+  /* center stage — the one segment */
+  .center-stage{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:22px}
+  .center-stage .cue-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+  .center-stage .cue-num{color:var(--gold);font-family:"Cascadia Code","Consolas",monospace;font-size:18px}
+  .center-stage .cue-ttl{font-size:22px;color:var(--ink);font-weight:400}
+  .center-stage .lt{color:var(--dim);font-size:13px;margin-bottom:14px}
+  .center-stage .first-hint{color:var(--dim);font-size:13px;background:var(--gold-soft);border:1px solid var(--edge-soft);border-radius:8px;padding:9px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .center-stage .first-hint .x{color:var(--dim);cursor:pointer;font-size:14px;padding:0 6px;background:none;border:none}
+  .center-stage .first-hint .x:hover{color:var(--ink)}
+
+  .rungs{margin:12px 0 18px}
+  .rung-row{display:flex;align-items:flex-start;gap:14px;padding:14px 12px;border-radius:10px;cursor:pointer;transition:background .1s;user-select:none}
+  .rung-row:hover{background:#221e19}
+  .rung-row .circ{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold);transition:all .25s ease}
+  .rung-row .txt{flex:1;font-size:17px;color:var(--ink);line-height:1.55}
+  .rung-row.shipped .circ{background:var(--gold-soft);border-color:var(--gold)}
+  .rung-row.shipped .circ::after{content:"✓";color:var(--gold);font-size:20px}
+  .rung-row.shipped .txt{opacity:.7}
+
+  .segfoot{margin-top:12px;border-top:1px solid var(--edge);padding-top:14px}
+  .segfoot .row{margin:6px 0;font-size:13px}
+  .segfoot .row .lbl{color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-size:11px}
+  .segfoot .never{color:var(--quiet-red)}
+  .segfoot .fence{color:var(--gold);font-style:italic}
+
+  /* right rail — HONEST + TRUE */
+  .right-rail{display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px}
+  .card h3{font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+  .card .f1{color:var(--gold);font-style:italic;font-size:13px;line-height:1.5;padding:8px 10px;background:var(--gold-soft);border-radius:6px;margin-bottom:12px}
+  .fence-tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .fence-tbl td{padding:5px 4px;border-bottom:1px solid var(--edge);vertical-align:top;line-height:1.4}
+  .fence-tbl .s{color:var(--ink);width:52%}
+  .fence-tbl .n{color:var(--quiet-red)}
+  .fence-tbl tr.pulse td{background:#251d13;transition:background .3s}
+  .fence-tbl tr.pulse td.n{background:#3a221c}
+  .fence-tbl tr:last-child td{border-bottom:none}
+  .true-list{display:flex;flex-direction:column;gap:5px}
+  .true-pill{background:#0f0d0b;border:1px solid var(--edge);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.4;color:var(--ink);cursor:pointer;transition:border-color .1s}
+  .true-pill:hover{border-color:var(--gold)}
+  .true-pill.copied{border-color:var(--gold);background:var(--gold-soft)}
+
+  /* silence line — permanent */
+  .silence-line{margin-top:14px;padding:9px 12px;background:#0f0d0b;border:1px dashed var(--edge-soft);border-radius:8px;color:var(--dim);font-size:12px;font-style:italic;line-height:1.5}
+
+  /* ---- I-LOST-MY-PLACE pill (fixed bottom-right) — styled in --gold, not --warn.
+     This is his safe escape hatch, not a warning badge. ---- */
+  .lost-pill{position:fixed;bottom:22px;right:22px;background:var(--panel);border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);z-index:50;font-family:inherit}
+  .lost-pill:hover{background:var(--gold-soft)}
+  .lost-pill:focus{outline:2px solid var(--gold);outline-offset:2px}
+
+  /* ---- LOST MODAL — 800ms delay before content appears, one forced breath ---- */
+  .lost-modal-bg{position:fixed;inset:0;background:rgba(20,18,16,.72);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .lost-modal-bg.on{display:flex}
+  .lost-modal{background:var(--panel);border:1px solid var(--edge);border-radius:14px;max-width:640px;width:100%;max-height:90vh;overflow:auto;padding:28px}
+  .lost-modal .waiting{color:var(--dim);font-size:14px;font-style:italic;text-align:center;padding:36px 20px;line-height:1.6}
+  .lost-modal .content{display:none}
+  .lost-modal .content.on{display:block}
+  .lost-modal h3{font-size:20px;color:var(--gold);margin-bottom:6px;font-weight:400}
+  .lost-modal .cue-line{font-size:16px;margin:0 0 20px 0}
+  .lost-modal .sec{margin:18px 0}
+  .lost-modal .sec .lbl{color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-size:11px;margin-bottom:6px}
+  .lost-modal .next-rung{display:block;background:#0f0d0b;border:1px solid var(--edge);border-radius:8px;padding:12px 14px;margin:6px 0;font-size:15px;color:var(--ink);cursor:pointer;line-height:1.5}
+  .lost-modal .next-rung:hover{border-color:var(--gold)}
+  .lost-modal .fence-block{color:var(--gold);font-style:italic;background:var(--gold-soft);border-radius:6px;padding:10px 12px;font-size:14px;line-height:1.6}
+  .lost-modal .close-btn{background:var(--panel);color:var(--ink);border:1px solid var(--gold);border-radius:10px;padding:12px 24px;font:inherit;font-size:15px;cursor:pointer;display:block;margin:22px auto 0;font-family:inherit}
+  .lost-modal .close-btn:hover{background:var(--gold-soft)}
+
+  /* ---- BEFORE-YOU-LEAVE-THIS-ROOM (collapsed section at bottom) ---- */
+  .before-leave{margin-top:24px}
+  .before-leave summary{cursor:pointer;padding:14px 18px;background:var(--panel);border:1px solid var(--edge);border-radius:12px;color:var(--gold);font-size:16px;list-style:none;user-select:none}
+  .before-leave summary::-webkit-details-marker{display:none}
+  .before-leave summary::before{content:"▸ ";color:var(--dim)}
+  .before-leave[open] summary::before{content:"▾ "}
+  .before-leave .body{padding:14px 4px 0}
+  .before-leave h3{font-size:12px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin:16px 0 8px}
+  .before-leave ol,.before-leave ul{padding-left:22px;color:var(--ink);font-size:14px;line-height:1.7}
+  .before-leave li{margin:4px 0}
+  .before-leave .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:820px){ .before-leave .grid2{grid-template-columns:1fr} }
+  .contact-in{display:block;width:100%;background:#0f0d0b;border:1px solid var(--edge);color:var(--ink);border-radius:8px;padding:8px 10px;font:inherit;font-size:13px;margin-top:4px}
+  .contact-in:focus{outline:none;border-color:var(--gold)}
+  .print-btn{background:var(--panel);color:var(--gold);border:1px solid var(--gold);border-radius:10px;padding:11px 22px;font:inherit;font-size:14px;cursor:pointer;margin:14px 0 4px;font-family:inherit}
+  .print-btn:hover{background:var(--gold-soft)}
+
+  /* ---- SLEEP GATE (2am) — overrides everything if active ---- */
+  .sleep-gate-bg{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+  .sleep-gate-bg.on{display:flex}
+  .sleep-gate{max-width:520px;text-align:center}
+  .sleep-gate h1{color:var(--gold);font-size:28px;margin-bottom:14px;font-weight:400}
+  .sleep-gate p{color:var(--ink);font-size:17px;line-height:1.7;margin-bottom:22px}
+  .sleep-gate .now{color:var(--gold);font-family:"Cascadia Code","Consolas",monospace;font-size:15px}
+  .sleep-gate button{background:var(--panel);color:var(--ink);border:1px solid var(--gold);border-radius:10px;padding:14px 30px;font:inherit;font-size:16px;cursor:pointer;font-family:inherit}
+  .sleep-gate button:hover{background:var(--gold-soft)}
+  .sleep-gate .stay{margin-top:16px;color:var(--dim);font-size:13px;cursor:pointer;background:none;border:none;text-decoration:underline;font-family:inherit}
+  .sleep-gate .stay:hover{color:var(--ink)}
+
+  /* ---- BREATH PROMPT — one opt-in, at first visit, never chases ---- */
+  .breath-prompt{display:inline-block;background:var(--panel);border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:10px 20px;font-size:14px;font-family:inherit;cursor:pointer;margin-top:10px}
+  .breath-prompt:hover{background:var(--gold-soft)}
+  .breath-prompt.done{border-color:var(--edge);color:var(--dim);cursor:default}
+  .breath-anim{display:none;margin-top:14px;text-align:center;color:var(--gold);font-size:14px;padding:10px 0}
+  .breath-anim.on{display:block}
+  .breath-circle{width:60px;height:60px;border-radius:50%;background:var(--gold-soft);margin:6px auto 12px;animation:breathe 12s ease-in-out}
+  @keyframes breathe{
+    0%   {transform:scale(.55)}
+    33%  {transform:scale(1.2)}
+    50%  {transform:scale(1.2)}
+    83%  {transform:scale(.55)}
+    100% {transform:scale(.55)}
+  }
+
+  /* ---- ASPIRATIONS WALL — his own words, small dim panel ---- */
+  .aspirations{margin-top:16px;padding:14px 16px;background:var(--panel);border:1px solid var(--edge);border-radius:12px}
+  .aspirations h3{font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+  .aspirations .q{color:var(--dim);font-size:13px;line-height:1.55;font-style:italic;margin:8px 0;padding-left:12px;border-left:2px solid var(--edge-soft)}
+  .aspirations .who{color:var(--nv);font-size:11px;margin-top:2px;font-style:normal}
+
+  /* ---- PERSISTENCE FOOTER ---- */
+  .persist-foot{color:var(--nv);font-size:11px;margin-top:20px;padding:4px 6px;text-align:left}
+  .persist-foot a{color:var(--nv);border-bottom:1px dashed var(--nv);text-decoration:none;padding-bottom:1px;cursor:pointer}
+  .persist-foot a:hover{color:var(--dim);border-bottom-color:var(--dim)}
+
+  /* ---- PRINT VIEW — the desk sheet ---- */
+  @media print{
+    body{background:#fff;color:#000;padding:0;font-family:"Georgia",serif;max-width:none;font-size:11pt}
+    .no-print{display:none !important}
+    .desk-sheet{display:block !important;padding:0.5in}
+    .desk-sheet h1{font-size:18pt;margin-bottom:8pt}
+    .desk-sheet h2{font-size:12pt;margin-top:14pt;margin-bottom:4pt;text-transform:uppercase;letter-spacing:.06em;color:#000}
+    .desk-sheet .fence-print{border:1px solid #000;padding:6pt 8pt;margin:6pt 0;font-style:italic}
+    .desk-sheet ul,.desk-sheet ol{margin-left:18pt}
+    .desk-sheet li{margin:2pt 0}
+    .desk-sheet .grid-print{display:grid;grid-template-columns:1fr 1fr;gap:14pt}
+    .desk-sheet .contact-line{border-bottom:1px solid #000;padding-bottom:2pt;margin:8pt 0}
+  }
+  .desk-sheet{display:none}
+</style>
+</head>
+<body>
+
+<!-- ============================================================================
+     SLEEP GATE — 2am protection.
+     If page is loaded between 23:00 and 06:00 local time, this overlay comes up
+     first. He can close the tab with one button, or dim-small opt-in to stay.
+     ============================================================================ -->
+<div id="sleep-gate" class="sleep-gate-bg">
+  <div class="sleep-gate">
+    <h1>It is late.</h1>
+    <p>It is <span id="sleep-now" class="now">…</span>. This room is here in the morning. It will still know where you left off.</p>
+    <div id="sleep-peek" style="background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 14px;margin:14px 0;text-align:left;color:var(--gold);font-style:italic;font-size:14px;line-height:1.5">…</div>
+    <button id="sleep-close" class="no-print">Close the tab</button>
+    <br>
+    <button id="sleep-stay" class="stay no-print">stay a little longer</button>
+  </div>
+</div>
+
+<!-- ============================================================================
+     GREETING STRIP
+     ============================================================================ -->
+<div class="panel greeting no-print" data-panel="greeting">
+  <div class="name">Welcome back, <span id="hello-name">Michael</span>.</div>
+  <div class="subline">This is the room before the room. Nothing here goes on air. You can click every button on this page and no one will ever see it.</div>
+  <div class="aside">
+    <a href="/firstrun.md" target="_blank" rel="noopener">read the co-pilot brief</a> ·
+    <a href="/infra">/infra — operator surface</a> ·
+    <a href="/">/ — mission control</a>
+  </div>
+  <div id="breath-block">
+    <button id="breath-btn" class="breath-prompt no-print">take one slow breath with me</button>
+    <div id="breath-anim" class="breath-anim">
+      <div class="breath-circle"></div>
+      <div id="breath-word">breathe in…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================
+     META STRIP — three promises, auto-filled from segment rung ships
+     ============================================================================ -->
+<div class="meta no-print" id="meta-strip"></div>
+
+<!-- ============================================================================
+     MAIN STAGE — left bookshelf / center stage / right rail
+     ============================================================================ -->
+<div class="stage no-print">
+
+  <div class="left-rail">
+    <h3>Hour 1</h3><div class="bookshelf" id="shelf-h1"></div>
+    <h3>Hour 2</h3><div class="bookshelf" id="shelf-h2"></div>
+    <h3>Hour 3</h3><div class="bookshelf" id="shelf-h3"></div>
+    <h3>Hour 4</h3><div class="bookshelf" id="shelf-h4"></div>
+    <h3>Close</h3><div class="close-shelf" id="shelf-close"></div>
+  </div>
+
+  <div class="center-stage" id="center-stage">
+    <div class="cue-head">
+      <span class="cue-num" id="cs-cue"></span>
+      <span class="cue-ttl" id="cs-title"></span>
+    </div>
+    <div class="lt" id="cs-lt"></div>
+    <div id="cs-hint" class="first-hint" style="display:none">
+      <span>click a rung when you have said the point out loud. double-click to change your mind. these are your marks — this page is yours.</span>
+      <button class="x" id="cs-hint-x" title="dismiss">×</button>
+    </div>
+    <div class="rungs" id="cs-rungs"></div>
+    <div class="segfoot">
+      <div class="row"><span class="lbl">never say:</span> <span class="never" id="cs-never"></span></div>
+      <div class="row"><span class="lbl">fence for this moment:</span> <span class="fence" id="cs-fence"></span></div>
+    </div>
+    <div class="silence-line" id="cs-silence"></div>
+  </div>
+
+  <div class="right-rail">
+    <div class="card" id="honest-card">
+      <h3>Honest — the fence you keep on air</h3>
+      <div class="f1" id="honest-f1"></div>
+      <table class="fence-tbl"><tbody id="honest-tbody"></tbody></table>
+    </div>
+    <div class="card" id="true-card">
+      <h3>True — six facts to quote cold (click to copy)</h3>
+      <div class="true-list" id="true-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================================
+     ASPIRATIONS WALL — his own words, quiet, always there
+     ============================================================================ -->
+<div class="aspirations no-print" id="aspirations">
+  <h3>Your own words — why the door is open</h3>
+  <div id="aspirations-list"></div>
+</div>
+
+<!-- ============================================================================
+     BEFORE YOU LEAVE THIS ROOM — collapsed body/rituals/failure-mode section
+     ============================================================================ -->
+<details class="before-leave no-print" id="before-leave">
+  <summary>Before you leave this room — the body, the rituals, and what to do when it goes wrong</summary>
+  <div class="body">
+
+    <div class="quiet" style="padding:8px 12px;background:var(--panel);border:1px solid var(--edge);border-radius:8px;margin-bottom:12px;font-style:italic" id="not-medical"></div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>The body — voice, water, breath</h3>
+        <ul id="body-list"></ul>
+      </div>
+      <div class="panel">
+        <h3>Signal to self — you are your solo producer</h3>
+        <ul id="signal-list"></ul>
+        <div class="quiet" style="margin-top:8px">These are on your desk sheet. When your eyes are on the camera lens, on-screen is not where you are looking.</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Before go-live — a ritual, not a checklist</h3>
+        <ol id="pre-list"></ol>
+      </div>
+      <div class="panel">
+        <h3>After you close — a ritual, not a to-do</h3>
+        <ol id="post-list"></ol>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>If it goes wrong — pre-decided, not improvised</h3>
+      <div id="wrong-list"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Two people, when you can (write them on the desk sheet)</h3>
+      <div class="grid2">
+        <div>
+          <label class="quiet" for="contact-watcher">Someone who will text you "you are doing it" once an hour</label>
+          <input id="contact-watcher" class="contact-in" placeholder="name + phone">
+        </div>
+        <div>
+          <label class="quiet" for="contact-emergency">Someone who can post "we lost signal, back in ten" if your box goes down</label>
+          <input id="contact-emergency" class="contact-in" placeholder="name + phone">
+        </div>
+      </div>
+      <div class="quiet" style="margin-top:10px">Write them down when you can. If you have not named them yet, that is fine — come back to it in daylight.</div>
+    </div>
+
+    <div class="panel">
+      <h3>The desk sheet — print it on paper</h3>
+      <div class="quiet">One page. Black on white. Every fence line, the fallback sentence, the DOI, the four hand-signals, and your two contacts. It goes on the desk beside your keyboard. When the screen is not where your eyes are, this is where they land.</div>
+      <button id="print-btn" class="print-btn">Print the desk sheet</button>
+    </div>
+
+    <div class="panel">
+      <h3>Permission — you are allowed to stop</h3>
+      <div id="allowed-line" style="font-size:16px;color:var(--gold);font-style:italic;line-height:1.6"></div>
+    </div>
+
+    <div class="panel">
+      <h3>The math you can defend live — six paragraphs, verbatim</h3>
+      <div class="quiet" style="margin-bottom:10px">These are the answers to "what does EFE mean?" / "what does 'reduce uncertainty' actually mean?" / "how does UNI learn?" and the rest. Read them once tonight so you recognize each one when a viewer asks.</div>
+      <div id="math-primer"></div>
+    </div>
+
+  </div>
+</details>
+
+<!-- ============================================================================
+     LOST MODAL — 800ms of blank calm, then content
+     ============================================================================ -->
+<div id="lost-modal-bg" class="lost-modal-bg no-print">
+  <div class="lost-modal">
+    <div class="waiting" id="lost-waiting">Take a breath. Here is where you are…</div>
+    <div class="content" id="lost-content"></div>
+  </div>
+</div>
+
+<!-- ============================================================================
+     LOST PILL — fixed corner
+     ============================================================================ -->
+<button id="lost-pill" class="lost-pill no-print" aria-label="I lost my place">I lost my place.</button>
+
+<!-- ============================================================================
+     PERSISTENCE FOOTER — bottom, quiet
+     ============================================================================ -->
+<div class="persist-foot no-print" id="persist-foot">
+  saved in this browser: your marks, your current cue, your two contacts.
+  cleared when you first open this room on a new day. <a id="clear-link">clear my marks now</a>
+</div>
+
+<!-- ============================================================================
+     DESK SHEET — print-only, hidden on screen
+     ============================================================================ -->
+<div class="desk-sheet" id="desk-sheet">
+  <h1>Michael — desk sheet, launch broadcast</h1>
+  <div id="desk-not-medical" style="border:1px solid #000;padding:4pt 8pt;margin-bottom:8pt;font-style:italic;font-size:10pt"></div>
+  <h2>The fence — read one aloud if a claim starts to feel bigger than the evidence</h2>
+  <div class="fence-print" id="desk-f1"></div>
+  <h2>If a question is too deep to answer live</h2>
+  <div class="fence-print" id="desk-fallback"></div>
+  <h2>If you are unwell</h2>
+  <div class="fence-print" id="desk-allowed"></div>
+  <h2>Silence is a rung</h2>
+  <div class="fence-print" id="desk-silence"></div>
+  <div class="grid-print">
+    <div>
+      <h2>Hand signals — you are your solo producer</h2>
+      <ul id="desk-signals"></ul>
+    </div>
+    <div>
+      <h2>Body — voice, water, breath</h2>
+      <ul id="desk-body"></ul>
+    </div>
+  </div>
+  <h2>Six facts to quote cold</h2>
+  <ul id="desk-facts"></ul>
+  <div class="grid-print">
+    <div>
+      <h2>Before go-live</h2>
+      <ol id="desk-pre"></ol>
+    </div>
+    <div>
+      <h2>After you close</h2>
+      <ol id="desk-post"></ol>
+    </div>
+  </div>
+  <h2>If it goes wrong</h2>
+  <div id="desk-wrong"></div>
+  <h2>Your two people</h2>
+  <div class="contact-line">Live-watcher: <span id="desk-watcher"></span></div>
+  <div class="contact-line">Emergency-out: <span id="desk-emergency"></span></div>
+</div>
+
+<script>
+"use strict";
+
+// ============================================================================
+// STATE + STORAGE
+// The whole point of this room is that it never nags him. Persistence exists
+// so a reload does not wipe his work; midnight-clear exists so coming back
+// three nights later does not read as guilt about un-shipped rungs.
+// ============================================================================
+const KEYS = {
+  RUNGS: "uni_firstrun_rungs",
+  CUR:   "uni_firstrun_current",
+  HINT:  "uni_firstrun_hint_seen",
+  BREATH:"uni_firstrun_breath_done",
+  DAY:   "uni_firstrun_day",
+  SLEEP_OK: "uni_firstrun_sleep_dismissed_day",
+  WATCH: "uni_firstrun_watcher",
+  EMERG: "uni_firstrun_emergency"
+};
+
+function todayStr(){ const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function midnightClearIfNewDay(){
+  const savedDay = localStorage.getItem(KEYS.DAY);
+  const today = todayStr();
+  if (savedDay && savedDay !== today){
+    // new day — clear all uni_firstrun_* rung/current/hint state (contacts kept)
+    localStorage.removeItem(KEYS.RUNGS);
+    localStorage.removeItem(KEYS.CUR);
+    localStorage.removeItem(KEYS.HINT);
+    localStorage.removeItem(KEYS.BREATH);
+    localStorage.removeItem(KEYS.SLEEP_OK);
+  }
+  localStorage.setItem(KEYS.DAY, today);
+}
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const esc = (x) => String(x==null?"":x).replace(/[&<>]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+let DATA = null;
+let state = { rungs: {}, current: null };
+
+// ============================================================================
+// DATA LOAD — /firstrun_data.json (with inline fallback for a live tool that
+// must never blank on a static-file fetch hiccup)
+// ============================================================================
+const FALLBACK_DATA = { operator_name: "Michael", aspirations: [], meta_promises: [], segments: [], honest_rows: [], canonical_facts: [], f1_fence_verbatim: "Passing a gate demonstrates the named behaviour, never experience.", recovery_fallback_line: "That question goes deeper than I can honestly answer live from memory — the receipts are in the repo under docs/receipts.", silence_line: "Silence on camera reads as thoughtfulness. You do not have to fill air.", allowed_to_stop_line: "If you are unwell, close it. The show reschedules. That is not failure.", math_primer: [], body_care: [], hand_signals: [], pre_live_ritual: [], post_live_ritual: [], if_it_goes_wrong: [] };
+
+let DATA_LOAD_FAILED = false;
+async function loadData(){
+  try {
+    const r = await fetch("/firstrun_data.json", { cache: "no-store" });
+    if (!r.ok) throw new Error("http " + r.status);
+    DATA = await r.json();
+    if (!DATA || !Array.isArray(DATA.segments) || DATA.segments.length === 0){
+      throw new Error("segments empty");
+    }
+  } catch (_) {
+    DATA = FALLBACK_DATA;
+    DATA_LOAD_FAILED = true;
+  }
+}
+function renderDataFallback(){
+  // If the source-of-truth data file could not be reached, do NOT crash into blank
+  // panels. Show a visible, honest fallback panel with the F1 fence + the co-pilot
+  // brief link — the operator still gets what he came here for.
+  const stage = document.querySelector(".stage"); if (stage) stage.style.display = "none";
+  const meta = document.getElementById("meta-strip"); if (meta) meta.style.display = "none";
+  const asp = document.getElementById("aspirations"); if (asp) asp.style.display = "none";
+  const bl = document.getElementById("before-leave"); if (bl) bl.style.display = "none";
+  const g = document.createElement("div");
+  g.className = "panel";
+  g.style.borderColor = "var(--warn)";
+  g.innerHTML = `<h3 style="color:var(--warn)">The room's data file did not load.</h3>
+    <p style="color:var(--ink);font-size:15px;line-height:1.6;margin:8px 0">
+      You are safe. This page cannot reach <code class="mono">/firstrun_data.json</code>
+      right now. The lookup will retry next time you open the room. Meanwhile the
+      three things you need most are here:</p>
+    <div class="fence-block" style="background:var(--gold-soft);border-radius:6px;padding:10px 12px;color:var(--gold);font-style:italic;margin:6px 0">${esc(DATA.f1_fence_verbatim)}</div>
+    <div class="fence-block" style="background:var(--gold-soft);border-radius:6px;padding:10px 12px;color:var(--gold);font-style:italic;margin:6px 0">${esc(DATA.recovery_fallback_line)}</div>
+    <div class="fence-block" style="background:var(--gold-soft);border-radius:6px;padding:10px 12px;color:var(--gold);font-style:italic;margin:6px 0">${esc(DATA.silence_line)}</div>
+    <p style="color:var(--dim);font-size:13px;margin-top:12px">
+      If you want your co-pilot to talk with you here, open
+      <a href="/firstrun.md" target="_blank">the co-pilot brief</a>. Your ladders
+      will be back the next time this page loads. Your saved contacts and
+      body-block are still on this browser.
+    </p>`;
+  const greeting = document.querySelector(".greeting");
+  if (greeting && greeting.parentNode) greeting.parentNode.insertBefore(g, greeting.nextSibling);
+}
+
+function initRungs(){
+  const saved = localStorage.getItem(KEYS.RUNGS);
+  if (saved) { try { state.rungs = JSON.parse(saved); } catch(_){ state.rungs = {}; } }
+  // Preserve overlap when a segment's points array grows/shrinks — do NOT wipe
+  // shipped state on any length change. Only NEW slots default to false.
+  for (const seg of DATA.segments){
+    const old = state.rungs[seg.cue];
+    if (!Array.isArray(old) || old.length !== seg.points.length){
+      state.rungs[seg.cue] = seg.points.map((_, i) => (Array.isArray(old) && old[i]) ? true : false);
+    }
+  }
+  saveRungs();
+  state.current = localStorage.getItem(KEYS.CUR) || (DATA.segments[0] && DATA.segments[0].cue) || "0.0";
+}
+function saveRungs(){ localStorage.setItem(KEYS.RUNGS, JSON.stringify(state.rungs)); }
+function setCurrent(cue){ state.current = cue; localStorage.setItem(KEYS.CUR, cue); }
+function segOf(cue){ return DATA.segments.find(s => s.cue === cue) || DATA.segments[0]; }
+function shippedCount(cue){ return (state.rungs[cue]||[]).filter(Boolean).length; }
+function firstUnshipped(cue){ const arr=state.rungs[cue]||[]; const i=arr.indexOf(false); return i<0?null:i; }
+
+// ============================================================================
+// SLEEP GATE — hour check on load
+// ============================================================================
+function checkSleepGate(){
+  const h = new Date().getHours();
+  if (h < 6 || h >= 23){
+    // dismissed already today?
+    if (localStorage.getItem(KEYS.SLEEP_OK) === todayStr()) return;
+    const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    $("#sleep-now").textContent = now;
+    // 30-second peek: show the F1 fence right in the sleep gate so a late-night
+    // look is possible without dismissing anything — no ceremony.
+    const peek = $("#sleep-peek");
+    if (peek && DATA) peek.textContent = DATA.f1_fence_verbatim || "";
+    $("#sleep-gate").classList.add("on");
+  }
+}
+function bindSleepGate(){
+  // Attempt window.close() (browsers honor it for script-opened tabs); do NOT
+  // nuke the DOM as a "you closed" replacement page — that made recovery from a
+  // mis-tap require a hard reload. If the close fails silently, the sleep gate
+  // stays visible and he can hit "stay a little longer".
+  $("#sleep-close").onclick = () => { try { window.close(); } catch(_){} };
+  $("#sleep-stay").onclick = () => { localStorage.setItem(KEYS.SLEEP_OK, todayStr()); $("#sleep-gate").classList.remove("on"); };
+}
+
+// ============================================================================
+// BREATH PROMPT — one opt-in, not a chase
+// ============================================================================
+function bindBreath(){
+  const btn = $("#breath-btn"), anim = $("#breath-anim"), word = $("#breath-word");
+  if (localStorage.getItem(KEYS.BREATH) === "1"){
+    btn.classList.add("done"); btn.textContent = "one breath taken tonight.";
+    btn.style.pointerEvents = "none";
+    return;
+  }
+  btn.onclick = () => {
+    btn.style.display = "none";
+    anim.classList.add("on");
+    // simple 12s cycle: in (4s) hold (2s) out (6s)
+    word.textContent = "breathe in…";
+    setTimeout(()=>{ word.textContent = "hold…"; }, 4000);
+    setTimeout(()=>{ word.textContent = "breathe out…"; }, 6000);
+    setTimeout(()=>{ word.textContent = "one more if you want, or scroll when you are ready."; localStorage.setItem(KEYS.BREATH, "1"); }, 12200);
+  };
+}
+
+// ============================================================================
+// RENDER — greeting, meta, bookshelf, center stage, right rail, aspirations
+// ============================================================================
+function renderGreeting(){
+  $("#hello-name").textContent = DATA.operator_name || "friend";
+}
+
+function renderMeta(){
+  const el = $("#meta-strip"); if (!el) return;
+  // Plain text, no percent gauge, no fill bar. Rung count only if he has landed any —
+  // and no target denominator, so it never reads as "X of Y". Fractions with no goal.
+  el.innerHTML = DATA.meta_promises.map(p => {
+    const feeders = p.feeds_from || [];
+    const shippedRungs = feeders.reduce((s, cue) => s + shippedCount(cue), 0);
+    const landed = shippedRungs > 0
+      ? `<span class="gold">${shippedRungs}</span> point${shippedRungs===1?"":"s"} said so far · from cues ${feeders.join(" · ")}`
+      : `from cues ${feeders.join(" · ")}`;
+    return `<div class="rung"><div class="txt">${esc(p.text)}</div><div class="who">${landed}</div></div>`;
+  }).join("");
+}
+
+function renderBookshelf(){
+  const hourOf = (cue) => cue === "0.0" ? "h1" : cue === "5.0" ? "close" : ("h" + cue.split(".")[0]);
+  const groups = { h1: [], h2: [], h3: [], h4: [], close: [] };
+  for (const seg of DATA.segments){
+    if (seg.cue === "0.0") groups.h1.push(seg);
+    else if (seg.cue === "5.0") groups.close.push(seg);
+    else groups[hourOf(seg.cue)].push(seg);
+  }
+  const paintGroup = (id, list) => {
+    const el = document.getElementById("shelf-" + id); if (!el) return;
+    el.innerHTML = list.map(seg => {
+      const arr = state.rungs[seg.cue] || [];
+      const dots = arr.map(v => `<div class="dot ${v?"on":""}"></div>`).join("");
+      const cls = seg.cue === state.current ? "minibar cur" : "minibar";
+      const title = seg.title.split(" — ")[0].split(",")[0].slice(0, 18);
+      return `<div class="${cls}" data-cue="${esc(seg.cue)}" title="${esc(seg.title)}">
+        <div class="cue">${esc(seg.cue)}</div>
+        <div class="dots">${dots}</div>
+        <div class="ttl">${esc(title)}</div></div>`;
+    }).join("");
+    Array.from(el.querySelectorAll(".minibar")).forEach(b => {
+      b.onclick = () => { setCurrent(b.dataset.cue); paintAll(); };
+    });
+  };
+  paintGroup("h1", groups.h1);
+  paintGroup("h2", groups.h2);
+  paintGroup("h3", groups.h3);
+  paintGroup("h4", groups.h4);
+  paintGroup("close", groups.close);
+}
+
+function renderCenterStage(){
+  const seg = segOf(state.current);
+  $("#cs-cue").textContent = seg.cue;
+  $("#cs-title").textContent = seg.title;
+  $("#cs-lt").textContent = seg.lower_third;
+  // first-visit hint
+  const hint = $("#cs-hint");
+  hint.style.display = (localStorage.getItem(KEYS.HINT) === "1") ? "none" : "flex";
+  // rungs
+  const arr = state.rungs[seg.cue] || [];
+  const rungsEl = $("#cs-rungs");
+  // No "got it out" celebration text — the circle fill + text dim IS the mark.
+  // Adding a label makes the check a dopamine drip and turns the ladder into a
+  // hunt for rungs instead of a hunt for points to land.
+  rungsEl.innerHTML = seg.points.map((pt, i) => {
+    const shipped = arr[i];
+    return `<div class="rung-row ${shipped?"shipped":""}" data-i="${i}">
+      <div class="circ"></div>
+      <div class="txt">${esc(pt)}</div>
+    </div>`;
+  }).join("");
+  Array.from(rungsEl.querySelectorAll(".rung-row")).forEach(row => {
+    const i = Number(row.dataset.i);
+    // Ship IMMEDIATELY on click for an unshipped rung — no dblclick guard needed for
+    // that direction (a fast double-tap on an unshipped rung was previously swallowed
+    // by the guard). Debounce only on the SHIPPED direction so a dblclick can unmark.
+    let clickTimer = null;
+    row.addEventListener("click", () => {
+      if (!state.rungs[seg.cue][i]){
+        // unshipped -> shipped: instant, no dopamine flourish
+        state.rungs[seg.cue][i] = true;
+        saveRungs();
+        renderCenterStage(); renderBookshelf(); renderMeta();
+        return;
+      }
+      // shipped: schedule an unmark unless a second click cancels it (dblclick guard)
+      if (clickTimer){ clearTimeout(clickTimer); clickTimer = null; return; }
+      clickTimer = setTimeout(() => { clickTimer = null; }, 260);
+    });
+    row.addEventListener("dblclick", () => {
+      if (clickTimer){ clearTimeout(clickTimer); clickTimer = null; }
+      if (state.rungs[seg.cue][i]){
+        state.rungs[seg.cue][i] = false;
+        saveRungs();
+        renderCenterStage(); renderBookshelf(); renderMeta();
+      }
+    });
+  });
+  $("#cs-never").textContent = seg.never_say || "";
+  $("#cs-fence").textContent = seg.fence_line || "";
+  $("#cs-silence").textContent = DATA.silence_line || "";
+  // pulse the HONEST row that matches this segment's fence family
+  pulseHonestRow(seg);
+}
+
+function bindHint(){
+  $("#cs-hint-x").onclick = () => { localStorage.setItem(KEYS.HINT, "1"); $("#cs-hint").style.display = "none"; };
+}
+
+function renderHonest(){
+  $("#honest-f1").textContent = DATA.f1_fence_verbatim || "";
+  $("#honest-tbody").innerHTML = (DATA.honest_rows || []).map((r,i) =>
+    `<tr data-i="${i}"><td class="s">${esc(r.say)}</td><td class="n">${esc(r.never)}</td></tr>`).join("");
+}
+function pulseHonestRow(seg){
+  // Deterministic: read the segment's own honest_row_ix (an int index into
+  // honest_rows). No keyword heuristic — the fence row a segment lands in
+  // is a design decision, not a substring match. Falls back to no pulse
+  // if the segment does not declare a row.
+  const rows = Array.from($$("#honest-tbody tr"));
+  rows.forEach(r => r.classList.remove("pulse"));
+  const ix = (typeof seg.honest_row_ix === "number") ? seg.honest_row_ix : -1;
+  if (ix >= 0 && rows[ix]) rows[ix].classList.add("pulse");
+}
+
+function renderTrue(){
+  const el = $("#true-list");
+  el.innerHTML = (DATA.canonical_facts || []).map((f,i) =>
+    `<div class="true-pill" data-fact="${esc(f)}" tabindex="0" role="button" aria-label="copy fact">${esc(f)}</div>`).join("");
+  Array.from(el.querySelectorAll(".true-pill")).forEach(pill => {
+    pill.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(pill.dataset.fact);
+        pill.classList.add("copied");
+        const prev = pill.textContent;
+        setTimeout(() => { pill.classList.remove("copied"); }, 1500);
+      } catch(_){}
+    };
+  });
+}
+
+function renderAspirations(){
+  const el = $("#aspirations-list");
+  el.innerHTML = (DATA.aspirations || []).map(q =>
+    `<div class="q">"${esc(q.text)}"<div class="who">— ${esc(q.source)}</div></div>`).join("");
+}
+
+function renderBeforeLeave(){
+  const nm = $("#not-medical");
+  if (nm) nm.textContent = DATA.not_medical_advice || "These are broadcast conventions and calming rituals, not medical advice.";
+  $("#body-list").innerHTML = (DATA.body_care || []).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#signal-list").innerHTML = (DATA.hand_signals || []).map(s => `<li><b>${esc(s.signal)}</b> — ${esc(s.means)}</li>`).join("");
+  $("#pre-list").innerHTML = (DATA.pre_live_ritual || []).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#post-list").innerHTML = (DATA.post_live_ritual || []).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#wrong-list").innerHTML = (DATA.if_it_goes_wrong || []).map(w =>
+    `<div style="margin:8px 0"><div class="quiet" style="font-size:13px">When: ${esc(w.when)}</div><div style="color:var(--ink);font-size:14px;margin-top:2px">Do: ${esc(w.do)}</div></div>`).join("");
+  $("#allowed-line").textContent = DATA.allowed_to_stop_line || "";
+  $("#math-primer").innerHTML = (DATA.math_primer || []).map((p,i) =>
+    `<p style="color:var(--ink);font-size:14px;line-height:1.7;margin:10px 0"><span class="gold mono">§${i+1}</span> ${esc(p)}</p>`).join("");
+  // saved contacts
+  const w = localStorage.getItem(KEYS.WATCH) || "";
+  const e = localStorage.getItem(KEYS.EMERG) || "";
+  $("#contact-watcher").value = w; $("#contact-emergency").value = e;
+  $("#contact-watcher").onchange = (ev) => localStorage.setItem(KEYS.WATCH, ev.target.value);
+  $("#contact-emergency").onchange = (ev) => localStorage.setItem(KEYS.EMERG, ev.target.value);
+}
+
+function renderDeskSheet(){
+  $("#desk-not-medical").textContent = DATA.not_medical_advice || "";
+  $("#desk-f1").textContent = DATA.f1_fence_verbatim || "";
+  $("#desk-fallback").textContent = DATA.recovery_fallback_line || "";
+  $("#desk-allowed").textContent = DATA.allowed_to_stop_line || "";
+  $("#desk-silence").textContent = DATA.silence_line || "";
+  $("#desk-signals").innerHTML = (DATA.hand_signals || []).map(s => `<li><b>${esc(s.signal)}</b> — ${esc(s.means)}</li>`).join("");
+  $("#desk-body").innerHTML = (DATA.body_care || []).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#desk-facts").innerHTML = (DATA.canonical_facts || []).map(f => `<li>${esc(f)}</li>`).join("");
+  $("#desk-pre").innerHTML = (DATA.pre_live_ritual || []).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#desk-post").innerHTML = (DATA.post_live_ritual || []).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#desk-wrong").innerHTML = (DATA.if_it_goes_wrong || []).map(w =>
+    `<div style="margin:4pt 0"><b>When ${esc(w.when)}:</b> ${esc(w.do)}</div>`).join("");
+  $("#desk-watcher").textContent = localStorage.getItem(KEYS.WATCH) || "________________________";
+  $("#desk-emergency").textContent = localStorage.getItem(KEYS.EMERG) || "________________________";
+}
+
+// ============================================================================
+// LOST MODAL — 800ms of blank calm before content, per critic (forced breath)
+// ============================================================================
+function bindLostModal(){
+  const bg = $("#lost-modal-bg"), waiting = $("#lost-waiting"), content = $("#lost-content");
+  $("#lost-pill").onclick = () => openLost();
+  bg.addEventListener("click", (e) => { if (e.target === bg) closeLost(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && bg.classList.contains("on")) closeLost(); });
+}
+function openLost(){
+  const bg = $("#lost-modal-bg"), waiting = $("#lost-waiting"), content = $("#lost-content");
+  content.classList.remove("on"); waiting.style.display = "block";
+  bg.classList.add("on");
+  const seg = segOf(state.current);
+  const unshipped = (seg.points || []).map((pt, i) => ({ pt, i, done: (state.rungs[seg.cue]||[])[i] })).filter(x => !x.done).slice(0, 3);
+  setTimeout(() => {
+    waiting.style.display = "none";
+    content.classList.add("on");
+    content.innerHTML = `
+      <h3>You are here.</h3>
+      <div class="cue-line"><span class="mono gold">${esc(seg.cue)}</span> — ${esc(seg.title)}</div>
+
+      <div class="sec">
+        <div class="lbl">The points still ahead on this cue</div>
+        ${unshipped.length ? unshipped.map(u =>
+          `<button class="next-rung" data-i="${u.i}">${esc(u.pt)}</button>`).join("")
+          : `<div class="quiet" style="padding:10px">You have said every point on this cue. When you are ready, click the next cue in the bookshelf on the left.</div>`}
+      </div>
+
+      <div class="sec">
+        <div class="lbl">The fence for this moment</div>
+        <div class="fence-block">${esc(seg.fence_line)}</div>
+      </div>
+
+      <div class="sec">
+        <div class="lbl">The line that keeps you safe on air (F1)</div>
+        <div class="fence-block">${esc(DATA.f1_fence_verbatim)}</div>
+      </div>
+
+      <div class="sec">
+        <div class="lbl">If a hard question comes</div>
+        <div class="fence-block">${esc(DATA.recovery_fallback_line)}</div>
+      </div>
+
+      <div class="sec">
+        <div class="lbl">And remember</div>
+        <div class="fence-block">${esc(DATA.silence_line)}</div>
+      </div>
+
+      <button class="close-btn" id="lost-back">back in.</button>`;
+    Array.from(content.querySelectorAll(".next-rung")).forEach(b => {
+      b.onclick = () => { const i = Number(b.dataset.i); closeLost(); highlightRung(i); };
+    });
+    $("#lost-back").onclick = () => closeLost();
+  }, 800);
+}
+function closeLost(){ $("#lost-modal-bg").classList.remove("on"); }
+function highlightRung(i){
+  setTimeout(() => {
+    const row = document.querySelector(`#cs-rungs .rung-row[data-i="${i}"]`);
+    if (row){ row.scrollIntoView({ behavior: "smooth", block: "center" });
+      row.style.transition = "box-shadow .3s"; row.style.boxShadow = "0 0 0 2px var(--gold)";
+      setTimeout(() => { row.style.boxShadow = ""; }, 2200); }
+  }, 220);
+}
+
+// ============================================================================
+// CLEAR + PRINT
+// ============================================================================
+function bindPersistence(){
+  const link = $("#clear-link"); let armed = false;
+  link.onclick = () => {
+    if (!armed){ armed = true; link.textContent = "click again to clear. contacts and body-block stay."; setTimeout(() => { armed = false; link.textContent = "clear my marks now"; }, 5000); return; }
+    localStorage.removeItem(KEYS.RUNGS); localStorage.removeItem(KEYS.CUR); localStorage.removeItem(KEYS.HINT);
+    for (const seg of DATA.segments) state.rungs[seg.cue] = new Array(seg.points.length).fill(false);
+    state.current = (DATA.segments[0]||{}).cue || "0.0";
+    saveRungs(); setCurrent(state.current);
+    armed = false; link.textContent = "clear my marks now";
+    paintAll();
+  };
+  $("#print-btn").onclick = () => { renderDeskSheet(); window.print(); };
+}
+
+// ============================================================================
+// PAINT-ALL
+// ============================================================================
+function paintAll(){
+  renderGreeting(); renderMeta(); renderBookshelf(); renderCenterStage();
+}
+
+// ============================================================================
+// BOOT
+// ============================================================================
+(async function boot(){
+  midnightClearIfNewDay();
+  bindSleepGate();
+  await loadData();
+  checkSleepGate();
+  if (DATA_LOAD_FAILED){
+    // Data file did not load. Show a visible honest fallback panel with the F1 +
+    // fallback line + silence line — do NOT let the room silently paint blank.
+    renderDataFallback();
+    bindPersistence(); // still allow print of an empty desk sheet with the fences
+    return;
+  }
+  initRungs();
+  bindBreath();
+  bindHint();
+  bindLostModal();
+  bindPersistence();
+  renderHonest(); renderTrue(); renderAspirations(); renderBeforeLeave();
+  paintAll();
+})();
+</script>
+</body>
+</html>

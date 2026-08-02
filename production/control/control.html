@@ -1,0 +1,543 @@
+<!--
+  UNI Production Platform - STANDALONE reference operator control page (the pedalboard).
+
+  DESIGN/REFERENCE, not deployed. A plain HTML/JS page that drives the production MCP
+  (uni-production-mcp) directly over /prod-mcp (nginx -> 127.0.0.1:8095) so you can operate
+  a show before the Phoenix /control LiveView route exists. 2D / CSS only - no WebGL, no
+  build step, no npm. Every action is one MCP tools/call (audited + session-gated).
+
+  TODO before use (the two things this page deliberately leaves blank):
+    1. MCP_BASE  - the endpoint base. Default '/prod-mcp' assumes this page is served behind
+                   the same nginx that proxies the MCP. For a different host set it below or
+                   append ?base=https://host/prod-mcp to the URL.
+    2. BEARER    - the operator token. NEVER hard-code it in this file. Paste it into the
+                   "operator token" box at the top (kept only in memory for this tab), or
+                   front this page with an auth proxy that injects Authorization. The token
+                   is the operator pre-authorization; the producer agent never holds it.
+
+  Honesty: read tools refresh the panel from the MCP; the page keeps no private show state.
+  The program preview shows a STALE ribbon when broadcast.json stops refreshing - it never
+  fakes a live frame. Outward verbs (go-live/stop/admit/schedule) always show approval-pending
+  and cannot be self-approved here.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNI Producer - Operator Control (reference)</title>
+<style>
+  :root {
+    --bg:#05070b; --panel:#0b0e14; --panel2:#11151f; --line:#1f2430; --ink:#cdd6f4;
+    --muted:#6c7393; --accent:#89b4fa; --gold:#f9e2af; --ok:#a6e3a1; --warn:#fab387;
+    --crit:#f38ba8; --gate:#eba0ac;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, sans-serif; }
+  header { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--panel);
+    border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header .title { font-weight:700; letter-spacing:.5px; }
+  header .spacer { flex:1; }
+  .pill { padding:3px 10px; border-radius:999px; border:1px solid var(--line); font-size:12px; }
+  .pill.session-closed { color:var(--muted); }
+  .pill.session-open { color:var(--gold); border-color:var(--gold); }
+  .pill.onair-live { color:#fff; background:var(--crit); border-color:var(--crit); font-weight:700;
+    animation:pulse 1.2s infinite alternate; }
+  @keyframes pulse { from{opacity:.6} to{opacity:1} }
+  input.token { background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+    border-radius:6px; padding:5px 8px; width:230px; font:inherit; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; padding:12px; align-items:start; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  .card h3 { margin:0 0 8px; font-size:12px; letter-spacing:1px; color:var(--accent); text-transform:uppercase; }
+  .preview { position:relative; aspect-ratio:16/9; background:#000; border-radius:8px; overflow:hidden; }
+  .preview iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .stale { position:absolute; top:8px; left:8px; background:rgba(11,14,20,.85); color:var(--warn);
+    padding:3px 8px; border-radius:4px; font-size:12px; }
+  .chips { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .chip { background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:3px 9px; font-size:12px; color:var(--muted); }
+  .chip b { color:var(--ink); }
+  .btns { display:flex; gap:6px; flex-wrap:wrap; }
+  button { background:var(--panel2); color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:8px 12px; cursor:pointer; font:inherit; min-height:40px; }
+  button:hover { background:#1a2030; }
+  button.on { border-color:var(--gold); color:var(--gold); }
+  button.gated { border-color:var(--gate); color:var(--gate); }
+  button.gated::before { content:"\01F512  "; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .row { display:flex; align-items:center; gap:10px; margin:8px 0; }
+  .row label { color:var(--muted); min-width:70px; }
+  input[type=range] { flex:1; accent-color:var(--gold); }
+  input[type=text], textarea, select { background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+    border-radius:6px; padding:6px 8px; font:inherit; }
+  textarea { width:100%; min-height:54px; resize:vertical; }
+  select { min-height:36px; }
+  .clip { display:flex; align-items:center; gap:8px; padding:6px 0; border-top:1px solid var(--line); font-size:13px; }
+  .clip:first-of-type { border-top:0; }
+  .clip .meta { color:var(--muted); }
+  .clip .grow { flex:1; }
+  .glist { display:flex; flex-direction:column; gap:6px; }
+  .guest { display:flex; align-items:center; gap:8px; background:var(--panel2); border:1px solid var(--line);
+    border-radius:6px; padding:6px 8px; }
+  .guest .grow { flex:1; }
+  .badge { font-size:11px; color:var(--warn); }
+  .approvals { padding:8px 12px; background:rgba(235,160,172,.08); border:1px solid var(--gate); border-radius:8px;
+    margin:0 12px 12px; font-size:13px; color:var(--gate); display:none; }
+  .approvals.show { display:block; }
+  footer { display:flex; gap:10px; align-items:center; padding:10px 14px; background:var(--panel);
+    border-top:1px solid var(--line); position:sticky; bottom:0; }
+  footer .heard { flex:1; color:var(--muted); font-size:13px; }
+  footer input.cmd { flex:2; }
+  .audit { font-size:12px; color:var(--muted); }
+  .ov-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .ov-grid input { width:100%; }
+  .full { grid-column:1 / -1; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="title">UNI Producer - Operator Control</span>
+  <span id="sessionPill" class="pill session-closed">session: CLOSED</span>
+  <button id="sessionBtn">Open live session</button>
+  <span class="spacer"></span>
+  <span id="onairPill" class="pill">ON-AIR: --</span>
+  <span id="clock" class="chip"></span>
+  <input id="token" class="token" type="password" placeholder="operator token (memory only)" />
+</header>
+
+<div id="approvals" class="approvals"></div>
+
+<div class="grid">
+
+  <!-- LEFT COLUMN -->
+  <div>
+    <div class="card">
+      <h3>Program preview</h3>
+      <div class="preview">
+        <!-- TODO: point at the real program-preview / overlays composite URL -->
+        <iframe id="prog" src="" title="program preview"></iframe>
+        <div id="stale" class="stale" style="display:none">STALE - broadcast.json not refreshing</div>
+      </div>
+      <div class="chips">
+        <span class="chip">scene <b id="sceneChip">-</b></span>
+        <span class="chip">now <b id="nowChip">-</b></span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Scene / cut</h3>
+      <div class="btns" id="scenes"></div>
+      <div class="row">
+        <label>transition</label>
+        <select id="trans"><option value="cut">cut</option><option value="fade" selected>fade</option></select>
+        <label>ms</label>
+        <input id="ms" type="text" value="400" style="width:70px" />
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Audio</h3>
+      <div class="row">
+        <label>music</label>
+        <input id="music" type="range" min="0" max="1" step="0.01" value="0.18" />
+        <span id="musicVal" class="chip">0.18</span>
+      </div>
+      <div class="btns"><button id="duck">duck: off</button></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Narrate</h3>
+      <div class="row">
+        <label>lang</label>
+        <select id="narrLang"></select>
+        <label>voice</label>
+        <select id="narrVoice"><option value="">auto</option></select>
+      </div>
+      <textarea id="narrText" placeholder="text to narrate (Hindi in Devanagari, English in Latin)..."></textarea>
+      <div class="btns" style="margin-top:8px"><button id="narrBtn">Narrate</button></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Broadcast (human-gated)</h3>
+      <div class="btns">
+        <button id="goLive" class="gated">GO LIVE - YouTube</button>
+        <button id="stopLive" class="gated" disabled>STOP</button>
+      </div>
+      <p class="audit" id="bcastState">state: idle</p>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div>
+    <div class="card">
+      <h3>Run-of-show</h3>
+      <div class="btns" id="segments"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Guest green room</h3>
+      <div class="row"><label>green-room</label></div>
+      <div class="glist" id="greenRoom"></div>
+      <div class="row"><label>on-air</label></div>
+      <div class="glist" id="onAirGuests"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Overlay editors</h3>
+      <div class="ov-grid">
+        <input id="ltKicker" type="text" placeholder="lower-third kicker (e.g. UNI EXPERT)" />
+        <input id="ltTitle" type="text" placeholder="title (e.g. Dr. A. Rivera)" />
+        <input id="ltSub" class="full" type="text" placeholder="subtitle (e.g. Trauma & the nervous system)" />
+        <div class="btns full">
+          <select id="ltTone"><option>ok</option><option>warn</option><option>crit</option><option>unknown</option></select>
+          <button data-ov="lowerThird" data-vis="true">show lower-third</button>
+          <button data-ov="lowerThird" data-vis="false">hide</button>
+        </div>
+      </div>
+      <div class="ov-grid" style="margin-top:8px">
+        <input id="tkText" class="full" type="text" placeholder="ticker item text" />
+        <div class="btns full">
+          <button id="tkAdd">add ticker item</button>
+          <button id="tkClear">clear ticker</button>
+        </div>
+      </div>
+      <div class="ov-grid" style="margin-top:8px">
+        <input id="tiKicker" type="text" placeholder="title kicker" />
+        <input id="tiText" type="text" placeholder="title text" />
+        <input id="tiSub" class="full" type="text" placeholder="title subtitle" />
+        <div class="btns full">
+          <button data-ov="title" data-vis="true">show title</button>
+          <button data-ov="title" data-vis="false">hide</button>
+        </div>
+      </div>
+      <div class="ov-grid" style="margin-top:8px">
+        <select id="capLang"></select>
+        <input id="capText" type="text" placeholder="caption override line" />
+        <div class="btns full">
+          <button data-ov="caption" data-vis="true">show caption</button>
+          <button data-ov="caption" data-vis="false">hide</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Clip browser (catalog.json)</h3>
+      <div class="row">
+        <label>filter</label>
+        <select id="clipLang"><option value="">all</option></select>
+        <input id="clipQ" type="text" placeholder="search title / id" />
+      </div>
+      <div id="clips"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <button id="mic">mic: off</button>
+  <span class="heard" id="heard">voice idle</span>
+  <input id="cmd" class="cmd" type="text" placeholder="type a command (LLM -> MCP)..." />
+  <button id="cmdSend">Send</button>
+  <span class="audit" id="audit">audit: -</span>
+</footer>
+
+<script>
+"use strict";
+// ---------------------------------------------------------------------------
+// Config (the two TODOs). MCP_BASE defaults to the same-origin nginx /prod-mcp.
+// ---------------------------------------------------------------------------
+const params = new URLSearchParams(location.search);
+const MCP_BASE = params.get("base") || "/prod-mcp";           // TODO: confirm / override
+const tokenBox = document.getElementById("token");
+const LANGS = ["en","es","fr","it","pt","hi"];                // Piper-configured set
+const SCENES = ["COLONY","GLASS","GUESTS","CLIP","NEWSDESK","TITLE","STANDBY","PIP"];
+// The in-show verbs the live session pre-authorizes (operator pre-auth, NOT self-approval).
+const IN_SHOW = ["cut_to","set_music_volume","duck","narrate","set_overlay","roll_clip","start_segment","set_layout","remove_guest"];
+
+let sessionOpen = false;
+let tickerItems = [];
+let lastBroadcastDryRun = null;
+
+// ---------------------------------------------------------------------------
+// The ONE way this page affects the show: a single MCP tools/call.
+// ---------------------------------------------------------------------------
+async function mcp(name, args = {}) {
+  const bearer = tokenBox.value.trim();
+  const res = await fetch(MCP_BASE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // TODO: the bearer is the operator pre-authorization; kept in memory only, never stored.
+      ...(bearer ? { "Authorization": "Bearer " + bearer } : {})
+    },
+    body: JSON.stringify({ method: "tools/call", params: { name, arguments: args } })
+  });
+  let env;
+  try { env = await res.json(); } catch (e) { env = { error: "non-json response (" + res.status + ")" }; }
+  if (env && env.audit_id) setAudit(env.audit_id, name);
+  // Gated tools come back as approval-pending, not success.
+  if (env && env.request_id && env.status !== "approved") onApprovalPending(name, env.request_id);
+  return env || {};
+}
+
+function setAudit(id, name) {
+  document.getElementById("audit").textContent = "audit: " + id + " (" + name + ")";
+}
+
+// ---------------------------------------------------------------------------
+// Read poll: the panel state comes from the MCP, never a private copy here.
+// ---------------------------------------------------------------------------
+async function refresh() {
+  try {
+    const show = await mcp("get_show_state");
+    renderShow(show);
+    const clips = (await mcp("list_clips")).clips || [];
+    renderClips(clips);
+    const segs = (await mcp("list_segments")).segments || [];
+    renderSegments(segs);
+    const guests = await mcp("list_guests");
+    renderGuests(guests);
+    const appr = (await mcp("approvals_pending")).pending || [];
+    renderApprovals(appr);
+  } catch (e) {
+    // Honest: if the MCP is unreachable, show it - do not fake state.
+    document.getElementById("stale").style.display = "block";
+    document.getElementById("stale").textContent = "MCP unreachable - panel state unknown";
+  }
+}
+
+function renderShow(show) {
+  document.getElementById("sceneChip").textContent = (show && show.scene) || "-";
+  document.getElementById("nowChip").textContent = (show && show.nowPlaying && show.nowPlaying.segment) || "-";
+  const onAir = !!(show && show.onAir);
+  const op = document.getElementById("onairPill");
+  op.textContent = onAir ? "ON AIR" : "ON-AIR: --";
+  op.className = "pill" + (onAir ? " onair-live" : "");
+  document.getElementById("stopLive").disabled = !onAir;
+  // staleness from broadcast.json.updatedUtc (honest STALE marker, never a fake frame)
+  const stale = !show || !show.updatedUtc || (Date.now() - Date.parse(show.updatedUtc)) > 5000;
+  document.getElementById("stale").style.display = stale ? "block" : "none";
+  // music read-back
+  if (show && show.music) {
+    const m = document.getElementById("music"); m.value = show.music.volume ?? m.value;
+    document.getElementById("musicVal").textContent = (show.music.volume ?? 0).toFixed(2);
+    const d = document.getElementById("duck"); d.textContent = "duck: " + (show.music.ducked ? "ON" : "off");
+    d.classList.toggle("on", !!show.music.ducked);
+  }
+  // highlight live scene
+  [...document.querySelectorAll("#scenes button")].forEach(b =>
+    b.classList.toggle("on", show && b.dataset.scene === show.scene));
+}
+
+function renderClips(clips) {
+  const langFilter = document.getElementById("clipLang").value;
+  const q = document.getElementById("clipQ").value.toLowerCase();
+  const host = document.getElementById("clips");
+  host.innerHTML = "";
+  clips
+    .filter(c => !langFilter || c.lang === langFilter)
+    .filter(c => !q || (c.clipId + " " + (c.title||"")).toLowerCase().includes(q))
+    .forEach(c => {
+      const row = document.createElement("div"); row.className = "clip";
+      row.innerHTML = `<b>${c.clipId}</b><span class="grow">${c.title || ""}</span>` +
+        `<span class="meta">${c.lang || "?"} - ${c.duration || "?"}${c.aspect === "9:16" ? " - 9:16" : ""}</span>`;
+      const btn = document.createElement("button"); btn.textContent = "roll";
+      btn.onclick = () => mcp("roll_clip", { clipId: c.clipId, mode: "cut" });
+      row.appendChild(btn); host.appendChild(row);
+    });
+  // populate the lang filter once
+  const sel = document.getElementById("clipLang");
+  if (sel.options.length <= 1) LANGS.forEach(l => sel.add(new Option(l, l)));
+}
+
+function renderSegments(segs) {
+  const host = document.getElementById("segments"); host.innerHTML = "";
+  const list = segs.length ? segs : [
+    {template:"News-desk"},{template:"Interview"},{template:"Panel"},{template:"Explainer"},
+    {template:"Colony-Live"},{template:"Film"},{template:"Q&A"},{template:"Green-room"}];
+  list.forEach(s => {
+    const b = document.createElement("button"); b.textContent = s.template;
+    b.onclick = () => mcp("start_segment", { template: s.template, params: {} });
+    host.appendChild(b);
+  });
+}
+
+function renderGuests(g) {
+  const gr = document.getElementById("greenRoom"); gr.innerHTML = "";
+  (g && g.green_room || []).forEach(x => gr.appendChild(guestRow(x, true)));
+  const oa = document.getElementById("onAirGuests"); oa.innerHTML = "";
+  (g && g.on_air || []).forEach(x => oa.appendChild(guestRow(x, false)));
+}
+
+function guestRow(x, inGreenRoom) {
+  const el = document.createElement("div"); el.className = "guest";
+  el.innerHTML = `<span class="grow">${x.name || x.guestId}</span>` +
+    (x.pending ? `<span class="badge">admit pending</span>` : "");
+  if (inGreenRoom) {
+    const admit = document.createElement("button"); admit.className = "gated"; admit.textContent = "admit";
+    admit.onclick = () => mcp("admit_guest", { guestId: x.guestId });   // human-gated
+    el.appendChild(admit);
+  }
+  const rm = document.createElement("button"); rm.textContent = "remove";
+  rm.onclick = () => mcp("remove_guest", { guestId: x.guestId });
+  el.appendChild(rm);
+  return el;
+}
+
+// ---------------------------------------------------------------------------
+// Approval inbox (observe-only): the page can SEE the queue, never decide it.
+// ---------------------------------------------------------------------------
+function renderApprovals(pending) {
+  const box = document.getElementById("approvals");
+  if (!pending.length) { box.classList.remove("show"); box.textContent = ""; return; }
+  box.classList.add("show");
+  box.textContent = "Approval pending (" + pending.length + "): " +
+    pending.map(p => `${p.tool} [${p.request_id}]`).join(", ") +
+    " - approve via the uni-approve queue (a human, not this page).";
+}
+
+function onApprovalPending(tool, requestId) {
+  const box = document.getElementById("approvals");
+  box.classList.add("show");
+  box.textContent = `Approval pending: ${tool} [${requestId}] - waiting for a human in the uni-approve queue.`;
+  // poll status (read-only) until resolved; no auto-retry on deny.
+  const poll = setInterval(async () => {
+    const st = await mcp("approvals_status", { request_id: requestId });
+    if (st && (st.decision === "approved" || st.decision === "denied" || st.decision === "timeout")) {
+      clearInterval(poll);
+      box.textContent = `${tool} [${requestId}]: ${st.decision}.`;
+      if (st.decision !== "approved") box.textContent += " (no auto-retry)";
+    }
+  }, 2000);
+}
+
+// ---------------------------------------------------------------------------
+// Build static controls + wire events
+// ---------------------------------------------------------------------------
+function buildScenes() {
+  const host = document.getElementById("scenes");
+  SCENES.forEach(s => {
+    const b = document.createElement("button"); b.textContent = s; b.dataset.scene = s;
+    b.onclick = () => mcp("cut_to", {
+      scene: s,
+      transition: document.getElementById("trans").value,
+      ms: parseInt(document.getElementById("ms").value, 10) || 0
+    });
+    host.appendChild(b);
+  });
+}
+
+function buildLangPickers() {
+  ["narrLang","capLang"].forEach(id => {
+    const sel = document.getElementById(id);
+    LANGS.forEach(l => sel.add(new Option(l, l)));
+  });
+}
+
+function wire() {
+  // session
+  document.getElementById("sessionBtn").onclick = async () => {
+    sessionOpen = !sessionOpen;
+    // One human act: set the operator autoapprove allowlist scoped to in-show verbs.
+    await mcp(sessionOpen ? "open_session" : "close_session", sessionOpen ? { verbs: IN_SHOW } : {});
+    const pill = document.getElementById("sessionPill");
+    pill.textContent = "session: " + (sessionOpen ? "OPEN" : "CLOSED");
+    pill.className = "pill " + (sessionOpen ? "session-open" : "session-closed");
+    document.getElementById("sessionBtn").textContent = sessionOpen ? "Close live session" : "Open live session";
+  };
+
+  // audio
+  const music = document.getElementById("music");
+  music.oninput = () => document.getElementById("musicVal").textContent = (+music.value).toFixed(2);
+  music.onchange = () => mcp("set_music_volume", { level: +music.value });
+  document.getElementById("duck").onclick = (e) =>
+    mcp("duck", { on: !e.target.classList.contains("on") });
+
+  // narrate
+  document.getElementById("narrBtn").onclick = () => {
+    const text = document.getElementById("narrText").value.trim();
+    if (!text) return;
+    mcp("narrate", { text, lang: document.getElementById("narrLang").value,
+      voice: document.getElementById("narrVoice").value || undefined });
+  };
+
+  // overlays (payloads match broadcast.schema.json exactly)
+  document.querySelectorAll("[data-ov]").forEach(btn => {
+    btn.onclick = () => {
+      const layer = btn.dataset.ov, visible = btn.dataset.vis === "true";
+      mcp("set_overlay", { layer, payload: overlayPayload(layer, visible) });
+    };
+  });
+  document.getElementById("tkAdd").onclick = () => {
+    const t = document.getElementById("tkText").value.trim(); if (!t) return;
+    tickerItems.push({ text: t, tone: "ok" }); document.getElementById("tkText").value = "";
+    mcp("set_overlay", { layer: "ticker", payload: tickerItems });
+  };
+  document.getElementById("tkClear").onclick = () => {
+    tickerItems = []; mcp("set_overlay", { layer: "ticker", payload: [] });
+  };
+
+  // broadcast (human-gated + 2-step dry-run->confirm)
+  document.getElementById("goLive").onclick = async () => {
+    const st = document.getElementById("bcastState");
+    if (!lastBroadcastDryRun) {
+      const env = await mcp("start_broadcast", { target: "youtube", dryRun: true });
+      lastBroadcastDryRun = env;
+      st.textContent = "state: dry-run ok - click GO LIVE again to CONFIRM";
+    } else {
+      await mcp("start_broadcast", { target: "youtube", confirm: true });
+      lastBroadcastDryRun = null;
+      st.textContent = "state: confirm sent - awaiting human approval";
+    }
+  };
+  document.getElementById("stopLive").onclick = () => mcp("stop_broadcast", { confirm: true });
+
+  // clip filter
+  document.getElementById("clipQ").oninput = () => refresh();
+  document.getElementById("clipLang").onchange = () => refresh();
+
+  // text command box (LLM -> MCP). The page POSTs the free text to the MCP's intent path;
+  // the MCP/producer maps it to a tool call (same gating). TODO: confirm the intent tool name.
+  document.getElementById("cmdSend").onclick = () => {
+    const text = document.getElementById("cmd").value.trim(); if (!text) return;
+    mcp("command", { text });   // free-text intent; see voice-intents.md (LLM fallback path)
+    document.getElementById("cmd").value = "";
+  };
+
+  // mic (voice path is fully specified in voice-intents.md; this is the stub toggle)
+  document.getElementById("mic").onclick = (e) => {
+    const on = e.target.textContent.endsWith("off");
+    e.target.textContent = "mic: " + (on ? "on" : "off");
+    document.getElementById("heard").textContent = on
+      ? "listening (STT -> intent -> MCP; see voice-intents.md)"
+      : "voice idle";
+    // TODO: wire Web Speech / whisper capture here per voice-intents.md.
+  };
+}
+
+function overlayPayload(layer, visible) {
+  if (layer === "lowerThird") return {
+    visible, kicker: val("ltKicker"), title: val("ltTitle"), subtitle: val("ltSub"), tone: val("ltTone") || "ok" };
+  if (layer === "title") return {
+    visible, kicker: val("tiKicker"), text: val("tiText"), subtitle: val("tiSub"), tone: "ok" };
+  if (layer === "caption") return {
+    visible, lang: val("capLang") || "en", text: val("capText") };
+  return { visible };
+}
+const val = (id) => document.getElementById(id).value;
+
+// world clock strip (Intl, tabular nums - matches the overlay clock technique)
+function tickClock() {
+  const z = ["UTC","America/Chicago","Europe/London","Asia/Kolkata"];
+  document.getElementById("clock").textContent = z.map(tz =>
+    tz.split("/").pop().slice(0,3) + " " +
+    new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit" }).format(new Date())
+  ).join("  ");
+}
+
+// boot
+buildScenes(); buildLangPickers(); wire();
+tickClock(); setInterval(tickClock, 1000);
+refresh(); setInterval(refresh, 1500);   // the MCP is the single source of truth
+</script>
+</body>
+</html>

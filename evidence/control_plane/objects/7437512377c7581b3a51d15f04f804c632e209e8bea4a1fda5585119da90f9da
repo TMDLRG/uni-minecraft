@@ -1,0 +1,191 @@
+PHASE 7 ITEM 7.10 — RED
+date: 2026-07-26
+HEAD: 7a9ac35
+git status --short at capture:
+  ?? docs/receipts/control-plane/phase7_item710_red_2026-07-26.txt
+  ?? test/sp/control_plane/witness_blocked_is_not_passed_test.exs
+cmd: mix test test/sp/control_plane/witness_blocked_is_not_passed_test.exs --seed 0
+======================================================================
+Running ExUnit with seed: 0, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test 7.10 — five readings, and only ONE of them is a pass (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:106
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.readings/0 is undefined or private
+     code: assert Enum.sort(Witness.readings()) ==
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.readings()
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:107: (test)
+
+     warning: SP.ControlPlane.Witness.readings/0 is undefined or private
+     │
+ 107 │     assert Enum.sort(Witness.readings()) ==
+     │                              ~
+     │
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:107:30: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — five readings, and only ONE of them is a pass"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:192:25: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the REAL committed capture is classified, and BLOCKED is reported not hidden"/1
+
+     warning: SP.ControlPlane.Witness.corroborating/0 is undefined or private. Did you mean:
+
+         * corroborate/2
+
+     │
+ 110 │     assert Witness.corroborating() == [:corroborated],
+     │                    ~
+     │
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:110:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — five readings, and only ONE of them is a pass"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:194:25: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the REAL committed capture is classified, and BLOCKED is reported not hidden"/1
+
+     warning: SP.ControlPlane.Witness.reading/2 is undefined or private
+     │
+ 117 │     assert Witness.reading(capture(%{}), at("2026-07-26T09:05:00Z")) == :corroborated
+     │                    ~
+     │
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:117:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — a fresh capture that was read and refused the writer IS corroboration"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:123:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 FALSIFIER — an UNREACHABLE custodian is BLOCKED, never a pass"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:130:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 FALSIFIER — a STALE capture is BLOCKED, even though it says it was corroborated"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:133:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 FALSIFIER — a STALE capture is BLOCKED, even though it says it was corroborated"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:143:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — unreachable and compromised are OPPOSITE findings and must never collapse"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:144:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — unreachable and compromised are OPPOSITE findings and must never collapse"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:146:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — unreachable and compromised are OPPOSITE findings and must never collapse"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:146:57: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — unreachable and compromised are OPPOSITE findings and must never collapse"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:154:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — no off-box custodian at all reads as :absent, not as unreachable"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:163:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — a capture may not claim to be a witness when the reading refuses it"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:175:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the freshness bound is declared, not hidden in an inequality"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:176:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the freshness bound is declared, not hidden in an inequality"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:180:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — a capture from the FUTURE is not fresh; it is unusable"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:190:17: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the REAL committed capture is classified, and BLOCKED is reported not hidden"/1
+
+     warning: SP.ControlPlane.Witness.freshness_seconds/0 is undefined or private
+     │
+ 170 │     assert Witness.freshness_seconds() > 0
+     │                    ~
+     │
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:170:20: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the freshness bound is declared, not hidden in an inequality"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:173:61: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the freshness bound is declared, not hidden in an inequality"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:199:33: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the REAL committed capture is classified, and BLOCKED is reported not hidden"/1
+
+     warning: SP.ControlPlane.Witness.two_domain_claim/2 is undefined or private
+     │
+ 210 │     assert {:error, reason} = Witness.two_domain_claim(capture(%{}), stale_now),
+     │                                       ~
+     │
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:210:39: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 FALSIFIER — corroboration across two domains is REFUSED unless the off-box reading supports it"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:215:45: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 FALSIFIER — corroboration across two domains is REFUSED unless the off-box reading supports it"/1
+     └─ test/sp/control_plane/witness_blocked_is_not_passed_test.exs:219:35: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the claim never strengthens past tamper_evident, whatever the reading"/1
+
+
+
+  2) test 7.10 — a fresh capture that was read and refused the writer IS corroboration (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:116
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(capture(%{}), at("2026-07-26T09:05:00Z")) == :corroborated
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => true, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:117: (test)
+
+
+
+  3) test 7.10 FALSIFIER — an UNREACHABLE custodian is BLOCKED, never a pass (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:120
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(c, at("2026-07-26T09:05:00Z")) == :blocked_unreachable
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => false, "qualifies_as_witness" => false, "refusal" => nil, "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:123: (test)
+
+
+
+  4) test 7.10 FALSIFIER — a STALE capture is BLOCKED, even though it says it was corroborated (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:127
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(fresh, at("2026-07-26T09:05:00Z")) == :corroborated,
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => true, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:130: (test)
+
+
+
+  5) test 7.10 — unreachable and compromised are OPPOSITE findings and must never collapse (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:137
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(unreachable, now) == :blocked_unreachable
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => false, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:143: (test)
+
+
+
+  6) test 7.10 — no off-box custodian at all reads as :absent, not as unreachable (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:151
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(c, at("2026-07-26T09:05:00Z")) == :absent,
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "git", "id" => "git"}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:154: (test)
+
+
+
+  7) test 7.10 — a capture may not claim to be a witness when the reading refuses it (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:160
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(lying, at("2026-07-26T09:05:00Z")) == :blocked_unreachable,
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => false, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:163: (test)
+
+
+
+  8) test 7.10 — the freshness bound is declared, not hidden in an inequality (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:168
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.freshness_seconds/0 is undefined or private
+     code: assert is_integer(Witness.freshness_seconds())
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.freshness_seconds()
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:169: (test)
+
+
+
+  9) test 7.10 — a capture from the FUTURE is not fresh; it is unusable (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:179
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: assert Witness.reading(capture(%{}), at("2026-07-26T08:00:00Z")) == :stale,
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => true, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 08:00:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:180: (test)
+
+
+
+ 10) test 7.10 — the REAL committed capture is classified, and BLOCKED is reported not hidden (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:186
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.reading/2 is undefined or private
+     code: r = Witness.reading(c, now)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.reading(%{"captured_at" => "2026-07-26T03:48:49.410Z", "captured_by" => "witness_probe.cjs@2", "claim_level" => "tamper_evident", "claim_note" => "the off-box refusal is a CURRENT CONFIGURATION FACT, not a structural law; adding the writer's key to that box would end it silently, which is why it is re-measured on every capture", "controls" => [%{"addressed_as" => "uni-lab-lan.uni-lab.local", "box" => "uni-lab", "domain" => "offbox", "id" => "control:chip", "locator" => "ssh uni@uni-lab-lan.uni-lab.local", "port_open" => true, "qualifies_as_witness" => false, "refusal" => nil, "writer_reachable" => true}], "custodians" => [%{"addressed_as" => "10.190.245.149", "box" => "node2", "domain" => "offbox", "id" => "offbox:node2", "locator" => "ssh uni@10.190.245.149", "port_open" => true, "qualifies_as_witness" => true, "refusal" => "uni@10.190.245.149: Permission denied (publickey,password).", "writer_reachable" => false}, %{"branch" => "gen2-runtime", "domain" => "git", "head" => "8c7940cc0cee7eddf89a3bbcde31909936c6ca72", "id" => "git", "locator" => "git -C UNI.Minecraft rev-parse HEAD", "writer_reachable" => true, "writer_reachable_note" => "the writer CAN force-push; a rewrite is VISIBLE and other clones retain the prior history"}], "independent_custodians" => 1, "schema" => "uni.control_plane.witness.v1"}, ~U[2026-07-26 17:03:00.630000Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:190: (test)
+
+
+
+ 11) test 7.10 FALSIFIER — corroboration across two domains is REFUSED unless the off-box reading supports it (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:207
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.two_domain_claim/2 is undefined or private
+     code: assert {:error, reason} = Witness.two_domain_claim(capture(%{}), stale_now),
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.two_domain_claim(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => true, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2027-01-01 00:00:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:210: (test)
+
+
+
+ 12) test 7.10 — the claim never strengthens past tamper_evident, whatever the reading (SP.ControlPlane.WitnessBlockedIsNotPassedTest)
+     test/sp/control_plane/witness_blocked_is_not_passed_test.exs:218
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.two_domain_claim/2 is undefined or private
+     code: assert {:ok, level} = Witness.two_domain_claim(capture(%{}), at("2026-07-26T09:05:00Z"))
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Witness.two_domain_claim(%{"captured_at" => "2026-07-26T09:00:00Z", "custodians" => [%{"domain" => "offbox", "id" => "offbox:node2", "port_open" => true, "qualifies_as_witness" => true, "refusal" => "uni@node2: Permission denied (publickey,password).", "writer_reachable" => false}, %{"domain" => "git", "id" => "git", "writer_reachable" => true}]}, ~U[2026-07-26 09:05:00Z])
+       test/sp/control_plane/witness_blocked_is_not_passed_test.exs:219: (test)
+
+
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+12 tests, 12 failures

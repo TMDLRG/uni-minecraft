@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <rect x="0" y="0" width="14" height="1080" fill="#9a92ee"/>
+  <text x="120" y="122" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3"
+        fill="#9a92ee" font-weight="600">VERBATIM FROM THE SOURCE</text>
+  <text x="120" y="176" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="32" fill="#dfe5ee">One figure in this film is a declared constant. This is its entry, unedited.</text>
+  <rect x="112" y="214" width="1696" height="448" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="140" y="260" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">    expr: () =&gt; 0,</text>
+  <text x="140" y="294" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">    operator_owned: true,</text>
+  <text x="140" y="328" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">    operator_note:</text>
+  <text x="140" y="362" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "THIS TOKEN IS A DECLARED CONSTANT AND THAT IS ITSELF THE ADVERSE RESULT. There</text>
+  <text x="140" y="396" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">is no " +</text>
+  <text x="140" y="430" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "machine-readable register of scientific verdicts to count, so it cannot be</text>
+  <text x="140" y="464" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">measured the way " +</text>
+  <text x="140" y="498" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "every other token here is. Its authority is CLAUDE.md:798 and the operator. It</text>
+  <text x="140" y="532" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">must be " +</text>
+  <text x="140" y="566" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "re-ruled by the operator before any cut renders it, and the moment a verdict</text>
+  <text x="140" y="600" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">register exists " +</text>
+  <text x="140" y="634" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">      "this token becomes an expression like the rest.",</text>
+  <text x="120" y="984" font-family="Consolas,Menlo,monospace" font-size="22" fill="#9aa6b6">lab/film/welcome/qc/tokens.cjs:276-283</text>
+  <text x="120" y="1022" font-family="Consolas,Menlo,monospace" font-size="19" fill="#9aa6b6">sha256 f6fbcfc8803f0b788afb9afa259212417b8655893de09105…</text>
+</svg>

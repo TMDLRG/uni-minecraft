@@ -1,0 +1,197 @@
+# operator-decisions.yaml — the decisions that are the operator's, not an agent's.
+#
+# RESTRICTED CONTROL WORKSPACE. This file lives in a PRIVATE repo and is denylisted from every public
+# build. It records decisions and their consequences; it must never be published.
+#
+# Created 2026-08-01 during Stage 0/1 of the public-documentation release, per the execution prompt
+# returned by Jules. Decisions marked `decided` were given by the operator in his own words, quoted
+# verbatim in `operator_words`. Decisions marked `pending` BLOCK the work named in `blocks`.
+
+status: partial            # some decisions given; publication remains BLOCKED on the rest
+gate_state: BLOCKED
+last_updated: 2026-08-01
+
+decisions:
+
+  # ---------------------------------------------------------------------------------------------
+  # DECIDED
+  # ---------------------------------------------------------------------------------------------
+
+  transcript_archive_disposition:
+    decision: RETAIN_PRIVATE_CLEAN_PUBLIC_SPLIT
+    operator_words: >-
+      "no, it does not need to be in any public repo it MUST be retained.
+       keep all the repos AS IS and private and make NEW public repos that are clean"
+    approved_by: michael
+    approved_at: 2026-08-01
+    legal_or_contract_review: NOT_REQUIRED_BY_THIS_ROUTE
+    rationale: >-
+      The archive never enters a public repository, so the client-contract question that would
+      otherwise require counsel does not arise for the release. It is retained in full, privately.
+    consequences:
+      - NO history rewrite anywhere. No filter-repo, no filter-branch, no force-push, no rebase of
+        published history. THE MOST DANGEROUS OPERATION IN THE PLAN IS REMOVED.
+      - No protected-backup-then-destroy sequence is needed, because nothing is destroyed.
+      - The existing repos are UNTOUCHED and STAY PRIVATE. They remain the working repos.
+      - Public repos are NEW and are initialised EMPTY. They must never be created by cloning,
+        forking, or pushing an existing private repo, because that would carry the contaminated
+        history with it. `git init` in a fresh directory, files copied in as content.
+      - "BLOCKER-1 is resolved BY CONSTRUCTION rather than by remediation, and the gate that proves
+         it changes shape - it must now prove ABSENCE IN A NEW HISTORY, which is a far stronger and
+         cheaper property than proving successful excision from an old one."
+    verification_required:
+      - every public repo's FULL reachable history contains zero objects originating from a private
+        repo's history
+      - no public repo has a remote, ref, tag or note pointing at a private repo
+      - the archive paths are unreachable in every public working tree AND object database
+
+  repository_model:
+    decision: NEW_CLEAN_PUBLIC_REPOS_ALONGSIDE_UNTOUCHED_PRIVATE_ONES
+    operator_words: >-
+      "keep all the repos AS IS and private and make NEW public repos that are clean"
+    approved_by: michael
+    approved_at: 2026-08-01
+    consequences:
+      - "Two-tier estate - PRIVATE working repos (source of truth) + PUBLIC clean repos (published)."
+      - A SYNC MECHANISM is now mandatory and is the central engineering problem of this project.
+        It did not exist under the "publish the existing repo" model.
+      - Every sync is a PUBLICATION EVENT and must pass the safety gate before it lands.
+
+  site_architecture:
+    decision: OWN_VERCEL_SITE_LINKED_FROM_TWO_DOMAINS
+    operator_words: >-
+      "This must be landed fully as its own Vercel site(s) and be accessible through the navigation
+       and exposed through the UniversalNaturalIntelligence.com site and linked from the
+       EducateWright.com site to get people to the UniveralNaturalIntelligence site"
+    approved_by: michael
+    approved_at: 2026-08-01
+    resolves: >-
+      Jules Stage 5 asked for a measured ruling between extending the existing docs engine in place,
+      extracting it, or building separately. The operator chose separately. This also routes around
+      BLOCKER 1 — a new app in a new repo inherits no contaminated history.
+    remaining_question: >-
+      WHICH components of the existing Next.js docs engine are extracted and reused, not WHETHER.
+      Stage 5 measurement continues, narrowed.
+    referral_topology:
+      publish_at: universalnaturalintelligence.com   # exposed through its navigation
+      referral_from: educatewright.com                # links TO the UNI site
+      note: >-
+        BOTH target repos are PRIVATE today and educatewright CARRIES THE ARCHIVE. Linking is a
+        content change to those sites; it does not require publishing them.
+
+# ---------------------------------------------------------------------------------------------
+# STILL PENDING — each one blocks the work named
+# ---------------------------------------------------------------------------------------------
+
+  first_party_licence:
+    decision: null
+    approved_by: null
+    approved_at: null
+    blocks:
+      - "creating any public repo - a repo published without a licence is all-rights-reserved, so
+         nobody may legally use, fork or contribute, which defeats the stated purpose"
+      - the contribution path
+    measured_context: >-
+      0 LICENSE/COPYING/NOTICE files across the release candidates as of 2026-07-31; two package.json
+      declare "private": true. Re-measurement in progress.
+    agent_position: >-
+      NOT MINE TO CHOOSE. I will prepare a comparison of the realistic options and their
+      consequences for contribution, patent grant and downstream reuse when asked.
+
+  public_source_citation_model:
+    decision: null
+    approved_by: null
+    approved_at: null
+    blocks:
+      - the citation system (requirement R3), and therefore most of the site's evidentiary value
+    why_this_is_now_urgent: >-
+      THIS IS THE CONSEQUENCE OF THE NEW-PUBLIC-REPO DECISION AND IT MAY NOT HAVE BEEN OBVIOUS.
+      R3 requires "real source code citation" resolving to repo + commit SHA + path + line range. A
+      citation can only resolve for a reader if THE CITED SOURCE IS IN A PUBLIC REPO. Under the old
+      model the source was the published repo, so this was free. It is no longer free.
+    options:
+      - id: mirror-the-spine-source
+        what: >-
+          The public repos carry the actual cleaned SOURCE of the spine subsystems, synced from the
+          private repos. Citations resolve directly.
+        cost: continuous sync of real code; every sync is a publication event needing the safety gate
+        gives: full evidentiary value; genuine open source; real contribution possible
+      - id: docs-only-with-excerpts
+        what: >-
+          Public repos carry documentation and quoted excerpts only. Citations name a private path
+          and cannot be followed by a reader.
+        cost: low
+        gives: >-
+          WEAK. A citation nobody can open is an appeal to authority, which is the opposite of this
+          estate's evidentiary culture. It would also make "open source" inaccurate.
+      - id: hybrid
+        what: >-
+          Spine subsystems published as real source; everything else documented with unresolvable
+          references EXPLICITLY MARKED as private-source.
+        cost: medium
+        gives: honest, incremental, and matches the spine scope ruling
+    agent_recommendation: >-
+      hybrid, with the private-source marking made visible and machine-checkable so no page can imply
+      an unverifiable claim is verifiable. But the scope of what becomes genuinely open is the
+      operator's call, not mine.
+
+  release_repository_scope:
+    decision: null
+    repositories: []
+    approved_by: null
+    approved_at: null
+    blocks: [the scope ruling, the public repo layout, the sync mechanism]
+    known_exclusions_pending_confirmation:
+      - EmergenceAI/Emergence-World       # third-party, Research-Only licence, not ours
+      - IntelligenceLabs.UNI              # reported commercial client portal, not platform
+      - zoo-game                          # reported unrelated, and not a git repo
+      - docs/session-history/**           # DECIDED above: never public
+
+  network_topology_disposition:
+    decision: null
+    approved_by: null
+    approved_at: null
+    blocks: [publishing any operations/runbook content]
+    measured_context: >-
+      111 tracked files in UNI.Minecraft carried private addresses as of 2026-07-31, including a file
+      named docs/PUBLIC_README.md. Under the new-clean-repo model the default is simply DO NOT COPY
+      those files, which may make this decision much cheaper than it was.
+
+  obs_public_context_risk:
+    decision: null
+    security_owner: null
+    approved_at: null
+    residual_risk: null
+    review_expiry: null
+    blocks: [publishing broadcast/operations documentation]
+    measured_context: >-
+      Accepted 2026-07-29 on the stated basis that no other party is on the LAN or tailnet. That
+      acceptance was made WHEN THE TOPOLOGY WAS PRIVATE AND STAYS PRIVATE under this decision — so it
+      may well still hold. What changes is only whether documentation DESCRIBING it becomes public.
+
+  public_site_contract:
+    cpu_only: null
+    no_llm_inference: null
+    no_gpu: null
+    no_webgl_webgpu_threejs: null
+    no_analytics: null
+    no_accounts: null
+    no_hidden_network_calls: null
+    interpretation_notes: >-
+      UNI-FLAGELLUM/CLAUDE.md binds THE RELEASED PRODUCT to these constraints. Whether they bind a
+      PUBLIC DOCUMENTATION SITE is NOT ESTABLISHED and changes the design materially — analytics,
+      embedded video and a search index are all affected.
+    approved_by: null
+    approved_at: null
+    blocks: [site implementation choices, the network allowlist gate, embedded live casts]
+
+  source_branches:
+    decision: null
+    repositories: {}
+    approved_by: null
+    approved_at: null
+    blocks: [the sync mechanism, every generated page, every citation SHA]
+    measured_context: >-
+      Live work is NOT on default branches: UNI.Minecraft on gen2-runtime, UNI-FLAGELLUM on
+      hierarchical-aif/motor-stack (122 commits vs main's 9), uni-mind on deep-reader-wc2-phaseJ,
+      UNI.OS on selfnet/pharus-beacon. A pipeline defaulting to `main` would publish a skeleton.

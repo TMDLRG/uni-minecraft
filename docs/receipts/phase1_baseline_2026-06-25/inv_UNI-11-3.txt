@@ -1,0 +1,1 @@
+UNI-11-3 has the following entity data: [{Slot: 0b, id: "minecraft:dirt", Count: 3b}, {Slot: 1b, id: "minecraft:wooden_sword", tag: {Damage: 4}, Count: 1b}, {Slot: 9b, id: "minecraft:stick", Count: 3b}]

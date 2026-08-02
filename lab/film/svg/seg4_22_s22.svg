@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g21" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g21)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="140" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="36" fill="#9aa7b4" letter-spacing="3">the breath of life — the honest verdict</text>
+  <text x="200" y="220" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">READING</text>
+    <text x="1700" y="220" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">VERDICT</text>
+  <line x1="180" y1="240" x2="1720" y2="240" stroke="#30363d" stroke-width="2"/>
+    <text x="200" y="290" fill="#e6edf3" font-size="28" font-family="ui-sans-serif,sans-serif">A. Proton gradients power cells</text>
+    <rect x="1320" y="258" width="60" height="44" rx="6" fill="#3b82f6"/>
+    <text x="1350" y="290" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="22" font-weight="bold" fill="#fff">B</text>
+    <text x="1700" y="290" text-anchor="end" fill="#3b82f6" font-size="24" font-family="ui-sans-serif,sans-serif">supported</text>
+    <text x="200" y="360" fill="#e6edf3" font-size="28" font-family="ui-sans-serif,sans-serif">B. Oxygen is sufficient — high yield</text>
+    <rect x="1320" y="328" width="60" height="44" rx="6" fill="#3b82f6"/>
+    <text x="1350" y="360" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="22" font-weight="bold" fill="#fff">B</text>
+    <text x="1700" y="360" text-anchor="end" fill="#3b82f6" font-size="24" font-family="ui-sans-serif,sans-serif">supported</text>
+    <text x="200" y="430" fill="#e6edf3" font-size="28" font-family="ui-sans-serif,sans-serif">C. Oxygen is required for ALL life</text>
+    <rect x="1320" y="398" width="60" height="44" rx="6" fill="#f85149"/>
+    <text x="1350" y="430" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="22" font-weight="bold" fill="#fff">X</text>
+    <text x="1700" y="430" text-anchor="end" fill="#f85149" font-size="24" font-family="ui-sans-serif,sans-serif">contradicted</text>
+    <text x="200" y="500" fill="#e6edf3" font-size="28" font-family="ui-sans-serif,sans-serif">D. ALL life uses a proton gradient</text>
+    <rect x="1320" y="468" width="60" height="44" rx="6" fill="#d29922"/>
+    <text x="1350" y="500" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="22" font-weight="bold" fill="#0b0e12">C</text>
+    <text x="1700" y="500" text-anchor="end" fill="#d29922" font-size="24" font-family="ui-sans-serif,sans-serif">narrowed hypothesis</text>
+    <text x="200" y="570" fill="#e6edf3" font-size="28" font-family="ui-sans-serif,sans-serif">E. Life as a 'sacred current'</text>
+    <rect x="1320" y="538" width="60" height="44" rx="6" fill="#a371f7"/>
+    <text x="1350" y="570" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="22" font-weight="bold" fill="#0b0e12">D</text>
+    <text x="1700" y="570" text-anchor="end" fill="#a371f7" font-size="24" font-family="ui-sans-serif,sans-serif">metaphor preserved</text>
+  <line x1="180" y1="610" x2="1720" y2="610" stroke="#30363d" stroke-width="2"/>
+  <rect x="0" y="531" width="1920" height="549" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="531" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="583" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">So here is the honest accounting of the breath-of-life claim. Reading A, that a single</text>
+  <text x="960" y="617" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">proton-gradient engine powers all known life, is supported — Class B. Reading B, that</text>
+  <text x="960" y="651" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">oxygen makes that engine efficient, is supported — also Class B. Reading C, that oxygen is</text>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">required, is contradicted — Class X. Reading D, that all life everywhere uses a gradient,</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">lives as a narrowed hypothesis — Class C. And reading E, the sacred current, is preserved</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">as metaphor — Class D. Two clear yeses, one clear no, one disciplined maybe, and one</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">beautiful image, the most beautiful one our discipline has yet allowed us to keep.</text>
+  <rect x="800" y="801" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="841" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">तर हे आहे जीवन-श्वास दाव्याचे प्रामाणिक हिशोब. वाचन A, सर्व ज्ञात जीवनाला एक</text>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">प्रोटॉन-ग्रेडियंट इंजिन शक्ती देते, समर्थित आहे — वर्ग B. वाचन B, ऑक्सिजन त्या</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">इंजिनला कार्यक्षम बनवते, समर्थित आहे — तेही वर्ग B. वाचन C, ऑक्सिजन आवश्यक आहे,</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">खोडलेले आहे — वर्ग X. वाचन D, सर्वत्र सर्व जीवन ग्रेडियंट वापरते, संकुचित गृहीतक</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">म्हणून जगते — वर्ग C. आणि वाचन E, पवित्र प्रवाह, रूपक म्हणून जपलेला — वर्ग D. दोन</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">स्पष्ट 'होय', एक स्पष्ट 'नाही', एक शिस्तबद्ध 'कदाचित', आणि एक सुंदर प्रतिमा,</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">आपल्या शिस्तीने आपल्याला आत्तापर्यंत ठेवू दिलेली सर्वात सुंदर.</text>
+</svg>

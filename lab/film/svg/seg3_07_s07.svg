@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g6" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g6)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="140" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="36" fill="#9aa7b4" letter-spacing="3">we let it pick its own anchor — Earth</text>
+
+  <rect x="430" y="220" width="1060" height="100" rx="14" fill="#1c2128" stroke="#f9e2af" stroke-width="2"/>
+  <text x="960" y="285" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="44" fill="#f9e2af">g(Earth) = 9.82 m/s²  &  P(Earth) = 1.014 bar</text>
+
+  <text x="960" y="400" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#9aa7b4">solve for k:</text>
+  <rect x="430" y="430" width="1060" height="100" rx="14" fill="#1c2128" stroke="#89b4fa" stroke-width="2"/>
+  <text x="960" y="495" text-anchor="middle" font-family="ui-monospace,Consolas,monospace" font-size="44" fill="#a6e3a1">k  ≈  9.68  m/s² per bar</text>
+
+  <text x="960" y="620" text-anchor="middle" font-family="Georgia,serif" font-size="32" fill="#cdd6f4" font-style="italic">It fits Earth perfectly. By construction. That is the deal.</text>
+  <text x="960" y="670" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="26" fill="#6c7393">Now it must predict every other world with no further tuning.</text>
+  <rect x="0" y="633" width="1920" height="447" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="633" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Now here is where we are very deliberately fair. Before the test, we let the challenger</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">pick its own k from its strongest case — Earth. Take Earth's gravity, nine-point-eight-two</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">metres per second squared, divide by Earth's surface pressure, one-point-zero-one-four</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">bar. Solve for k. The number comes out to about nine-point-seven. Our challenger now fits</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Earth perfectly, exactly as it wants to. By construction.</text>
+  <rect x="800" y="835" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">आता इथे आपण अगदी मुद्दाम न्याय्य आहोत. चाचणीपूर्वी, आपण आव्हानवीराला त्याच्या</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">सर्वात मजबूत प्रसंगातून — पृथ्वीवरून — स्वतःचा k निवडू देतो. पृथ्वीचे</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">गुरुत्वाकर्षण, नऊ-पूर्णांक-आठ-दशांश-दोन मीटर प्रति सेकंदाचा वर्ग, पृथ्वीच्या</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">पृष्ठभागावरील दाब, एक-पूर्णांक-शून्य-दशांश-एक-चार बार ने भागा. k साठी सोडवा. आकडा</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">अंदाजे नऊ-पूर्णांक-सात येतो. आता आपला आव्हानवीर पृथ्वीशी अगदी पूर्णपणे जुळतो,</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">हुबेहूब त्याला हवे तसे. रचनेने.</text>
+</svg>

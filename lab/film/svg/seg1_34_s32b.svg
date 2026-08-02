@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g33" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#13111c"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g33)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="330" text-anchor="middle" font-family="Georgia,serif" font-size="54" fill="#cdd6f4" font-style="italic">"Once is an accident. The test must repeat."</text>
+  
+  <rect x="0" y="633" width="1920" height="447" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="633" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">And we add one more guard, because a single lucky result fools everyone. A real finding</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">has to repeat — the same answer, many times over, from fixed starting points anyone can</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">rerun, and ideally by other hands entirely. In our own work, every measurement is run from</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">five fixed seeds, and reported with its uncertainty. Once is an anecdote. Many times,</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">reproducibly, is a result.</text>
+  <rect x="800" y="835" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">आणि आपण आणखी एक रक्षण जोडतो, कारण एकच नशिबाचा निकाल सगळ्यांना फसवतो. खऱ्या</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">निष्कर्षाला पुन्हा यावे लागते — तेच उत्तर, अनेकदा, कोणीही पुन्हा चालवू शकेल अशा</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">निश्चित सुरुवातींपासून, आणि शक्यतो पूर्णपणे दुसऱ्या हातांनी. आपल्या स्वतःच्या</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">कामात, प्रत्येक मोजमाप पाच निश्चित बीजांपासून चालवले जाते, आणि त्याच्या</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">अनिश्चिततेसह नोंदवले जाते. एकदा म्हणजे किस्सा. अनेकदा, पुनरुत्पादनक्षमपणे, म्हणजे</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">निष्कर्ष.</text>
+</svg>

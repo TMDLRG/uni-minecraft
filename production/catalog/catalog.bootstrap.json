@@ -1,0 +1,12 @@
+{
+  "generatedUtc": "2026-07-12T00:45:00Z",
+  "poolRoot": "/var/lib/uni/broadcast/clips",
+  "note": "BOOTSTRAP catalog (Phase V, 2026-07-12). Every row resolves to the SMPTE-bars placeholder.mp4 (a 90s 1280x720 stand-in), NOT real content. Purpose: let the standby reel + film-break beats resolve a clip instead of no-op. Replace by running production/catalog/build-catalog.mjs over the confirmed FINAL pool once G-YTLIB (catalog source) + G-MUSIC (music bed) are settled by the operator. Honest placeholder.",
+  "counts": { "total": 4, "aired": 4, "standby": 1, "placeholder": true },
+  "rows": [
+    { "assetId": "STANDBY-REEL", "absPath": "/var/lib/uni/broadcast/clips/placeholder.mp4", "language": "en", "durationSec": 90, "orientation": "landscape", "aired": true, "placeholder": true, "title": "Standby reel (SMPTE bars placeholder)" },
+    { "assetId": "BNB-P1-03", "absPath": "/var/lib/uni/broadcast/clips/placeholder.mp4", "language": "en", "durationSec": 90, "orientation": "landscape", "aired": true, "placeholder": true, "title": "Film-break placeholder (stands in for BNB-P1-03)" },
+    { "assetId": "STREETS-014", "absPath": "/var/lib/uni/broadcast/clips/placeholder.mp4", "language": "en", "durationSec": 90, "orientation": "landscape", "aired": true, "placeholder": true, "title": "Film-break placeholder (stands in for STREETS-014)" },
+    { "assetId": "BNB-P2-07", "absPath": "/var/lib/uni/broadcast/clips/placeholder.mp4", "language": "en", "durationSec": 90, "orientation": "landscape", "aired": true, "placeholder": true, "title": "Film-break placeholder (stands in for BNB-P2-07)" }
+  ]
+}

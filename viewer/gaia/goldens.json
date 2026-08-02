@@ -1,0 +1,6 @@
+{
+  "gaia.cjs": "b38169c2c357402c3f51bac246ad84e5d7e2a383f449ec26b885f850f54d0d5b",
+  "sig.cjs": "71b3d39bb2d36894960b702324e860b8bb6b2af24a98a0951ab901c44eaa51e7",
+  "gaia_server.cjs": "ed5769595e54ff17fe2a0af816bf107552a824ad0d7c492eeef609939c187ed8",
+  "_note": "Committed golden sha256 pins for Gaia source files (byte-identity idiom). Regenerate with `node viewer/gaia/gaia_lint.cjs --write-golden` at DD-completion, then commit."
+}

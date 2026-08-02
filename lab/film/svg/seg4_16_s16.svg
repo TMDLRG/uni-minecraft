@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g15" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g15)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="130" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#9aa7b4" letter-spacing="3">life's actual menu — many ways to make ATP</text>
+  <text x="180" y="200" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">METABOLISM</text>
+    <text x="850" y="200" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">ELECTRON ACCEPTOR</text>
+    <text x="1140" y="200" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">POTENTIAL</text>
+    <text x="1700" y="200" text-anchor="end" fill="#6c7393" font-size="22" font-family="ui-monospace,Consolas,monospace">WHO USES IT?</text>
+  <line x1="160" y1="216" x2="1740" y2="216" stroke="#30363d" stroke-width="2"/>
+    <text x="180" y="256" fill="#a6e3a1" font-size="24" font-family="ui-monospace,Consolas,monospace">AEROBIC RESPIRATION</text>
+    <text x="850" y="256" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">O₂</text>
+    <text x="1140" y="256" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">+0.82 V</text>
+    <text x="1700" y="256" text-anchor="end" fill="#9aa7b4" font-size="22" font-family="ui-sans-serif,sans-serif">you, animals, plants — efficient</text>
+    <text x="180" y="312" fill="#89dceb" font-size="24" font-family="ui-monospace,Consolas,monospace">ANAEROBIC — sulfate</text>
+    <text x="850" y="312" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">SO₄²⁻</text>
+    <text x="1140" y="312" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">−0.22 V</text>
+    <text x="1700" y="312" text-anchor="end" fill="#9aa7b4" font-size="22" font-family="ui-sans-serif,sans-serif">deep ocean, gut bacteria</text>
+    <text x="180" y="368" fill="#89dceb" font-size="24" font-family="ui-monospace,Consolas,monospace">ANAEROBIC — nitrate</text>
+    <text x="850" y="368" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">NO₃⁻</text>
+    <text x="1140" y="368" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">+0.43 V</text>
+    <text x="1700" y="368" text-anchor="end" fill="#9aa7b4" font-size="22" font-family="ui-sans-serif,sans-serif">soil bacteria, denitrifiers</text>
+    <text x="180" y="424" fill="#89dceb" font-size="24" font-family="ui-monospace,Consolas,monospace">ANAEROBIC — iron</text>
+    <text x="850" y="424" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">Fe³⁺</text>
+    <text x="1140" y="424" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">+0.77 V</text>
+    <text x="1700" y="424" text-anchor="end" fill="#9aa7b4" font-size="22" font-family="ui-sans-serif,sans-serif">iron-reducing bacteria</text>
+    <text x="180" y="480" fill="#cba6f7" font-size="24" font-family="ui-monospace,Consolas,monospace">METHANOGENESIS</text>
+    <text x="850" y="480" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">CO₂</text>
+    <text x="1140" y="480" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">−0.24 V</text>
+    <text x="1700" y="480" text-anchor="end" fill="#9aa7b4" font-size="22" font-family="ui-sans-serif,sans-serif">archaea, wetlands, swamps</text>
+    <text x="180" y="536" fill="#f9e2af" font-size="24" font-family="ui-monospace,Consolas,monospace">FERMENTATION</text>
+    <text x="850" y="536" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">none</text>
+    <text x="1140" y="536" text-anchor="end" fill="#cdd6f4" font-size="24" font-family="ui-monospace,Consolas,monospace">—</text>
+    <text x="1700" y="536" text-anchor="end" fill="#9aa7b4" font-size="22" font-family="ui-sans-serif,sans-serif">yeast, lactic acid bacteria</text>
+  <line x1="160" y1="562" x2="1740" y2="562" stroke="#30363d" stroke-width="2"/>
+  <text x="960" y="602" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="24" fill="#6c7393">Oxygen is the best of these — but it is not the only one.</text>
+  <rect x="0" y="565" width="1920" height="515" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="565" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="617" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Look at the menu life actually runs on. Animals like us breathe oxygen. But</text>
+  <text x="960" y="651" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">sulfate-reducing bacteria in deep ocean mud breathe sulfate. Nitrate-reducing bacteria in</text>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">soil breathe nitrate. Iron-reducing bacteria breathe iron. Methanogens in swamps and your</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">gut breathe carbon dioxide. Yeast in a sealed jar ferment — they need no electron acceptor</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">at all. Every one of these makes ATP, with a proton gradient, just like you do. And not</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">one of them uses oxygen.</text>
+  <rect x="800" y="801" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="841" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">जीवन प्रत्यक्षात कोणत्या मेनूवर चालते ते पहा. आपल्यासारखे प्राणी ऑक्सिजन घेतात. पण</text>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">खोल समुद्राच्या चिखलातील सल्फेट-कमी करणारे जीवाणू सल्फेट घेतात. मातीतील</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">नायट्रेट-कमी करणारे जीवाणू नायट्रेट घेतात. लोह-कमी करणारे जीवाणू लोह घेतात.</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">दलदलीतील आणि तुमच्या आतड्यातील मिथेनोजेन्स कार्बन डायऑक्साइड घेतात. बंद भांड्यातील</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">यीस्ट किण्वन करतात — त्यांना इलेक्ट्रॉन स्वीकारणाऱ्याची मुळीच गरज नाही. यापैकी</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">प्रत्येक ATP बनवतो, प्रोटॉन ग्रेडियंटसह, तुमच्याप्रमाणेच. आणि त्यांच्यापैकी कोणीही</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">ऑक्सिजन वापरत नाही.</text>
+</svg>

@@ -1,0 +1,36 @@
+# /etc/containers/systemd/uni-dns.container
+# UNI Fleet DNS — authoritative unicast dnsmasq for the uni-lab.local zone (ADR-PROD-013 name map).
+# STATUS: REPO ARTIFACT (Phase 1) — NOT yet deployed. Ships to uni-lab via `podman_quadlet_apply`
+# in Phase 3 of the gated rollout (production/dns/README.md), bound-but-unused (no client points at
+# it) until the Phase 5 host-resolver cutover, which is owner-signed and RED-gated.
+#
+# Follows the uni-bcast-relay.container conventions found on real bring-up:
+#  - Image tag PINNED; the box never auto-pulls. Record the digest at deploy in the deploy note.
+#  - network=host so dnsmasq can bind the host LAN/wg/loopback addresses named in dnsmasq.uni.conf
+#    (bind-dynamic there keeps it off the aardvark-owned podman bridge :53).
+#  - config + hosts map mounted :ro from the in-sandbox staging dir /etc/uni/dns (Phase 2).
+[Unit]
+Description=UNI Fleet DNS (dnsmasq — authoritative resolver for uni-lab.local)
+After=podman.socket network-online.target
+Wants=podman.socket network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Container]
+# Pin the digest at deploy (mirror the relay's convention); box never auto-pulls.
+Image=docker.io/4km3/dnsmasq:2.90-r3
+ContainerName=uni-dns
+Network=host
+Volume=/etc/uni/dns/dnsmasq.uni.conf:/etc/dnsmasq.conf:ro
+Volume=/etc/uni/dns/uni-lab.local.hosts:/etc/uni/dns/uni-lab.local.hosts:ro
+# dnsmasq binds :53 then drops to nobody (user= in the conf); the cap covers the privileged bind.
+AddCapability=NET_BIND_SERVICE
+# keep in foreground (container stays up), use OUR conf, log to stderr → journald.
+Exec=--keep-in-foreground --conf-file=/etc/dnsmasq.conf --log-facility=-
+
+[Service]
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target default.target

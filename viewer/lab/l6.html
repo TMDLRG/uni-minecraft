@@ -1,0 +1,169 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>UNI LAB — L6, the gauntlet and the co-sign</title>
+<!--
+  L6: THE GAUNTLET, THEN THE CO-SIGN. Phase 9 step 4.6, build 6.
+
+  The whole lab in one walk. Six stations — L0 through L5 — each lit when its gate runs green, and at
+  the end a THRESHOLD that reads HOLD. Going live needs a presence token no process can mint (F31, S6),
+  an ADR that is not adopted (S5), and an OBS WebSocket that still has no authentication (S2). So the
+  co-sign holds, for the operator, and nothing on this page can lift it.
+
+  There is no GO button here, and there never will be. The last move — CHECKPOINT E, two images, the
+  lab he can walk around, distinguishable with NO TEXT READ for a reason that is truth_class — is his.
+  A page that could cross that threshold would be crossing it.
+-->
+<style>
+  :root { --ink:#e8eef2; --dim:#7c8b96; --floor:#141b21; --line:#1e2a33; --you:#7fd1c4;
+          --green:#7fd1c4; --pending:#4a5a66; --hold:#d8b46a; --bad:#c96a6a; --wall:#26333d; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:#0a0f13; color:var(--ink); overflow:hidden;
+              font:13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  canvas { display:block; width:100%; height:100%; }
+  #hud { position:fixed; left:14px; top:12px; pointer-events:none; }
+  #hud h1 { margin:0 0 2px; font-size:13px; letter-spacing:.14em; font-weight:600; }
+  #hud p { margin:0; color:var(--dim); }
+  #right { position:fixed; right:14px; top:12px; text-align:right; color:var(--dim); pointer-events:none; }
+  #right b { color:var(--ink); }
+  #cosign { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); width:min(760px,92vw);
+            background:rgba(20,27,33,.94); border-left:4px solid var(--hold); padding:12px 16px; }
+  #cosign h2 { margin:0 0 6px; font-size:14px; letter-spacing:.1em; color:var(--hold); }
+  #cosign p { margin:5px 0; color:var(--dim); }
+  #cosign b { color:var(--ink); }
+  #cosign .e { color:var(--hold); }
+  #cosign .away { color:var(--pending); font-size:11px; }
+  /* Checkpoint E — the two images, side by side, UNLABELLED. His move is one glance. */
+  #ckpt { display:flex; gap:16px; align-items:flex-start; margin:8px 0 2px; }
+  #ckpt figure { margin:0; }
+  #ckpt img { display:block; width:min(300px,40vw); image-rendering:pixelated; border:1px solid var(--line);
+              background:#0a0f13; }
+  #ckpt figcaption { color:var(--pending); font-size:10px; margin-top:3px; text-align:center; }
+  #ckpt .ask { color:var(--hold); align-self:center; max-width:220px; font-size:12px; }
+</style>
+
+<canvas id="c"></canvas>
+<div id="hud"><h1>UNI LAB · L6</h1><p>the gauntlet, then the co-sign — the whole lab in one walk</p></div>
+<div id="right"><b id="tally">running the gauntlet…</b><br /><span id="boot">boot …</span></div>
+<div id="cosign">
+  <h2 id="cotitle">THE CO-SIGN — reading…</h2>
+  <p id="cowhy">…</p>
+  <p class="e" id="coe">…</p>
+  <div id="ckpt">
+    <figure><img src="/api/lab/shot?swap=0" alt="fixture render, first" /><figcaption>one</figcaption></figure>
+    <figure><img src="/api/lab/shot?swap=1" alt="fixture render, second" /><figcaption>two</figcaption></figure>
+    <div class="ask"><b>CHECKPOINT E.</b> Do these two differ? Trust your eye — read no text, no label.
+      If they do, is it because the <b>material</b> changed? That answer is yours, and it is the step's
+      whole falsifier.</div>
+  </div>
+  <p class="away" id="coaway">NOT MEASURED: nothing here reaches you if you walk away — this is a screen,
+    it does not page you, and while it HOLDS nothing is on air to miss.</p>
+</div>
+
+<script>
+  "use strict";
+  const ROOM = { w: 52, h: 22 };
+  let STATIONS = [], CO = null;
+
+  const c = document.getElementById("c");
+  const g = c.getContext("2d");
+  let W = 0, H = 0, DPR = 1;
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  addEventListener("resize", resize);
+
+  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function view() { const s = Math.min(W / (ROOM.w * 1.5), H / (ROOM.h * 1.6)); return { s, ox: W / 2, oy: H * 0.34 }; }
+  const iso = (x, y) => { const { s, ox, oy } = view();
+    return [ox + (x - ROOM.w/2) * s * .78 - (y - ROOM.h/2) * s * .78,
+            oy + (x - ROOM.w/2) * s * .40 + (y - ROOM.h/2) * s * .40]; };
+
+  function floor() {
+    g.beginPath();
+    [[0,0],[ROOM.w,0],[ROOM.w,ROOM.h],[0,ROOM.h]].forEach(([x,y],i)=>{const[a,b]=iso(x,y);i?g.lineTo(a,b):g.moveTo(a,b);});
+    g.closePath(); g.fillStyle = cssVar("--floor"); g.fill();
+    g.strokeStyle = cssVar("--line"); g.lineWidth = 1; g.globalAlpha = .4;
+    for (let x = 2; x < ROOM.w; x += 2) { const [a,b]=iso(x,0),[d,e]=iso(x,ROOM.h); g.beginPath();g.moveTo(a,b);g.lineTo(d,e);g.stroke(); }
+    for (let y = 2; y < ROOM.h; y += 2) { const [a,b]=iso(0,y),[d,e]=iso(ROOM.w,y); g.beginPath();g.moveTo(a,b);g.lineTo(d,e);g.stroke(); }
+    g.globalAlpha = 1;
+  }
+
+  // Six pillars in a row — the six builds. Lit green when the gate passes, amber-pending while the
+  // gauntlet is still running, red if a gate fails.
+  function pillar(st, i) {
+    const x = 8 + i * 7, y = ROOM.h / 2;
+    const [px, py] = iso(x, y); const { s } = view();
+    const h = s * 3.2, w = s * 1.4;
+    const col = st.state === "green" ? cssVar("--green") : st.state === "fail" ? cssVar("--bad") : cssVar("--pending");
+
+    g.beginPath(); g.ellipse(px, py, w * .55, w * .24, 0, 0, Math.PI*2); g.fillStyle = "rgba(0,0,0,.45)"; g.fill();
+    const body = [[px-w/2,py],[px+w/2,py],[px+w/2,py-h],[px-w/2,py-h]];
+    g.beginPath(); body.forEach(([a,b],k)=>k?g.lineTo(a,b):g.moveTo(a,b)); g.closePath();
+    g.fillStyle = st.state === "green" ? "rgba(127,209,196,.22)" : "transparent";
+    g.fill(); g.strokeStyle = col; g.lineWidth = st.state === "pending" ? 1 : 2;
+    // A PENDING pillar is DASHED — "queued/running", visibly not the solid red of a FAIL. A tired
+    // human glancing mid-run must not read six dim pillars as six dead ones (organic-operator #3).
+    if (st.state === "pending") g.setLineDash([4, 5]);
+    g.stroke(); g.setLineDash([]);
+    if (st.state === "green") { g.fillStyle = col; g.globalAlpha = .18;
+      g.beginPath(); g.ellipse(px, py - h, w * 1.1, w * .5, 0, 0, Math.PI*2); g.fill(); g.globalAlpha = 1; }
+
+    g.fillStyle = cssVar("--ink"); g.font = "600 12px ui-monospace, monospace"; g.textAlign = "center";
+    g.fillText(st.id, px, py - h - s * .6);
+    g.fillStyle = cssVar("--dim"); g.font = "10px ui-monospace, monospace";
+    g.fillText(st.checks || "…", px, py + s * .9);
+    g.textAlign = "left";
+  }
+
+  // The threshold at the end of the row — a barred doorway, amber, that reads HOLD.
+  function threshold() {
+    const x = 8 + 6 * 7, y = ROOM.h / 2;
+    const [px, py] = iso(x, y); const { s } = view(); const h = s * 3.6, w = s * 2.2;
+    g.beginPath();
+    g.moveTo(px - w/2, py); g.lineTo(px - w/2, py - h); g.lineTo(px + w/2, py - h); g.lineTo(px + w/2, py);
+    g.strokeStyle = cssVar("--hold"); g.lineWidth = 2.4; g.stroke();
+    g.lineWidth = 5; g.globalAlpha = .9;
+    g.beginPath(); g.moveTo(px - w/2, py - h*.5); g.lineTo(px + w/2, py - h*.5); g.stroke(); g.globalAlpha = 1;
+    g.fillStyle = cssVar("--hold"); g.font = "600 12px ui-monospace, monospace"; g.textAlign = "center";
+    g.fillText("HOLD", px, py - h - s * .6); g.textAlign = "left";
+  }
+
+  function frame() {
+    g.clearRect(0, 0, W, H);
+    floor();
+    STATIONS.forEach(pillar);
+    threshold();
+    requestAnimationFrame(frame);
+  }
+
+  async function poll() {
+    try {
+      const j = await (await fetch("/api/lab/gauntlet")).json();
+      STATIONS = (j.builds || []).map((b) => ({
+        id: b.id, checks: b.checks,
+        state: b.done ? (b.passed ? "green" : "fail") : "pending",
+      }));
+      const done = STATIONS.filter((s) => s.state !== "pending").length;
+      document.getElementById("tally").textContent =
+        j.all_green ? `${j.passed}/${j.of} green — the lab holds` : `${done}/${STATIONS.length} run…`;
+      CO = j.cosign;
+      if (CO) {
+        document.getElementById("cotitle").textContent = "THE CO-SIGN — " + CO.state + " (the operator's)";
+        document.getElementById("cowhy").innerHTML = "<b>" + (CO.state === "HOLD"
+          ? "Going live holds, and this page cannot lift it.</b> " : "</b>") + CO.why_hold;
+        document.getElementById("coe").textContent = CO.the_operators_move;
+      }
+    } catch { document.getElementById("tally").textContent = "the gauntlet is not answering"; }
+  }
+
+  resize();
+  requestAnimationFrame(frame);
+  poll();
+  setInterval(poll, 2000);
+  fetch("/api/identity").then((r)=>r.json()).then((i)=>{
+    document.getElementById("boot").textContent = "boot " + String(i.boot_git_commit||"?").slice(0,7);
+  }).catch(()=>{});
+</script>

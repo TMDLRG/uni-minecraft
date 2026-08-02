@@ -1,0 +1,126 @@
+Running ExUnit with seed: 190867, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test EVERY piece of evidence exists on disk and rehashes to what the entry recorded (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:95
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:not_a_store, "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+
+     code: evidence = entries() |> Enum.flat_map(& &1["evidence"])
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:41: SP.ControlPlane.ControlPlaneLedgerIsRealTest.entries/0
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:96: (test)
+
+
+
+  2) test the ledger records its OWN construction — it is not exempt from itself (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:118
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:not_a_store, "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+
+     code: resulting = entries() |> Enum.map(& &1["resulting"])
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:41: SP.ControlPlane.ControlPlaneLedgerIsRealTest.entries/0
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:119: (test)
+
+
+
+  3) test it verifies as a chain, and attests against its own anchor (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:59
+     match (=) failed
+     code:  assert {:ok, ledger} = Store.load(@dir)
+     left:  {:ok, ledger}
+     right: {:error,
+             {:not_a_store,
+              "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:60: (test)
+
+
+
+  4) test the local anchor is corroborated by custodians in two domains, one unforgeable (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:136
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:missing_anchor,
+           "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane/anchor.json"}}
+
+     code: {:ok, local} = Store.anchor(@dir)
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:137: (test)
+
+
+
+  5) test every entry carries a real second party — the two-party rule was not bypassed (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:111
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:not_a_store, "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+
+     code: for e <- entries() do
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:41: SP.ControlPlane.ControlPlaneLedgerIsRealTest.entries/0
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:112: (test)
+
+
+
+  6) test it records this programme's phases, not a demonstration (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:65
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:not_a_store, "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+
+     code: transitions = entries() |> Enum.map(& &1["transition"]) |> Enum.uniq()
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:41: SP.ControlPlane.ControlPlaneLedgerIsRealTest.entries/0
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:66: (test)
+
+
+
+  7) test EVERY commit named in the ledger exists in git — invented history fails here (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:79
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:not_a_store, "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+
+     code: entries()
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:41: SP.ControlPlane.ControlPlaneLedgerIsRealTest.entries/0
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:81: (test)
+
+
+
+  8) test the ledger exists on disk, as two plain files a human can open (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:52
+     the Control Plane still has no ledger of its own — capability is not practice
+     code: assert File.exists?(Store.ledger_path(@dir)),
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:53: (test)
+
+
+
+  9) test it carries the adverse results, not only the green ones (SP.ControlPlane.ControlPlaneLedgerIsRealTest)
+     test/sp/control_plane/control_plane_ledger_is_real_test.exs:127
+     ** (MatchError) no match of right hand side value:
+
+         {:error,
+          {:not_a_store, "c:/Users/mpolz/Documents/UNI.Minecraft/evidence/control_plane"}}
+
+     code: text = entries() |> Enum.map_join(" ", &JSON.encode!(&1["resulting"]))
+     stacktrace:
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:41: SP.ControlPlane.ControlPlaneLedgerIsRealTest.entries/0
+       test/sp/control_plane/control_plane_ledger_is_real_test.exs:128: (test)
+
+.
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+10 tests, 9 failures

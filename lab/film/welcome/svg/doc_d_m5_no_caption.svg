@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <rect x="0" y="0" width="14" height="1080" fill="#9a92ee"/>
+  <text x="120" y="122" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3"
+        fill="#9a92ee" font-weight="600">VERBATIM FROM THE SOURCE</text>
+  <text x="120" y="176" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="32" fill="#dfe5ee">The claim fence as structure rather than as a word filter</text>
+  <rect x="112" y="214" width="1696" height="482" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="140" y="260" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # THE CLAIM FENCE IS STRUCTURAL, not a filter. F27 forbids any material, light or</text>
+  <text x="140" y="294" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # room from depicting awareness, experience or life — and the obvious</text>
+  <text x="140" y="328" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # implementation, a word filter over a caption, is the wrong one. The flagellum</text>
+  <text x="140" y="362" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # already paid for that lesson: claim_guard.py distinguishes USE from MENTION,</text>
+  <text x="140" y="396" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # and a substring ban would refuse the most careful sentence in the repository</text>
+  <text x="140" y="430" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # while passing a carefully-worded lie.</text>
+  <text x="140" y="464" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  #</text>
+  <text x="140" y="498" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # So there is no caption. A node is an identifier, two enums, a path, an instant</text>
+  <text x="140" y="532" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # and an optional probe result. There is nowhere here to say anything, which is</text>
+  <text x="140" y="566" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # why nothing here can say the wrong thing. Unknown keys are REFUSED rather than</text>
+  <text x="140" y="600" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # dropped, because a caller reaching for a prose channel must be told there</text>
+  <text x="140" y="634" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  # isn't one.</text>
+  <text x="140" y="668" font-family="Consolas,Menlo,monospace" font-size="24" fill="#dfe5ee" xml:space="preserve">  @allowed [:truth_class, :receipt_ref, :evidence_class, :captured_at, :live]</text>
+  <text x="120" y="984" font-family="Consolas,Menlo,monospace" font-size="22" fill="#9aa6b6">lib/sp/control_plane/scene.ex:48-60</text>
+  <text x="120" y="1022" font-family="Consolas,Menlo,monospace" font-size="19" fill="#9aa6b6">sha256 f6fbf0851171195d7ef97ae5525b488ff8c614bcda062aad…</text>
+</svg>

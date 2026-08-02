@@ -1,0 +1,48 @@
+# /etc/containers/systemd/uni-bcast-captions.container
+# UNI Production Platform - unit #5 uni-bcast-captions (DESIGN/REFERENCE, pending; not deployed).
+#
+# Live captioner (ADR-PROD-006). faster-whisper (CTranslate2, open). Transcribes the program/mic
+# audio -> caption text (+ optional translations via the existing translator path or an LLM) and
+# WRITES the caption line into broadcast.json (caption.{visible,lang,text,translations}) so the
+# caption overlay renders it; it can also push a YouTube caption track. Piper already owns TTS on the
+# stack (tts-sidecar:8500) - this is the inverse (STT). Real-time multilingual latency/quality is
+# GAP G-CAP (pending measurement).
+#
+# Loopback only (127.0.0.1:8501 - 8500 is Piper). podman-system-generator -> uni-bcast-captions.service.
+#
+# IMAGE: no single canonical faster-whisper service image upstream; the node bakes one (CTranslate2 +
+# faster-whisper + a tiny stream worker). The moving tag is for the build-time pre-pull. To freeze:
+#   Image=localhost/uni-bcast-captions@sha256:<digest>
+# TODO(pin): replace the moving tag with @sha256:<digest> once the node's pre-pull resolves it.
+[Unit]
+Description=UNI Broadcast Captions (faster-whisper live captioner -> writes broadcast.json)
+After=podman.socket network-online.target
+Wants=podman.socket
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Container]
+Image=localhost/uni-bcast-captions:latest
+ContainerName=uni-bcast-captions
+# Loopback control/health port (free port; 8500 is Piper TTS).
+PublishPort=127.0.0.1:8501:8501
+# The captioner WRITES the caption line into broadcast.json, so the spool is read-write (:Z), NOT :ro.
+# It does an atomic merge (tmp + os.replace) of only the caption.* field, mirroring the producer.
+Volume=/var/lib/uni/broadcast:/var/lib/uni/broadcast:Z
+# faster-whisper model cache (named volume so the model download survives rebuilds).
+Volume=uni_bcast_whisper_models:/models:Z
+Environment=UNI_CAP_BIND_HOST=0.0.0.0
+Environment=UNI_CAP_PORT=8501
+Environment=UNI_CAP_MODEL=small
+Environment=UNI_CAP_COMPUTE_TYPE=int8
+Environment=UNI_CAP_BROADCAST_JSON=/var/lib/uni/broadcast/broadcast.json
+Environment=UNI_CAP_TRANSLATE_LANGS=es,hi
+# --- GPU escape hatch (faster-whisper runs CTranslate2 on CUDA when a GPU is present) ---
+# PodmanArgs=--device nvidia.com/gpu=all   # then set UNI_CAP_COMPUTE_TYPE=float16
+
+[Service]
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target default.target

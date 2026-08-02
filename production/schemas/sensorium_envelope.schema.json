@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/sensorium_envelope.v1.json",
+  "title": "UNI sensorium NDJSON envelope",
+  "description": "The row shape every /var/lib/uni/** NDJSON spool wears (heartbeat.ndjson, prod-mcp.ndjson, programshot.json, colony_gate output, fleet_status.ndjson, any future OS spool). Single-writer per spool; atomic tmp+rename; readers must tolerate torn tails. Modelled on lib/sp/show/overlay_publisher.ex:22-105 and production/mcp/server.py:91-118 metadata().",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "ts", "kind", "payload", "provenance"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "source": {
+      "type": "string",
+      "description": "Well-known source id. One of: heartbeat, programshot, colony_gate, prod_mcp, self_audit, fleet_status, uni_public_mcp, launcher_alert. Add new sources only after they land as supervised sole writers per production/docs/OS_SPOOL_POLICY.md."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp with millisecond precision."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["row", "event", "snapshot"],
+      "description": "row = one per tick / interval (heartbeat); event = discrete state change (approval, panic, alert); snapshot = full-state dump (self_audit)."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Source-specific payload. The source's supervised sole writer OWNS this shape and is the only place it may drift; consumers should tolerate unknown keys."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["server", "git_commit", "evidence_class"],
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "Which physical box wrote this row. Well-known: uni-lab | uni-lab-79740c | thinker | uni-tab-arm-1. Free-form for peers not yet in the mesh."
+        },
+        "git_commit": {
+          "type": "string",
+          "description": "The git HEAD SHA of the codebase that produced this row. Empty string only if the writer cannot read git (e.g. a raw shell probe on a stripped node)."
+        },
+        "evidence_class": {
+          "type": "string",
+          "enum": ["A", "B", "C", "Sec", "pending"],
+          "description": "Same taxonomy as gate_row.evidence_class. Rows never manufactured: any row a writer emits must be observation-of-fact (typically B or C)."
+        },
+        "audit_id": {
+          "type": "string",
+          "description": "Optional cross-reference. For prod-mcp.ndjson rows this is the MCP call's audit_id; for heartbeat rows this is left empty."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,146 @@
+# mediamtx.yml - UNI Production Platform restreamer config.
+# STATUS: AS-DEPLOYED CANONICAL (deployed 2026-07-11 to /var/lib/uni/broadcast/mediamtx.yml on
+# uni-lab-79740c, verified: API answers, uni/program configured). Changes here must be
+# re-shipped to the node spool + relay restarted, or the node drifts.
+#
+# 2026-07-12 additions (user directive: real live test, cameras on the REAL stack):
+#  - WebRTC publish surface (:8889 https + :8189/udp ICE) so remote cameras publish from a
+#    BROWSER, no install: https://<node-lan>:8889/camN/publish?video-codec=h264/90000
+#    (H264 PINNED in the link - browsers default to AV1, which OBS's decode renders black).
+#  - cam1..cam3 ingest paths. The LAN may publish ONLY cam paths; the program path
+#    (uni/program) publish is LOCKED to loopback + the container network (the mixer) - the
+#    fan-out can never be hijacked from the LAN. Reads stay open (the mixer pulls cams via SRT).
+#  - Auth is ORDERED: first matching user (by ip) wins, then permissions apply.
+#
+# Role (ADR-PROD-008): ONE ingest from the mixer (SRT preferred, RTMP accepted) -> COPY-fan-out
+# (no re-encode) to YouTube + Twitch + others. The mixer encodes ONCE; the relay only copies.
+#
+# Stream keys are NOT stored here. They arrive as env from /etc/uni/runtime.env on the node,
+# referenced below as ${YT_KEY} / ${TWITCH_KEY}.
+
+###############################################
+# Global
+###############################################
+logLevel: info
+logDestinations: [stdout]
+readTimeout: 10s
+writeTimeout: 10s
+
+###############################################
+# Auth (ordered users; first ip-match wins)
+###############################################
+authInternalUsers:
+  # Loopback + container network (the mixer, the relay itself, host tooling): full rights.
+  - user: any
+    pass:
+    ips: ['127.0.0.1', '::1', '10.88.0.0/16']
+    permissions:
+      - action: publish
+      - action: read
+      - action: playback
+      - action: api
+  # Everyone else (LAN/mesh): read + publish of CAMERA slots only - NEVER uni/program.
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: read
+      - action: playback
+      - action: api
+      - action: publish
+        path: cam1
+      - action: publish
+        path: cam2
+      - action: publish
+        path: cam3
+      - action: publish
+        path: cam4
+      - action: publish
+        path: cam5
+      - action: publish
+        path: cam6
+      - action: publish
+        path: cam7
+      - action: publish
+        path: cam8
+      - action: publish
+        path: cam9
+      - action: publish
+        path: cam10
+
+###############################################
+# Control API (loopback only; PublishPort 127.0.0.1:9997 in the quadlet)
+###############################################
+api: yes
+apiAddress: :9997
+
+# Metrics/pprof off by default (enable + publish a loopback port if needed).
+metrics: no
+pprof: no
+
+###############################################
+# Ingest protocols
+###############################################
+# RTMP ingest from the mixer (fallback path). PublishPort 1935 in the quadlet.
+rtmp: yes
+rtmpAddress: :1935
+
+# SRT ingest from the mixer (PREFERRED) + SRT reads of cam paths by the mixer. PublishPort 8890/udp.
+srt: yes
+srtAddress: :8890
+
+# WebRTC: the browser camera-publish surface (WHIP) + its publish page, served over TLS
+# (getUserMedia requires a secure context). Cert = self-signed, shipped to
+# /var/lib/uni/broadcast/certs/ and mounted at /certs (quadlet). Accept the warning once.
+# ICE runs on one pinned UDP port (8189, published in the quadlet); the node's LAN IP is
+# advertised so candidates work across the LAN.
+webrtc: yes
+webrtcAddress: :8889
+webrtcEncryption: yes
+webrtcServerKey: /certs/auto.key
+webrtcServerCert: /certs/auto.crt
+webrtcLocalUDPAddress: :8189
+webrtcAdditionalHosts: ['10.190.245.149']
+
+# HLS off (keep the relay a pure restreamer; program reads go via SRT/RTMP).
+hls: no
+rtsp: no
+
+###############################################
+# Paths
+###############################################
+paths:
+  # The single program path the mixer publishes to (rtmp://.../uni/program). On ready, COPY-fan-out
+  # (NO re-encode -- the mixer already encoded once, ADR-PROD-008) to BOTH YouTube AND Twitch via ONE
+  # ffmpeg tee: one read of the local program, split to two RTMP outputs.
+  #
+  # Keys come from the relay process ENV (${YT_KEY} / ${TWITCH_KEY}), sourced from /etc/uni/runtime.env
+  # on the node -- NEVER in git, never held by an agent (G-PA). The operator sets them before go-live.
+  # onfail=ignore: an unset key or one destination dropping does NOT kill the other; runOnReadyRestart
+  # relaunches on a source flap. If BOTH keys are unset the tee simply fails + slow-restarts (harmless;
+  # the internal relay ingest is unaffected, so an internal soundcheck still works without any key).
+  #
+  # LinkedIn: add a third tee output AFTER the YT+Twitch test passes (user directive 2026-07-12):
+  #   |[f=flv:onfail=ignore]rtmp://<linkedin-ingest>/${LINKEDIN_KEY}
+  uni/program:
+    runOnReady: >
+      ffmpeg -hide_banner -loglevel warning
+      -i rtmp://127.0.0.1:1935/uni/program
+      -c copy -map 0:v -map 0:a
+      -f tee
+      "[f=flv:onfail=ignore]rtmp://a.rtmp.youtube.com/live2/${YT_KEY}|[f=flv:onfail=ignore]rtmp://live.twitch.tv/app/${TWITCH_KEY}"
+    runOnReadyRestart: yes
+
+  # Remote camera slots (browser publish via the pubgate ONE-URL page :8443 -> WHIP; own mics
+  # ride along). The mixer's GUESTS scene reads cam1..cam3 back via SRT
+  # (srt://<relay>:8890?streamid=read:camN); slots 4-10 are spare/roles.
+  cam1: {}
+  cam2: {}
+  cam3: {}
+  cam4: {}
+  cam5: {}
+  cam6: {}
+  cam7: {}
+  cam8: {}
+  cam9: {}
+  cam10: {}

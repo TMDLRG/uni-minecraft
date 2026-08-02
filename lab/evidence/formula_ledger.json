@@ -1,0 +1,212 @@
+[
+  {
+    "id": "g_surface",
+    "latex": "g = \\frac{GM}{R^2}",
+    "variables": "g = surface gravity [m s^-2]; G = 6.674e-11 m^3 kg^-1 s^-2; M = body mass [kg]; R = radius [m]",
+    "evidence_class": "A",
+    "source": "Newton's law of gravitation at the surface; NSSDCA/JPL planetary fact sheets",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "implemented_in": "gravity falsifier / cross-domain hard-boundary guard",
+    "limitations": "Dimensional check: [m^3 kg^-1 s^-2 * kg / m^2] = N/kg = m/s^2. OK. Reproduces all 7 reference bodies to <=0.36% (binding residual = Moon, calc 1.6258 vs ref 1.62 = 0.360%; next = Jupiter 0.095%). The reference-block '<=0.26%' UNDERSTATES the residual and is the inconsistent figure. Spherical non-rotating idealization (centrifugal/oblateness sub-percent-to-few-percent). Weak-field approximation, exact enough here. FENCES the hard boundary: a pressure-proportional weight law g=k*P calibrated on Earth FAILS (X-contradicted)."
+  },
+  {
+    "id": "v_esc",
+    "latex": "v_{esc} = \\sqrt{\\dfrac{2GM}{R}}",
+    "variables": "v_esc = escape velocity [m/s or km/s]; G [m^3 kg^-1 s^-2]; M = mass [kg]; R = radius [m]; equivalently sqrt(2*mu/R) with mu=GM",
+    "evidence_class": "A",
+    "source": "Newtonian mechanics (energy conservation, escape from a gravitational well)",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "implemented_in": "escape-physics layer",
+    "limitations": "Dimensional check: sqrt([m^3 kg^-1 s^-2 * kg / m]) = sqrt(m^2 s^-2) = m/s. OK. Titan: mu=8978.1371 km^3/s^2, R=2574.76 km -> v_esc=2.6408 km/s; Earth -> 11.19 km/s. Newtonian, non-relativistic, point-mass/spherical; ignores rotation/oblateness. v_esc is the bulk-escape threshold; actual atmospheric escape (Jeans/hydrodynamic/diffusion-limited) is usually far slower."
+  },
+  {
+    "id": "gravity_vs_pressure_falsifier",
+    "latex": "g = \\frac{GM}{R^2}\\ (\\text{holds},\\ \\le 0.36\\%) \\quad vs \\quad g \\stackrel{?}{=} k\\,P,\\ k=\\frac{g_\\oplus}{P_\\oplus}\\ (\\text{FAILS, class X})",
+    "variables": "g [m/s^2]; G [N m^2 kg^-2]; M [kg]; R [m]; P = surface atmospheric pressure [Pa or bar]; k = Earth-calibrated proportionality [m/s^2/Pa]",
+    "evidence_class": "A",
+    "source": "Newtonian gravitation applied to verified NSSDCA/JPL planetary table",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "implemented_in": "pressure-vs-gravity calibrate-on-Earth-fail-everywhere falsification test",
+    "limitations": "k*P = [m/s^2/Pa][Pa]=m/s^2 is dimensionally valid but EMPIRICALLY false off-Earth — the falsification rests on empirical ratios, not dimensions. Earth-calibrated k. CORRECTED predictions g_kP/g_true: Moon ~2.9e-14 m/s^2 (P=3e-15 bar; real g=1.62), Mercury ~4.8e-14 (P=5e-15 bar; real g=3.70) [body labels/Mercury value corrected from the original], Mars 1.65e-2, Venus 100.4x overshoot (891 vs 8.87), Titan 10.49x overshoot (14.2 vs 1.354). Failure spans ~14-15 orders of magnitude. Pressure span across the table = ~16.5 orders (log10(92 bar / 5e-15 bar)), NOT the loose '~21' figure. g is set by M and R, NOT surface pressure."
+  },
+  {
+    "id": "chapman_R1_O2_photolysis",
+    "latex": "\\mathrm{O_2} + h\\nu \\xrightarrow{J_1} 2\\,\\mathrm{O}\\quad(\\lambda\\approx175\\text{-}242\\,\\mathrm{nm})",
+    "variables": "J1 = O2 photolysis frequency [s^-1]; [O2] = number density [cm^-3]; product rate = J1*[O2] [cm^-3 s^-1]",
+    "evidence_class": "A",
+    "source": "Chapman (1930); Harvard ACMG Ch. 10 (Jacob)",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "implemented_in": "Chapman toy mechanism (backbone, order-of-magnitude only)",
+    "limitations": "Dim check: [s^-1][cm^-3]=[cm^-3 s^-1]. OK. The SLOW odd-oxygen source. J1 is NOT a constant: an actinic-flux-weighted integral over Schumann-Runge/Herzberg; a toy model fixing J1 is a SIMPLIFICATION."
+  },
+  {
+    "id": "chapman_R2_recombination",
+    "latex": "\\mathrm{O}+\\mathrm{O_2}+\\mathrm{M}\\xrightarrow{k_2}\\mathrm{O_3}+\\mathrm{M},\\quad k_2=6.0\\times10^{-34}(T/300)^{-2.4}",
+    "variables": "k2 [cm^6 molecule^-2 s^-1]; [O],[O2],[M] [cm^-3] (M = third body ~ total air); T [K]; rate = k2*[O][O2][M] [cm^-3 s^-1]",
+    "evidence_class": "B",
+    "source": "JPL Chemical Kinetics evaluation, termolecular reactions (Lin & Leu)",
+    "url": "https://jpldataeval.jpl.nasa.gov/pdf/JPL_02-25_3_termolec_rev01.pdf",
+    "implemented_in": "Chapman toy mechanism (the fast ozone source)",
+    "limitations": "Dim check: [cm^6 s^-1][cm^-9]=[cm^-3 s^-1]. OK. k2(230K)=1.135e-33; R2 rate ~3.02e9 cm^-3 s^-1 (re-ran exact). Three-body rate scales with [M] (pressure). Exponent -2.3 vs -2.4 unpinned across JPL editions (<4% at strat T); cite the edition. Far faster than R1 source -> O and O3 tightly coupled."
+  },
+  {
+    "id": "chapman_R3_O3_photolysis",
+    "latex": "\\mathrm{O_3}+h\\nu\\xrightarrow{J_3}\\mathrm{O_2}+\\mathrm{O}\\quad(\\lambda\\approx240\\text{-}320\\,\\mathrm{nm}\\ \\text{shield, up to}\\sim1140\\,\\mathrm{nm})",
+    "variables": "J3 = O3 photolysis frequency [s^-1]; [O3] [cm^-3]; rate = J3*[O3] [cm^-3 s^-1]",
+    "evidence_class": "A",
+    "source": "Chapman (1930); Harvard ACMG Ch. 10; O3 Hartley/Huggins/Chappuis bands",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "implemented_in": "Chapman toy mechanism (the physical UV-shield channel, Hartley peak ~255 nm)",
+    "limitations": "Dim check: [s^-1][cm^-3]=[cm^-3 s^-1]. OK. Daytime J3~1e-3 s^-1 -> O3 lifetime ~17 min; R2<->R3 is a fast NULL cycle (no net odd-O loss; converts UV to heat -> stratospheric inversion). J3 is a flux-weighted integral, not a constant. Columbia k3~1e-3 s^-1 inside the bracket. Surface shielding set by Beer-Lambert column attenuation."
+  },
+  {
+    "id": "chapman_R4_odd_oxygen_loss",
+    "latex": "\\mathrm{O}+\\mathrm{O_3}\\xrightarrow{k_4}2\\,\\mathrm{O_2},\\quad k_4=8.0\\times10^{-12}\\exp(-2060/T)",
+    "variables": "k4 [cm^3 molecule^-1 s^-1]; [O],[O3] [cm^-3]; T [K]; rate = k4*[O][O3] [cm^-3 s^-1]",
+    "evidence_class": "B",
+    "source": "JPL Chemical Kinetics evaluation, bimolecular reactions, O + O3 -> 2 O2",
+    "url": "https://jpldataeval.jpl.nasa.gov/pdf/JPL_15_AllInOne.pdf",
+    "implemented_in": "Chapman toy mechanism (the slow odd-oxygen sink)",
+    "limitations": "Dim check: [cm^3 s^-1][cm^-6]=[cm^-3 s^-1]. OK. k4(230K)=1.031e-15, R4 rate ~5.16e5 cm^-3 s^-1 (re-ran exact). CORRECTED note value: k4(220K)=6.86e-16 (the 1.8e-15 was an arithmetic error). In the REAL stratosphere catalytic HOx/NOx/ClOx/BrOx cycles dominate the sink; pure-Chapman R4 alone underestimates loss -> Chapman OVERPREDICTS O3 by ~2x."
+  },
+  {
+    "id": "odd_oxygen_steady_state",
+    "latex": "\\frac{d[O_x]}{dt}=2J_1[\\mathrm{O_2}]-2k_4[\\mathrm{O}][\\mathrm{O_3}]\\ \\Rightarrow\\ [\\mathrm{O_3}]\\approx[\\mathrm{O_2}]\\sqrt{\\dfrac{J_1 k_2[\\mathrm{M}]}{J_3 k_4}}",
+    "variables": "[Ox]=[O]+[O3] [cm^-3]; partitioning [O]/[O3]=J3/(k2[O2][M]); abundance set by R1/R4. Inputs J1,J3,k2,k4,[M],[O2]",
+    "evidence_class": "A",
+    "source": "Harvard ACMG Atmospheric Chemistry Ch. 10 (Jacob), Chapman steady-state derivation",
+    "url": "https://projects.iq.harvard.edu/files/acmg/files/intro_atmo_chem_bookchap10.pdf",
+    "implemented_in": "Chapman toy steady-state ozone density",
+    "limitations": "Dim check (sqrt arg): (s^-1 * cm^6 s^-1 * cm^-3)/(s^-1 * cm^3 s^-1) = dimensionless -> [O3] inherits [O2] units (cm^-3). INDEPENDENTLY RE-DERIVED from Ox production=loss + fast-cycle partitioning; illustrative mid-strat values give [O3]~1.4e13 cm^-3 (physically sane). Pure-oxygen; ignores catalytic loss, transport (Brewer-Dobson moves the real peak), diurnal variation. Explains the EXISTENCE and approx ALTITUDE of the layer (Chapman maximum); quantitatively overpredicts ~2x. The source's own prose check is hand-wavy; the explicit reduction above replaces it."
+  },
+  {
+    "id": "beer_lambert",
+    "latex": "I(\\lambda,z) = I_0(\\lambda)\\,e^{-\\tau(\\lambda,z)} = I_\\infty(\\lambda)\\exp[-\\sigma_{O_3}(\\lambda)N_{O_3}(z)\\sec\\theta]",
+    "variables": "I = surviving spectral intensity at depth z [W m^-2 nm^-1]; I0/I_inf = TOA flux; tau = optical depth [dimensionless]; sigma_O3 [cm^2]; N_O3 = slant column [molecules cm^-2]; theta = solar zenith angle; sec(theta) = airmass factor",
+    "evidence_class": "A",
+    "source": "Beer-Lambert-Bouguer law applied to O3 Hartley/Huggins absorption",
+    "url": "https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law",
+    "implemented_in": "UV-shield attenuation / optical-depth calculation",
+    "limitations": "Dim check: exponent = [cm^2][cm^-2][1] = dimensionless. OK. Hartley sigma~1.1e-17 cm^2 @255 nm, 300 DU = 8.07e18 cm^-2 -> tau=88.77, transmittance exp(-88.77)=2.80e-39: surface UV-C essentially zero. MONOCHROMATIC single-non-scattering-absorber idealization; real RT adds Rayleigh/aerosol scattering, multiple species, angle-dependent airmass, and O2 absorption below ~240 nm. State result as a BOUND ('transmission < 1e-38'), not a pinned figure."
+  },
+  {
+    "id": "optical_depth_sum",
+    "latex": "\\tau(\\lambda) = \\sum_i \\sigma_i(\\lambda)\\,N_i",
+    "variables": "tau [dimensionless]; sigma_i = cross-section of species i [cm^2/molecule]; N_i = column number density [molecules/cm^2]",
+    "evidence_class": "A",
+    "source": "Definition of optical depth from cross-section and column density",
+    "url": "https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law",
+    "implemented_in": "optical-depth backbone (single- or multi-absorber)",
+    "limitations": "Dim check: [cm^2/molecule][molecules/cm^2] = dimensionless. OK. Single absorber O3 Hartley: tau = 1.1e-17 * 8.07e18 = 88.8. Cross-sections are T-dependent (notably Huggins); slant paths multiply by airmass factor (~1/cos theta plane-parallel, larger near horizon)."
+  },
+  {
+    "id": "DU_column_density",
+    "latex": "N = \\mathrm{DU}\\times 2.69\\times10^{16}\\ \\mathrm{molecules\\,cm^{-2}}",
+    "variables": "N = vertical column number density of O3 [molecules/cm^2]; DU = total column in Dobson Units [dimensionless]",
+    "evidence_class": "B",
+    "source": "NASA Ozone Watch DU definition",
+    "url": "https://ozonewatch.gsfc.nasa.gov/facts/dobson_SH.html",
+    "implemented_in": "DU-to-number-density conversion",
+    "limitations": "Dim check: [DU][molecules cm^-2 per DU] = molecules/cm^2. OK. 300 DU -> 8.07e18 molecules/cm^2. Converts a column abundance only; says nothing about the vertical profile (~15-35 km peak)."
+  },
+  {
+    "id": "diffusion_limited_flux",
+    "latex": "\\Phi_l = b\\,f_i\\!\\left(\\dfrac{1}{H_a}-\\dfrac{1}{H_i}\\right) = \\dfrac{b\\,f_i\\,g\\,(m_a-m_i)}{kT}",
+    "variables": "Phi_l = upward escape flux of light species [atoms cm^-2 s^-1]; b = binary diffusion coeff (b=D*n) [cm^-1 s^-1]; f_i = mixing ratio [dimensionless]; H_a,H_i = scale heights kT/(m g) [cm]; m_a,m_i = mean molecular masses [kg]; g [cm/s^2]; k = Boltzmann; T = homopause temp [K]",
+    "evidence_class": "B",
+    "source": "Hunten (1973) J. Atmos. Sci. 30(8):1481-1494; reviewed in Catling & Kasting (2017)",
+    "url": "https://ui.adsabs.harvard.edu/abs/1973JAtS...30.1481H",
+    "implemented_in": "Hunten diffusion-limited hydrogen escape",
+    "limitations": "Dim check: [cm^-1 s^-1][1][cm^-1] = cm^-2 s^-1. OK. Both algebraic forms verified IDENTICAL (g*(m_a-m_i)/(kT) carries units of inverse length). Since m_i<m_a, (1/Ha-1/Hi)>0 (outward). Earth: C=b(1/Ha-1/Hi)~2.75e13, f_H~1.7e-5 -> Phi_l~4.7e8 (canonical ~4.3e8). INDEPENDENT of exospheric temp in this regime (diffusion bottleneck, not Jeans, controls; set upstream by the COLD TRAP). Breaks down for XUV-limited hydrodynamic escape, blow-off, or species heavier than background. The written dim-check string mixes CGS/SI tokens (cosmetic; bookkeeping correct). NONE of this involves ozone."
+  },
+  {
+    "id": "eq_pmf",
+    "latex": "\\Delta p = \\Delta\\psi - \\frac{2.303\\,R\\,T}{F}\\,\\Delta\\mathrm{pH}",
+    "variables": "dp = proton-motive force [mV or V]; dpsi = transmembrane electrical potential (inside-negative convention) [mV]; dpH = pH_in - pH_out [dimensionless]; 2.303RT/F = Nernst factor [~59.16 mV/pH @298 K]; R [J/(mol K)]; T [K]; F [C/mol]",
+    "evidence_class": "B",
+    "source": "Mitchell chemiosmotic theory; Nicholls & Ferguson Bioenergetics",
+    "url": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/proton-motive-force",
+    "implemented_in": "membrane-collapse PMF test / proton-motive-force calculation",
+    "limitations": "Dim check: dpsi [V=J/C]; second term (J/(mol K) * K / (C/mol)) * dimensionless = J/C = V. Both volts. CONSISTENT. SIGN CONVENTION MUST BE DECLARED FIRST: matrix-alkaline -> dpH term ADDS to inside-negative dpsi. Worked clean: dpsi=160 mV, dpH=0.75 @298 K -> dp = 160 + 59.16*0.75 = 204.4 mV (physiological dp ~180-220 mV). Factor is T-dependent (59.16 @298 K, 61.51 @310 K). Treats membrane as a simple capacitor with bulk-phase pH; surface-localized-proton models (Lee et al.) are non-consensus (C/U). Holds for the delocalized chemiosmotic regime (mainstream)."
+  },
+  {
+    "id": "eq_dG_atp_proxy",
+    "latex": "\\Delta G \\approx -\\,n\\,F\\,\\Delta p",
+    "variables": "dG = Gibbs free energy from translocating n protons down the gradient [J/mol]; n = protons per ATP [dimensionless]; F [C/mol]; dp [V]",
+    "evidence_class": "B",
+    "source": "Standard chemiosmotic energetics (Nicholls & Ferguson); electrochemical work = charge x potential",
+    "url": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/proton-motive-force",
+    "implemented_in": "ATP proxy (electrochemical work available per ATP)",
+    "limitations": "Dim check: [1][C/mol][V=J/C] = J/mol. CONSISTENT. n=3 @ dp=0.20 V -> |dG| = 57.89 kJ/mol (ATP cost ~50-60 kJ/mol, ~matched); n=4 -> 77.19 kJ/mol. This is a thermodynamic AVAILABILITY/proxy expression (electrochemical work of moving n charges), NOT the full chemical free energy of ATP synthesis (dG = dG0' + RT ln([ATP]/[ADP][Pi])). n is system-dependent (c-ring 8-15 + transport coupling) -> Class-C estimate. NEVER use to claim a fixed universal ATP yield. Report which direction (stored vs released) for the sign."
+  },
+  {
+    "id": "steady_heat_balance",
+    "latex": "P_{net} = \\eta_{abs}\\,G\\,A - \\epsilon\\,\\sigma\\,A\\,(T^4-T_{env}^4) - h\\,A\\,(T-T_{env})",
+    "variables": "P_net = net retained power [W]; eta_abs = absorptance [-]; G = irradiance [W/m^2]; A = area [m^2]; eps = emissivity [-]; sigma [W m^-2 K^-4]; T,T_env [K]; h = convective coefficient [W m^-2 K^-1]",
+    "evidence_class": "A",
+    "source": "Standard collector energy balance (Duffie & Beckman); Stefan-Boltzmann law",
+    "url": "https://en.wikipedia.org/wiki/Solar_thermal_collector",
+    "implemented_in": "heat-balance / equilibrium-temperature model",
+    "limitations": "Dim check: all three terms in W (Term1 [-][W/m^2][m^2]; Term2 [-][W m^-2 K^-4][m^2][K^4]; Term3 [W m^-2 K^-1][m^2][K]). CONSISTENT. RE-RAN exact: eta=eps=0.9, G=1361, A=1, T=400, T_env=300 -> P_abs=1224.9 W, P_rad=893.08 W, P_net(vac)=331.82 W, Teq(vac)=423.28 K, Teq(h=10)=369.10 K. Lumped single-node, steady-state, gray-body, constant h, no spectral selectivity beyond eta/eps, no optical losses, no fluid extraction. Stagnation T is model-internal (supported-within-model), not a device spec. NO unlimited energy."
+  },
+  {
+    "id": "vacuum_radiative_floor",
+    "latex": "\\lim_{h\\to 0} P_{loss} = \\epsilon\\,\\sigma\\,A\\,(T^4-T_{env}^4) > 0\\quad (T>T_{env})",
+    "variables": "as steady_heat_balance; shows total loss does NOT vanish as h->0 (perfect vacuum) — it asymptotes to the strictly-positive radiative term",
+    "evidence_class": "A",
+    "source": "Stefan-Boltzmann law applied to the collector balance",
+    "url": "https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_law",
+    "implemented_in": "irreducible radiative-loss floor",
+    "limitations": "Dim check: [-][W m^-2 K^-4][m^2][K^4] = W. OK. At T=400, T_env=300, eps=0.9, A=1 -> floor = 893.1 W regardless of evacuation depth. Why evacuated tubes still need spectrally selective low-emissivity coatings. Assumes radiation to an environment at T_env with effective emissivity eps; real enclosures have view-factor/multi-surface exchange. Qualitative result (radiation survives vacuum) robust; magnitude depends on coating emissivity. Vacuum does NOT erase thermodynamics."
+  },
+  {
+    "id": "disequilibrium_gibbs",
+    "latex": "\\Phi = G(\\text{observed}) - G(\\text{reacted equilibrium}) = \\sum_i n_i\\mu_i^{obs} - \\sum_i n_i\\mu_i^{eq}",
+    "variables": "Phi = available Gibbs free energy / disequilibrium [J per mol of atmosphere]; n_i = moles of species i [mol]; mu_i = chemical potential [J/mol]; obs = observed composition; eq = composition after reacting to equilibrium at fixed T,P",
+    "evidence_class": "B",
+    "source": "Krissansen-Totton et al. 2018, Science Advances 4:eaao5747 (method following Krissansen-Totton et al. 2016)",
+    "url": "https://www.science.org/doi/10.1126/sciadv.aao5747",
+    "implemented_in": "model-comparison score (atmospheric disequilibrium biosignature)",
+    "limitations": "Dim check: [mol][J/mol]=[J] -> per total moles -> J/mol of atmosphere. OK. Modern Earth gas phase Phi~1.5 J/mol (O2-CH4 dominated); dead equilibrated atmosphere Phi~0. NECESSARY-NOT-SUFFICIENT: some abiotic settings (volcanic, photochemical) sustain modest disequilibria; the MAGNITUDE and the SPECIFIC out-of-equilibrium pair carry the weight, not mere presence. Retrieving abundances+T,P remotely is hard/degenerate. 'This Phi proves life' is U/X. The 1.5 J/mol gas-phase value is NOT large vs other solar-system bodies; the full-fluid 2326 J/mol is the largest."
+  },
+  {
+    "id": "bayes_biosignature",
+    "latex": "P(\\text{life}\\mid D) = \\frac{P(D\\mid \\text{life})P(\\text{life})}{P(D\\mid \\text{life})P(\\text{life}) + P(D\\mid \\overline{\\text{life}})P(\\overline{\\text{life}})}",
+    "variables": "P(life|D) = posterior [0-1]; D = observed spectrum/context; P(D|life),P(D|not-life) = Exo-Earth-System forward-model likelihoods [dimensionless]; P(life) = prior [dimensionless]",
+    "evidence_class": "B",
+    "source": "Catling et al. 2018, Astrobiology 18:709-738",
+    "url": "https://arxiv.org/abs/1705.06381",
+    "implemented_in": "model-comparison score (graded biosignature posterior)",
+    "limitations": "Dim check: all dimensionless probabilities; posterior in [0,1]. OK. An O3 detection has a NON-NEGLIGIBLE abiotic likelihood P(D|not-life) (CO2 photolysis, M-dwarf H-escape, ocean loss), so the LR stays modest unless context shrinks the abiotic term -> 'O3 detected => life' cannot reach the top band (the denominator's false-positive term stays finite). Re-ran: LR=1.2/2/5 from prior 0.5 -> posterior 0.545/0.667/0.833, all <90%. Outputs are model-and-prior-dependent (B-leaning-C); false-positive likelihood itself uncertain. Report as model-conditional, never a measured fact."
+  },
+  {
+    "id": "AIF_VFE",
+    "latex": "F[q] = \\int q(\\eta|r)\\ln\\frac{q(\\eta|r)}{p(y,\\eta|m)}\\,d\\eta = D_{KL}(q(\\eta|r)\\|p(\\eta|y,m)) - \\ln p(y|m)",
+    "variables": "F[q] = variational free energy [nats]; q(eta|r) = recognition density; p(y,eta|m) = generative joint; p(eta|y,m) = exact posterior under model; p(y|m) = model evidence; -ln p(y|m) = surprisal [nats]",
+    "evidence_class": "A",
+    "source": "docs/MATH_DERIVATIONS.md lines 8, 20-22; Friston 2010 NRN",
+    "url": "https://www.nature.com/articles/nrn2787",
+    "implemented_in": "agent-layer model comparison (variational free energy bound)",
+    "limitations": "Dim check: all nats. F[q] >= -ln p(y|m) (UPPER bound on surprisal; never write 'lower bound on surprisal'). Tight iff q = posterior (KL=0). Worked toy: q=0.5,p=0.8 -> KL = 0.5*(-0.470)+0.5*(0.916) = 0.223144 nats (the -0.470/+0.916 are the UNWEIGHTED logs; weighted contributions -0.235/+0.458). EXACT only relative to a DECLARED factorization (MODULE-EXACT on chain/tree/segmental/bounded-treewidth); else VARIATIONALLY-CONTROLLED and the <1e-10 identity is a regression check, not a theorem. p(eta|y,m) is model-internal, NOT the physical world."
+  },
+  {
+    "id": "AIF_ELBO",
+    "latex": "\\mathrm{ELBO}(q) = -F[q] = \\mathbb{E}_q[\\ln p(y,\\eta|m)] + H[q] \\le \\ln p(y|m)",
+    "variables": "ELBO(q) [nats]; -F[q] [nats]; E_q[ln p(y,eta|m)] = expected complete-data log-joint [nats]; H[q] = -E_q[ln q] = entropy [nats]; ln p(y|m) = log model evidence [nats]",
+    "evidence_class": "A",
+    "source": "docs/MATH_DERIVATIONS.md lines 48, 54, 60; Friston 2010 NRN",
+    "url": "https://www.nature.com/articles/nrn2787",
+    "implemented_in": "agent-layer model comparison (evidence lower bound)",
+    "limitations": "Dim check: all nats; ELBO = (expected log-joint)+(entropy) <= log-evidence. CONSISTENT. Bound tight iff q=posterior; gap = the KL of AIF_VFE. Maximizing ELBO == minimizing F. NEVER invert the inequality (ELBO never exceeds ln p(y|m)). A model-COMPARISON surrogate for intractable log-evidence; ranks models WITHIN an assumed hypothesis space; does NOT establish physical truth. Same factorization caveat as AIF_VFE."
+  },
+  {
+    "id": "AIF_EFE",
+    "latex": "G(\\pi) = \\mathbb{E}_{q(o,s|\\pi)}[\\ln q(s|\\pi)-\\ln p(o,s|C)] = \\underbrace{\\mathbb{E}[D_{KL}(q(o|\\pi)\\|p(o|C))]}_{risk} + \\underbrace{\\mathbb{E}_{q(s|\\pi)}[H[p(o|s)]]}_{ambiguity} - \\underbrace{\\mathrm{IG}}_{info\\ gain}",
+    "variables": "G(pi) = expected free energy [nats, lower better]; q(o,s|pi) = predicted future joint; p(o,s|C) = preference-weighted joint (C = log-preferences); risk = expected divergence of outcomes from C; ambiguity = expected likelihood entropy; IG = expected info gain (SUBTRACTED -> epistemic drive)",
+    "evidence_class": "B",
+    "source": "Sajid, Ball, Parr & Friston (2019 arXiv:1909.10863 / 2021 Neural Computation 33(3):674-712); Parr, Pezzulo & Friston 2022 (MIT Press); CLAUDE.md §4",
+    "url": "https://arxiv.org/abs/1909.10863",
+    "implemented_in": "agent-layer policy scoring (expected free energy) — PARKED, no live loop",
+    "limitations": "Dim check: all three components in nats; G in nats. Sign: risk + ambiguity - info_gain, so larger expected info gain LOWERS G. Re-derived on toys: risk 0.082, ambiguity 0.464, info-gain subtracted. Selection Q(pi)=softmax(ln E - gamma*G) (E additive inside softmax; the repo's full variational policy posterior also subtracts F_pi per MATH_DERIVATIONS.md L122 — the pure-EFE scoring form is the standard simplification). EFE carries BOTH state-epistemics (ambiguity) AND parameter-epistemics (Dirichlet IG_A/IG_B), a deliberate COMPLETE scope; omitted epistemic terms must be named. Governs policy WITHIN a model; proves NO physical mechanism. STATUS (CLAUDE.md §0.7): no live perceive->EFE->act->learn loop where actions change future observations exists in the Rust crate — the running system is exact closed-set Bayesian model selection + count/cache prediction, NOT a strong-sense active-inference agent. CITATION: 'Sajid et al 2020' is wrong; cite 2019 (arXiv) / 2021 (journal)."
+  }
+]

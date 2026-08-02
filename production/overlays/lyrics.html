@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UNI Broadcast — Lyrics panel</title>
+  <style>
+    /* Side lyrics panel — fetches spool.nowPlaying.lyricsDocUrl (an absolute URL
+       from the music service — this is a same-origin fetch only when the operator
+       hosts the studio + music service on the same box; otherwise CORS: * on the
+       music service lets it through). Displayed as a scrolling column on the right
+       third; operator opts in per-segment via the studio_stage MUSIC_HOUR overlay
+       stack. Renders SYNCING when no lyricsDocUrl is present. */
+    body { background: transparent; overflow: hidden; margin: 0; font-family: system-ui, sans-serif; color: #e6edf3; }
+    .wrap {
+      position: fixed; right: 40px; top: 96px; bottom: 108px; width: 480px;
+      background: rgba(11,15,20,.86);
+      backdrop-filter: blur(10px) saturate(130%);
+      border-left: 4px solid #6bff9c;
+      border-radius: 12px; padding: 24px 26px;
+      display: flex; flex-direction: column; opacity: 0; transition: opacity 400ms ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+    .wrap.on { opacity: 1; }
+    .head { font-size: 11px; letter-spacing: .22em; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
+    .track { font-size: 22px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+    .body { flex: 1; overflow: hidden; position: relative; }
+    .body pre {
+      margin: 0; font-family: system-ui, sans-serif; font-size: 18px; line-height: 1.65;
+      white-space: pre-wrap; color: #cbd5e1;
+    }
+    .body::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 60px;
+      background: linear-gradient(to bottom, transparent, rgba(11,15,20,.94));
+      pointer-events: none;
+    }
+    .foot { font-size: 11px; color: #94a3b8; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div id="wrap" class="wrap">
+    <div class="head">LYRICS</div>
+    <div class="track" id="track">—</div>
+    <div class="body"><pre id="lyr">syncing…</pre></div>
+    <div class="foot" id="foot">source: music service</div>
+  </div>
+  <script>
+  const STATE = "/state.json";
+  const POLL_MS = 6000;
+  const $ = (id) => document.getElementById(id);
+  let lastDocUrl = null, lastSeq = null, lastText = "";
+  async function fetchState() { try { const r = await fetch(STATE, { cache: "no-store" }); return r.ok ? await r.json() : null; } catch (_) { return null; } }
+  async function fetchLyrics(url) {
+    if (!url) return null;
+    try { const r = await fetch(url, { cache: "no-store" }); return r.ok ? await r.text() : null; } catch (_) { return null; }
+  }
+  async function loop() {
+    const st = await fetchState();
+    const n = st && st.nowPlaying;
+    if (!n || n.err || !n.title) { $("wrap").classList.remove("on"); setTimeout(loop, POLL_MS); return; }
+    // STALE-PLAYHEAD HONESTY (2026-07-18): if the /api/nowplaying report is stuck, the title is
+    // frozen — do not air lyrics for the wrong track. Suppress the overlay entirely until the
+    // service recovers.
+    if (n.stalePlayhead) { $("wrap").classList.remove("on"); setTimeout(loop, POLL_MS); return; }
+    $("track").textContent = `${n.title} — ${n.artist || ""}`;
+    if (n.lyricsDocUrl && n.seq !== lastSeq) {
+      lastSeq = n.seq;
+      lastDocUrl = n.lyricsDocUrl;
+      const text = await fetchLyrics(n.lyricsDocUrl);
+      lastText = text || "(lyrics doc unreachable)";
+      $("lyr").textContent = lastText;
+      $("foot").textContent = "source: " + n.lyricsDocUrl.replace(/^https?:\/\//, "");
+      $("wrap").classList.add("on");
+    } else if (!n.lyricsDocUrl) {
+      $("lyr").textContent = "no lyrics doc for this track";
+      $("wrap").classList.add("on");
+    } else {
+      // seq unchanged; keep displayed text
+      $("wrap").classList.add("on");
+    }
+    setTimeout(loop, POLL_MS);
+  }
+  loop();
+  </script>
+</body>
+</html>

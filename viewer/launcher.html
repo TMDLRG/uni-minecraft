@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNI STUDIO — Mission Control</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#121821;--edge:#1f2937;--ink:#e5eef7;--dim:#8296ab;--acc:#3fd2ff;
+        --ok:#2ecc71;--warn:#f1b40f;--live:#e5484d;--gold:#f9e2af}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",system-ui,sans-serif;padding:16px;max-width:1100px;margin:0 auto}
+  h1{font-size:22px;letter-spacing:.04em}
+  h1 .u{color:var(--acc)}
+  .sub{color:var(--dim);font-size:13px;margin:2px 0 14px}
+  .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .pill{padding:4px 12px;border-radius:999px;border:1px solid var(--edge);font-weight:800;letter-spacing:.1em;font-size:13px}
+  .pill.UP{color:var(--ok);border-color:var(--ok);background:#0f2318}
+  .pill.PARTIAL{color:var(--warn);border-color:var(--warn);background:#241d0b}
+  .pill.DOWN{color:var(--live);border-color:var(--live);background:#2a1215}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:14px}
+  h3{font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+  .life{display:flex;gap:10px;flex-wrap:wrap}
+  button{background:#1b2532;color:var(--ink);border:1px solid #2c3a4d;border-radius:10px;padding:14px 20px;font:inherit;font-weight:800;cursor:pointer;letter-spacing:.04em}
+  button:hover{border-color:var(--acc)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  #start{border-color:var(--ok);background:#12301f;font-size:16px;flex:2;min-width:200px}
+  #stop{border-color:var(--live)}
+  #restart{border-color:var(--warn)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+  .tile{background:#0e141c;border:1px solid var(--edge);border-radius:10px;padding:10px 12px;border-left-width:4px}
+  .tile.up{border-left-color:var(--ok)} .tile.warn{border-left-color:var(--warn)} .tile.down{border-left-color:var(--live)}
+  .tile .t{font-weight:700;display:flex;align-items:center;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .dot.up{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.down{background:var(--live)}
+  .tile .d{color:var(--dim);font-size:12px;margin-top:4px;word-break:break-word}
+  .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+  a.link{display:block;background:#0e141c;border:1px solid var(--edge);border-radius:10px;padding:12px;text-decoration:none;color:var(--ink)}
+  a.link:hover{border-color:var(--acc)}
+  a.link .l{font-weight:700} a.link .h{color:var(--acc);font-size:12px;margin-top:3px;word-break:break-all} a.link .dz{color:var(--dim);font-size:12px}
+  .foot{color:var(--dim);font-size:12px;margin-top:6px}
+  #toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0e141c;border:1px solid var(--acc);border-radius:10px;padding:10px 16px;font-weight:700;display:none}
+</style>
+</head>
+<body>
+<h1><span class="u">UNI</span> STUDIO — Mission Control</h1>
+<div class="sub">The single start point. Bring the whole studio up or down here, and see every system's real health. Run the show in the <b>Command center</b> once it's up.</div>
+
+<div class="bar">
+  <span id="stackpill" class="pill DOWN">— </span>
+  <span class="foot" id="stacknote"></span>
+</div>
+
+<div class="panel" style="background:#0f2318;border-color:var(--ok)">
+  <h3 style="color:var(--ok)">One screen — everything live</h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:14px">
+    <a href="/hub" style="color:var(--ink);background:#12301f;border:1px solid var(--gold);border-radius:8px;padding:10px 16px;text-decoration:none;font-weight:800">▸ /hub — ALL tools by name (no IPs) — start here</a>
+    <a href="/infra" style="color:var(--ink);background:#12301f;border:1px solid var(--ok);border-radius:8px;padding:10px 16px;text-decoration:none;font-weight:800">▸ /infra — operator surface (ladder · teleprompter · rundown · gates · fleet · pop-outs)</a>
+    <a href="/firstrun" style="color:#f0e6d6;background:#1c1916;border:1px solid #e0b876;border-radius:8px;padding:10px 16px;text-decoration:none;font-weight:700">▸ /firstrun — the room before the room (first-time-use, safe to click anything)</a>
+    <a href="/api/discovery" style="color:var(--ink);background:#1b2532;border:1px solid var(--edge);border-radius:8px;padding:10px 16px;text-decoration:none;font-weight:700">▸ /api/discovery — LLM manifest (curl this)</a>
+    <a href="https://github.com/TMDLRG/UNI.MineCraft/blob/lab/ozone-life-uni-hard-science/docs/OPERATIONS_MANUAL.md" target="_blank" style="color:var(--ink);background:#1b2532;border:1px solid var(--edge);border-radius:8px;padding:10px 16px;text-decoration:none;font-weight:700">▸ Operations manual</a>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Lifecycle</h3>
+  <div class="life">
+    <button id="start">▶ START STUDIO</button>
+    <button id="restart">⟳ RESTART</button>
+    <button id="stop">■ STOP ALL</button>
+  </div>
+  <div class="foot">START runs the one coherent bring-up (world → UNI colony → studio). STOP is a verified teardown that reaps every colony body. This launcher stays up through both.</div>
+</div>
+
+<div class="panel">
+  <h3>System health <span style="color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0">(real gates — refreshed every 3s)</span></h3>
+  <div class="grid" id="tiles"></div>
+</div>
+
+<div class="panel">
+  <h3>Links — every surface</h3>
+  <div class="links" id="links"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let busy = false;
+function toast(t){ const el=$("toast"); el.textContent=t; el.style.display="block"; clearTimeout(toast._t); toast._t=setTimeout(()=>el.style.display="none",3500); }
+
+async function post(p){
+  if(busy) return; busy=true;
+  try{ const r=await fetch(p,{method:"POST",headers:{"x-uni-cc":"1","Content-Type":"application/json"},body:"{}"});
+    const j=await r.json(); toast(j.ok?`${j.action} sent — watch the tiles`:(j.err||"failed")); }
+  catch(e){ toast("failed: "+e.message); }
+  finally{ setTimeout(()=>busy=false,1500); }
+}
+$("start").onclick=()=>post("/api/start");
+$("stop").onclick=()=>{ if(confirm("Tear the WHOLE studio down? (verified teardown; the launcher stays up)")) post("/api/stop"); };
+$("restart").onclick=()=>{ if(confirm("Restart the whole studio? Stops everything, then brings it back up fresh.")) post("/api/restart"); };
+
+function cls(t){ return t.up ? (t.warn ? "warn" : "up") : "down"; }
+async function refresh(){
+  let m; try{ m=await (await fetch("/api/mission")).json(); }catch(e){ return; }
+  const p=$("stackpill"); p.className="pill "+m.stack;
+  p.textContent = m.stack==="UP"?"● STUDIO UP":m.stack==="PARTIAL"?"◐ PARTIAL":"○ STUDIO DOWN";
+  $("stacknote").textContent = m.stack==="UP" ? "all core systems green — run the show in the command center"
+    : m.stack==="PARTIAL" ? "some systems up — press RESTART for a clean bring-up" : "press START to bring the studio up";
+  $("tiles").innerHTML = m.tiles.map(t=>{
+    const c=cls(t);
+    return `<div class="tile ${c}"><div class="t"><span class="dot ${c}"></span>${t.label}</div><div class="d">${t.detail||""}</div></div>`;
+  }).join("");
+  $("links").innerHTML = m.links.map(l=>l.href
+    ? `<a class="link" href="${l.href}" target="_blank" rel="noopener"><div class="l">${l.label}</div><div class="dz">${l.desc}</div><div class="h">${l.href}</div></a>`
+    : `<div class="link" style="opacity:.75;cursor:default"><div class="l">${l.label}</div><div class="dz">${l.desc}</div><div class="h">not a webpage — see description</div></div>`
+  ).join("");
+}
+refresh(); setInterval(refresh, 3000);
+</script>
+</body>
+</html>

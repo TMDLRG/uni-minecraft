@@ -1,0 +1,320 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>UNI LAB — L4, rooms, airlocks, portals</title>
+<!--
+  L4: ROOMS, AIRLOCKS, PORTALS. Phase 9 step 4.6, build 4.
+
+  THE AIRLOCK TO AIR HAS NO DOOR, AND THAT IS NOT THE SAME AS BEING LOCKED.
+
+  Three kinds of closed, drawn three different ways on purpose:
+
+    OPEN            a gap in the wall. Walk through it.
+    SEALED BY RULE  a framed door with a bar across it. A door EXISTS. A written rule (S10) says
+                    an agent may not open it. The operator can.
+    NO DOOR         unbroken wall. Nothing to unlock. No key would work, for anyone, including him.
+
+  Collapsing these into one grey "locked" is what this build exists to prevent. Sealed waits on a
+  DECISION. No-door waits on something BEING BUILT. Drawn the same, a reader concludes a decision
+  would open the airlock — and it would not.
+
+  AND THE REFUSAL IS PHYSICAL, NOT DESCRIBED. You cannot walk into the sealed room or the airlock.
+  The walls stop you. A page that says "closed" while letting you through has taught you that its
+  words are decoration.
+
+  Nothing here can open anything. There is no POST, no mint, no path to :8098 — a surface that
+  draws a door must not be able to walk through it, or the drawing becomes the deciding.
+-->
+<style>
+  :root { --ink:#e8eef2; --dim:#7c8b96; --floor:#141b21; --line:#1e2a33; --you:#7fd1c4;
+          --wall:#26333d; --wallTop:#33444f; --open:#7fd1c4; --sealed:#d8b46a; --nodoor:#8a5b5b;
+          --fog:#4a5a66; --up:#7fd1c4; --down:#8a5b5b; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:#0a0f13; color:var(--ink);
+              font:13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  canvas { display:block; width:100%; height:100%; cursor:crosshair; }
+  #hud { position:fixed; left:14px; top:12px; pointer-events:none; }
+  #hud h1 { margin:0 0 2px; font-size:13px; letter-spacing:.14em; font-weight:600; }
+  #hud p { margin:0; color:var(--dim); }
+  #key { position:fixed; right:14px; top:12px; text-align:right; color:var(--dim); pointer-events:none; }
+  #key b { color:var(--ink); font-weight:600; }
+  #key i { font-style:normal; }
+  #say { position:fixed; left:14px; bottom:12px; right:14px; color:var(--dim);
+         border-left:3px solid var(--nodoor); padding:8px 12px; background:rgba(20,27,33,.88); }
+  #say b { color:var(--ink); }
+  #where { position:fixed; right:14px; bottom:96px; text-align:right; color:var(--ink);
+           background:rgba(20,27,33,.92); padding:8px 12px; border-left:3px solid var(--dim);
+           max-width:min(460px,44vw); display:none; }
+  #bump { position:fixed; left:50%; top:38%; transform:translateX(-50%); color:var(--nodoor);
+          font-weight:600; letter-spacing:.1em; opacity:0; transition:opacity .25s; pointer-events:none;
+          text-align:center; }
+</style>
+
+<canvas id="c"></canvas>
+<div id="hud"><h1>UNI LAB · L4</h1><p>rooms, airlocks, portals — walk into them</p></div>
+<div id="key">
+  <b id="stat">reading…</b><br />
+  <i style="color:var(--open)">▯ open</i> ·
+  <i style="color:var(--sealed)">▤ sealed by rule</i> ·
+  <i style="color:var(--nodoor)">█ no door</i><br />
+  <span id="boot">boot …</span>
+</div>
+<div id="bump"></div>
+<div id="where"></div>
+<div id="say">…</div>
+
+<script>
+  "use strict";
+  const ROOM = { w: 52, h: 36 };
+  const you = { x: 26, y: 33 };
+  const target = { x: null, y: null };
+  const keys = new Set();
+  let ROOMS = [], PORTALS = [], SAID = null, bumpAt = 0;
+
+  // The three rooms stand side by side on the concourse. Layout is presentation and carries no
+  // meaning — it is not ordered by importance, because a reader who infers a ranking from a floor
+  // plan has been told something nobody measured.
+  const PLAN = {
+    "the-gate-floor":     { x: 3,  y: 3,  w: 15, h: 17, doorSpan: [8, 13] },
+    "the-sealed-room":    { x: 20, y: 3,  w: 13, h: 17, doorSpan: [24, 29] },
+    "the-airlock-to-air": { x: 35, y: 3,  w: 14, h: 17, doorSpan: [39, 45] },
+  };
+
+  const c = document.getElementById("c");
+  const g = c.getContext("2d");
+  let W = 0, H = 0, DPR = 1;
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  addEventListener("resize", resize);
+
+  function view() {
+    const s = Math.min(W / (ROOM.w * 1.6), H / (ROOM.h * 1.25));
+    return { s, ox: W / 2, oy: H / 2 - ROOM.h * s * 0.16 };
+  }
+  const iso = (x, y) => { const { s, ox, oy } = view();
+    return [ox + (x - ROOM.w/2) * s * .75 - (y - ROOM.h/2) * s * .75,
+            oy + (x - ROOM.w/2) * s * .38 + (y - ROOM.h/2) * s * .38]; };
+  function unIso(px, py) { const { s, ox, oy } = view();
+    const a = (px - ox) / (s * .75), b = (py - oy) / (s * .38);
+    return [(a + b) / 2 + ROOM.w/2, (b - a) / 2 + ROOM.h/2]; }
+  function line(x1,y1,x2,y2){const[a,b]=iso(x1,y1),[d,e]=iso(x2,y2);g.beginPath();g.moveTo(a,b);g.lineTo(d,e);g.stroke();}
+  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const geom = (r) => PLAN[r.id];
+
+  function floor() {
+    g.beginPath();
+    [[0,0],[ROOM.w,0],[ROOM.w,ROOM.h],[0,ROOM.h]].forEach(([x,y],i)=>{const[a,b]=iso(x,y);i?g.lineTo(a,b):g.moveTo(a,b);});
+    g.closePath(); g.fillStyle = cssVar("--floor"); g.fill();
+    g.strokeStyle = cssVar("--line"); g.lineWidth = 1; g.globalAlpha = .45;
+    for (let x = 2; x < ROOM.w; x += 2) line(x, 0, x, ROOM.h);
+    for (let y = 2; y < ROOM.h; y += 2) line(0, y, ROOM.w, y);
+    g.globalAlpha = 1;
+  }
+
+  // A wall run, drawn as a low solid with a lit top edge so it reads as blocking rather than painted.
+  function wall(x1, y1, x2, y2, h) {
+    const [ax, ay] = iso(x1, y1), [bx, by] = iso(x2, y2);
+    const { s } = view(); const t = (h || 1.4) * s;
+    g.beginPath(); g.moveTo(ax, ay); g.lineTo(bx, by); g.lineTo(bx, by - t); g.lineTo(ax, ay - t);
+    g.closePath(); g.fillStyle = cssVar("--wall"); g.fill();
+    g.strokeStyle = cssVar("--wallTop"); g.lineWidth = 1.4;
+    g.beginPath(); g.moveTo(ax, ay - t); g.lineTo(bx, by - t); g.stroke();
+  }
+
+  // THE THREE DOORS, three separate branches. Not one branch with three colours: a colour is a
+  // decoration and gets read as a mood, while a gap, a barred panel and unbroken wall are three
+  // different objects and read as three different facts.
+  function drawDoor(r) {
+    const q = geom(r); if (!q) return;
+    const [a, b] = q.doorSpan, yw = q.y + q.h;      // the near wall of the room
+    const { s } = view();
+
+    if (r.door === "open") {                         // A GAP. The wall simply is not there.
+      const [px, py] = iso((a + b) / 2, yw);
+      g.strokeStyle = cssVar("--open"); g.lineWidth = 2.4; g.globalAlpha = .9;
+      line(a, yw, b, yw);                            // a lit threshold on the floor, no wall above it
+      g.globalAlpha = 1;
+      g.fillStyle = cssVar("--open"); g.globalAlpha = .10;
+      g.beginPath(); g.ellipse(px, py, s * 2.2, s * 1.0, 0, 0, Math.PI * 2); g.fill();
+      g.globalAlpha = 1;
+      return;
+    }
+
+    if (r.door === "sealed_by_rule") {               // A FRAMED DOOR, BARRED. It exists. It is shut.
+      wall(a, yw, b, yw, 1.4);
+      const [ax, ay] = iso(a, yw), [bx, by] = iso(b, yw); const t = 1.4 * s;
+      g.strokeStyle = cssVar("--sealed"); g.lineWidth = 2.2;
+      g.beginPath(); g.moveTo(ax, ay); g.lineTo(ax, ay - t); g.lineTo(bx, by - t); g.lineTo(bx, by);
+      g.stroke();                                    // the frame — three sides, clearly a doorway
+      g.lineWidth = 4.5; g.beginPath();              // and the bar across it
+      g.moveTo(ax, ay - t * .52); g.lineTo(bx, by - t * .52); g.stroke();
+      return;
+    }
+
+    // NO DOOR. Unbroken wall, no frame, no panel, nothing to look for. The absence is the drawing.
+    wall(a, yw, b, yw, 1.4);
+  }
+
+  function drawRoom(r) {
+    const q = geom(r); if (!q) return;
+    const x2 = q.x + q.w, y2 = q.y + q.h;
+
+    // Interior: a room you cannot enter is drawn in fog, because nothing in here has looked inside it.
+    if (r.door !== "open") {
+      const [cx, cy] = iso(q.x + q.w / 2, q.y + q.h / 2); const { s } = view();
+      const grd = g.createRadialGradient(cx, cy, s, cx, cy, s * q.w * .55);
+      grd.addColorStop(0, "rgba(74,90,102,.34)"); grd.addColorStop(1, "rgba(74,90,102,0)");
+      g.fillStyle = grd;
+      g.beginPath(); g.ellipse(cx, cy, s * q.w * .5, s * q.h * .28, 0, 0, Math.PI * 2); g.fill();
+    }
+
+    wall(q.x, q.y, x2, q.y, 1.4);                    // far wall
+    wall(q.x, q.y, q.x, y2, 1.4);                    // left wall
+    wall(x2, q.y, x2, y2, 1.4);                      // right wall
+    const [a, b] = q.doorSpan;                       // near wall, split around the doorway
+    wall(q.x, y2, a, y2, 1.4);
+    wall(b, y2, x2, y2, 1.4);
+    drawDoor(r);
+  }
+
+  // The portal wall: the other surfaces, and their liveness — which comes only from a real probe.
+  function drawPortals() {
+    if (!PORTALS.length) return;
+    const { s } = view();
+    PORTALS.forEach((p, i) => {
+      const x = 6 + i * 8.5, y = 34.6;
+      const [px, py] = iso(x, y);
+      g.strokeStyle = p.liveness === "up" ? cssVar("--up")
+                    : p.liveness === "down" ? cssVar("--down") : cssVar("--fog");
+      g.lineWidth = 1.8;
+      g.beginPath(); g.moveTo(px - s * .9, py); g.lineTo(px - s * .9, py - s * 1.8);
+      g.lineTo(px + s * .9, py - s * 1.8); g.lineTo(px + s * .9, py); g.stroke();
+      if (p.liveness === "up") { g.globalAlpha = .18; g.fillStyle = cssVar("--up");
+        g.fillRect(px - s * .9, py - s * 1.8, s * 1.8, s * 1.8); g.globalAlpha = 1; }
+      if (p.liveness === "down") {                   // dark, and struck through — looked at, and out
+        g.beginPath(); g.moveTo(px - s * .9, py - s * 1.8); g.lineTo(px + s * .9, py); g.stroke(); }
+      if (p.liveness === "not_probed") { g.setLineDash([4, 4]);   // never looked at: hollow, dashed
+        g.beginPath(); g.moveTo(px - s * .9, py - s * .9); g.lineTo(px + s * .9, py - s * .9);
+        g.stroke(); g.setLineDash([]); }
+      g.fillStyle = cssVar("--dim"); g.font = "11px ui-monospace, monospace"; g.textAlign = "center";
+      g.fillText(p.title, px, py + s * .9);
+    });
+    g.textAlign = "left";
+  }
+
+  function drawYou() {
+    const [px,py] = iso(you.x, you.y); const { s } = view();
+    g.beginPath(); g.ellipse(px, py, s*.42, s*.22, 0, 0, Math.PI*2);
+    g.fillStyle = "rgba(0,0,0,.45)"; g.fill();
+    g.beginPath(); g.moveTo(px, py - s*1.15); g.lineTo(px + s*.3, py); g.lineTo(px - s*.3, py);
+    g.closePath(); g.fillStyle = cssVar("--you"); g.fill();
+  }
+
+  // ---- COLLISION: the refusal is physical -------------------------------------------------------
+  // A room you cannot enter must actually stop you. A page that says "closed" and then lets you
+  // walk in has taught you that its words are decoration, and you will read the next one that way.
+  const inside = (q, x, y) => x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h;
+
+  function blocked(nx, ny) {
+    for (const r of ROOMS) {
+      const q = geom(r); if (!q) continue;
+      const was = inside(q, you.x, you.y), now = inside(q, nx, ny);
+      if (was === now) continue;
+      if (r.door !== "open") return r;                       // no way through at all
+      const [a, b] = q.doorSpan;                             // through the gap, or not at all
+      if (!(nx > a && nx < b)) return r;
+    }
+    return null;
+  }
+
+  addEventListener("keydown",(e)=>{keys.add(e.key.toLowerCase()); if("wasd".includes(e.key.toLowerCase())){target.x=null;e.preventDefault();}});
+  addEventListener("keyup",(e)=>keys.delete(e.key.toLowerCase()));
+  c.addEventListener("click",(e)=>{const r=c.getBoundingClientRect();const[x,y]=unIso(e.clientX-r.left,e.clientY-r.top);
+    target.x=Math.max(.6,Math.min(ROOM.w-.6,x)); target.y=Math.max(.6,Math.min(ROOM.h-.6,y));});
+
+  function bump(r) {
+    bumpAt = performance.now();
+    const el = document.getElementById("bump");
+    el.textContent = r.door === "no_door"
+      ? "THERE IS NO DOOR — nothing to unlock, and no key that would work"
+      : "SEALED BY " + (r.rule ? r.rule.id : "RULE") + " — a door is there; you may not open it";
+    el.style.opacity = 1;
+  }
+
+  function step(dt) {
+    const sp = keys.has("shift") ? 15 : 7.5;
+    let dx=0, dy=0;
+    if(keys.has("w")){dx-=1;dy-=1;} if(keys.has("s")){dx+=1;dy+=1;}
+    if(keys.has("a")){dx-=1;dy+=1;} if(keys.has("d")){dx+=1;dy-=1;}
+    let nx = you.x, ny = you.y;
+    if(dx||dy){const m=Math.hypot(dx,dy); nx+=dx/m*sp*dt; ny+=dy/m*sp*dt;}
+    else if(target.x!==null){const ax=target.x-you.x,ay=target.y-you.y,d=Math.hypot(ax,ay);
+      if(d<.15){target.x=null;} else {nx+=ax/d*sp*dt; ny+=ay/d*sp*dt;}}
+    nx=Math.max(.6,Math.min(ROOM.w-.6,nx)); ny=Math.max(.6,Math.min(ROOM.h-.6,ny));
+    const hit = blocked(nx, ny);
+    if (hit) { bump(hit); target.x = null; return; }
+    you.x = nx; you.y = ny;
+    if (performance.now() - bumpAt > 1600) document.getElementById("bump").style.opacity = 0;
+  }
+
+  function whereAmI() {
+    const el = document.getElementById("where");
+    let near = null, nd = 1e9;
+    for (const r of ROOMS) { const q = geom(r); if (!q) continue;
+      const d = Math.hypot(q.x + q.w/2 - you.x, q.y + q.h/2 - you.y);
+      if (d < nd) { nd = d; near = r; } }
+    if (!near || nd > 16) { el.style.display = "none"; return; }
+    el.style.display = "block";
+    el.style.borderLeftColor = near.door === "open" ? cssVar("--open")
+      : near.door === "sealed_by_rule" ? cssVar("--sealed") : cssVar("--nodoor");
+    el.innerHTML =
+      "<b>" + near.title + "</b> · " + near.members + " inside<br />" +
+      "<b style='color:" + (near.door === "open" ? cssVar("--open")
+        : near.door === "sealed_by_rule" ? cssVar("--sealed") : cssVar("--nodoor")) + "'>" +
+      near.door.replace(/_/g, " ").toUpperCase() + "</b>" +
+      (near.rule ? " — " + near.rule.id + ": " + near.rule.what : "") +
+      "<br /><span style='color:var(--dim)'>" + near.why + "</span>";
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now-last)/1000, .05); last = now;
+    step(dt);
+    g.clearRect(0,0,W,H);
+    floor(); drawPortals();
+    [...ROOMS].sort((a,b)=>{const p=geom(a),q=geom(b); return (p?p.y:0)-(q?q.y:0);}).forEach(drawRoom);
+    drawYou(); whereAmI();
+    requestAnimationFrame(frame);
+  }
+
+  async function tick() {
+    try {
+      const b = await (await fetch("/api/lab/rooms")).json();
+      ROOMS = b.rooms || []; SAID = b.the_distinction;
+      const air = ROOMS.find((r) => r.id === "the-airlock-to-air");
+      document.getElementById("stat").textContent =
+        ROOMS.length + " rooms · airlock " + (air ? air.door.replace(/_/g, " ") : "?");
+      document.getElementById("say").innerHTML =
+        "<b>" + (air && air.door === "no_door"
+          ? "THE AIRLOCK TO AIR HAS NO DOOR."
+          : "THE AIRLOCK HAS A DOOR.") + "</b> " + (air ? air.why : "") +
+        "<br /><b>" + SAID + "</b>";
+    } catch { document.getElementById("stat").textContent = "the building is not answering"; }
+    try {
+      const p = await (await fetch("/api/lab/portals")).json();
+      PORTALS = p.portals || [];
+    } catch { PORTALS = PORTALS.map((p) => ({ ...p, liveness: "not_probed" })); }
+  }
+
+  resize();
+  requestAnimationFrame(frame);
+  tick();
+  setInterval(tick, 5000);
+  fetch("/api/identity").then((r)=>r.json()).then((i)=>{
+    document.getElementById("boot").textContent = "boot " + String(i.boot_git_commit||"?").slice(0,7);
+  }).catch(()=>{});
+</script>

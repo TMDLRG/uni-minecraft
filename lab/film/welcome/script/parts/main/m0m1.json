@@ -1,0 +1,61 @@
+[
+  {
+    "id": "m0m1_open",
+    "plate": "title",
+    "kicker": "A LABORATORY BUILT TO BE CAUGHT BEING WRONG",
+    "line1": "Welcome to UNI Labs",
+    "line2": "Every frame after this one is a command, and what it printed.",
+    "narration": "This is the long version. What follows is a laboratory shown one frame at a time. Each frame carries a question in plain words, the command that answers it, and the output that command actually printed. Nothing in it asks you to accept a summary. You are being handed the receipts.",
+    "tail_silence": 1.4,
+    "_from_documentary": "d_m0+m1_open"
+  },
+  {
+    "id": "m0m1_the_falsifier",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "docs/FALSIFICATION.md",
+    "from": 30,
+    "to": 33,
+    "why": "The same file, further down: the exact edit that would break one of its claims",
+    "narration": "And this is what stands behind that sentence. Every claim in that document ships with the specific change that would break it. On screen is one of them. Alter an update equation in the way it names, and a named gate stops holding. It tells you where to put the crowbar.",
+    "tail_silence": 1.6,
+    "_from_documentary": "d_m0+m1_the_falsifier"
+  },
+  {
+    "id": "m0m1_mission",
+    "plate": "intent",
+    "lines": [
+      "Worldwide peace through free and open understanding.",
+      "The public pursuit and ownership of",
+      "General Universal Natural Intelligence.",
+      "The end of extract and extortion.",
+      "Making safe all wombs, and Gaia —",
+      "earth, our solar system, and beyond."
+    ],
+    "narration": "That is what this work is for, whole and unsoftened. Nothing has been trimmed off it to make it easier to say out loud. The amber rail and the header are the point: none of that frame was measured, and none of it is offered as a finding. It is where the instruments are pointed.",
+    "tail_silence": 1.8,
+    "_from_documentary": "d_m0+m1_mission"
+  },
+  {
+    "id": "m0m1_numbers_measured",
+    "plate": "measurement",
+    "probe": "film.tokens",
+    "asks": "Where did the numbers in this film come from?",
+    "source": "lab/film/welcome/qc/tokens.cjs — each figure is an expression over a live file, evaluated while the frames were being made",
+    "note": "A number typed into a film has no half-life. It simply becomes wrong at an unannounced moment.",
+    "narration": "Not one figure in this film was typed. Each is an expression run against a real file at the moment the frame was built. The line on screen is that register reporting how many expressions it carries and how many failed to resolve. Run it after you clone, and compare.",
+    "tail_silence": 1.4,
+    "_from_documentary": "d_m0+m1_numbers_measured"
+  },
+  {
+    "id": "m0m1_film_under_its_own_gate",
+    "plate": "measurement",
+    "probe": "film.qc",
+    "asks": "Is this film itself held to a check?",
+    "source": "lab/film/welcome/qc/verify_welcome_film.cjs — and a mutation suite that breaks the film on purpose to see whether the check notices",
+    "note": "The check reads words and receipts. It has no way to tell whether the film is honest in spirit, and it prints that limitation on every run.",
+    "narration": "The film is treated the way it treats everything else. This check forbids a list of words, re-reads every quoted line range and hashes it again, and re-derives each figure from the file it came from. The second count on that line is deliberate sabotage it was required to catch.",
+    "tail_silence": 1.6,
+    "_from_documentary": "d_m0+m1_film_under_its_own_gate"
+  }
+]

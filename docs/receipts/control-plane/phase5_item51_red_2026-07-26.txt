@@ -1,0 +1,179 @@
+Running ExUnit with seed: 511339, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test the claim level is tamper_evident, and nothing here says tamper_proof (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:105
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.claim_level/0 is undefined (module SP.ControlPlane.Witness is not available)
+     code: assert Witness.claim_level() == :tamper_evident
+     stacktrace:
+       SP.ControlPlane.Witness.claim_level()
+       test/sp/control_plane/witness_out_of_reach_test.exs:106: (test)
+
+
+
+  2) test two custodians in DIFFERENT domains corroborate (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:116
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "331021a9acc972906c894e1e96af326cf0ecdf361f0499c9425c5bc5b1bcac3a", length: 4}, [writer_reachable: true])
+       test/sp/control_plane/witness_out_of_reach_test.exs:93: SP.ControlPlane.WitnessOutOfReachTest.custodian!/4
+       test/sp/control_plane/witness_out_of_reach_test.exs:122: (test)
+
+
+
+  3) test a custodian claiming independence must carry the evidence of it (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:211
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: assert {:error, reason} = Witness.custodian("offbox:x", :offbox, a, []),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("offbox:x", :offbox, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 3}, [])
+       test/sp/control_plane/witness_out_of_reach_test.exs:214: (test)
+
+
+
+  4) test ONE custodian is not corroboration, however trustworthy it looks (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:130
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("offbox:uni-lab-79740c", :offbox, local, writer_reachable: false)
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("offbox:uni-lab-79740c", :offbox, %SP.ControlPlane.Anchor{head: "087f1eb21b64d1975cb210c332f4b54f2c0ed159fa9ff9bfd73df29f6bea53f0", length: 3}, [writer_reachable: false])
+       test/sp/control_plane/witness_out_of_reach_test.exs:93: SP.ControlPlane.WitnessOutOfReachTest.custodian!/4
+       test/sp/control_plane/witness_out_of_reach_test.exs:136: (test)
+
+.
+
+  5) test a disagreement carries BOTH sides, per custodian — never a bare boolean (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:43
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:49: (test)
+
+
+
+  6) test the disagreement names WHICH side moved, in a way a reader can act on (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:63
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:68: (test)
+
+
+
+  7) test THE PHASE 4 ATTACK NOW FAILS — truncating the store and re-anchoring is caught (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:171
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, honest, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "b197077eecfbc0266f973ef83ed0f0133c8ae2daca12aa4f012bdd65bff09b90", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_out_of_reach_test.exs:93: SP.ControlPlane.WitnessOutOfReachTest.custodian!/4
+       test/sp/control_plane/witness_out_of_reach_test.exs:176: (test)
+
+
+
+  8) test a disagreement is renderable without the module that produced it (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:144
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:149: (test)
+
+
+
+  9) test two custodians in the SAME domain are not corroboration — they share a failure (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:142
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("offbox:a", :offbox, local, writer_reachable: false),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("offbox:a", :offbox, %SP.ControlPlane.Anchor{head: "087f1eb21b64d1975cb210c332f4b54f2c0ed159fa9ff9bfd73df29f6bea53f0", length: 3}, [writer_reachable: false])
+       test/sp/control_plane/witness_out_of_reach_test.exs:93: SP.ControlPlane.WitnessOutOfReachTest.custodian!/4
+       test/sp/control_plane/witness_out_of_reach_test.exs:148: (test)
+
+
+
+ 10) test a differing head at the same length is a FORK, and is named differently from being behind (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:78
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:83: (test)
+
+
+
+ 11) test agreement is also two-sided — it carries what agreed, not just that something did (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:122
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:127: (test)
+
+
+
+ 12) test a custodian AHEAD of local is its own kind — the local store may be the stale one (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:91
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", length: 4}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:96: (test)
+
+
+
+ 13) test a custodian the WRITER CAN REACH does not count toward independence — that is the chip (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:153
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "087f1eb21b64d1975cb210c332f4b54f2c0ed159fa9ff9bfd73df29f6bea53f0", length: 3}, [writer_reachable: true])
+       test/sp/control_plane/witness_out_of_reach_test.exs:93: SP.ControlPlane.WitnessOutOfReachTest.custodian!/4
+       test/sp/control_plane/witness_out_of_reach_test.exs:161: (test)
+
+
+
+ 14) test every disagreeing custodian gets its own finding — none is collapsed into a summary (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:104
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, anchor("b", 6), writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", length: 6}, [writer_reachable: true])
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:39: SP.ControlPlane.WitnessDisagreementIsTwoSidedTest.custodian!/4
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:109: (test)
+
+
+
+ 15) test like-for-like survives — a witness compares head to head and length to length (SP.ControlPlane.WitnessDisagreementIsTwoSidedTest)
+     test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:137
+     ** (File.Error) could not read file "c:/Users/mpolz/Documents/UNI.Minecraft/lib/sp/control_plane/witness.ex": no such file or directory
+     code: source = Path.expand("../../../lib/sp/control_plane/witness.ex", __DIR__) |> File.read!()
+     stacktrace:
+       (elixir 1.19.5) lib/file.ex:435: File.read!/1
+       test/sp/control_plane/witness_disagreement_is_two_sided_test.exs:138: (test)
+
+
+
+ 16) test corroboration also fails when ONE custodian disagrees — a single dissent is enough (SP.ControlPlane.WitnessOutOfReachTest)
+     test/sp/control_plane/witness_out_of_reach_test.exs:194
+     ** (UndefinedFunctionError) function SP.ControlPlane.Witness.custodian/4 is undefined (module SP.ControlPlane.Witness is not available)
+     code: custodian!("git", :git, local, writer_reachable: true),
+     stacktrace:
+       SP.ControlPlane.Witness.custodian("git", :git, %SP.ControlPlane.Anchor{head: "331021a9acc972906c894e1e96af326cf0ecdf361f0499c9425c5bc5b1bcac3a", length: 4}, [writer_reachable: true])
+       test/sp/control_plane/witness_out_of_reach_test.exs:93: SP.ControlPlane.WitnessOutOfReachTest.custodian!/4
+       test/sp/control_plane/witness_out_of_reach_test.exs:201: (test)
+
+
+Finished in 0.4 seconds (0.4s async, 0.00s sync)
+17 tests, 16 failures

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g15" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#13111c"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g15)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="330" text-anchor="middle" font-family="Georgia,serif" font-size="54" fill="#cdd6f4" font-style="italic">"Ozone is a triatomic oxidant. It is not alive."</text>
+  
+  <rect x="0" y="701" width="1920" height="379" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="701" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Ozone, as a molecule, meets none of the things we mean by life. It does not eat, it does</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">not grow, it does not copy itself, it does not respond to a wound. It is a clean, simple</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">triatomic oxidant — and at ground level it is mildly toxic, the very thing your nose</text>
+  <text x="960" y="855" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">smells after a thunderstorm. As reading one, this idea collapses. Class X — contradicted.</text>
+  <rect x="800" y="869" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">ओझोन, एक रेणू म्हणून, जीवन म्हणून आपण ज्याला म्हणतो त्यापैकी कशालाही पूर्ण करत</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">नाही. ते खात नाही, वाढत नाही, स्वतःच्या प्रती बनवत नाही, जखमेला प्रतिसाद देत नाही.</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">ते एक स्वच्छ, साधे त्रि-अणू ऑक्सिडकारक आहे — आणि जमिनीच्या पातळीवर ते सौम्यपणे</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">विषारी आहे, गडगडाटी वादळानंतर तुमच्या नाकाला जाणवणारी तीच गोष्ट. वाचन एक म्हणून,</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">ही कल्पना कोलमडते. वर्ग X — खोडली गेली.</text>
+</svg>

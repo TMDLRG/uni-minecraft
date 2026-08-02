@@ -1,0 +1,24 @@
+# Caddyfile -- served by the uni-bcast-overlays quadlet (caddy:alpine), loopback 127.0.0.1:8099.
+# DESIGN/REFERENCE, pending. Serves the transparent overlay pages from this folder and aliases the
+# live overlay state to /overlays/state.json with Cache-Control: no-store, so each page's
+# fetch('./state.json', {cache:'no-store'}) loop sees the producer's fresh broadcast.json.
+# Mirrors the glass cockpit's "state file written to a spool, mapped read-only into the page URL-space"
+# pattern. Ships at /var/lib/uni/broadcast/overlays/Caddyfile (rsynced from production/overlays/).
+:8099 {
+	root * /var/lib/uni/broadcast/overlays
+
+	# The live overlay state: /overlays/state.json -> the producer's spool broadcast.json, never cached.
+	@state path /overlays/state.json
+	handle @state {
+		header Cache-Control "no-store"
+		rewrite * /broadcast.json
+		root * /var/lib/uni/broadcast
+		file_server
+	}
+
+	# Everything else is a static overlay page (ticker/lower-third/title/caption/onair/clock/standby/stage).
+	handle {
+		header Cache-Control "no-store"
+		file_server
+	}
+}

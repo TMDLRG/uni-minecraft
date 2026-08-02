@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNI Broadcast - Ticker overlay</title>
+    <link rel="stylesheet" href="./assets/overlays.css" />
+    <style>
+      /* Bottom news ticker. Transparent; pinned to the lower edge. */
+      .bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 56px;
+        display: flex;
+        align-items: stretch;
+        background: var(--panel);
+        backdrop-filter: blur(8px) saturate(120%);
+        -webkit-backdrop-filter: blur(8px) saturate(120%);
+        border-top: 1px solid var(--hair);
+      }
+      .flag {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        padding: 0 18px;
+        background: var(--accent);
+        color: #06121b;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 15px;
+      }
+      .tk {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+      }
+      .track {
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 56px;
+      }
+      .item {
+        display: inline-block;
+        margin: 0 2.2rem;
+      }
+      .item .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 0.7rem;
+        vertical-align: middle;
+        background: var(--accent);
+      }
+      .item.tone-ok .dot {
+        background: var(--ok);
+      }
+      .item.tone-warn .dot {
+        background: var(--warn);
+      }
+      .item.tone-crit .dot {
+        background: var(--crit);
+      }
+      .item.tone-unknown .dot {
+        background: var(--unknown);
+      }
+      .stale-tag {
+        position: fixed;
+        right: 12px;
+        bottom: 62px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar" id="bar" hidden>
+      <div class="flag" id="flag">UNI</div>
+      <div class="tk" id="tk">
+        <div class="track" id="track"></div>
+      </div>
+    </div>
+    <div class="stale-tag stale" id="staleTag" hidden></div>
+
+    <script>
+      // ---- Ticker overlay ----
+      // Reads ./state.json (the broadcast.json alias) and renders state.ticker[]
+      // as one seamless doubled-string CSS scroll. Honest: empty/missing ticker
+      // hides the bar; a stale snapshot pauses the scroll and shows a marker.
+
+      var STALE_MS = 8000; // snapshot older than this -> treat as stale
+      var SEP = '   •   ';
+
+      var els = {
+        bar: document.getElementById('bar'),
+        tk: document.getElementById('tk'),
+        track: document.getElementById('track'),
+        staleTag: document.getElementById('staleTag'),
+      };
+
+      // Last-rendered signature so we only rebuild the DOM (and restart the
+      // animation) when the ticker content actually changes.
+      var lastSig = null;
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+
+      function itemHtml(it) {
+        var tone = ['ok', 'warn', 'crit', 'unknown'].indexOf(it && it.tone) >= 0 ? it.tone : 'accent';
+        var cls = tone === 'accent' ? '' : ' tone-' + tone;
+        return (
+          '<span class="item' + cls + '"><span class="dot"></span>' +
+          esc(it && it.text) +
+          '</span>'
+        );
+      }
+
+      function buildStrand(items) {
+        return items.map(itemHtml).join('');
+      }
+
+      function render(state) {
+        var ticker = state && Array.isArray(state.ticker) ? state.ticker : [];
+        ticker = ticker.filter(function (i) {
+          return i && typeof i.text === 'string' && i.text.trim() !== '';
+        });
+
+        if (ticker.length === 0) {
+          els.bar.hidden = true;
+          lastSig = '';
+          return;
+        }
+        els.bar.hidden = false;
+
+        var sig = JSON.stringify(ticker);
+        if (sig !== lastSig) {
+          var strand = buildStrand(ticker);
+          // Doubled string -> keyframe translates -50% for a seamless loop.
+          els.track.innerHTML = strand + SEP + strand + SEP;
+          lastSig = sig;
+        }
+      }
+
+      function applyStaleness(updatedUtc) {
+        var t = updatedUtc ? Date.parse(updatedUtc) : NaN;
+        var ageMs = isFinite(t) ? Date.now() - t : Infinity;
+        var stale = !(ageMs < STALE_MS);
+        els.tk.classList.toggle('paused', stale);
+        if (stale) {
+          els.staleTag.hidden = false;
+          els.staleTag.textContent =
+            isFinite(t) ? 'feed stale ' + Math.round(ageMs / 1000) + 's' : 'no feed';
+        } else {
+          els.staleTag.hidden = true;
+        }
+      }
+
+      function tick() {
+        fetch('./state.json', { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http ' + r.status);
+            return r.json();
+          })
+          .then(function (state) {
+            render(state);
+            applyStaleness(state && state.updatedUtc);
+          })
+          .catch(function () {
+            // No usable feed: hide the bar, show an honest marker. Never fake.
+            els.bar.hidden = true;
+            els.staleTag.hidden = false;
+            els.staleTag.textContent = 'no feed';
+          });
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    </script>
+  </body>
+</html>

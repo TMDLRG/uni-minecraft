@@ -1,0 +1,81 @@
+{
+ "schema": "uni.remediation.reinventory.v1",
+ "baseline": "evidence/remediation/0.2_instrument_inventory.json",
+ "rows": [
+  {
+   "id": "gaia",
+   "file": "viewer/gaia/verify_gaia.cjs",
+   "status": "UNCHANGED",
+   "note": "exit 0, verdict PASS, file byte-identical to Stage 0",
+   "stage0": {
+    "exit": 0,
+    "sha": "ce5e5c7744fb0aac042f789fec91de0968632da02cec5576fb3eb6ce589b7b0d"
+   },
+   "now": {
+    "exit": 0,
+    "sha": "ce5e5c7744fb0aac042f789fec91de0968632da02cec5576fb3eb6ce589b7b0d",
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "gaia_lint",
+   "file": "viewer/gaia/gaia_lint.cjs",
+   "status": "CHANGED (declared)",
+   "note": "step 1.6 added `lag` to the drift relation vocabulary (ADR-0002 Amd 1 Decision 6); step 1.4 made a missing golden manifest a hard violation",
+   "stage0": {
+    "exit": 0,
+    "sha": "3cb8cf856f453143ba53df9447a120288adc4af3a31b5ff56af5e16045c6775e"
+   },
+   "now": {
+    "exit": 0,
+    "sha": "9ace69eb5b016c318bf5060c5259c67547e06abba89d0b0e16d947b6f937f156",
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "lint_bites",
+   "file": "viewer/gaia/verify_lint_bites.cjs",
+   "status": "UNCHANGED",
+   "note": "exit 0, verdict PASS, file byte-identical to Stage 0",
+   "stage0": {
+    "exit": 0,
+    "sha": "08d98a97ad3cb7f1549ec6d47767054dbfdc1e825e000d165c53a1ab3a03e19c"
+   },
+   "now": {
+    "exit": 0,
+    "sha": "08d98a97ad3cb7f1549ec6d47767054dbfdc1e825e000d165c53a1ab3a03e19c",
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "schema_pointers",
+   "file": "viewer/verify_schema_pointers.cjs",
+   "status": "CHANGED (declared)",
+   "note": "step 1.5 removed a now-STALE exclusion for collectors.cjs (its ghost-path probe is gone), so the scan covers 5 more cited paths",
+   "stage0": {
+    "exit": 0,
+    "sha": "92f3d51ea69f82b16501dd087189c471736973802012614e50b29c29b183b0c4"
+   },
+   "now": {
+    "exit": 0,
+    "sha": "e661e6594ceed0d6ef8573c1845d8d73ba4b8d99a239cd06d3b0452402e4f799",
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "host_tracking",
+   "file": "viewer/verify_host_tracking.cjs",
+   "status": "UNCHANGED",
+   "note": "exit 1, verdict FAIL, file byte-identical to Stage 0",
+   "stage0": {
+    "exit": 1,
+    "sha": "74cc7eacc0bc5a5208b08e8765848a6a2fbff28cfdf8f5391343b447f0ab1b06"
+   },
+   "now": {
+    "exit": 1,
+    "sha": "74cc7eacc0bc5a5208b08e8765848a6a2fbff28cfdf8f5391343b447f0ab1b06",
+    "verdict": "FAIL"
+   }
+  }
+ ]
+}

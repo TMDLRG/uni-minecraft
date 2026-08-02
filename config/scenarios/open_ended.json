@@ -1,0 +1,12 @@
+{
+  "name": "open_ended",
+  "seed": 404,
+  "regions": 3,
+  "w": 6,
+  "h": 6,
+  "max_ticks": 800,
+  "micro_per_decision": 3,
+  "dev_interval": 5,
+  "agent": "infrastructure",
+  "scramble": true
+}

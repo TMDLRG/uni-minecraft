@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g20" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g20)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <rect x="510" y="220" width="900" height="360" rx="18" fill="#1c2128" stroke="#3b82f6" stroke-width="3"/>
+  <text x="960" y="310" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="34" fill="#3b82f6" letter-spacing="6">READING 3</text>
+  <text x="960" y="410" text-anchor="middle" font-family="Georgia,serif" font-size="52" fill="#e6edf3">The modern shield</text>
+  <text x="960" y="490" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="28" fill="#6c7393">for life today, on this planet</text>
+  <rect x="0" y="755" width="1920" height="325" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="755" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="811" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="32" fill="#e6edf3">Reading three is the gentlest version, and the only one that has any chance of winning. It</text>
+  <text x="960" y="850" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="32" fill="#e6edf3">says simply this: for the kinds of life that exist on the surface of modern Earth today,</text>
+  <text x="960" y="889" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="32" fill="#e6edf3">the ozone layer matters. It actually shields us. And here, finally, the evidence holds.</text>
+  <rect x="800" y="903" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">वाचन तीन सर्वात सौम्य आवृत्ती आहे, आणि जिंकण्याची काही संधी असलेले एकमेव. ते फक्त</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">असे म्हणते: आज आधुनिक पृथ्वीच्या पृष्ठभागावर अस्तित्वात असलेल्या जीवनाच्या</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">प्रकारांसाठी, ओझोन थर महत्त्वाचा आहे. तो खरोखर आपले रक्षण करतो. आणि इथे, अखेर,</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">पुरावे टिकतात.</text>
+</svg>

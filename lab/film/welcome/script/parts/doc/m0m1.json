@@ -1,0 +1,120 @@
+[
+  {
+    "id": "d_m0+m1_open",
+    "plate": "title",
+    "kicker": "A LABORATORY BUILT TO BE CAUGHT BEING WRONG",
+    "line1": "Welcome to UNI Labs",
+    "line2": "Every frame after this one is a command, and what it printed.",
+    "narration": "This is the long version. What follows is a laboratory shown one frame at a time. Each frame carries a question in plain words, the command that answers it, and the output that command actually printed. Nothing in it asks you to accept a summary. You are being handed the receipts.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m0+m1_the_promise",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "docs/FALSIFICATION.md",
+    "from": 3,
+    "to": 5,
+    "why": "The oldest standing promise in the repository, in its own words, unedited",
+    "narration": "The film opens in the repository's words rather than in ours. Three lines from a file that has sat in the tree a long time, with its path, its line range, and the digest of exactly those bytes underneath. Clone the repository and hash those same lines. They should match.",
+    "tail_silence": 1.5
+  },
+  {
+    "id": "d_m0+m1_the_falsifier",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "docs/FALSIFICATION.md",
+    "from": 30,
+    "to": 33,
+    "why": "The same file, further down: the exact edit that would break one of its claims",
+    "narration": "And this is what stands behind that sentence. Every claim in that document ships with the specific change that would break it. On screen is one of them. Alter an update equation in the way it names, and a named gate stops holding. It tells you where to put the crowbar.",
+    "tail_silence": 1.6
+  },
+  {
+    "id": "d_m0+m1_limits_counted",
+    "plate": "measurement",
+    "probe": "limitations.declared",
+    "asks": "What does this project say it cannot do?",
+    "source": "docs/control-plane/LIMITATIONS.md — one identifier per limitation, read out by the command above",
+    "note": "Derived from one repository of the three. Limitations declared in the flagellar-motor repository are not in this count, and the page says so itself.",
+    "narration": "Here is the same treatment applied to the project's own shortcomings. The command prints every identifier declared as something this system does not do. There are @n.limitations.declared today, and the frame carries the tail of that list. The note beneath says which repository the count covers.",
+    "tail_silence": 1.5
+  },
+  {
+    "id": "d_m0+m1_limits_generated",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "docs/control-plane/LIMITATIONS.md",
+    "from": 3,
+    "to": 9,
+    "why": "That page is written by a program, and it says so in its own opening paragraph",
+    "narration": "Now the code behind that list. The page declares that it is generated from annotations sitting in the source, and that a gate regenerates it and refuses any difference. The paragraph under it gives the reason, and the reason is about people rather than about software. Read it and decide.",
+    "tail_silence": 1.6
+  },
+  {
+    "id": "d_m0+m1_numbers_measured",
+    "plate": "measurement",
+    "probe": "film.tokens",
+    "asks": "Where did the numbers in this film come from?",
+    "source": "lab/film/welcome/qc/tokens.cjs — each figure is an expression over a live file, evaluated while the frames were being made",
+    "note": "A number typed into a film has no half-life. It simply becomes wrong at an unannounced moment.",
+    "narration": "Not one figure in this film was typed. Each is an expression run against a real file at the moment the frame was built. The line on screen is that register reporting how many expressions it carries and how many failed to resolve. Run it after you clone, and compare.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m0+m1_numbers_why",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lab/film/welcome/qc/tokens.cjs",
+    "from": 7,
+    "to": 11,
+    "why": "The register's own header, giving the reason it exists",
+    "narration": "And this is why. The file explains itself in its own header. This project's governing banner carried hand-typed figures that went wrong within hours, and one of them within minutes of being written. A banner can be corrected in a day. A film is rendered once and watched for a year.",
+    "tail_silence": 1.7
+  },
+  {
+    "id": "d_m0+m1_film_under_its_own_gate",
+    "plate": "measurement",
+    "probe": "film.qc",
+    "asks": "Is this film itself held to a check?",
+    "source": "lab/film/welcome/qc/verify_welcome_film.cjs — and a mutation suite that breaks the film on purpose to see whether the check notices",
+    "note": "The check reads words and receipts. It has no way to tell whether the film is honest in spirit, and it prints that limitation on every run.",
+    "narration": "The film is treated the way it treats everything else. This check forbids a list of words, re-reads every quoted line range and hashes it again, and re-derives each figure from the file it came from. The second count on that line is deliberate sabotage it was required to catch.",
+    "tail_silence": 1.6
+  },
+  {
+    "id": "d_m0+m1_mission",
+    "plate": "intent",
+    "lines": [
+      "Worldwide peace through free and open understanding.",
+      "The public pursuit and ownership of",
+      "General Universal Natural Intelligence.",
+      "The end of extract and extortion.",
+      "Making safe all wombs, and Gaia —",
+      "earth, our solar system, and beyond."
+    ],
+    "narration": "That is what this work is for, whole and unsoftened. Nothing has been trimmed off it to make it easier to say out loud. The amber rail and the header are the point: none of that frame was measured, and none of it is offered as a finding. It is where the instruments are pointed.",
+    "tail_silence": 1.8
+  },
+  {
+    "id": "d_m0+m1_mission_provenance",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lab/film/welcome/SPINE.json",
+    "from": 1107,
+    "to": 1109,
+    "why": "An adverse finding about the mission you have just been shown, from this film's own truth ledger",
+    "narration": "And here is a finding about that mission. Searched across all three repositories of the estate, those words appear in no file outside this film's own directory. The mission arrived by conversation. This film is its first written home, and the repositories cannot corroborate it. Repairing that is the operator's.",
+    "tail_silence": 1.8
+  },
+  {
+    "id": "d_m0+m1_the_commit",
+    "plate": "measurement",
+    "probe": "head.mc",
+    "asks": "What commit were these frames built from?",
+    "source": "git log, in the estate's main repository, at the instant the capture was taken",
+    "note": "A commit names bytes. It does not say those bytes are what a third party would receive; only publishing the source, or an independent custodian, closes that.",
+    "narration": "One more before the tour begins. That is the exact commit these frames were built from. Everything you are about to be shown can be held against it. Clone at that hash, run the commands the frames name, and compare what your machine prints with what mine printed.",
+    "tail_silence": 1.6
+  }
+]

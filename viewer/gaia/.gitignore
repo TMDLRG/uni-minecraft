@@ -1,0 +1,44 @@
+# viewer/gaia/.gitignore — Gaia retention boundary / repo-bloat fence
+#
+# GAIA LAW persistence contract (see docs/GAIA.md, file_manifest > persistence):
+#   Code-as-truth  +  append-only content-addressed hashed snapshots.
+#
+# KEEP committed (provenance must survive pruning):
+#   - every viewer/gaia/*.cjs, caps.cjs, sources.json, gaia.html   (code-as-truth)
+#   - snapshots/index.ndjson  — the append-only committed hashed-capture index.
+#     Any pruned raw capture stays RE-VERIFIABLE by re-running its locator +
+#     rehashing, because its {id_or_path,seat,captured_at,sha256,path} line lives
+#     here forever.
+#
+# IGNORE (volatile capture BYTES — must never balloon the checkout;
+#   precedent hazard: phase2_metabolism_red.jsonl.gz was 526KB):
+#   - snapshots/live/**             volatile agent-ingested MCP captures
+#                                   (last-N-per-seat retention on disk only)
+#   - snapshots/<seat>.<ts>.<sha8>.json  per-seat content-addressed envelopes
+#
+# This fence is DATA-only; it changes no signal, computes nothing, and asserts
+# no verdict — it is not part of the signal path.
+
+# --- volatile agent-ingested MCP / live captures (retention-managed on disk) ---
+snapshots/live/
+
+# --- per-seat content-addressed capture envelopes: <seat>.<captured_at>.<sha8>.json ---
+snapshots/*.json
+
+# --- but ALWAYS keep the append-only provenance index committed ---
+# (index.ndjson is .ndjson so *.json above never matches it; the explicit
+#  re-include documents intent and guards against a future broadened pattern.)
+!snapshots/index.ndjson
+!snapshots/.gitkeep
+
+# --- Gaia is hand-rolled on node builtins + local ./*.cjs ONLY (no third-party
+#     dep, per the repo no-third-party-dep invariant). Guard against a stray
+#     install ballooning the checkout. ---
+node_modules/
+
+# --- editor / OS scratch ---
+*.swp
+*.tmp
+*~
+.DS_Store
+Thumbs.db

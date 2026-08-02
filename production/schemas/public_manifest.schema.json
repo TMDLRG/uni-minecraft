@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uni-lab/schemas/public_manifest.v1.json",
+  "title": "UNI public reproducibility bundle manifest",
+  "description": "The manifest served by get_public_manifest() from the read-only uni-public-mcp. Names every artifact a stranger can pull to re-derive a gate verdict from a seed alone (E-E3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "public_tag", "generated_at", "bundle"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "public_tag": {
+      "type": "string",
+      "description": "The immutable public branch tag this manifest describes (e.g. public-2026-07-13)."
+    },
+    "charter_pointer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "lines"],
+      "properties": {
+        "file": { "const": "CLAUDE.md" },
+        "lines": { "type": "string", "description": "Line range containing the Charter section." }
+      }
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemas", "personas", "gate_log", "evidence_log_frame_schema", "public_readme"],
+      "properties": {
+        "schemas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string" },
+              "sha256": { "type": "string" }
+            }
+          },
+          "description": "Every JSON schema shipped in production/schemas/, each with its sha256."
+        },
+        "personas": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": { "path": { "type": "string" }, "sha256": { "type": "string" } } },
+          "description": "docs/lab_team/*.md persona docs."
+        },
+        "gate_log": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": { "const": "docs/gates/PUBLIC_GATE_LOG.md" },
+            "sha256": { "type": "string" }
+          }
+        },
+        "evidence_log_frame_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path"],
+          "properties": {
+            "path": { "const": "docs/observability/evidence_log.md" },
+            "sha256": { "type": "string" }
+          }
+        },
+        "public_readme": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path"],
+          "properties": {
+            "path": { "const": "docs/PUBLIC_README.md" },
+            "sha256": { "type": "string" }
+          }
+        },
+        "reproducibility_bundle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path"],
+          "properties": {
+            "path": { "const": "docs/PUBLIC_REPRODUCIBILITY_BUNDLE.md" },
+            "sha256": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

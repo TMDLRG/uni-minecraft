@@ -1,0 +1,1 @@
+{"schema_version":1,"name":"control-plane-ledger-appendable","receipt_path":"docs/GATES.md","verdict":"PENDING","evidence_class":"pending","last_updated":"2026-07-25","score_percent":93.5,"notes":"FIXTURE ONLY — score_percent is not in the schema and the schema sets additionalProperties:false. A percent is also forbidden vocabulary."}

@@ -1,0 +1,210 @@
+# UNI Production Platform - the WEEKLY GRID (7 days x 3 slots/day across time zones)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# The grid places three 4-hour slots per day, anchored to FIXED UTC windows, so every
+# major time zone gets a slot in its local evening/prime time - and each such slot is
+# delivered in that zone's NATIVE language. Six catalog languages are used: en es fr it pt hi.
+# uni-playout reads this grid, loads the named slot (slot-4h.yaml here), overrides
+# startUtc + language per placement, and runs it. Between slots it holds on `standby`.
+#
+# THE THREE FIXED UTC WINDOWS (commented per zone) -------------------------------------
+#   SLOT-1  00:00-04:00 UTC  ->  the AMERICAS evening
+#       18:00-22:00 America/Chicago (CT) ; 21:00-01:00 America/Sao_Paulo (BRT)
+#       Native languages here: en (US/CA), es (LatAm), pt (Brazil)
+#   SLOT-2  08:00-12:00 UTC  ->  the ASIA / INDIA day-into-evening
+#       13:30-17:30 Asia/Kolkata (IST) ; 16:00-20:00 Asia/Singapore
+#       Native language anchor here: hi (India) ; en as the regional lingua franca
+#   SLOT-3  16:00-20:00 UTC  ->  the EUROPE / AFRICA evening
+#       17:00-21:00 Europe/London (BST) ; 18:00-22:00 Europe/Paris/Rome (CEST) ; 17:00-21:00 Lisbon
+#       Native languages here: en (UK), fr (France), it (Italy), pt (Portugal), es (Spain)
+# --------------------------------------------------------------------------------------
+#
+# Language rotation goal: across the 7-day week, all six languages (en es fr it pt hi)
+# appear, each anchored to a time zone where it is native to that slot's evening window.
+# Slot schema reference: { slot, startUtc, durationHours: 4, language, segments:[...] }
+# The `slot` field here points at the reusable slot template (slot-4h.yaml).
+
+grid: uni-production-weekly
+description: >
+  7-day x 3-slots/day broadcast grid. SLOT-1 serves the Americas evening (en/es/pt),
+  SLOT-2 serves the Asia/India window (hi/en), SLOT-3 serves the Europe evening
+  (en/fr/it/pt/es). Native language per slot per zone; all six languages across the week.
+slotTemplate: slot-4h.yaml          # every placement instantiates this 4h slot
+durationHours: 4
+timeZonesShownOnClock: [UTC, America/Chicago, Europe/London, Asia/Kolkata]
+
+days:
+
+  # ============================ MONDAY ============================
+  - day: Mon
+    slots:
+      - slot: MON-S1
+        startUtc: "00:00:00Z"   # Americas evening (CT 18:00 / BRT 21:00)
+        durationHours: 4
+        language: en            # Americas - English
+        zoneAnchor: America/Chicago
+        runOfShow: slot-4h.yaml
+      - slot: MON-S2
+        startUtc: "08:00:00Z"   # Asia/India (IST 13:30)
+        durationHours: 4
+        language: hi            # India - Hindi (Piper hi_IN; Hinglish code-switch available)
+        zoneAnchor: Asia/Kolkata
+        runOfShow: slot-4h.yaml
+      - slot: MON-S3
+        startUtc: "16:00:00Z"   # Europe evening (BST 17:00 / CEST 18:00)
+        durationHours: 4
+        language: en            # UK/Europe - English
+        zoneAnchor: Europe/London
+        runOfShow: slot-4h.yaml
+
+  # ============================ TUESDAY ============================
+  - day: Tue
+    slots:
+      - slot: TUE-S1
+        startUtc: "00:00:00Z"   # Americas evening
+        durationHours: 4
+        language: es            # LatAm - Spanish
+        zoneAnchor: America/Mexico_City
+        runOfShow: slot-4h.yaml
+      - slot: TUE-S2
+        startUtc: "08:00:00Z"   # Asia/India
+        durationHours: 4
+        language: hi            # India - Hindi
+        zoneAnchor: Asia/Kolkata
+        runOfShow: slot-4h.yaml
+      - slot: TUE-S3
+        startUtc: "16:00:00Z"   # Europe evening (CEST 18:00)
+        durationHours: 4
+        language: fr            # France - French
+        zoneAnchor: Europe/Paris
+        runOfShow: slot-4h.yaml
+
+  # ============================ WEDNESDAY ============================
+  - day: Wed
+    slots:
+      - slot: WED-S1
+        startUtc: "00:00:00Z"   # Americas evening (BRT 21:00)
+        durationHours: 4
+        language: pt            # Brazil - Portuguese
+        zoneAnchor: America/Sao_Paulo
+        runOfShow: slot-4h.yaml
+      - slot: WED-S2
+        startUtc: "08:00:00Z"   # Asia/India
+        durationHours: 4
+        language: hi            # India - Hindi
+        zoneAnchor: Asia/Kolkata
+        runOfShow: slot-4h.yaml
+      - slot: WED-S3
+        startUtc: "16:00:00Z"   # Europe evening (CEST 18:00, Rome)
+        durationHours: 4
+        language: it            # Italy - Italian
+        zoneAnchor: Europe/Rome
+        runOfShow: slot-4h.yaml
+
+  # ============================ THURSDAY ============================
+  - day: Thu
+    slots:
+      - slot: THU-S1
+        startUtc: "00:00:00Z"   # Americas evening
+        durationHours: 4
+        language: en            # Americas - English
+        zoneAnchor: America/New_York
+        runOfShow: slot-4h.yaml
+      - slot: THU-S2
+        startUtc: "08:00:00Z"   # Asia/India (English regional lingua franca slot)
+        durationHours: 4
+        language: en            # Asia - English (regional reach)
+        zoneAnchor: Asia/Singapore
+        runOfShow: slot-4h.yaml
+      - slot: THU-S3
+        startUtc: "16:00:00Z"   # Europe evening (Iberia 17:00)
+        durationHours: 4
+        language: pt            # Portugal - Portuguese
+        zoneAnchor: Europe/Lisbon
+        runOfShow: slot-4h.yaml
+
+  # ============================ FRIDAY ============================
+  - day: Fri
+    slots:
+      - slot: FRI-S1
+        startUtc: "00:00:00Z"   # Americas evening
+        durationHours: 4
+        language: es            # LatAm - Spanish
+        zoneAnchor: America/Bogota
+        runOfShow: slot-4h.yaml
+      - slot: FRI-S2
+        startUtc: "08:00:00Z"   # Asia/India
+        durationHours: 4
+        language: hi            # India - Hindi
+        zoneAnchor: Asia/Kolkata
+        runOfShow: slot-4h.yaml
+      - slot: FRI-S3
+        startUtc: "16:00:00Z"   # Europe evening (Madrid 18:00)
+        durationHours: 4
+        language: es            # Spain - Spanish
+        zoneAnchor: Europe/Madrid
+        runOfShow: slot-4h.yaml
+
+  # ============================ SATURDAY ============================
+  - day: Sat
+    slots:
+      - slot: SAT-S1
+        startUtc: "00:00:00Z"   # Americas evening (BRT 21:00)
+        durationHours: 4
+        language: pt            # Brazil - Portuguese
+        zoneAnchor: America/Sao_Paulo
+        runOfShow: slot-4h.yaml
+      - slot: SAT-S2
+        startUtc: "08:00:00Z"   # Asia/India
+        durationHours: 4
+        language: hi            # India - Hindi
+        zoneAnchor: Asia/Kolkata
+        runOfShow: slot-4h.yaml
+      - slot: SAT-S3
+        startUtc: "16:00:00Z"   # Europe evening (CEST 18:00)
+        durationHours: 4
+        language: fr            # France - French
+        zoneAnchor: Europe/Paris
+        runOfShow: slot-4h.yaml
+
+  # ============================ SUNDAY ============================
+  - day: Sun
+    slots:
+      - slot: SUN-S1
+        startUtc: "00:00:00Z"   # Americas evening
+        durationHours: 4
+        language: en            # Americas - English (weekly recap edition)
+        zoneAnchor: America/Chicago
+        runOfShow: slot-4h.yaml
+      - slot: SUN-S2
+        startUtc: "08:00:00Z"   # Asia/India
+        durationHours: 4
+        language: hi            # India - Hindi
+        zoneAnchor: Asia/Kolkata
+        runOfShow: slot-4h.yaml
+      - slot: SUN-S3
+        startUtc: "16:00:00Z"   # Europe evening (Rome 18:00)
+        durationHours: 4
+        language: it            # Italy - Italian
+        zoneAnchor: Europe/Rome
+        runOfShow: slot-4h.yaml
+
+# ---- Language coverage check (across the 7-day week) ----------------------------------
+# en: Mon-S1, Mon-S3, Thu-S1, Thu-S2, Sun-S1   (Americas + Europe + Asia lingua franca)
+# es: Tue-S1, Fri-S1, Fri-S3                    (LatAm + Spain)
+# pt: Wed-S1, Thu-S3, Sat-S1                    (Brazil + Portugal)
+# hi: Mon-S2, Tue-S2, Wed-S2, Fri-S2, Sat-S2, Sun-S2  (India window, daily)
+# fr: Tue-S3, Sat-S3                            (France evening)
+# it: Wed-S3, Sun-S3                            (Italy evening)
+# All six catalog languages appear; each anchored to a native-evening time zone.
+# Coverage gaps (honest): the deep-Pacific (e.g. Asia/Tokyo, Pacific/Auckland) gets the
+# tail of SLOT-2 rather than a dedicated window - a fourth daily slot is a future option,
+# tracked as a scheduling note, not claimed as solved.
+#
+# Notes:
+# - All times are UTC; clocks on the overlay (clock.html) render UTC + CT + London + IST.
+# - Daylight-saving drift (BST/CEST/BRT) shifts local-evening alignment by ~1h across the
+#   year; the UTC windows are fixed and the comments show approximate local times - treat
+#   local-time comments as "appears/approximate", pending per-season confirmation.
+# - hi slots may use the ClaudeSpeak EN+HI Hinglish code-switch engine for narration where
+#   the script mixes scripts (Devanagari + Latin); pure-Hindi scripts use a hi_IN voice.

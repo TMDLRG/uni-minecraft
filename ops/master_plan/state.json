@@ -1,0 +1,64 @@
+{
+  "schema": "uni.masterplan.v1",
+  "generated_at": "2026-07-11T06:10:00Z",
+  "generated_by": "in-repo static snapshot (Track A2); live-update timer is a follow-on",
+  "authoritative_clock_note": "fleet UTC confirmed via uni-lab podman_ps envelope at 2026-07-11T02:09Z",
+  "branch": "lab/ozone-life-uni-hard-science",
+  "head": "dccf2fe",
+  "honesty_fence": ["proven", "designed", "hypothesized", "not-yet-built"],
+  "gate_vocabulary": ["PASS", "PARTIAL", "FAIL", "WITHHELD"],
+  "claim_fence": "Passing a gate demonstrates behaviour / viability-learning, never experience / consciousness / humanness. Every float is a model variable, never a felt state.",
+  "north_star": "Inference from the deepest/slowest viability core outward; a full human body in a true-signal world; prove UNI learns to keep its body viable, without goal-setting or forced priors.",
+  "tracks": [
+    {
+      "id": "A", "title": "Tonight (bounded)", "when": "2026-07-11",
+      "items": [
+        {"id": "A1", "title": "Honesty lock", "status": "DONE", "fence": "proven", "evidence": "commit ff6924f", "note": "P1 '25x' headline had no receipt; corrected to ~4.5x (and a 2nd baseline point ~1.6x); Phase-2 recorded honestly; ground-model brief banner-corrected."},
+        {"id": "A2", "title": "Live master-plan page", "status": "DONE", "fence": "proven", "evidence": "served :4100, HTTP 200", "note": "This surface, served from uni-lab (uni-masterplan nginx). Live-update timer is the remaining follow-on."},
+        {"id": "A3", "title": "Conclude Phase-2 RED (evidence-first)", "status": "DONE", "fence": "proven", "evidence": "commit 9b6d48e", "note": "26,244-row JSONL pulled + committed (gz); verdict adversarially verified; minds saved to baseline/2026-07-11; RED concluded."},
+        {"id": "A4", "title": "Survival-C + binocular-vision spec", "status": "DONE", "fence": "designed", "evidence": "commit 5596d10", "note": "Deep spec written (docs/specs/{generative_model,curriculum_removal,sensorium}.md) + adversarially reviewed by the 5-persona ship gate (SIGN-WITH-CHANGES, 15 blockers folded). Design-only; formal /lab-team-review sign + owner go-ahead before any FE code."}
+      ]
+    },
+    {
+      "id": "B", "title": "The deeper design (program; validate THRICE)", "when": "multi-week",
+      "items": [
+        {"id": "B1", "title": "Developmental-ladder architecture (tail-up, multi-frequency, growing)", "status": "PENDING", "fence": "designed"},
+        {"id": "B2", "title": "Full human sensorium: binocular eyes x2 -> learned :scene port", "status": "PENDING", "fence": "designed"},
+        {"id": "B3", "title": "Survival-only priors + epistemic info-gain drive + morphogenesis", "status": "PENDING", "fence": "hypothesized", "note": "The plateau-break bet: to prove, not assume. Phase-2 neither confirms nor refutes it."},
+        {"id": "B4", "title": "Full UNI.Mind integration + C10 equivalence gate", "status": "PENDING", "fence": "designed"},
+        {"id": "B5", "title": "Prove it the cookbook's way (M1-M24 harmonized)", "status": "PENDING", "fence": "designed"}
+      ]
+    },
+    {
+      "id": "C", "title": "Pause -> streaming -> weekend live OS upgrade", "when": "tonight + weekend",
+      "items": [
+        {"id": "C1", "title": "Pause criterion: a valuable run validated THRICE", "status": "PENDING", "fence": "not-yet-built", "note": "Does NOT block the midnight stream."},
+        {"id": "C2", "title": "Streaming handoff: live YT+Twitch by midnight", "status": "IN_PROGRESS", "fence": "not-yet-built", "note": "Producer work-order delivered (docs/work_orders/producer_golive.md); the Producer agent drives the broadcast. My part = keep world+page live + honest captions."},
+        {"id": "C3", "title": "Weekend live no-reboot OS upgrade; this page is the shared surface", "status": "PENDING", "fence": "not-yet-built"}
+      ]
+    }
+  ],
+  "science_ledger": [
+    {"phase": "P0", "title": "plateau diagnosis", "verdict": "PASS", "fence": "proven", "receipt": "lib/sp/brain/diagnose.ex", "note": "epistemic_starvation; not gamma-runaway, not curriculum-ceiling."},
+    {"phase": "P1", "title": "novelty RED (curiosity vs control)", "verdict": "PARTIAL", "fence": "proven", "receipt": "docs/receipts/phase1_curiosity_red.log", "note": "HOARD suppressed, direction only, modest (~1.6-4.5x across 2 committed snapshots). PLATEAU-BREAK FAIL. 25x withdrawn."},
+    {"phase": "P2", "title": "metabolism RED (kin-12 vs kin-13)", "verdict": "FAIL(G6)/WITHHELD", "fence": "proven", "receipt": "docs/receipts/phase2_metabolism_red.md", "note": "G6 plateau-break FAIL (0/12 reached shelter; treatment did not exceed control 72 vs 83). Metabolism hypothesis WITHHELD: arms indistinguishable at N=6 AND organ activation was unverified. No homeostat/epistemic-starvation claim licensed. Live corroboration: 6/6 treatment agents alive at 15-day teardown (viability sustained in production)."},
+    {"phase": "P2-activation", "title": "metabolism activation gate (pos/neg/neg/pos)", "verdict": "PASS", "fence": "proven", "receipt": "docs/receipts/metabolism_activation_gate_LIVE.md", "note": "PRODUCTION LIVE @ mc-server (kin 88, fresh minds): 3/3 agents alive_final=true with 8-10 posterior reversals live (limit cycle in real world); NEG-1 action-severed twin dies@25; NEG-2 food-severed dies@16. Upgrades P2 activation WITHHELD -> VERIFIED IN PRODUCTION. Explains Phase-2 mechanism null (the organ was INERT live due to 5 remediated defects: wiring, wall-clock notch, auto-boot, cwd, food). Fence: mechanism only; NOT G6; NOT experience."},
+    {"phase": "P2-live-wiring", "title": "5 live-embodiment defects FOUND + CLOSED", "verdict": "REMEDIATED", "fence": "proven", "receipt": "docs/receipts/metabolism_live_wiring_gap.md", "note": "Metabolic loop was in bridge.ex not Agent (88be5c9 fix); per-step rate killed live agents in ~9s (383ffb4 wall-clock notch); UNI_AUTOSTART=1 ate mc-server slots + BEAM cwd trap silently skipped Port.open (535f9b6); fresh bodies had no world-food (a9b1508 rcon give). All closed; byte-identity + action-clone held throughout."},
+    {"phase": "Next", "title": "survival-C + epistemic drive + true-signal vision", "verdict": "WITHHELD", "fence": "hypothesized", "note": "The plateau-break bet. Phase-2 flags a possible world/observation-bin ceiling too (both arms froze). Earn with a paired RED whose gain collapses under IG-zero/shuffle ablations + a world-ceiling control."}
+  ],
+  "constellation": [
+    {"repo": "UNI.MineCraft / Strings", "role": "the body+mind embodied in Minecraft (this repo)"},
+    {"repo": "UNI.Mind / UNI.GPT", "role": "exact no-backprop AIF engine (core.py) + TickAdapter continuity"},
+    {"repo": "UNI.Sensorium", "role": "the body made for a world; the active binocular eye"},
+    {"repo": "Cookbook + UNI.OS", "role": "design law (L0-L12 + Method Constitution) + patch-Markov vision cortex"}
+  ],
+  "collaboration": {
+    "how_to_read": "Open the plain URL: index.html (human/stream), plan.md (LLM text), state.json (machine). No MCP, no login.",
+    "rules": [
+      "Gate vocabulary: PASS / PARTIAL / FAIL / WITHHELD. Claim fence: proven / designed / hypothesized / not-yet-built.",
+      "One cure at a time: no second cure deploys until the prior has a recorded verdict.",
+      "Never weaken a gate to make something pass. No headline outruns its committed receipt. Adversarially verify verdicts before committing them.",
+      "Weekend OS upgrade: MineCraft run + this page must survive the no-reboot upgrade; this page carries the honest live status all agents coordinate on."
+    ]
+  }
+}

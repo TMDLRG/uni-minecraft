@@ -1,0 +1,173 @@
+[
+  {
+    "id": "d_m3+m4_watch_title",
+    "plate": "title",
+    "kicker": "HOW TO WATCH",
+    "line1": "Two things get called live.",
+    "line2": "One is a file being read again. The other is a broadcast.",
+    "narration": "Two words do a lot of work in this project and they are not the same word. One kind of live means a surface opening a file on disk again the moment you ask it to. The other means something reaching an audience. The next frames separate them, and each one is a command.",
+    "tail_silence": 1.2
+  },
+  {
+    "id": "d_m3+m4_watch_disk",
+    "plate": "measurement",
+    "probe": "tree.mc",
+    "asks": "What state was this repository in while these frames were made?",
+    "source": "git status -sb in the estate's main repository, run at the instant of capture",
+    "note": "A working tree is a fact about one machine at one instant. It is not a fact about your clone.",
+    "narration": "This is what reading disk looks like. The command ran while these frames were being cut, and it reports the film's own render code sitting modified, with capture files not yet committed. Nobody tidied the tree before pointing a camera at it. The lines are on screen. Read them.",
+    "tail_silence": 1.2
+  },
+  {
+    "id": "d_m3+m4_watch_commit",
+    "plate": "measurement",
+    "probe": "head.mc",
+    "asks": "Which commit were these frames cut from?",
+    "source": "git log -1 — the commit hash, the moment it was written, and its subject line",
+    "note": "A frame with no commit behind it cannot be checked by anyone who was not in the room.",
+    "narration": "And this is the other half of that. A frame is worth something only if you can say which bytes it came from. Here is the commit hash, the moment it was written, and the sentence its author left on it. Clone the repository, check that hash out, and run the same commands.",
+    "tail_silence": 1.3
+  },
+  {
+    "id": "d_m3+m4_watch_law",
+    "plate": "measurement",
+    "probe": "gates.runner",
+    "asks": "Do the checks this project runs hold their own law?",
+    "source": "viewer/gate_runner.cjs — the law: exit code zero if and only if the printed verdict is PASS",
+    "note": "@n.gates.registered registered · @n.gates.ci_true run by CI · @n.gates.ci_false listed, never run, never a fabricated pass.",
+    "narration": "Before the surfaces, the instrument that watches the instruments. A check here must exit zero when, and only when, it also printed the word PASS. This command runs them and reports whether that law held. On screen with it: the gates that are listed and never run, counted as unrun rather than as a pass.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_watch_air",
+    "plate": "measurement",
+    "probe": "golive.refuses_me",
+    "asks": "Can this software put itself on the air?",
+    "source": "viewer/prove_golive_refuses_me.cjs — every path to air, attempted, and what stopped each one",
+    "note": "@n.golive.paths paths tried · @n.golive.allowed_now permitted · @n.golive.minters programs in this tree that can mint the token the door asks for.",
+    "narration": "The second sense of live, and this is the adverse one. A program here attempts to broadcast, deliberately, down every path this codebase offers, and writes down what refused it. Nothing gets through. The reason is the least flattering one available: the door has no key, and nothing in this tree makes one.",
+    "tail_silence": 1.6,
+    "prints_tail": 1,
+    "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+  },
+  {
+    "id": "d_m3+m4_watch_guard",
+    "plate": "measurement",
+    "probe": "golive.gate",
+    "asks": "Does that guard refuse a stale, forged, unattended or replayed token?",
+    "source": "viewer/verify_golive_refuses_agents.cjs — the guard handed the four things that should fail",
+    "note": "The guard's own word for what it is worth: @n.golive.claim_level — and it is not unforgeable, which it says of itself in every grant it emits.",
+    "narration": "A refusal is worth checking too. This suite hands the guard a stale token, a forged one, one minted with no person present, and one replayed from an earlier session, and requires a refusal each time. The verdict line is on screen. So is the guard's own word for what it is worth.",
+    "tail_silence": 1.5,
+    "prints_lines": [
+      2,
+      3
+    ],
+    "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+  },
+  {
+    "id": "d_m3+m4_engine_title",
+    "plate": "title",
+    "kicker": "HOW IT REALLY WORKS",
+    "line1": "There is no reward.",
+    "line2": "Not a small one. Not a hidden one. None.",
+    "narration": "Now the engine underneath all of that. Almost every system that chooses an action is pointed at a number it is meant to push upward. This one is not. What follows is the line in the code that says so, the search behind that line, and the test that fails if a reward-shaped key ever appears in the metrics.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_engine_no_reward_line",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/mc.ex",
+    "from": 9,
+    "to": 9,
+    "why": "The brain's own module documentation, one line, unedited",
+    "narration": "Here is the sentence, in the file, with its line number and the digest of exactly those bytes. It is one line of module documentation at the top of the brain. A comment is not enforcement, and this film is not asking you to take it as any. It is asking you to read it.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_engine_no_reward_search",
+    "plate": "measurement",
+    "probe": "engine.no_reward",
+    "asks": "Where does the word reward appear anywhere in the brain?",
+    "source": "lib/sp/brain — the search across every brain module, and the lines it returned, unedited",
+    "note": "A word search finds a word. It cannot find a reward that was implemented under a different name.",
+    "narration": "So here is the search. It reads every module of the brain for the word reward and prints the lines that carry it. What comes back are comments, and the ones on screen say there is none of it. A word search finds a word, though. It cannot find a reward implemented under a different name.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_engine_no_reward_test",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "test/sp/invariants_test.exs",
+    "from": 122,
+    "to": 124,
+    "why": "The test that fails if a reward-shaped key reaches the metrics",
+    "narration": "And this is what makes that line more than a comment. The test runs an episode, takes the evaluation metrics, and refuses if any of @n.engine.reward_backdoor_keys forbidden key names turns up among them. Read what it fences and what it does not. This is the evaluation surface, not every channel a signal could take.",
+    "tail_silence": 1.5
+  },
+  {
+    "id": "d_m3+m4_engine_efe",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/plan.ex",
+    "from": 12,
+    "to": 16,
+    "why": "The planner, and the fence the same paragraph draws around it",
+    "narration": "If not a reward, then what. This is the answer, and the fence around the answer, in one paragraph the author wrote together. It rolls beliefs forward and scores expected free energy over futures the agent expects to hold. The same paragraph says what that is not. Both halves stay on screen.",
+    "tail_silence": 1.5
+  },
+  {
+    "id": "d_m3+m4_engine_deps",
+    "plate": "measurement",
+    "probe": "engine.zero_deps",
+    "asks": "How many third-party packages does this engine carry?",
+    "source": "mix.exs — the dependency declaration, printed as it is written rather than described",
+    "note": "@n.engine.hex_deps packages is not a virtue by itself. It is what makes the claim checkable in one command instead of by trust.",
+    "narration": "A claim that no foreign computation happens in here is worth little unless somebody can check it in one move. So the frame shows the dependency block of the build file, printed as it is written. There is no library an inference call could be hiding inside.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_engine_scaffold",
+    "plate": "measurement",
+    "probe": "pureworld.scaffold",
+    "asks": "Does the check that would test the colony's claim actually run?",
+    "source": "runs/pureworld_qa_gate.exs — its own source, printed rather than summarised",
+    "note": "The road from this engine to any published scientific result runs through this file, and this file raises.",
+    "narration": "Here is the adverse fact inside this movement. The check that would graduate the colony's foraging claim does not run. It raises, and the frame gives you the line number and the block around it, lifted out of the file rather than described. It has a name, a contract, and no result.",
+    "tail_silence": 1.7
+  },
+  {
+    "id": "d_m3+m4_engine_blanket",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/bridge.ex",
+    "from": 3,
+    "to": 5,
+    "why": "The Markov blanket, as it is actually implemented",
+    "narration": "Back to the engine, and to the piece that is easiest to picture. In theoretical biology, the boundary separating a thing from its world is called a Markov blanket. In this codebase it is a pipe between two processes. The module documentation says exactly that, and it is on screen with its digest.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_engine_blanket_protocol",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/bridge.ex",
+    "from": 7,
+    "to": 9,
+    "why": "The protocol, and the independence it is meant to enforce",
+    "narration": "And this is what the pipe carries. Exactly @n.blanket.channels_out kinds of message ever cross it: senses going one way, one chosen action coming back. The line ends in the conditional independence the arrangement is meant to enforce, written as the notation rather than as a paraphrase of it.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "d_m3+m4_engine_blanket_asymmetry",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/bridge.ex",
+    "from": 16,
+    "to": 18,
+    "why": "What each side of the boundary is denied",
+    "narration": "And this is the part worth sitting with. Neither side gets the other's inside. The brain is handed senses and never raw world state; the body is handed an action and never a belief. One line in, one line out, in lockstep. That is the whole interface, and it is on screen.",
+    "tail_silence": 1.8
+  }
+]

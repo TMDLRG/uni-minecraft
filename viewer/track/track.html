@@ -1,0 +1,388 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>UNI TRACK — where we came from, where we are, where we are going</title>
+<style>
+:root{--bg:#0d1017;--pan:#141923;--pan2:#1a2029;--ln:#242c3a;--tx:#dfe5ee;--dim:#8b97a8;--ok:#3fae8c;--warn:#d9a441;--bad:#e0645f;--acc:#7f77dd;--mono:ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.55 ui-sans-serif,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:9;background:#0d1017ee;backdrop-filter:blur(6px);border-bottom:1px solid var(--ln);padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.4px}
+.links a{color:var(--dim);text-decoration:none;font-size:12px;margin-right:12px;border-bottom:1px dotted var(--ln)}
+.links a:hover{color:var(--acc)}
+.stamp{margin-left:auto;font:11px var(--mono);color:var(--dim)}
+main{padding:16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:14px;align-items:start}
+section{background:var(--pan);border:1px solid var(--ln);border-radius:9px;padding:14px 16px}
+section.wide{grid-column:1/-1}
+h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--dim);margin:0 0 10px;font-weight:600}
+.row{display:flex;gap:8px;align-items:baseline;padding:5px 0;border-bottom:1px solid #1c232e}
+.row:last-child{border:0}
+.k{color:var(--dim);font-size:12px;min-width:104px}
+.v{font:12px var(--mono)}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font:11px var(--mono);border:1px solid}
+.PASS,.ok{color:var(--ok);border-color:#1e5c48;background:#12241f}
+.PENDING,.warn{color:var(--warn);border-color:#5c4a1e;background:#241f12}
+.FAIL,.bad{color:var(--bad);border-color:#5c2a26;background:#241514}
+.PARTIAL{color:var(--warn);border-color:#5c4a1e;background:#241f12}
+.NOT_CLEARED{color:var(--bad);border-color:#5c2a26;background:#241514}
+.DONE{color:var(--ok);border-color:#1e5c48;background:#12241f}
+.acc{color:var(--acc);border-color:#3c3489;background:#1b1a2c}
+.j{display:flex;gap:0;align-items:stretch;margin:4px 0 12px;flex-wrap:wrap}
+.j>div{flex:1;min-width:120px;padding:9px 11px;border:1px solid var(--ln);background:var(--pan2);position:relative}
+.j>div:not(:last-child){border-right:0}
+.j .lab{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim)}
+.j .val{font-size:12.5px;margin-top:3px}
+.j .cur{border-color:var(--acc);background:#1b1a2c}
+.small{font-size:11.5px;color:var(--dim)}
+.note{font-size:11.5px;color:var(--dim);border-left:2px solid var(--ln);padding-left:9px;margin:8px 0}
+.item{padding:7px 0;border-bottom:1px solid #1c232e}
+.item:last-child{border:0}
+.item .t{font-size:12.5px}
+.item .m{font-size:11px;color:var(--dim);margin-top:2px}
+code{font:11.5px var(--mono);color:#9fb4d0;background:#111722;padding:1px 5px;border-radius:3px}
+.vlog{max-height:280px;overflow:auto}
+.vlog .e{padding:6px 0;border-bottom:1px solid #1c232e}
+.vlog .e:last-child{border:0}
+.vlog .ts{font:10.5px var(--mono);color:var(--dim)}
+.cm{background:#151b26;border-left:2px solid var(--acc);padding:7px 10px;margin:6px 0;border-radius:0 5px 5px 0}
+.cm .tgt{font:10.5px var(--mono);color:var(--acc)}
+.cm .tx{font-size:12.5px;margin-top:2px}
+.dead{color:var(--bad)}
+a{color:var(--acc)}
+</style>
+<header>
+  <h1>UNI&nbsp;TRACK</h1>
+  <span class="links">
+    <a href="http://127.0.0.1:8090/door" target="_blank">Door :8090</a>
+    <a href="http://127.0.0.1:8096/" target="_blank">Gaia :8096</a>
+    <a href="http://127.0.0.1:8100/" target="_blank">HUD :8100</a>
+    <a href="http://127.0.0.1:5858/" target="_blank">Voice :5858</a>
+    <!-- NOT "answer a stop". Only 10 of the 18 answerable items are stops; 6 are `not_mine` and 2 are
+         OPERATOR steps, and the COLONY RULING is a not_mine item. A label naming a third of its own
+         contents sends a tired operator looking for the colony ruling somewhere else entirely. -->
+    <a href="/decide" style="color:#7f77dd;border-bottom-style:solid">Answer a question &#8594;</a>
+    <a href="/api/track" target="_blank">raw JSON</a>
+  </span>
+  <span class="stamp" id="stamp">loading…</span>
+</header>
+<main id="app"></main>
+<script>
+const $=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+const esc=(s)=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function sec(title,inner,wide){return `<section class="${wide?'wide':''}"><h2>${title}</h2>${inner}</section>`}
+
+function render(d){
+  const app=document.getElementById('app');
+  document.getElementById('stamp').textContent=d.generated_at.replace('T',' ').slice(0,19)+' UTC · live read, nothing cached';
+  const L=d.ledger,P=d.phases;
+  const results=(P.phases||[]).filter(p=>p.isResult);
+  const plans=(P.phases||[]).filter(p=>!p.isResult);
+  const cur=plans[plans.length-1];
+  const H=d.history;
+
+  // ── THE MAP: one picture — what is built, what is not, what is next ────────
+  const B=d.build||{bodies:[],control_plane_parts:[],next_items:[]};
+  const SV=d.services||[];
+  const svc=(k)=>SV.find(x=>x.key===k)||{};
+  const STATE={
+    BUILT:       {fill:'#12241f', stroke:'#3fae8c', label:'BUILT',        dash:''},
+    PARTLY_BUILT:{fill:'#241f12', stroke:'#d9a441', label:'PARTLY BUILT', dash:'stroke-dasharray="10 4"'},
+    NOT_BUILT:   {fill:'#2a1a16', stroke:'#e07a5f', label:'NOT BUILT',    dash:'stroke-dasharray="6 4"'}
+  };
+  const bodyBox=(x,y,w,label,sub,state,up,url)=>{
+    const s=STATE[state]||STATE.NOT_BUILT;
+    const dot=up===true?'#3fae8c':up===false?'#e0645f':'#5b6270';
+    return `<g>
+      <rect x="${x}" y="${y}" width="${w}" height="86" rx="8" fill="${s.fill}" stroke="${s.stroke}" stroke-width="2" ${s.dash}/>
+      ${up!==undefined?`<circle cx="${x+w-16}" cy="${y+16}" r="5" fill="${dot}"/>`:''}
+      <text x="${x+14}" y="${y+26}" fill="#dfe5ee" font-size="14" font-weight="600">${esc(label)}</text>
+      <text x="${x+14}" y="${y+46}" fill="#8b97a8" font-size="11">${esc(sub)}</text>
+      <text x="${x+14}" y="${y+68}" fill="${s.stroke}" font-size="11" font-weight="600">${s.label}</text>
+      ${url?`<a href="${url}" target="_blank"><text x="${x+w-14}" y="${y+68}" fill="#7f77dd" font-size="10.5" text-anchor="end">open &#8599;</text></a>`:''}
+    </g>`;
+  };
+  const partChip=(x,y,p)=>{
+    const c = p.state==='BUILT' ? {f:'#12241f',s:'#3fae8c',t:'#3fae8c'}
+            : p.state==='NEXT'  ? {f:'#241f12',s:'#d9a441',t:'#d9a441'}
+            :                     {f:'#1a2029',s:'#3a4252',t:'#8b97a8'};
+    const bold = p.state==='PLANNED' ? 400 : 600;
+    const tag = p.state==='BUILT' ? 'BUILT · phase '+p.phase
+              : p.state==='NEXT'  ? 'NEXT · phase '+p.phase
+              :                     'phase '+p.phase;
+    return `<g><title>${esc(p.src||'')} — ${esc(p.detail||'')}</title>
+      <rect x="${x}" y="${y}" width="150" height="46" rx="6" fill="${c.f}" stroke="${c.s}" stroke-width="${p.state==='PLANNED'?1:2}"/>
+      <text x="${x+10}" y="${y+19}" fill="#dfe5ee" font-size="12" font-weight="${bold}">${esc(p.name)}</text>
+      <text x="${x+10}" y="${y+35}" fill="${c.t}" font-size="10">${tag}</text>
+    </g>`;
+  };
+  let svg=`<svg viewBox="0 0 1180 430" width="100%" style="max-width:1180px">
+    <text x="0" y="14" fill="#8b97a8" font-size="11">THE FOUR BODIES — green dot means a real socket answered just now</text>`;
+  const bw=270, gap=18;
+  const bodyMeta=[['door','The Door','admits &amp; releases'],['gaia','Gaia','witnesses, never acts'],['hud','The HUD','shows, authors nothing'],[null,'The Control Plane','runs the science, authors verdicts']];
+  B.bodies.forEach((b,i)=>{
+    const m=bodyMeta[i]||[null,b.name,b.detail];
+    const sv=m[0]?svc(m[0]):{};
+    svg+=bodyBox(i*(bw+gap), 26, bw, m[1], m[2], b.state, m[0]?sv.up:undefined, m[0]?sv.url:null);
+  });
+  svg+=`<line x1="${3*(bw+gap)+bw/2}" y1="112" x2="${3*(bw+gap)+bw/2}" y2="150" stroke="#e07a5f" stroke-width="2" stroke-dasharray="5 3"/>
+    <text x="0" y="168" fill="#8b97a8" font-size="11">WHAT THE CONTROL PLANE IS MADE OF — green is built (module on disk), amber is next, grey is planned</text>`;
+  B.control_plane_parts.forEach((p,i)=>{ svg+=partChip((i%7)*168, 180+Math.floor(i/7)*58, p); });
+  svg+=`<text x="0" y="300" fill="#8b97a8" font-size="11">SUPPORTING SURFACES</text>`;
+  ['track','voice','phoenix'].forEach((k,i)=>{
+    const sv=svc(k); const dot=sv.up?'#3fae8c':'#e0645f';
+    svg+=`<g><rect x="${i*200}" y="312" width="186" height="42" rx="6" fill="#141923" stroke="#242c3a"/>
+      <circle cx="${i*200+16}" cy="333" r="5" fill="${dot}"/>
+      <text x="${i*200+30}" y="330" fill="#dfe5ee" font-size="12">${esc(sv.name||k)}</text>
+      <text x="${i*200+30}" y="345" fill="#8b97a8" font-size="10">:${sv.port||''} ${esc(sv.note||'')}</text></g>`;
+  });
+  svg+=`<rect x="0" y="372" width="1180" height="50" rx="7" fill="#1b1a2c" stroke="#534ab7"/>
+    <text x="14" y="392" fill="#dfe5ee" font-size="12.5" font-weight="600">NEXT: ${esc(B.next_phase||'—')}</text>
+    <text x="14" y="411" fill="#8b97a8" font-size="11">${esc(B.next_items.slice(0,3).map(i=>i.item).join('   ·   ')||'')}</text>
+  </svg>`;
+  const j=svg;
+
+  // ── phases ────────────────────────────────────────────────────────────────
+  let ph='';
+  for(const p of (P.phases||[])){
+    const done=p.isResult;
+    ph+=`<div class="item"><div class="t"><span class="pill ${done?'DONE':'acc'}">${done?'EXECUTED':'PRE-REGISTERED'}</span> ${esc(p.title)}</div>
+    <div class="m"><code>${esc(p.source)}</code> · ${esc(p.status)}</div>`;
+    const rows=done?p.disp:p.items;
+    if(rows&&rows.length){
+      ph+='<div style="margin-top:6px">';
+      for(const r of rows){
+        ph+=done
+          ? `<div class="m"><span class="pill ${/DONE/.test(r.disposition)?'DONE':'NOT_CLEARED'}">${esc(r.disposition)}</span> <b>${esc(r.id)}</b> ${esc(r.item)}</div>`
+          : `<div class="m"><b>${esc(r.id)}</b> ${esc(r.item)}<br><span style="color:#6c788a">expect:</span> ${esc(r.expected)}<br><span style="color:#8a5f5c">falsifier:</span> ${esc(r.falsifier)}</div>`;
+      }
+      ph+='</div>';
+    }
+    ph+='</div>';
+  }
+
+  // ── gates ─────────────────────────────────────────────────────────────────
+  let g=`<div class="row"><span class="k">source</span><span class="v">${esc(L.source||'')}</span></div>
+  <div class="row"><span class="k">ledger</span><span class="v">${L.rows} rows · ${L.unique} unique gates</span></div>
+  <div class="row"><span class="k">tally</span><span class="v">${Object.entries(L.tally||{}).map(([k,v])=>`<span class="pill ${k}">${k} ${v}</span>`).join(' ')}</span></div>`;
+  for(const f of (L.fails||[])) g+=`<div class="item"><div class="t"><span class="pill FAIL">FAIL</span> <b>${esc(f.name)}</b></div><div class="m">${esc(f.falsifies||'')}</div><div class="m"><code>${esc(f.receipt||'')}</code></div></div>`;
+  g+=`<div class="note">A FAIL is a real falsified result and rides visibly. PENDING is registered-but-not-run, not a failure.</div>`;
+
+  // ── gaia / drift ──────────────────────────────────────────────────────────
+  let ga;
+  if(d.gaia.up){
+    ga=`<div class="row"><span class="k">signals</span><span class="v">${d.gaia.signals}</span></div>
+    <div class="row"><span class="k">seats</span><span class="v">${Object.entries(d.gaia.seats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>k+' '+v).join(' · ')}</span></div>
+    <div class="row"><span class="k">git</span><span class="v">${esc((d.gaia.git_commit||'').slice(0,8))}</span></div>
+    <div class="row"><span class="k">fetch</span><span class="v">${d.gaia.fetch_ms}ms · ~845KB live read, never cached</span></div>`;
+    for(const x of d.gaia.drift.filter(z=>!/replica_ledger/.test(z.id))) ga+=`<div class="item"><div class="t"><span class="pill warn">equal=${x.equal}</span> <code>${esc(x.id)}</code> <span class="small">${esc(x.relation)}</span></div><div class="m">A: ${esc(x.a)}<br>B: ${esc(x.b)}</div></div>`;
+    ga+=`<div class="note"><b>These five cannot converge.</b> Phase 1 established that four of these five compare different KINDS of thing — a prose line against a file listing, a JSON object against a whole markdown file. They can never read <code>equal=true</code>. <code>equal=false</code> here is <b>not</b> evidence that a document is stale.</div>`;
+  } else ga=`<div class="dead">Gaia unreachable at ${esc(d.gaia.source)}. That is a true signal, not a defect — nothing is fabricated.</div>`;
+
+  // ── calibration ───────────────────────────────────────────────────────────
+  const C=d.calibration;
+  let cal=`<div class="note">${esc(C.note)}</div>`;
+  for(const t of C.surprise_terms) cal+=`<div class="item"><div class="t"><b>${esc(t.term)}</b> — ${t.value} of ${t.of}</div><div class="m">${esc(t.reading)}</div></div>`;
+  cal+=`<div class="item"><div class="t">EFE — why the next phase is the next phase</div><div class="m">${esc(C.efe_next)}</div></div>
+  <div class="item"><div class="t">ambiguity reduced</div><div class="m">${esc(C.ambiguity_reduced)}</div></div>
+  <div class="item"><div class="t">risk NOT reduced</div><div class="m">${esc(C.risk_not_reduced)}</div></div>`;
+
+  // ── next steps ────────────────────────────────────────────────────────────
+  const next=`<div class="small" style="margin-bottom:8px">Exact scope of the next phase, from its pre-registered plan — not from memory.</div>
+  ${(cur&&cur.items||[]).map(r=>`<div class="item"><div class="t"><b>${esc(r.id)}</b> ${esc(r.item)}</div><div class="m"><span style="color:#6c788a">expect:</span> ${esc(r.expected)}</div><div class="m"><span style="color:#8a5f5c">falsifier:</span> ${esc(r.falsifier)}</div></div>`).join('')}
+  <div class="note">Out of scope for the next phase: authoring a verdict, appending to the real ledger, the lab view, rooms and airlocks, any Phoenix code, any change to <code>ui/</code>.</div>`;
+
+  // ── history ───────────────────────────────────────────────────────────────
+  let hist='';
+  for(const r of H){
+    hist+=`<div class="item"><div class="t"><b>${esc(r.repo)}</b> <code>${esc(r.branch)}@${esc(r.head)}</code> ${Number(r.ahead)>0?`<span class="pill warn">${esc(r.ahead)} unpushed</span>`:'<span class="pill PASS">pushed</span>'} ${r.dirty.length?`<span class="pill warn">${r.dirty.length} dirty</span>`:''}</div>`;
+    for(const c of r.commits.slice(0,6)) hist+=`<div class="m"><code>${esc(c.h)}</code> ${esc(c.d.slice(0,10))} ${esc(c.s)}</div>`;
+    if(r.dirty.length) hist+=`<div class="m" style="color:#d9a441">dirty: ${r.dirty.map(esc).join(', ')} — user-owned, not touched</div>`;
+    hist+='</div>';
+  }
+
+  // ── decisions ─────────────────────────────────────────────────────────────
+  const dec=(d.decisions||[]).map(x=>`<div class="item"><div class="t">${esc(x.title)}</div><div class="m">${esc(x.status)} · <code>${esc(x.source)}</code></div>${x.falsifier?`<div class="m"><span style="color:#8a5f5c">falsifier:</span> ${esc(x.falsifier)}</div>`:''}</div>`).join('');
+
+  // ── voice ─────────────────────────────────────────────────────────────────
+  let v;
+  if(d.voice.up){
+    v=`<div class="row"><span class="k">entries</span><span class="v">${d.voice.count}</span></div><div class="vlog">`;
+    for(const e of d.voice.entries) v+=`<div class="e"><div class="ts">${esc(String(e.timestamp||'').replace('T',' ').slice(0,19))} · ${esc(e.voice||'')} · ${e.duration_ms||0}ms</div><div>${esc(e.text||'')}</div></div>`;
+    v+='</div>';
+  } else v=`<div class="dead">Voice transcript UI unreachable at ${esc(d.voice.source)}.</div>`;
+
+  // ── comments ──────────────────────────────────────────────────────────────
+  const cm=(d.comments||[]).length
+    ? d.comments.slice().reverse().map(c=>`<div class="cm"><div class="tgt">${esc(c.target)} · ${esc(c.author)} · ${esc(c.utc.replace('T',' ').slice(0,19))}</div><div class="tx">${esc(c.text)}</div></div>`).join('')
+    : '<div class="small">No comments yet. Claude appends here with <code>POST /api/comment {target,text}</code> — append-only, version-controlled at <code>evidence/track_comments.ndjson</code>.</div>';
+
+  // ── replica ledgers: the ONLY like-for-like drift comparison ──────────────
+  const rep=(d.gaia.drift||[]).filter(z=>/replica_ledger/.test(z.id));
+  let rl='';
+  if(rep.length){
+    rl=`<div class="small" style="margin-bottom:8px">Canonical gate ledger digest, read live, against each replica's digest as captured. <b>Hash against hash</b> — the only drift comparison on the platform where <code>equal</code> means what you think it means. Built 2026-07-25 after a stale replica fooled an audit.</div>`;
+    for(const x of rep){
+      const nm=x.id.replace('drift.replica_ledger.','');
+      rl+=`<div class="item"><div class="t"><span class="pill ${x.equal?'PASS':'FAIL'}">${x.equal?'IDENTICAL':'DIFFERS'}</span> <b>${esc(nm)}</b></div><div class="m">canonical: ${esc(x.a)}</div><div class="m">replica: ${esc(x.b)}</div></div>`;
+    }
+    rl+=`<div class="note">DIFFERS is not automatically a defect — a replica may simply be an older deployment. It is a defect the moment someone reads a replica and believes it is canonical. That is exactly what happened, and why this exists.</div>`;
+  } else rl='<div class="small">No replica capture yet. Run <code>node viewer/gaia/replica_ledger_probe.cjs</code>.</div>';
+
+
+  // ── THE FULL ARCHITECTURE — the real rendered C4 views, served from the repo ────
+  const A=window.__arch||{views:[],docs:[],adrs:[],phases:[],model:null};
+  const nice=(f)=>f.replace('structurizr-','').replace('.svg','').replace(/([a-z])([A-Z])/g,'$1 $2');
+  let arch=`<div class="small" style="margin-bottom:10px">Generated from <code>workspace.dsl</code>, the C4 model of record, by structurizr-cli + PlantUML. These are the actual files in the repo — click any view to open it full size. Regenerate with <code>docs/control-plane/render.sh</code>.</div>`;
+  arch+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px">`;
+  for(const v of A.views){
+    arch+=`<div style="background:#fff;border:1px solid var(--ln);border-radius:7px;padding:6px">
+      <div style="font:11px var(--mono);color:#555;padding:2px 4px 6px">${esc(nice(v))}</div>
+      <a href="/arch/${encodeURIComponent(v)}" target="_blank"><img src="/arch/${encodeURIComponent(v)}" style="width:100%;display:block" loading="lazy"></a>
+    </div>`;
+  }
+  arch+=`</div>`;
+  arch+=`<div style="margin-top:12px"><span class="small">Model &amp; documents, live from the repo: </span>`;
+  const link=(f,lbl)=>`<a href="/doc/${encodeURIComponent(f)}" target="_blank" style="margin-right:10px;font-size:11.5px">${esc(lbl||f)}</a>`;
+  if(A.model) arch+=`<a href="/arch/${encodeURIComponent(A.model)}" target="_blank" style="margin-right:10px;font-size:11.5px">workspace.dsl (the model)</a>`;
+  for(const f of A.docs) arch+=link(f);
+  arch+=`</div><div style="margin-top:6px"><span class="small">Decisions: </span>`;
+  for(const f of A.adrs) arch+=link(f,f.replace('.md','').replace('ADR-',''));
+  arch+=`</div><div style="margin-top:6px"><span class="small">Phases: </span>`;
+  for(const f of A.phases) arch+=link(f,f.replace('.md',''));
+  arch+=`</div>`;
+
+
+  // ── the model graph, parsed live from workspace.dsl ───────────────────────
+  const EL=A.elements||[], RL=A.relations||[], FS=A.falsifiers||[];
+  const byKind=(k)=>EL.filter(e=>e.kind===k);
+  let graph=`<div class="small" style="margin-bottom:8px">Parsed live from <code>workspace.dsl</code> on every request — ${EL.length} elements, ${RL.length} relationships. If something appears here that is not in the model, the model is wrong (<a href="/doc/ADR-0004-model-as-code-not-svg.md" target="_blank">ADR-0004</a>).</div>`;
+  for(const k of ['person','container','component']){
+    const g=byKind(k); if(!g.length) continue;
+    graph+=`<div style="margin-top:8px"><span class="small" style="text-transform:uppercase;letter-spacing:.8px">${k}s (${g.length})</span></div>`;
+    for(const e of g){
+      const notBuilt=/NotBuilt/i.test(e.tag||'');
+      graph+=`<div class="item"><div class="t"><span class="pill ${notBuilt?'FAIL':'PASS'}">${notBuilt?'NOT BUILT':'BUILT'}</span> <b>${esc(e.name)}</b>${e.technology?` <span class="small">${esc(e.technology)}</span>`:''}</div>
+        <div class="m">${esc(e.description||'')}</div>
+        <div class="m">${RL.filter(r=>r.from.endsWith(e.ref)).map(r=>`&#8594; ${esc(r.to.split('.').pop())}: ${esc(r.label)}`).join('<br>')||''}</div></div>`;
+    }
+  }
+
+  // ── falsifiers, beside the decision each one would break ──────────────────
+  let fals=`<div class="small" style="margin-bottom:8px">Every decision carries the observation that would prove it wrong. Read live from each ADR.</div>`;
+  for(const f of FS){
+    fals+=`<div class="item"><div class="t"><a href="/doc/${encodeURIComponent(f.file)}" target="_blank">${esc(f.title)}</a></div>
+      <div class="m" style="color:#c9847f">falsifier: ${esc(f.falsifier)}</div></div>`;
+  }
+
+  // ── PHASE 9: everything from here to air, read live from phase9_plan.json ──
+  // The plan file is the single source of truth. This renders it and computes
+  // nothing about it except its own row counts — which a reader can redo.
+  const PL = d.plan || {ok:false};
+  let p9 = '';
+  if (!PL.ok) {
+    p9 = `<div class="warn">PLAN NOT READABLE — ${esc(PL.note||'')}. Nothing fabricated.</div>`;
+  } else {
+    const SC = {
+      DONE:       {bg:'#12241f', bd:'#3fae8c', fg:'#8fe6c6'},
+      IN_PROGRESS:{bg:'#1b2333', bd:'#6ea8fe', fg:'#a9c9ff'},
+      NEXT:       {bg:'#241f12', bd:'#d9a441', fg:'#f2ce76'},
+      PLANNED:    {bg:'#16181d', bd:'#3a4150', fg:'#8b93a3'},
+      BLOCKED:    {bg:'#2a1a16', bd:'#e07a5f', fg:'#ffb4a0'},
+      OPERATOR:   {bg:'#241630', bd:'#b07ae0', fg:'#dcb6ff'},
+      STANDING:   {bg:'#231d16', bd:'#c08a4a', fg:'#e8bd83'}
+    };
+    const pill=(s)=>{const c=SC[s]||SC.PLANNED;return `<span style="background:${c.bg};border:1px solid ${c.bd};color:${c.fg};border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;letter-spacing:.4px">${esc(s||'?')}</span>`;};
+
+    const stageBlock = (st) => {
+      const rows = (st.steps||[]).map(x=>{
+        const proofs = [x.p3?`<span class="mono" style="color:#7f8899">P3 ${esc(x.p3)}</span>`:'',
+                        x.p4?`<span class="mono" style="color:#7f8899">P4 ${esc(x.p4)}</span>`:'',
+                        x.stop?`<span class="mono" style="color:#e07a5f">${esc(x.stop)}</span>`:''].filter(Boolean).join(' · ');
+        const sub = (x.builds||[]).map(b=>`<div style="margin:3px 0 0 18px;color:#9aa3b2;font-size:11px">▸ <b class="mono">${esc(b.id)}</b> ${esc(b.title)} <span style="color:#6ea8fe">— ${esc(b.shows)}</span></div>`).join('');
+        return `<tr>
+          <td class="mono" style="white-space:nowrap;vertical-align:top;color:#cfd6e4">${esc(x.id)}</td>
+          <td style="vertical-align:top">${pill(x.status)}</td>
+          <td style="vertical-align:top">
+            <div>${esc(x.title)}</div>
+            ${x.found?`<div style="color:#8fe6c6;font-size:11px;margin-top:2px">FOUND: ${esc(x.found)}</div>`:''}
+            ${x.detail?`<div style="color:#9aa3b2;font-size:11px;margin-top:2px">${esc(x.detail)}</div>`:''}
+            ${x.falsifier?`<div style="color:#e0a05f;font-size:11px;margin-top:2px">FALSIFIER: ${esc(x.falsifier)}</div>`:''}
+            ${x.artifact?`<div class="mono" style="color:#6ea8fe;font-size:10px;margin-top:2px">${esc(x.artifact)}${x.sha256?' · '+esc(x.sha256.slice(0,12)):''}</div>`:''}
+            ${sub}
+            <div style="margin-top:3px">${proofs}</div>
+          </td></tr>`;
+      }).join('');
+      const cp = st.checkpoint||{};
+      return `<div style="border:1px solid #2a3140;border-radius:8px;margin:10px 0;overflow:hidden">
+        <div style="background:#131720;padding:7px 10px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #2a3140">
+          <b style="color:#e8edf6">STAGE ${esc(st.id)} · ${esc(st.name)}</b> ${pill(st.status)}
+        </div>
+        <div style="padding:6px 10px;color:#9aa3b2;font-size:11px;border-bottom:1px solid #1e232d">${esc(st.why||'')}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">${rows}</table>
+        <div style="padding:6px 10px;border-top:1px solid #1e232d;font-size:11px">
+          <b style="color:#b07ae0">CHECKPOINT ${esc(cp.id||'')}</b> ${pill(cp.status)}
+          <span style="color:#9aa3b2"> — he sees: ${esc(cp.he_sees||'')} · he does: ${esc(cp.he_does||'')}</span>
+        </div></div>`;
+    };
+
+    const air = PL.road_to_air||{};
+    const airGates = (air.gates||[]).map(g=>`<tr><td class="mono" style="color:#cfd6e4;white-space:nowrap">${esc(g.id)}</td><td>${pill(g.blocked?'BLOCKED':'DONE')}</td><td style="color:#9aa3b2;font-size:11px">${esc(g.reason)}</td></tr>`).join('');
+    const free = (air.free_moves_today||[]).map(f=>`<tr><td class="mono" style="white-space:nowrap;color:#cfd6e4">${esc(f.id)}</td><td>${pill(f.status)}</td><td>${esc(f.title)}<div style="color:#9aa3b2;font-size:11px">${esc(f.detail||'')}</div></td></tr>`).join('');
+    const soak = (air.soak_ladder||[]).map(s=>`<tr><td class="mono" style="color:#cfd6e4">${esc(s.id)}</td><td>${pill(s.status)}</td><td class="mono" style="color:#9aa3b2">${esc(s.dur)}</td><td style="color:#9aa3b2;font-size:11px">${esc(s.egress)} · ${esc(s.attend)}${s.note?' — '+esc(s.note):''}</td></tr>`).join('');
+    const stops = (PL.stops||[]).map(s=>`<span class="mono" style="background:#2a1a16;border:1px solid #e07a5f;color:#ffb4a0;border-radius:10px;padding:1px 7px;font-size:10px;margin:2px;display:inline-block" title="${esc(s.why||'')}">${esc(s.id)} ${esc(s.what)}</span>`).join(' ');
+    const notmine = (PL.not_mine||[]).map(x=>`<li style="color:#dcb6ff">${esc(x)}</li>`).join('');
+    const res = PL.resonance||{};
+
+    p9 = `
+      <div style="border:1px solid ${res.equal?'#3fae8c':'#e07a5f'};background:${res.equal?'#0f1a17':'#1f1512'};border-radius:8px;padding:8px 10px;margin-bottom:10px">
+        <b style="color:${res.equal?'#8fe6c6':'#ffb4a0'}">RESONANCE ${res.equal?'HOLDS':'BROKEN'}</b>
+        <span style="color:#9aa3b2;font-size:11px"> — every step claiming DONE names an artifact that exists on disk.
+        ${res.equal?'':'MISSING: '+esc(JSON.stringify(res.done_steps_with_missing_artifacts||[]))}</span>
+        <div class="mono" style="color:#6b7484;font-size:10px;margin-top:3px">plan sha256 ${esc((PL.sha256||'').slice(0,24))} · ${PL.step_count} steps · ${esc(JSON.stringify(PL.tally||{}))}</div>
+      </div>
+      <div style="color:#9aa3b2;font-size:11px;margin-bottom:8px">${esc(PL.law||'')}</div>
+      ${(PL.stages||[]).map(stageBlock).join('')}
+      <div style="border:1px solid #2a3140;border-radius:8px;margin:10px 0;overflow:hidden">
+        <div style="background:#131720;padding:7px 10px;border-bottom:1px solid #2a3140"><b style="color:#e8edf6">THE ROAD TO AIR</b></div>
+        <div style="padding:6px 10px;color:#e0a05f;font-size:11px;border-bottom:1px solid #1e232d">${esc(air.track_record||'')}<br><i>${esc(air.run_sheet||'')}</i></div>
+        <div style="padding:6px 10px;color:#8b93a3;font-size:11px">FREE MOVES TODAY</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">${free}</table>
+        <div style="padding:6px 10px;color:#8b93a3;font-size:11px;border-top:1px solid #1e232d">THE GATES</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">${airGates}</table>
+        <div style="padding:6px 10px;color:#8b93a3;font-size:11px;border-top:1px solid #1e232d">THE SOAK LADDER — near-24×7 means: ${esc(air.near_24x7_definition||'')}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">${soak}</table>
+        <div style="padding:6px 10px;border-top:1px solid #1e232d;font-size:11px">
+          <b style="color:#b07ae0">THE COLONY RULING — ${esc((air.colony_ruling||{}).status||'')}</b>
+          <div style="color:#9aa3b2;margin-top:3px"><b>Route 1</b> — ${esc((air.colony_ruling||{}).route_1||'')}</div>
+          <div style="color:#9aa3b2;margin-top:3px"><b>Route 2</b> — ${esc((air.colony_ruling||{}).route_2||'')}</div>
+          <div style="color:#e0a05f;margin-top:3px">${esc((air.colony_ruling||{}).note||'')}</div>
+        </div></div>
+      <div style="margin:10px 0"><div style="color:#8b93a3;font-size:11px;margin-bottom:4px">STOP CONDITIONS — armed</div>${stops}</div>
+      <div style="margin:10px 0"><div style="color:#8b93a3;font-size:11px">NOT MINE</div><ul style="margin:4px 0 0 18px;font-size:12px">${notmine}</ul></div>`;
+  }
+
+  app.innerHTML =
+    sec('PHASE 9 — everything from here to air, live', p9, true)
+  + sec('The map — what is built, what is not, what is next', j, true)
+  + sec('The full architecture — every rendered view, the model, and every decision', arch, true)
+  + sec('Replica gate ledgers — like-for-like digest comparison', rl, true)
+  + sec('Phases — pre-registered, then disposed', ph)
+  + sec('Gate ledger — canonical', g)
+  + sec('Calibration · VFE terms · EFE for the next move', cal)
+  + sec('Gaia — live signals and drift', ga)
+  + sec('Exact next steps and scope', next)
+  + sec('The model graph — every element and relationship, live from workspace.dsl', graph)
+  + sec('Falsifiers — what would prove each decision wrong', fals)
+  + sec('Decisions in force', dec)
+  + sec('History — both repos', hist)
+  + sec('Claude voice log — live', v)
+  + sec('Claude commentary on specific items', cm, true);
+}
+
+async function tick(){
+  try{
+    if(!window.__arch){ try{ window.__arch=await (await fetch('/api/arch',{cache:'no-store'})).json(); }catch(e){} }
+    const r=await fetch('/api/track',{cache:'no-store'}); render(await r.json()); }
+  catch(e){ document.getElementById('stamp').textContent='track server unreachable'; }
+}
+tick(); setInterval(tick,10000);
+</script>

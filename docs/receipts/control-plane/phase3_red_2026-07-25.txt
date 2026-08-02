@@ -1,0 +1,704 @@
+Running ExUnit with seed: 592723, max_cases: 32
+Excluding tags: [:skip]
+
+....
+
+  1) test a receipt reference must be a repo-relative path, not a URL or an absolute path (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:104
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for ref <- ["https://example.invalid/receipt", "/etc/passwd", "C:\\receipts\\r.md", "../../outside.md"] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:63: SP.ControlPlane.VerdictRequiresReceiptTest.author/1
+       test/sp/control_plane/verdict_requires_receipt_test.exs:106: anonymous fn/2 in SP.ControlPlane.VerdictRequiresReceiptTest."test a receipt reference must be a repo-relative path, not a URL or an absolute path"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_requires_receipt_test.exs:105: (test)
+
+
+
+  2) test F4 — the rule holds on EVERY command in the vocabulary, not just verdicts (SP.ControlPlane.CosignerIsNotProposerTest)
+     test/sp/control_plane/cosigner_is_not_proposer_test.exs:63
+     ** (MatchError) no match of right hand side value:
+
+         {:ok,
+          %SP.ControlPlane.Ledger{
+            reversed: [
+              %{
+                "actor" => "claude",
+                "authorization" => %{
+                  "granted_by" => "claude",
+                  "kind" => "co_sign",
+                  "ref" => "PHASE-3.md#3.5"
+                },
+                "evidence" => [],
+                "hash" => "6d9506b1c697a51528d1a456be151fdd5c11d28125f50640af4b6071a99d855b",
+                "prev_hash" => nil,
+                "prior" => nil,
+                "resulting" => %{"n" => 1},
+                "role" => "agent",
+                "seq" => 1,
+                "transition" => "note.written",
+                "unix_ns" => 1785445200000000001,
+                "utc" => "2026-07-25T21:00:01Z"
+              }
+            ]
+          }}
+
+     code: for command <- Command.commands() do
+     stacktrace:
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:67: anonymous fn/2 in SP.ControlPlane.CosignerIsNotProposerTest."test F4 — the rule holds on EVERY command in the vocabulary, not just verdicts"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:64: (test)
+
+
+
+  3) test THE POINT — a chain truncated at the tail FAILS to attest against an earlier anchor (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:70
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(full)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prev_hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785448800000000004, "utc" => "2026-07-25T22:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:72: (test)
+
+
+
+  4) test any transition counts, not just a run — the guard does not know what a run is (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:83
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for transition <- ~w(run.recorded gate.adjudicated observation.made note.written anything.at.all) do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "c6ef3b95c017921fed7c04a9025f97183d8e52fd1d6dd059b927d6da6f301e19", "prev_hash" => nil, "prior" => nil, "resulting" => %{"gate" => "g-one", "run_id" => "stand-in-1"}, "role" => "agent", "seq" => 1, "transition" => "run.recorded", "unix_ns" => 1785430800000000001, "utc" => "2026-07-25T17:00:01Z"}]}, %{at: {"2026-07-25T17:00:02Z", 1785430800000000002}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_prospectivity_test.exs:87: anonymous fn/2 in SP.ControlPlane.RegistryProspectivityTest."test any transition counts, not just a run — the guard does not know what a run is"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/registry_prospectivity_test.exs:84: (test)
+
+
+
+  5) test a gate name that is not kebab-case is refused — it must be the same identifier the ledger uses (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for bad <- ["Gate One", "gate_one", "GateOne", ""] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "Gate One", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:74: anonymous fn/2 in SP.ControlPlane.RegistryPrecedesRunTest."test a gate name that is not kebab-case is refused — it must be the same identifier the ledger uses"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/registry_precedes_run_test.exs:73: (test)
+
+
+
+  6) test F2 — a percent, a score and a fraction dressed as a string are refused (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for v <- ["93%", "0.93", "93", "9/10", "A+", "green", "mostly"] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:86: anonymous fn/2 in SP.ControlPlane.VerdictVocabularyTest."test F2 — a percent, a score and a fraction dressed as a string are refused"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_vocabulary_test.exs:85: (test)
+
+
+
+  7) test a PARTIAL that names what holds is accepted, and the ledger carries the words (SP.ControlPlane.VerdictPartialNamesSubclaimTest)
+     test/sp/control_plane/verdict_partial_names_subclaim_test.exs:78
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:ok, l} = author(%{holds: "The offline arm holds; the live arm was not run."})
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T19:00:01Z", 1785438000000000001}, gate: "g-one", pass_condition: "Both the offline arm and the live arm hold.", falsifies_condition: "Either arm fails.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.4"}})
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:28: SP.ControlPlane.VerdictPartialNamesSubclaimTest.registered/0
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:44: SP.ControlPlane.VerdictPartialNamesSubclaimTest.author/1
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:79: (test)
+
+
+
+  8) test the refusal names the seq of the entry that got there first — so it can be looked at (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:75
+     ** (MatchError) no match of right hand side value:
+
+         {:error, {:prior_required_at_seq, 2}}
+
+     code: {:ok, l} = mention(l, "g-one", 2)
+     stacktrace:
+       test/sp/control_plane/registry_prospectivity_test.exs:77: (test)
+
+
+
+  9) test F4 — the refusal survives whitespace and case, which are not two different people (SP.ControlPlane.CosignerIsNotProposerTest)
+     test/sp/control_plane/cosigner_is_not_proposer_test.exs:50
+     ** (MatchError) no match of right hand side value:
+
+         {:ok,
+          %SP.ControlPlane.Ledger{
+            reversed: [
+              %{
+                "actor" => "claude",
+                "authorization" => %{
+                  "granted_by" => "Claude",
+                  "kind" => "co_sign",
+                  "ref" => "PHASE-3.md#3.5"
+                },
+                "evidence" => [],
+                "hash" => "a7033ebd2822ea66ad3002e0b4d3461236b84a07134a015d35c5af36eb1a795e",
+                "prev_hash" => nil,
+                "prior" => nil,
+                "resulting" => %{"n" => 1},
+                "role" => "agent",
+                "seq" => 1,
+                "transition" => "note.written",
+                "unix_ns" => 1785445200000000001,
+                "utc" => "2026-07-25T21:00:01Z"
+              }
+            ]
+          }}
+
+     code: for {actor, granted_by} <- [
+     stacktrace:
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:58: anonymous fn/2 in SP.ControlPlane.CosignerIsNotProposerTest."test F4 — the refusal survives whitespace and case, which are not two different people"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:51: (test)
+
+..
+
+ 10) test existence is NOT checked here — that fence is gate_registry_integrity_test.exs, and it still stands (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:162
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:ok, _} = author(%{receipt_ref: "docs/receipts/does_not_exist_yet.md"}),
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:63: SP.ControlPlane.VerdictRequiresReceiptTest.author/1
+       test/sp/control_plane/verdict_requires_receipt_test.exs:163: (test)
+
+..
+
+ 11) test a NEW gate registered deep in the chain still has a null prior — the corrected spec rule (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:133
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(l, reg_attrs("g-late", 2))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "00cad414b684c71a48ddb5b1c16be6239e3800f55652dd3f7a1f8015ddb08ba3", "prev_hash" => nil, "prior" => nil, "resulting" => %{"phase" => 3}, "role" => "agent", "seq" => 1, "transition" => "phase.opened", "unix_ns" => 1785427200000000001, "utc" => "2026-07-25T16:00:01Z"}]}, %{at: {"2026-07-25T16:00:02Z", 1785427200000000002}, gate: "g-late", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:147: (test)
+
+...
+
+ 12) test F3 — a sub-claim that says nothing is refused; it must be substantive (SP.ControlPlane.VerdictPartialNamesSubclaimTest)
+     test/sp/control_plane/verdict_partial_names_subclaim_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for holds <- ["partial", "some", "n/a", "TBD", "-", "?"] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T19:00:01Z", 1785438000000000001}, gate: "g-one", pass_condition: "Both the offline arm and the live arm hold.", falsifies_condition: "Either arm fails.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.4"}})
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:28: SP.ControlPlane.VerdictPartialNamesSubclaimTest.registered/0
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:44: SP.ControlPlane.VerdictPartialNamesSubclaimTest.author/1
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:74: anonymous fn/2 in SP.ControlPlane.VerdictPartialNamesSubclaimTest."test F3 — a sub-claim that says nothing is refused; it must be substantive"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:73: (test)
+
+....
+
+ 13) test corrupt anchor bytes are refused rather than silently treated as absent (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:139
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.decode/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: for bad <- ["", "{}", "not json", ~s|{"head":"zz","length":1}|, ~s|{"length":4}|] do
+     stacktrace:
+       SP.ControlPlane.Anchor.decode("")
+       test/sp/control_plane/anchor_detects_truncation_test.exs:141: anonymous fn/2 in SP.ControlPlane.AnchorDetectsTruncationTest."test corrupt anchor bytes are refused rather than silently treated as absent"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/anchor_detects_truncation_test.exs:140: (test)
+
+..
+
+ 14) test no verdict path accepts a score field under any name (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:131
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for key <- [:score, :percent, :confidence, :pct, :grade] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:133: anonymous fn/2 in SP.ControlPlane.VerdictVocabularyTest."test no verdict path accepts a score field under any name"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_vocabulary_test.exs:132: (test)
+
+
+
+ 15) test the gates a ledger knows about are exactly the ones registered in it (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:133
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(Ledger.new(), reg_attrs("g-one", 1))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T17:00:01Z", 1785430800000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_prospectivity_test.exs:134: (test)
+
+
+
+ 16) test the operator authorising an agent's work is the normal, accepted case (SP.ControlPlane.CosignerIsNotProposerTest)
+     test/sp/control_plane/cosigner_is_not_proposer_test.exs:111
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: Registry.register(Ledger.new(), %{
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T21:00:01Z", 1785445200000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "x"}})
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:113: (test)
+
+.
+
+ 17) test an empty or blank receipt reference is refused — a pointer to nothing is not a pointer (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:98
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for ref <- ["", "  ", "\t", nil] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:63: SP.ControlPlane.VerdictRequiresReceiptTest.author/1
+       test/sp/control_plane/verdict_requires_receipt_test.exs:100: anonymous fn/2 in SP.ControlPlane.VerdictRequiresReceiptTest."test an empty or blank receipt reference is refused — a pointer to nothing is not a pointer"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_requires_receipt_test.exs:99: (test)
+
+
+
+ 18) test a registration with no pass_condition or no falsifies_condition is refused, and names which (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for key <- [:pass_condition, :falsifies_condition, :gate] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "g-one", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:67: anonymous fn/2 in SP.ControlPlane.RegistryPrecedesRunTest."test a registration with no pass_condition or no falsifies_condition is refused, and names which"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/registry_precedes_run_test.exs:65: (test)
+
+
+
+ 19) test a decoded anchor still catches truncation — the mechanism survives serialization (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:131
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(full)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "30cce1976177e482c775afa5ed5d094df1170c016075738da38aaa6507159360", "prev_hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prior" => %{"step" => 4}, "resulting" => %{"step" => 5}, "role" => "agent", "seq" => 5, "transition" => "note.written", "unix_ns" => 1785448800000000005, "utc" => "2026-07-25T22:00:05Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prev_hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785448800000000004, "utc" => "2026-07-25T22:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:133: (test)
+
+
+
+ 20) test F2 — a number is refused (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:77
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for v <- [0.93, 93, 1, 0, -1, 1.0] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:79: anonymous fn/2 in SP.ControlPlane.VerdictVocabularyTest."test F2 — a number is refused"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_vocabulary_test.exs:78: (test)
+
+
+
+ 21) test prospectivity is decided by seq, not by wording — a confident pass_condition changes nothing (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:122
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:error, {:not_prospective, "g-one", 1}} = Registry.register(l, attrs)
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "c6ef3b95c017921fed7c04a9025f97183d8e52fd1d6dd059b927d6da6f301e19", "prev_hash" => nil, "prior" => nil, "resulting" => %{"gate" => "g-one", "run_id" => "stand-in-1"}, "role" => "agent", "seq" => 1, "transition" => "run.recorded", "unix_ns" => 1785430800000000001, "utc" => "2026-07-25T17:00:01Z"}]}, %{at: {"2026-07-25T17:00:02Z", 1785430800000000002}, gate: "g-one", pass_condition: "PRE-REGISTERED IN ADVANCE. Committed before any observation. Prospective.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_prospectivity_test.exs:130: (test)
+
+
+
+ 22) test F4 — a verdict is refused when the author authorises themselves (SP.ControlPlane.CosignerIsNotProposerTest)
+     test/sp/control_plane/cosigner_is_not_proposer_test.exs:86
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: Registry.register(Ledger.new(), %{
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T21:00:01Z", 1785445200000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "x"}})
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:88: (test)
+
+
+
+ 23) test only PARTIAL requires it — the other four are refused if they supply one (SP.ControlPlane.VerdictPartialNamesSubclaimTest)
+     test/sp/control_plane/verdict_partial_names_subclaim_test.exs:90
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for v <- ~w(PASS FAIL WITHHELD PENDING) do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T19:00:01Z", 1785438000000000001}, gate: "g-one", pass_condition: "Both the offline arm and the live arm hold.", falsifies_condition: "Either arm fails.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.4"}})
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:28: SP.ControlPlane.VerdictPartialNamesSubclaimTest.registered/0
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:44: SP.ControlPlane.VerdictPartialNamesSubclaimTest.author/1
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:92: anonymous fn/2 in SP.ControlPlane.VerdictPartialNamesSubclaimTest."test only PARTIAL requires it — the other four are refused if they supply one"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:91: (test)
+
+
+
+ 24) test the ledger alone is enough to reach the receipt — the pointer is in resulting, not in prose (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:138
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = author(%{})
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:63: SP.ControlPlane.VerdictRequiresReceiptTest.author/1
+       test/sp/control_plane/verdict_requires_receipt_test.exs:139: (test)
+
+
+
+ 25) test F1 — a verdict on an empty ledger is refused; there is nothing it could be about (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:98
+     ** (UndefinedFunctionError) function SP.ControlPlane.Verdict.author/2 is undefined (module SP.ControlPlane.Verdict is not available)
+     code: Verdict.author(Ledger.new(), %{
+     stacktrace:
+       SP.ControlPlane.Verdict.author(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "g-one", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, verdict: "PASS", receipt_ref: "docs/GATES.md"})
+       test/sp/control_plane/registry_precedes_run_test.exs:100: (test)
+
+
+
+ 26) test a chain attests against the anchor taken from it (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:64
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(l)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prev_hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785448800000000004, "utc" => "2026-07-25T22:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:66: (test)
+
+.
+
+ 27) test a verdict lands as a ledger entry carrying the word, the receipt and the state it replaced (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = author(registered(), "PASS")
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:102: (test)
+
+
+
+ 28) test a gate mentioned in an entry's PRIOR state also blocks registration (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:92
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:error, {:not_prospective, "g-one", 2}} = Registry.register(l, reg_attrs("g-one", 3))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "9f815887ade6519d05154d979487303383d6943ccd478c8cd3db48b374be1b03", "prev_hash" => "6b53a499cf0d3bf4553cdb6979a833a19d4ce9aa81cf884a30a5190eff9b264e", "prior" => %{"gate" => "g-one"}, "resulting" => %{"unrelated" => true}, "role" => "agent", "seq" => 2, "transition" => "state.observed", "unix_ns" => 1785430800000000002, "utc" => "2026-07-25T17:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "6b53a499cf0d3bf4553cdb6979a833a19d4ce9aa81cf884a30a5190eff9b264e", "prev_hash" => nil, "prior" => nil, "resulting" => %{"unrelated" => true}, "role" => "agent", "seq" => 1, "transition" => "state.observed", "unix_ns" => 1785430800000000001, "utc" => "2026-07-25T17:00:01Z"}]}, %{at: {"2026-07-25T17:00:03Z", 1785430800000000003}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_prospectivity_test.exs:119: (test)
+
+
+
+ 29) test F3 — an empty, blank or nil holding sub-claim is refused too (SP.ControlPlane.VerdictPartialNamesSubclaimTest)
+     test/sp/control_plane/verdict_partial_names_subclaim_test.exs:66
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for holds <- ["", "   ", "\n", nil] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T19:00:01Z", 1785438000000000001}, gate: "g-one", pass_condition: "Both the offline arm and the live arm hold.", falsifies_condition: "Either arm fails.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.4"}})
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:28: SP.ControlPlane.VerdictPartialNamesSubclaimTest.registered/0
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:44: SP.ControlPlane.VerdictPartialNamesSubclaimTest.author/1
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:68: anonymous fn/2 in SP.ControlPlane.VerdictPartialNamesSubclaimTest."test F3 — an empty, blank or nil holding sub-claim is refused too"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:67: (test)
+
+
+
+ 30) test WITHHELD still needs a receipt — a withdrawal is a claim about evidence (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:126
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: Verdict.author(registered(), %{
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:128: (test)
+
+
+
+ 31) test F1 — a verdict for an unregistered gate is refused, and the refusal names the missing gate (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:83
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(Ledger.new(), reg_attrs("g-one", 1))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "g-one", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:84: (test)
+
+
+
+ 32) test an anchor with the right length but the wrong head is refused — length alone is not enough (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:110
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(l)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:112: (test)
+
+
+
+ 33) test case and whitespace are not silently normalised — a near-miss is a refusal, not a guess (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:95
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for v <- ["pass", "Pass", "PASS ", " PASS", "pAsS"] do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:97: anonymous fn/2 in SP.ControlPlane.VerdictVocabularyTest."test case and whitespace are not silently normalised — a near-miss is a refusal, not a guess"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_vocabulary_test.exs:96: (test)
+
+
+
+ 34) test registration is REFUSED once an earlier entry has already mentioned the gate (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:69
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:error, {:not_prospective, "g-one", 1}} = Registry.register(l, reg_attrs("g-one", 2))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "c6ef3b95c017921fed7c04a9025f97183d8e52fd1d6dd059b927d6da6f301e19", "prev_hash" => nil, "prior" => nil, "resulting" => %{"gate" => "g-one", "run_id" => "stand-in-1"}, "role" => "agent", "seq" => 1, "transition" => "run.recorded", "unix_ns" => 1785430800000000001, "utc" => "2026-07-25T17:00:01Z"}]}, %{at: {"2026-07-25T17:00:02Z", 1785430800000000002}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_prospectivity_test.exs:72: (test)
+
+
+
+ 35) test F3 — a bare PARTIAL is refused, and the refusal says what is missing (SP.ControlPlane.VerdictPartialNamesSubclaimTest)
+     test/sp/control_plane/verdict_partial_names_subclaim_test.exs:60
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:error, reason} = author(%{})
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T19:00:01Z", 1785438000000000001}, gate: "g-one", pass_condition: "Both the offline arm and the live arm hold.", falsifies_condition: "Either arm fails.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.4"}})
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:28: SP.ControlPlane.VerdictPartialNamesSubclaimTest.registered/0
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:44: SP.ControlPlane.VerdictPartialNamesSubclaimTest.author/1
+       test/sp/control_plane/verdict_partial_names_subclaim_test.exs:61: (test)
+
+.
+
+ 36) test evidence stays content-addressed — a verdict carries artifacts only when their digests are known (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:146
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = author(%{})
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:63: SP.ControlPlane.VerdictRequiresReceiptTest.author/1
+       test/sp/control_plane/verdict_requires_receipt_test.exs:147: (test)
+
+
+
+ 37) test the registration entry precedes the verdict entry in the chain, by seq, not by claim (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:111
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(Ledger.new(), reg_attrs("g-one", 1))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "g-one", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:112: (test)
+
+
+
+ 38) test a chain that GREW past its anchor also fails to attest — the anchor is stale, and says so (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:89
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(l)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:91: (test)
+
+
+
+ 39) test a verdict may be lowered on receipts — that is the gate working, not an error (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:112
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = author(registered(), "PASS")
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:113: (test)
+
+
+
+ 40) test registration succeeds when nothing in the chain has mentioned the gate (SP.ControlPlane.RegistryProspectivityTest)
+     test/sp/control_plane/registry_prospectivity_test.exs:63
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:ok, l} = Registry.register(l, reg_attrs("g-one", 2))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}, "evidence" => [], "hash" => "83d90e9775f816fc16cf175e4b7bebde7c42e424d16741f9fb2be1fe7b08e4a9", "prev_hash" => nil, "prior" => nil, "resulting" => %{"gate" => "some-other-gate", "run_id" => "stand-in-1"}, "role" => "agent", "seq" => 1, "transition" => "run.recorded", "unix_ns" => 1785430800000000001, "utc" => "2026-07-25T17:00:01Z"}]}, %{at: {"2026-07-25T17:00:02Z", 1785430800000000002}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_prospectivity_test.exs:65: (test)
+
+
+
+ 41) test F4 — registration is refused when the registrar authorises themselves (SP.ControlPlane.CosignerIsNotProposerTest)
+     test/sp/control_plane/cosigner_is_not_proposer_test.exs:72
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: Registry.register(Ledger.new(), %{
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T21:00:01Z", 1785445200000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "claude", "kind" => "pre_registration", "ref" => "x"}})
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:74: (test)
+
+
+
+ 42) test F4 — the same party as both proposer and co-signer is refused (SP.ControlPlane.CosignerIsNotProposerTest)
+     test/sp/control_plane/cosigner_is_not_proposer_test.exs:44
+     match (=) failed
+     code:  assert {:error, reason} = Command.submit(Ledger.new(), cmd("claude", "claude", 1))
+     left:  {:error, reason}
+     right: {:ok,
+             %SP.ControlPlane.Ledger{
+               reversed: [
+                 %{
+                   "actor" => "claude",
+                   "authorization" => %{
+                     "granted_by" => "claude",
+                     "kind" => "co_sign",
+                     "ref" => "PHASE-3.md#3.5"
+                   },
+                   "evidence" => [],
+                   "hash" => "6d9506b1c697a51528d1a456be151fdd5c11d28125f50640af4b6071a99d855b",
+                   "prev_hash" => nil,
+                   "prior" => nil,
+                   "resulting" => %{"n" => 1},
+                   "role" => "agent",
+                   "seq" => 1,
+                   "transition" => "note.written",
+                   "unix_ns" => 1785445200000000001,
+                   "utc" => "2026-07-25T21:00:01Z"
+                 }
+               ]
+             }}
+     stacktrace:
+       test/sp/control_plane/cosigner_is_not_proposer_test.exs:45: (test)
+
+...
+
+ 43) test PENDING is the one verdict that may be authored without a receipt — it asserts nothing (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:111
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: Verdict.author(registered(), %{
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:113: (test)
+
+
+
+ 44) test registering the same gate twice is refused — a re-registration is a new claim, not a repeat (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:78
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(Ledger.new(), reg_attrs("g-one", 1))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "g-one", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:79: (test)
+
+.
+
+ 45) test F2 — a word outside the vocabulary is refused, and the refusal quotes it back (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:90
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:error, reason} = author(registered(), "MOSTLY_PASS")
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:91: (test)
+
+..........
+
+ 46) test a verdict with NO receipt reference is refused, and the refusal names the field (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: Verdict.author(registered(), %{
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:86: (test)
+
+.
+
+ 47) test the registration carries the claim, verbatim, before anything is observed (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:55
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(Ledger.new(), reg_attrs("control-plane-registry-live", 1))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "control-plane-registry-live", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:56: (test)
+
+
+
+ 48) test each of the five is accepted (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:68
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: for v <- ~w(PASS FAIL WITHHELD PENDING) do
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T18:00:01Z", 1785434400000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_vocabulary_test.exs:24: SP.ControlPlane.VerdictVocabularyTest.registered/1
+       test/sp/control_plane/verdict_vocabulary_test.exs:70: anonymous fn/2 in SP.ControlPlane.VerdictVocabularyTest."test each of the five is accepted"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/verdict_vocabulary_test.exs:69: (test)
+
+.............
+
+ 49) test a verdict with a receipt reference is accepted and the reference is carried (SP.ControlPlane.VerdictRequiresReceiptTest)
+     test/sp/control_plane/verdict_requires_receipt_test.exs:79
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: assert {:ok, l} = author(%{})
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T20:00:01Z", 1785441600000000001}, gate: "g-one", pass_condition: "P holds.", falsifies_condition: "P does not hold.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "adjudication", "ref" => "PHASE-3.md#3.3"}})
+       test/sp/control_plane/verdict_requires_receipt_test.exs:47: SP.ControlPlane.VerdictRequiresReceiptTest.registered/0
+       test/sp/control_plane/verdict_requires_receipt_test.exs:63: SP.ControlPlane.VerdictRequiresReceiptTest.author/1
+       test/sp/control_plane/verdict_requires_receipt_test.exs:80: (test)
+
+
+
+ 50) test registering a gate lands one entry and the gate reads as registered (SP.ControlPlane.RegistryPrecedesRunTest)
+     test/sp/control_plane/registry_precedes_run_test.exs:43
+     ** (UndefinedFunctionError) function SP.ControlPlane.Registry.register/2 is undefined (module SP.ControlPlane.Registry is not available)
+     code: {:ok, l} = Registry.register(Ledger.new(), reg_attrs("control-plane-registry-live", 1))
+     stacktrace:
+       SP.ControlPlane.Registry.register(%SP.ControlPlane.Ledger{reversed: []}, %{at: {"2026-07-25T16:00:01Z", 1785427200000000001}, gate: "control-plane-registry-live", pass_condition: "The effective ledger validates against gate_row.schema.json.", falsifies_condition: "Any effective row the schema rejects.", pre_registration_path: "docs/control-plane/phases/PHASE-3.md", actor: "claude", role: "agent", authorization: %{"granted_by" => "michael", "kind" => "pre_registration", "ref" => "PHASE-3.md#3.2"}})
+       test/sp/control_plane/registry_precedes_run_test.exs:44: (test)
+
+
+
+ 51) test the vocabulary is exactly the five words the gate ledger already uses (SP.ControlPlane.VerdictVocabularyTest)
+     test/sp/control_plane/verdict_vocabulary_test.exs:56
+     ** (UndefinedFunctionError) function SP.ControlPlane.Verdict.vocabulary/0 is undefined (module SP.ControlPlane.Verdict is not available)
+     code: assert Verdict.vocabulary() == ~w(PASS PARTIAL FAIL WITHHELD PENDING)
+     stacktrace:
+       SP.ControlPlane.Verdict.vocabulary()
+       test/sp/control_plane/verdict_vocabulary_test.exs:57: (test)
+
+
+
+ 52) test there is no arity-1 attest — soundness may not be claimed without an anchor (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:145
+     ** (ArgumentError) could not load module SP.ControlPlane.Anchor due to reason :nofile
+     code: Code.ensure_loaded!(Anchor)
+     stacktrace:
+       (elixir 1.19.5) lib/code.ex:2018: Code.ensure_loaded!/1
+       test/sp/control_plane/anchor_detects_truncation_test.exs:146: (test)
+
+.......
+
+ 53) test the anchor is an ARTIFACT — it round-trips through bytes without losing what it holds (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:117
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(l)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prev_hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785448800000000004, "utc" => "2026-07-25T22:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:119: (test)
+
+...
+
+ 54) test truncation by a single entry is caught — not only a large one (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:83
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: {:ok, a} = Anchor.of(full)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prev_hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785448800000000004, "utc" => "2026-07-25T22:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:85: (test)
+
+.......
+
+ 55) test an empty ledger has no anchor — there is no head to hold (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:60
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: assert {:error, :empty_ledger} = Anchor.of(Ledger.new())
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: []})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:61: (test)
+
+
+
+ 56) test an anchor is taken from a chain and carries its head and its length (SP.ControlPlane.AnchorDetectsTruncationTest)
+     test/sp/control_plane/anchor_detects_truncation_test.exs:52
+     ** (UndefinedFunctionError) function SP.ControlPlane.Anchor.of/1 is undefined (module SP.ControlPlane.Anchor is not available)
+     code: assert {:ok, a} = Anchor.of(l)
+     stacktrace:
+       SP.ControlPlane.Anchor.of(%SP.ControlPlane.Ledger{reversed: [%{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "66953859af020ea33f1949bb040669e5009263100467fae8788bb7217899ff2e", "prev_hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prior" => %{"step" => 3}, "resulting" => %{"step" => 4}, "role" => "agent", "seq" => 4, "transition" => "note.written", "unix_ns" => 1785448800000000004, "utc" => "2026-07-25T22:00:04Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "9a9a2d4198d82eebc557466747b3d82195cf4562240312c243656e42ba63f930", "prev_hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prior" => %{"step" => 2}, "resulting" => %{"step" => 3}, "role" => "agent", "seq" => 3, "transition" => "note.written", "unix_ns" => 1785448800000000003, "utc" => "2026-07-25T22:00:03Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "a5cf4dfce878d21e6216e621e5e824a13188fe5b8b5bebf1926b69cc903d8057", "prev_hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prior" => %{"step" => 1}, "resulting" => %{"step" => 2}, "role" => "agent", "seq" => 2, "transition" => "note.written", "unix_ns" => 1785448800000000002, "utc" => "2026-07-25T22:00:02Z"}, %{"actor" => "claude", "authorization" => %{"granted_by" => "michael", "kind" => "co_sign", "ref" => "PHASE-3.md#3.6"}, "evidence" => [], "hash" => "d22f7dbed7f530127d7a16fb6f66894be16ffa1911547da2c801259f5344f73f", "prev_hash" => nil, "prior" => nil, "resulting" => %{"step" => 1}, "role" => "agent", "seq" => 1, "transition" => "note.written", "unix_ns" => 1785448800000000001, "utc" => "2026-07-25T22:00:01Z"}]})
+       test/sp/control_plane/anchor_detects_truncation_test.exs:54: (test)
+
+......
+Finished in 0.7 seconds (0.6s async, 0.05s sync)
+127 tests, 56 failures

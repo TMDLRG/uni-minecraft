@@ -1,0 +1,178 @@
+Running ExUnit with seed: 530473, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test F24 — an UNKNOWN truth class renders as fog (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:75
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: assert Scene.material(node!(%{truth_class: :UNKNOWN})) == :fog
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :UNKNOWN, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:76: (test)
+
+
+
+  2) test a NIL receipt_ref is built, and renders as fog — considered, and there is nothing (SP.ControlPlane.SceneNodeRequiresTruthClassTest)
+     test/sp/control_plane/scene_node_requires_truth_class_test.exs:61
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: assert Scene.material(n) == :fog
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:63: (test)
+
+
+
+  3) test material/1 returns a material, never an error tuple, for every valid node (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:63
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: for tc <- Scene.truth_classes(), ref <- ["docs/GATES.md", nil] do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:65: anonymous fn/3 in SP.ControlPlane.FogIsNotAnErrorTest."test material/1 returns a material, never an error tuple, for every valid node"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/fog_is_not_an_error_test.exs:64: (test)
+
+
+
+  4) test the scene reports its fogged nodes, so a surface can say HOW MUCH is unbacked without deriving it (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:148
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.fogged/1 is undefined or private
+     code: fogged = Scene.fogged(scene)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.fogged(%SP.ControlPlane.Scene{nodes: [%{id: "gate:a", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"}, %{id: "gate:b", truth_class: :UNKNOWN, receipt_ref: nil, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"}]})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:170: (test)
+
+
+
+  5) test material/1 never raises, for any truth class and either receipt state (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:142
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: for tc <- Scene.truth_classes(), ref <- ["docs/GATES.md", nil] do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:144: anonymous fn/3 in SP.ControlPlane.FogIsNotAnErrorTest."test material/1 never raises, for any truth class and either receipt state"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/fog_is_not_an_error_test.exs:143: (test)
+
+
+
+  6) test fog is in the material vocabulary — it is a thing you can draw, not a failure code (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:59
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.materials/0 is undefined or private
+     code: assert :fog in Scene.materials()
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.materials()
+       test/sp/control_plane/fog_is_not_an_error_test.exs:60: (test)
+
+
+
+  7) test a fogged node is still IN the scene — never absent, never empty (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:101
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: assert Scene.material(unbacked) == :fog
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:unbacked", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "pending", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:127: (test)
+
+
+
+  8) test OBSERVED is the ONLY thing that renders lit and solid — §8.2's 'nothing else may look like this' (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:91
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: for tc <- Scene.truth_classes(),
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:94: anonymous fn/2 in SP.ControlPlane.FogIsNotAnErrorTest."test OBSERVED is the ONLY thing that renders lit and solid — §8.2's 'nothing else may look like this'"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/fog_is_not_an_error_test.exs:93: (test)
+
+
+
+  9) test F24 — a nil receipt_ref renders as fog EVEN WHEN the node claims to be OBSERVED (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:79
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: assert Scene.material(node!(%{truth_class: :OBSERVED, receipt_ref: nil})) == :fog,
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:80: (test)
+
+
+
+ 10) test material/1 is pure — same node, same material, and it spawns nothing (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:130
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: a = Scene.material(n)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :SIMULATED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:134: (test)
+
+
+
+ 11) test F24 — a nil receipt_ref is fog for EVERY truth class, not just the weak ones (SP.ControlPlane.FogIsNotAnErrorTest)
+     test/sp/control_plane/fog_is_not_an_error_test.exs:84
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: for tc <- Scene.truth_classes() do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: nil, evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/fog_is_not_an_error_test.exs:86: anonymous fn/2 in SP.ControlPlane.FogIsNotAnErrorTest."test F24 — a nil receipt_ref is fog for EVERY truth class, not just the weak ones"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/fog_is_not_an_error_test.exs:85: (test)
+
+.
+
+ 12) test the material vocabulary is closed — five materials, no sixth appearing quietly (SP.ControlPlane.SceneNodeRequiresTruthClassTest)
+     test/sp/control_plane/scene_node_requires_truth_class_test.exs:132
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.materials/0 is undefined or private
+     code: assert Enum.sort(Scene.materials()) == Enum.sort([:lit_solid, :seamed_solid, :translucent, :staged, :fog])
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.materials()
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:133: (test)
+
+
+
+ 13) test REDUCED_MODEL and DERIVED share a material, exactly as the document groups them (SP.ControlPlane.SceneNodeRequiresTruthClassTest)
+     test/sp/control_plane/scene_node_requires_truth_class_test.exs:124
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: assert Scene.material(a) == Scene.material(b)
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :REDUCED_MODEL, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:128: (test)
+
+.
+
+ 14) test every truth class the document names maps to the material the document gives it (SP.ControlPlane.SceneNodeRequiresTruthClassTest)
+     test/sp/control_plane/scene_node_requires_truth_class_test.exs:92
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: for {tc, material, phrase} <- expected do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :OBSERVED, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:110: anonymous fn/3 in SP.ControlPlane.SceneNodeRequiresTruthClassTest."test every truth class the document names maps to the material the document gives it"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:104: (test)
+
+..
+
+ 15) test an UNKNOWN truth_class is built, and renders as fog (SP.ControlPlane.SceneNodeRequiresTruthClassTest)
+     test/sp/control_plane/scene_node_requires_truth_class_test.exs:66
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.material/1 is undefined or private
+     code: assert Scene.material(n) == :fog
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.material(%{id: "gate:x", truth_class: :UNKNOWN, receipt_ref: "docs/GATES.md", evidence_class: "A", captured_at: "2026-07-26T09:00:00Z"})
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:68: (test)
+
+
+
+ 16) test every truth class has a material — none falls through to a default (SP.ControlPlane.SceneNodeRequiresTruthClassTest)
+     test/sp/control_plane/scene_node_requires_truth_class_test.exs:115
+     ** (UndefinedFunctionError) function SP.ControlPlane.Scene.materials/0 is undefined or private
+     code: for tc <- Scene.truth_classes() do
+     stacktrace:
+       (stratified_palimpsest 0.1.0) SP.ControlPlane.Scene.materials()
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:119: anonymous fn/2 in SP.ControlPlane.SceneNodeRequiresTruthClassTest."test every truth class has a material — none falls through to a default"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/scene_node_requires_truth_class_test.exs:116: (test)
+
+.
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+21 tests, 16 failures

@@ -1,0 +1,16 @@
+# uni-colony-archive.timer — D-D1 in the UNI OS+MIND Deepening Plan.
+# Daily colony snapshot at 03:30 UTC. Coordinates with uni-backup.timer (daily 04:00 UTC)
+# so colony_archive.sh completes BEFORE backup.sh runs — backup.sh then rsyncs the archive
+# root as one of its legs.
+
+[Unit]
+Description=UNI colony daily archive timer
+Documentation=file:///var/lib/uni/broadcast-src/production/scripts/colony_archive.sh
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+Unit=uni-colony-archive.service
+
+[Install]
+WantedBy=timers.target

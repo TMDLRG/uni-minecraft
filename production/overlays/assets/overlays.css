@@ -1,0 +1,202 @@
+/*
+  overlays.css - shared palette + base transparent styles for the UNI Production
+  broadcast graphics package.
+
+  RULES (from docs/UNI_PRODUCTION_PLATFORM.md):
+   - Every overlay page is TRANSPARENT (html,body background:transparent) so OBS
+     can composite it as a browser-source over the program.
+   - 2D-canvas / pure CSS / DOM only. NEVER WebGL/WebGPU (renders black in capture).
+   - Palette tokens match the glass cockpit so overlays match /glass on screen.
+
+  DESIGN/REFERENCE only - not deployed. Status: pending.
+*/
+
+:root {
+  /* Glass palette tokens - keep in lock-step with the glass cockpit. */
+  --panel: rgba(17, 24, 36, 0.62);
+  --panel-solid: #0c1320;
+  --ink: #eaf1f9;
+  --ink-dim: rgba(234, 241, 249, 0.62);
+  --ink-faint: rgba(234, 241, 249, 0.34);
+  --accent: #3fd2ff;
+  --ok: #3fe089;
+  --warn: #f6b94e;
+  --crit: #ff5b67;
+  --unknown: #7d8aa0;
+
+  --hair: rgba(63, 210, 255, 0.22);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --radius: 10px;
+
+  --font: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue",
+    Arial, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Code", ui-monospace, "SF Mono", Menlo,
+    Consolas, monospace;
+}
+
+/* Transparent canvas for capture. overflow:hidden so nothing scrolls a scrollbar
+   into the program. */
+html,
+body {
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ---- Tone -> left-border colour (card/tone technique from glass) ---- */
+.tone-ok {
+  border-left-color: var(--ok);
+}
+.tone-warn {
+  border-left-color: var(--warn);
+}
+.tone-crit {
+  border-left-color: var(--crit);
+}
+.tone-unknown {
+  border-left-color: var(--unknown);
+}
+.tone-accent {
+  border-left-color: var(--accent);
+}
+
+/* Accent text helpers keyed off tone. */
+.fg-ok {
+  color: var(--ok);
+}
+.fg-warn {
+  color: var(--warn);
+}
+.fg-crit {
+  color: var(--crit);
+}
+.fg-accent {
+  color: var(--accent);
+}
+.fg-dim {
+  color: var(--ink-dim);
+}
+
+/* ---- Glass panel base ---- */
+.panel {
+  background: var(--panel);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ---- Crossfade enter/exit (shared by lower-third / title / caption) ---- */
+.view {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.view.on {
+  opacity: 1;
+}
+
+/* Slide-from-below companion for straps. */
+.rise {
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.rise.on {
+  transform: translateY(0);
+}
+
+/* ---- Numerics ---- */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---- Staleness marker (honest rendering) ---- */
+.stale {
+  color: var(--warn);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* ---- Muted placeholder for missing fields (never fake data) ---- */
+.placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* ---- Kicker / eyebrow ---- */
+.kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- Ticker (doubled-string seamless CSS scroll) ---- */
+.tk {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+.tk .track {
+  display: inline-block;
+  padding-left: 100%;
+  will-change: transform;
+  animation: scr 85s linear infinite;
+}
+@keyframes scr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Pause-on-stale, so a frozen feed does not look live. */
+.tk.paused .track {
+  animation-play-state: paused;
+}
+
+/* ---- ON-AIR flash: steps(1) hard blink (fired only after a debounce streak) ---- */
+@keyframes onair-flash {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.28;
+  }
+}
+.flash {
+  animation: onair-flash 1s steps(1, end) infinite;
+}
+
+/* Reduced motion: drop the scroll + flash animations for accessibility. */
+@media (prefers-reduced-motion: reduce) {
+  .tk .track {
+    animation: none;
+  }
+  .flash {
+    animation: none;
+  }
+}

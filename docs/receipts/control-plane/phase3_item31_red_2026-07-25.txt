@@ -1,0 +1,63 @@
+Running ExUnit with seed: 291913, max_cases: 32
+Excluding tags: [:skip]
+
+
+
+  1) test each corrected gate now resolves to a conforming row that supersedes its predecessor (SP.ControlPlane.LedgerSchemaConformanceTest)
+     test/sp/control_plane/ledger_schema_conformance_test.exs:82
+     ** (MatchError) no match of right hand side value:
+
+         {:error, ["pre_registration_path must be a string, got nil"]}
+
+     code: for name <- @corrected do
+     stacktrace:
+       test/sp/control_plane/ledger_schema_conformance_test.exs:88: anonymous fn/2 in SP.ControlPlane.LedgerSchemaConformanceTest."test each corrected gate now resolves to a conforming row that supersedes its predecessor"/1
+       (elixir 1.19.5) lib/enum.ex:1688: Enum."-map/2-lists^map/1-1-"/2
+       test/sp/control_plane/ledger_schema_conformance_test.exs:85: (test)
+
+
+
+  2) test a correction changed ONLY pre_registration_path, supersedes and notes — never a verdict (SP.ControlPlane.LedgerSchemaConformanceTest)
+     test/sp/control_plane/ledger_schema_conformance_test.exs:94
+     broadcast-test-stages-honest: a schema-conformance correction must not change pass_condition ("EVERY stage verdict in runBroadcastTest() is DERIVED from the evidence rows that stage emitted; no stage verdict is a hardcoded literal. Picture stages judge PIXELS (probeRenderFrac >= RENDER_MIN_FRAC), never a JPEG byte-count. Egress is sampled twice >=6s apart so a flapping (platform-rejected) pusher cannot read as healthy. Every row states the limit of what it proves." -> "EVERY stage verdict in runBroadcastTest() is DERIVED from the evidence rows that stage emitted; no stage verdict is a hardcoded literal. Picture stages judge PIXELS (probeRenderFrac vs a documented floor), never a JPEG byte-count. A scene is judged ONLY when all its content inputs are present; absent/unloaded inputs SKIP honestly and never fabricate either a pass or a fail. Egress is sampled twice >=6s apart so a flapping (platform-rejected) pusher cannot read as healthy. Every row states the limit of what it proves.")
+     code: for name <- @corrected do
+     stacktrace:
+       test/sp/control_plane/ledger_schema_conformance_test.exs:106: anonymous fn/5 in SP.ControlPlane.LedgerSchemaConformanceTest."test a correction changed ONLY pre_registration_path, supersedes and notes — never a verdict"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/sp/control_plane/ledger_schema_conformance_test.exs:104: anonymous fn/2 in SP.ControlPlane.LedgerSchemaConformanceTest."test a correction changed ONLY pre_registration_path, supersedes and notes — never a verdict"/1
+       (elixir 1.19.5) lib/enum.ex:1688: Enum."-map/2-lists^map/1-1-"/2
+       test/sp/control_plane/ledger_schema_conformance_test.exs:98: (test)
+
+
+
+  3) test the correction is recorded in the notes of every row it touched, not only in a commit message (SP.ControlPlane.LedgerSchemaConformanceTest)
+     test/sp/control_plane/ledger_schema_conformance_test.exs:116
+     broadcast-test-stages-honest: the row must say why it exists — a reader of the ledger alone must be able to tell
+     code: for name <- @corrected do
+     stacktrace:
+       (elixir 1.19.5) lib/enum.ex:1688: Enum."-map/2-lists^map/1-1-"/2
+       test/sp/control_plane/ledger_schema_conformance_test.exs:119: (test)
+
+
+
+  4) test 3.1 — every EFFECTIVE row validates against gate_row.schema.json (SP.ControlPlane.LedgerSchemaConformanceTest)
+     test/sp/control_plane/ledger_schema_conformance_test.exs:59
+     the effective state of the ledger does not conform:
+       gaia-probe-not-envelope: {:error, ["pre_registration_path must be a string, got nil"]}
+       cam-mic-hardened-defaults: {:error, ["pre_registration_path must be a string, got nil"]}
+       status-endpoint-honest: {:error, ["pre_registration_path must be a string, got nil"]}
+       cc-glass-badge-honest-rename: {:error, ["pre_registration_path must be a string, got nil"]}
+       cc-broadcast-metadata-surface: {:error, ["pre_registration_path must be a string, got nil"]}
+       cc-status-honest-fields: {:error, ["pre_registration_path must be a string, got nil"]}
+       cc-per-endpoint-fanout-rows: {:error, ["pre_registration_path must be a string, got nil"]}
+       cc-writestate-honest-freshness: {:error, ["pre_registration_path must be a string, got nil"]}
+       music-service-integration-first-class: {:error, ["pre_registration_path must be a string, got nil"]}
+       publisher-pin-claim-retracted: {:error, ["pre_registration_path must be a string, got nil"]}
+       broadcast-test-stages-honest: {:error, ["pre_registration_path must be a string, got nil"]}
+     code: assert refused == [],
+     stacktrace:
+       test/sp/control_plane/ledger_schema_conformance_test.exs:65: (test)
+
+..
+Finished in 0.1 seconds (0.1s async, 0.00s sync)
+6 tests, 4 failures

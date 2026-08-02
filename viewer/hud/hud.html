@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>UNI HUD</title>
+<meta name="viewport" content="width=1920, initial-scale=1">
+<style>
+:root{
+  --bg:#0b0f14; --bg2:#111823; --panel:#141b24; --line:#1e2a37;
+  --ink:#dbe6f1; --dim:#94a3b8; --mute:#64748b;
+  --ok:#2ecc71; --warn:#f1b40f; --bad:#e5484d; --nv:#6b7a8d;
+  --acc:#3fd2ff; --gold:#f9e2af; --live:#ff2d55;
+  --font-sans:"Segoe UI",system-ui,sans-serif;
+  --font-mono:"Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);height:100vh;overflow:hidden}
+body{display:grid;grid-template-rows:auto 1fr auto;grid-template-columns:100vw}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.mono{font-family:var(--font-mono)}
+.dim{color:var(--dim)}
+.mute{color:var(--mute)}
+.small{font-size:11px}
+.tiny{font-size:10px}
+
+/* --- Air hero strip --- */
+#air{
+  display:grid;grid-template-columns:180px 1fr auto auto auto;
+  gap:16px;align-items:center;
+  padding:10px 20px;background:linear-gradient(180deg,#0b1220,#0b0f14);
+  border-bottom:1px solid var(--line);height:78px
+}
+#airbadge{
+  padding:8px 14px;border-radius:8px;font-weight:700;letter-spacing:0.6px;
+  text-align:center;font-size:22px;background:#1b232f;color:var(--dim);
+}
+#air.air-OFF #airbadge      {background:#1b232f;color:#94a3b8}
+#air.air-REHEARSAL #airbadge{background:#4a3e1a;color:#f9e2af}
+#air.air-STREAMING #airbadge{background:#134e2a;color:#66ffaa;box-shadow:0 0 24px rgba(46,204,113,.35)}
+#air.air-LIVE_LIVE #airbadge{background:#5a1120;color:#ff97a8;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(255,45,85,.6)}50%{box-shadow:0 0 40px rgba(255,45,85,.6)}}
+#stackpills{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{padding:4px 10px;border-radius:999px;font-size:12px;border:1px solid var(--line)}
+.pill.up{background:#0e2a1a;color:var(--ok);border-color:#1e3a2a}
+.pill.warn{background:#2c2410;color:var(--warn);border-color:#4a3e1a}
+.pill.down{background:#2a0f14;color:var(--bad);border-color:#4a1e26}
+.pill.nv{background:#171f2a;color:var(--nv);border-color:#232f3e}
+.pill.locked{background:#1a1a2e;color:#c0a0ff;border-color:#2e2e4a}
+#stackline{font-size:18px;font-weight:600}
+#journey{font-size:12px;color:var(--dim);text-align:right}
+#nextchips{display:flex;gap:6px;justify-content:flex-end;margin-top:4px}
+#nextchips .pill{background:#132030;color:var(--acc);border-color:#1e3a4a}
+#clock{font-family:var(--font-mono);font-size:24px;color:var(--acc);min-width:180px;text-align:right}
+
+/* --- main body --- */
+#body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;overflow:hidden}
+.col{border-right:1px solid var(--line);padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.col:last-child{border-right:none}
+.section-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.section-h h3{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute);font-weight:600}
+.section-h .prov{font-family:var(--font-mono);font-size:10px;color:var(--mute)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+
+/* NOC: door tiles */
+#lifemap{width:100%;height:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px}
+#doorlist{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+.doorline{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:4px 8px;border-radius:4px;background:#0f1620;border:1px solid var(--line)}
+.doorline.open{border-left:3px solid var(--ok)}
+.doorline.closed{border-left:3px solid #3a4a5c}
+.doorline.locked{border-right:2px solid #c0a0ff}
+.doorline.bad{border-left:3px solid var(--bad)}
+.doorline .k{font-weight:600}
+.doorline .p{color:var(--mute);font-size:10px}
+
+/* Telemetry rail */
+.spark{background:#0f1620;border:1px solid var(--line);border-radius:6px;padding:10px}
+.spark .h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.spark .h .t{font-size:11px;color:var(--dim)}
+.spark .h .v{font-family:var(--font-mono);font-size:14px;color:var(--acc)}
+.spark svg{display:block;width:100%;height:36px}
+#sparkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#latencies{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* Gates ladder */
+#gates{display:flex;flex-direction:column;gap:3px;font-family:var(--font-mono);font-size:11px}
+.gaterow{display:grid;grid-template-columns:70px 1fr 20px;gap:6px;padding:4px 8px;border-radius:4px;background:#0f1620;border:1px solid var(--line)}
+.gaterow .v{font-weight:700;text-align:center;padding:1px 4px;border-radius:3px;font-size:10px}
+.v.PASS{background:#0e2a1a;color:var(--ok)}
+.v.PARTIAL{background:#2c2410;color:var(--warn)}
+.v.FAIL{background:#2a0f14;color:var(--bad)}
+.v.WITHHELD{background:#171f2a;color:var(--nv)}
+.v.PENDING{background:#1a1a2e;color:#c0a0ff}
+.gaterow .n{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gaterow .e{color:var(--mute);text-align:right}
+
+/* Enlightened sight panel */
+#sight-panel{display:flex;flex-direction:column;gap:4px;margin-top:4px;max-height:280px;overflow-y:auto}
+.finding{padding:6px 10px;border-radius:4px;border-left:4px solid var(--nv);background:#0f1620;font-size:11px;line-height:1.4}
+.finding.bad{border-left-color:var(--bad);background:#1c0f14}
+.finding.warn{border-left-color:var(--warn);background:#241b0e}
+.finding.info{border-left-color:var(--nv);background:#0f1620}
+.finding .code{font-family:var(--font-mono);font-size:10px;color:var(--acc);margin-bottom:2px}
+.finding .title{color:var(--ink);font-weight:600;margin-bottom:2px}
+.finding .detail{color:var(--dim);font-size:10.5px}
+.finding .meta{color:var(--mute);font-size:9.5px;font-family:var(--font-mono);margin-top:2px}
+.sight-empty{color:var(--mute);font-family:var(--font-mono);font-size:11px;font-style:italic;padding:6px}
+#sight-count.pill{padding:2px 8px;border-radius:999px;font-family:var(--font-mono)}
+#sight-count.calm{color:var(--ok);background:#0e2a1a}
+#sight-count.hot{color:var(--bad);background:#2a0f14;font-weight:700}
+
+/* Audience feed */
+#audiencepane{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0}
+#audiencelist{flex:1;overflow-y:auto;display:flex;flex-direction:column-reverse;gap:4px;background:#0f1620;border:1px solid var(--line);border-radius:8px;padding:8px}
+.arow{padding:6px 8px;background:#131c28;border-left:3px solid var(--acc);border-radius:4px;font-size:12px}
+.arow.stub{border-left-color:var(--mute)}
+.arow.yt{border-left-color:#ff4444}
+.arow.tw{border-left-color:#9146ff}
+.arow .who{font-family:var(--font-mono);font-size:10px;color:var(--mute);margin-bottom:2px}
+.arow .txt{color:var(--ink)}
+#audiencectl{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+#audiencecount{font-family:var(--font-mono);color:var(--dim)}
+
+/* Provenance footer */
+#foot{
+  border-top:1px solid var(--line);padding:6px 20px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--font-mono);font-size:10px;color:var(--mute);background:#080b10
+}
+#foot .provchip{padding:2px 6px;background:#111823;border:1px solid var(--line);border-radius:3px;cursor:help}
+#foot .provchip:hover{color:var(--acc);border-color:var(--acc)}
+#footright{display:flex;gap:12px;align-items:center}
+#poll{color:var(--dim)}
+
+/* Errors + not-verified */
+.err{color:var(--bad);font-family:var(--font-mono);font-size:11px;padding:8px;background:#1c0f14;border:1px dashed var(--bad);border-radius:6px}
+.unavail{color:var(--nv);font-family:var(--font-mono);font-size:11px;font-style:italic;padding:8px;background:#0f1620;border:1px dashed var(--nv);border-radius:6px}
+
+/* Journey banner variants */
+#air.plannedClosed #airbadge{background:#2c2410;color:var(--warn)}
+</style>
+</head><body>
+
+<div id="air" class="air-OFF">
+  <div id="airbadge">OFF AIR</div>
+  <div>
+    <div id="stackline">STACK: <span class="pill nv">unknown</span></div>
+    <div id="stackpills"></div>
+  </div>
+  <div id="journey">
+    <div><span class="mute">journey</span> <span id="jstep">-</span></div>
+    <div id="nextchips"></div>
+  </div>
+  <div id="clock">--:--:--</div>
+</div>
+
+<div id="body">
+
+  <!-- LEFT: NOC -->
+  <div class="col">
+    <div class="section-h"><h3>NOC — 13 door register</h3><span class="prov" id="prov-noc">-</span></div>
+    <svg id="lifemap" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="section-h"><h3>doors register</h3><span class="prov mute">source: launcher/api/status door_open</span></div>
+    <div id="doorlist"></div>
+  </div>
+
+  <!-- MIDDLE: telemetry + gates -->
+  <div class="col">
+    <div class="section-h"><h3>feeds &amp; speeds — telemetry rail</h3><span class="prov" id="prov-metrics">-</span></div>
+    <div id="sparkgrid">
+      <div class="spark"><div class="h"><span class="t">producer up</span><span class="v" id="v-producer">-</span></div><svg id="s-producer"></svg></div>
+      <div class="spark"><div class="h"><span class="t">stack state</span><span class="v" id="v-stack">-</span></div><svg id="s-stack"></svg></div>
+    </div>
+    <div id="latencies">
+      <div class="spark"><div class="h"><span class="t">launcher /ms</span><span class="v" id="v-lauml">-</span></div><svg id="s-lauml"></svg></div>
+      <div class="spark"><div class="h"><span class="t">gaia /ms</span><span class="v" id="v-gaiml">-</span></div><svg id="s-gaiml"></svg></div>
+    </div>
+    <div class="section-h"><h3>SOC — gate ladder</h3><span class="prov" id="prov-gates">-</span></div>
+    <div id="gates"></div>
+    <div class="section-h"><h3>ENLIGHTENED SIGHT — contradictions · rot · runaway <span id="sight-count" class="tiny mute"></span></h3><span class="prov" id="prov-sight">-</span></div>
+    <div id="sight-panel"></div>
+  </div>
+
+  <!-- RIGHT: audience -->
+  <div class="col">
+    <div class="section-h"><h3>audience feed <span class="tiny mute">(staged; scrapers land later)</span></h3><span class="prov" id="prov-audience">-</span></div>
+    <div id="audiencepane">
+      <div id="audiencelist"></div>
+      <div id="audiencectl">
+        <span id="audiencecount">0 rows</span>
+        <span class="mute tiny">POST /api/hud/audience/publish · loopback + x-uni-cc:1 · sanitized_by required</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="foot">
+  <span>UNI HUD · third independent surface next to <a href="/api/hud/discovery">The Door</a> and Gaia · <span class="mono" id="commit">-</span></span>
+  <span id="footright">
+    <span id="poll">poll: <span id="pn">0</span> · every <span id="pi">3000</span>ms · last <span id="pl">-</span></span>
+    <a href="/api/hud/snapshot" class="provchip" title="the JSON this page reads">/api/hud/snapshot</a>
+    <a href="/api/hud/discovery" class="provchip" title="self-describing manifest">/api/hud/discovery</a>
+  </span>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let lastSnap = null;
+let audienceRows = [];
+
+function fmtMs(n){ return n==null ? "-" : (n<1000 ? n.toFixed(0)+"ms" : (n/1000).toFixed(2)+"s"); }
+function shortSha(sha){ return sha ? sha.slice(0,8) : "-"; }
+
+async function fetchJson(path, timeoutMs){
+  const c = new AbortController();
+  const t = setTimeout(()=>c.abort(), timeoutMs||4000);
+  try{
+    const r = await fetch(path, {signal:c.signal, cache:"no-store", headers:{"accept":"application/json"}});
+    if(!r.ok) return {ok:false, status:r.status};
+    return {ok:true, status:r.status, body: await r.json()};
+  } catch(e){ return {ok:false, err:String(e.message||e)}; }
+  finally{ clearTimeout(t); }
+}
+
+/* --- LIVING MAP SVG -----------------------------------------------------
+   13-door layout: frame column (door, gaia, hud) | studio group (obs,mediamtx,console,overlays,publisher,stream) | remote group (producer,world,colony,colonycam,relay)
+------------------------------------------------------------------------ */
+function renderMap(door_open, journey){
+  const svg = $("lifemap"); svg.innerHTML = "";
+  const NS = "http://www.w3.org/2000/svg";
+  const node = (x,y,w,h,label,cls,title)=>{
+    const g = document.createElementNS(NS,"g");
+    const r = document.createElementNS(NS,"rect");
+    r.setAttribute("x",x); r.setAttribute("y",y); r.setAttribute("width",w); r.setAttribute("height",h);
+    r.setAttribute("rx",4); r.setAttribute("fill", cls.fill); r.setAttribute("stroke", cls.stroke); r.setAttribute("stroke-width",1);
+    g.appendChild(r);
+    const t = document.createElementNS(NS,"text");
+    t.setAttribute("x", x+w/2); t.setAttribute("y", y+h/2+3); t.setAttribute("text-anchor","middle");
+    t.setAttribute("font-family","'Segoe UI',sans-serif"); t.setAttribute("font-size","9"); t.setAttribute("fill", cls.text);
+    t.textContent = label;
+    g.appendChild(t);
+    if(title){ const ti = document.createElementNS(NS,"title"); ti.textContent = title; g.appendChild(ti); }
+    return g;
+  };
+  const clsFor = (d) => {
+    if(!d) return {fill:"#161e28", stroke:"#232f3e", text:"#94a3b8"};
+    if(d.circle_ok===false) return {fill:"#2a0f14", stroke:"#e5484d", text:"#ff97a8"};
+    if(d.locked && d.open) return {fill:"#1b263a", stroke:"#c0a0ff", text:"#dbe6f1"};
+    if(d.locked && !d.open) return {fill:"#161e28", stroke:"#c0a0ff", text:"#94a3b8"};
+    if(d.open) return {fill:"#0e2a1a", stroke:"#2ecc71", text:"#66ffaa"};
+    return {fill:"#161e28", stroke:"#3a4a5c", text:"#94a3b8"};
+  };
+  const label = { door:"door", gaia:"gaia", hud:"hud", obs:"obs", mediamtx:"mediamtx", console:"console", overlays:"overlays", publisher:"publisher", stream:"stream", producer:"producer", world:"world", colony:"colony", colonycam:"cam", relay:"relay" };
+  const pos = {
+    door:      [10,  20, 80, 30],
+    gaia:      [10,  60, 80, 30],
+    hud:       [10, 100, 80, 30],
+    obs:       [110, 20, 90, 30],
+    mediamtx:  [210, 20, 90, 30],
+    console:   [110, 60, 90, 30],
+    overlays:  [210, 60, 90, 30],
+    publisher: [110,100, 90, 30],
+    stream:    [210,100, 90, 30],
+    producer:  [310, 20, 80, 30],
+    world:     [310, 60, 80, 30],
+    colony:    [310,100, 80, 30],
+    colonycam: [310,140, 80, 30],
+    relay:     [310,180, 80, 30],
+  };
+  // labels
+  const groupText = (x,y,t)=>{ const el = document.createElementNS(NS,"text"); el.setAttribute("x",x); el.setAttribute("y",y); el.setAttribute("font-size","8"); el.setAttribute("fill","#64748b"); el.setAttribute("font-family","'Cascadia Code',monospace"); el.textContent = t; return el; };
+  svg.appendChild(groupText(10, 15, "FRAME + WITNESS"));
+  svg.appendChild(groupText(110, 15, "STUDIO"));
+  svg.appendChild(groupText(310, 15, "REMOTE (observe-only)"));
+  // mandate fence
+  const fence = document.createElementNS(NS,"line");
+  fence.setAttribute("x1",305); fence.setAttribute("y1",18); fence.setAttribute("x2",305); fence.setAttribute("y2",300);
+  fence.setAttribute("stroke","#e5484d"); fence.setAttribute("stroke-dasharray","2,3"); fence.setAttribute("opacity","0.5");
+  svg.appendChild(fence);
+  // nodes
+  Object.entries(pos).forEach(([k,p])=>{
+    const d = door_open ? door_open[k] : null;
+    const t = d ? (d.prediction || "no prediction") : "no data";
+    svg.appendChild(node(p[0],p[1],p[2],p[3], label[k]||k, clsFor(d), `${k}: ${t}`));
+  });
+  // journey step badge
+  if(journey && journey.id){
+    const b = document.createElementNS(NS,"rect");
+    b.setAttribute("x",10); b.setAttribute("y",270); b.setAttribute("width",380); b.setAttribute("height",30);
+    b.setAttribute("rx",4); b.setAttribute("fill","#132030"); b.setAttribute("stroke","#1e3a4a"); b.setAttribute("stroke-width",1);
+    svg.appendChild(b);
+    const t = document.createElementNS(NS,"text");
+    t.setAttribute("x",200); t.setAttribute("y",289); t.setAttribute("text-anchor","middle"); t.setAttribute("font-size","10"); t.setAttribute("fill","#3fd2ff"); t.setAttribute("font-family","'Segoe UI',sans-serif");
+    t.textContent = "▶ " + journey.id + ": " + (journey.label || "");
+    svg.appendChild(t);
+  }
+}
+
+function renderDoorList(door_open){
+  const el = $("doorlist"); el.innerHTML = "";
+  if(!door_open){ el.innerHTML = "<div class='unavail'>door_open unavailable — is /api/status up?</div>"; return; }
+  const order = ["door","gaia","hud","obs","mediamtx","console","overlays","publisher","stream","producer","world","colony","colonycam","relay"];
+  for(const k of order){
+    const d = door_open[k]; if(!d) continue;
+    const cls = d.circle_ok===false ? "bad" : (d.open ? "open" : "closed");
+    const lc = d.locked ? " locked" : "";
+    el.innerHTML += `<div class="doorline ${cls}${lc}" title="${esc(d.prediction||"")}"><span class="k">${esc(k)}</span><span class="p">${d.open?"open":"closed"}${d.locked?" · locked":""}${d.circle_ok===false?" · circle BROKEN":""}</span></div>`;
+  }
+}
+
+function renderStack(stack, stackObj){
+  const line = $("stackline"); const pillsEl = $("stackpills");
+  if(!stack){ line.innerHTML = "STACK: <span class='pill down'>UNREACHABLE</span>"; pillsEl.innerHTML = ""; return; }
+  const s = stackObj && stackObj.state || stack;
+  const cls = s==="UP"?"up": s==="PARTIAL"?"warn":"down";
+  line.innerHTML = `STACK: <span class="pill ${cls}">${esc(s)}</span>`;
+}
+
+function renderAir(snap){
+  const air = $("air");
+  air.className = ""; // reset
+  // We do not have direct air state (only /api/state on command_center gives it). Default OFF.
+  air.classList.add("air-OFF");
+  $("airbadge").textContent = "OFF AIR";
+  // Journey-aware banner
+  const j = snap && snap.journey_current_step;
+  if(j && /^(prep_close|reboot|verify)/.test(j.id||"")) air.classList.add("plannedClosed");
+}
+
+function renderJourney(j){
+  if(!j){ $("jstep").textContent = "-"; $("nextchips").innerHTML = ""; return; }
+  $("jstep").textContent = j.id + " — " + (j.label||"");
+  $("nextchips").innerHTML = (j.predicts_next||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join("");
+}
+
+/* --- SPARKLINES (inline SVG polyline) ---------------------------------- */
+function sparkline(svgEl, values, opts){
+  const w = svgEl.clientWidth || 200; const h = 36;
+  svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svgEl.innerHTML = "";
+  if(!values || values.length===0){ svgEl.innerHTML = `<text x="4" y="20" fill="#64748b" font-size="10" font-family="'Cascadia Code',monospace">no data yet</text>`; return; }
+  const nums = values.map(v => (typeof v==="number" && !isNaN(v)) ? v : null);
+  const clean = nums.filter(n=>n!=null);
+  if(clean.length===0){ svgEl.innerHTML = `<text x="4" y="20" fill="#64748b" font-size="10" font-family="'Cascadia Code',monospace">no numeric values</text>`; return; }
+  const min = Math.min(...clean), max = Math.max(...clean);
+  const range = max===min ? 1 : (max-min);
+  const step = nums.length>1 ? w/(nums.length-1) : w;
+  const pts = nums.map((v,i) => v==null ? null : `${(i*step).toFixed(1)},${(h - 2 - ((v-min)/range)*(h-4)).toFixed(1)}`).filter(Boolean).join(" ");
+  const NS = "http://www.w3.org/2000/svg";
+  const p = document.createElementNS(NS,"polyline");
+  p.setAttribute("points", pts); p.setAttribute("fill","none"); p.setAttribute("stroke", (opts&&opts.color)||"#3fd2ff"); p.setAttribute("stroke-width","1.5");
+  svgEl.appendChild(p);
+  // last-point dot
+  const lastNum = clean[clean.length-1];
+  const lastX = (nums.length-1)*step;
+  const lastY = h - 2 - ((lastNum-min)/range)*(h-4);
+  const c = document.createElementNS(NS,"circle");
+  c.setAttribute("cx",lastX.toFixed(1)); c.setAttribute("cy",lastY.toFixed(1)); c.setAttribute("r","2"); c.setAttribute("fill",(opts&&opts.color)||"#3fd2ff");
+  svgEl.appendChild(c);
+}
+
+function renderMetrics(m){
+  if(!m){ return; }
+  const last = arr => (arr && arr.length) ? arr[arr.length-1] : null;
+  sparkline($("s-producer"), m.producer_up, {color:"#2ecc71"});
+  sparkline($("s-stack"),    m.stack,       {color:"#f1b40f"});
+  sparkline($("s-lauml"),    m.launcher_latency_ms, {color:"#3fd2ff"});
+  sparkline($("s-gaiml"),    m.gaia_latency_ms,     {color:"#3fd2ff"});
+  const lp = last(m.producer_up); $("v-producer").textContent = lp==null?"-":(lp?"UP · underlying: producer/health verdict=LIVE":"DOWN · producer/health 404 or verdict!=LIVE");
+  const ls = last(m.stack); $("v-stack").textContent = ls==null?"-":(ls===2?"UP":ls===1?"PARTIAL":"DOWN");
+  $("v-lauml").textContent = fmtMs(last(m.launcher_latency_ms));
+  $("v-gaiml").textContent = fmtMs(last(m.gaia_latency_ms));
+}
+
+function renderGates(gates){
+  const el = $("gates"); el.innerHTML = "";
+  if(!gates || !gates.length){ el.innerHTML = "<div class='unavail'>no gate rows in this snapshot — gaia's 'gates' seat may be empty or unreachable</div>"; return; }
+  // one row per unique gate name, latest verdict wins (already superseded-through by ledger)
+  const seen = new Map();
+  for(const r of gates){ seen.set(r.name, r); }
+  const rows = [...seen.values()].sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+  for(const r of rows){
+    el.innerHTML += `<div class="gaterow"><span class="v ${esc(r.verdict||"PENDING")}">${esc(r.verdict||"?")}</span><span class="n" title="${esc(r.phase||"")}">${esc(r.name)}</span><span class="e">${esc(r.evidence_class||"")}</span></div>`;
+  }
+}
+
+function fmtSince(ms){
+  if(ms == null || ms < 0) return "";
+  if(ms < 60000) return `${Math.round(ms/1000)}s`;
+  if(ms < 3600000) return `${Math.round(ms/60000)}min`;
+  return `${Math.round(ms/3600000)}h`;
+}
+
+// B6 (hud-sight-shows-blind), ported here 2026-07-30 from the native widget's
+// RenderDecisions.SightHeader (UNI.Hud.Widget/RenderDecisions.cs:53-65), which has been getting this
+// right while this page has not.
+//
+// THE DEFECT THIS CLOSES: this function read only `sight.counts`. On total === 0 it printed
+// "all fabric resonant" with a `calm` pill — REGARDLESS OF WHETHER THE SENSOR WAS ALIVE. The
+// user-sight helper (viewer/hud/hud_user_sight.ps1) has pushed nothing since
+// 2026-07-14T16:54:22 ("push failed: (400)") and nothing launches it: its Startup entry was never
+// installed. So `user_sight_last_push_at` is permanently null, its findings drop out, and this panel
+// GOT GREENER AS ITS SENSOR DIED. Measured 2026-07-30, live from /api/hud/sight:
+//   {"total":0,"counts":{bad:0,warn:0,info:0},"user_sight":{"fresh":false,"last_push_at":null}}
+// Fed to the old code that payload printed "all fabric resonant". Fed to the C# it prints
+// "user detectors NOT REPORTING". Same data, two answers, and the browser had the flattering one.
+//
+// A blind sensor is a WARN, not a green, and never a fabricated `bad` — there is no finding to
+// report, which is exactly the point: the absence is the finding.
+function renderSight(sight){
+  const el = $("sight-panel");
+  const countEl = $("sight-count");
+  if(!sight){ el.innerHTML = "<div class='sight-empty'>no sight data</div>"; countEl.textContent=""; countEl.className="tiny mute"; return; }
+  const c = sight.counts || {bad:0, warn:0, info:0};
+  const total = c.bad + c.warn + c.info;
+  // `fresh` absent is treated as BLIND, not as fresh. An older service that does not send
+  // user_sight at all must not be read as a healthy sensor.
+  const us = sight.user_sight || {};
+  const blind = us.fresh !== true;
+  const blindNote = blind
+    ? " · <b>user detectors NOT REPORTING</b>" +
+      (us.last_push_at ? ` (last push ${us.last_push_at})` : " (never pushed)") +
+      " — viewer/hud/hud_user_sight.ps1 is not running; run it with -Once to prove the path, and see" +
+      " hud_boot_install.ps1 for durability"
+    : "";
+  if(total === 0){
+    el.innerHTML = blind
+      ? "<div class='sight-empty'>0 service findings, and the USER DETECTORS ARE NOT REPORTING" +
+        " — this is not 'resonant', it is half-blind" + blindNote + "</div>"
+      : "<div class='sight-empty'>all fabric resonant -- no contradictions, no rot, no runaway</div>";
+    countEl.textContent = blind ? "0 findings · SENSOR BLIND" : "0 findings";
+    countEl.className = blind ? "pill" : "pill calm";
+    return;
+  }
+  countEl.textContent = `${c.bad} bad · ${c.warn} warn · ${c.info} info` + (blind ? " · SENSOR BLIND" : "");
+  countEl.className = c.bad > 0 ? "pill hot" : "pill";
+  // Sort: bad first, then warn, then info; within each, newest-first
+  const order = { bad: 0, warn: 1, info: 2 };
+  const sorted = [...(sight.findings||[])].sort((a,b) => (order[a.severity]-order[b.severity]) || (a.since_ms - b.since_ms));
+  // The blindness banner is PREPENDED to the findings, not written before them — an earlier draft of
+  // this fix set el.innerHTML for the blind case and then had it silently overwritten by the line
+  // below, which would have restored the exact defect being repaired while looking correct in a diff.
+  el.innerHTML =
+    (blind
+      ? "<div class='sight-empty'>" + total + " service finding(s) below, and the USER DETECTORS ARE" +
+        " NOT REPORTING" + blindNote + "</div>"
+      : "") +
+    sorted.map(f => `
+    <div class="finding ${esc(f.severity)}">
+      <div class="code">${esc(f.code)}</div>
+      <div class="title">${esc(f.title)}</div>
+      <div class="detail">${esc(f.detail || "")}</div>
+      <div class="meta">source: ${esc(f.source || "?")} · since ${fmtSince(f.since_ms)}</div>
+    </div>
+  `).join("");
+}
+
+function renderAudience(a, rows){
+  const cnt = $("audiencecount"); const list = $("audiencelist");
+  cnt.textContent = (a?a.size:0) + " rows · cap " + (a?a.cap:200);
+  if(!rows || !rows.length){ list.innerHTML = "<div class='unavail'>no audience rows yet — POST /api/hud/audience/publish to feed the ring</div>"; return; }
+  list.innerHTML = rows.map(r => `<div class="arow ${esc((r.source||"other").toLowerCase())}"><div class="who">${esc(r.source||"?")}·${esc(r.author||"?")}·<span class="mute">${esc(r.sanitized_by||"?")}</span></div><div class="txt">${esc(r.text||"")}</div></div>`).join("");
+}
+
+function renderProvenance(snap){
+  const now = new Date();
+  $("commit").textContent = snap && snap.git_commit || "-";
+  const pi = snap && snap.result && snap.result.hud && snap.result.hud.poll_interval_ms;
+  const pn = snap && snap.result && snap.result.hud && snap.result.hud.poll_count;
+  if(pi) $("pi").textContent = pi;
+  if(pn != null) $("pn").textContent = pn;
+  $("pl").textContent = now.toISOString().slice(11,19);
+  const shortAt = now.toISOString().slice(11,19) + "Z";
+  $("prov-noc").textContent      = `source: /api/status door_open @ ${shortAt}`;
+  $("prov-metrics").textContent  = `source: hud rings @ ${shortAt}`;
+  $("prov-gates").textContent    = `source: /api/gaia seat=gates verbatim @ ${shortAt}`;
+  $("prov-audience").textContent = `source: /api/hud/audience/recent @ ${shortAt}`;
+}
+
+async function tick(){
+  const res = await fetchJson("/api/hud/snapshot", 4000);
+  const audRes = await fetchJson("/api/hud/audience/recent?n=20", 2000);
+  const nowStr = new Date().toISOString().slice(11,19);
+  $("clock").textContent = nowStr;
+  if(!res.ok){
+    document.body.querySelectorAll(".col").forEach(c => c.querySelectorAll(".err").forEach(e=>e.remove()));
+    return;
+  }
+  const snap = res.body; const r = snap.result || {};
+  lastSnap = snap;
+  renderStack(r.stack && r.stack.state, r.stack);
+  renderJourney(r.journey_current_step);
+  renderAir(r);
+  renderMap(r.door_open, r.journey_current_step);
+  renderDoorList(r.door_open);
+  renderMetrics(r.metrics);
+  renderGates(r.gates);
+  renderSight(r.sight);
+  audienceRows = (audRes.ok && audRes.body && audRes.body.result && audRes.body.result.rows) || [];
+  renderAudience(r.audience, audienceRows);
+  renderProvenance(snap.envelope || snap);
+  const nowStr2 = new Date().toISOString().slice(11,19) + "Z";
+  $("prov-sight").textContent = `source: /api/hud/sight @ ${nowStr2}`;
+}
+
+tick();
+setInterval(tick, 3000);
+</script>
+</body></html>

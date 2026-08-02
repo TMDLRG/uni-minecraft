@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="g1" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#11151f"/><stop offset="100%" stop-color="#0b0e14"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#g1)"/><g fill="#cdd6f4" opacity="0.5"><circle cx="180" cy="120" r="1.4"/><circle cx="380" cy="80" r="1"/><circle cx="640" cy="150" r="1.5"/><circle cx="900" cy="60" r="1.1"/><circle cx="1180" cy="180" r="1.3"/><circle cx="1420" cy="100" r="1.6"/><circle cx="1700" cy="220" r="1.4"/><circle cx="240" cy="380" r="1.1"/><circle cx="520" cy="320" r="1.5"/><circle cx="860" cy="280" r="1.2"/><circle cx="1320" cy="400" r="1"/><circle cx="1620" cy="470" r="1.3"/><circle cx="120" cy="560" r="1.2"/><circle cx="1040" cy="540" r="1.4"/><circle cx="1780" cy="600" r="1.1"/></g>
+  <text x="960" y="110" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="32" fill="#9aa7b4" letter-spacing="3">the full ledger — twelve readings, twelve honest verdicts</text>
+  <text x="200" y="170" fill="#6c7393" font-size="20" font-family="ui-monospace,Consolas,monospace">READING</text>
+    <text x="1700" y="170" text-anchor="end" fill="#6c7393" font-size="20" font-family="ui-monospace,Consolas,monospace">VERDICT</text>
+  <line x1="180" y1="185" x2="1720" y2="185" stroke="#30363d" stroke-width="2"/>
+    <text x="200" y="215" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Sky's shield: ozone is alive</text>
+    <rect x="1340" y="193" width="46" height="32" rx="5" fill="#f85149"/>
+    <text x="1363" y="215" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">X</text>
+    <text x="1700" y="215" text-anchor="end" fill="#f85149" font-size="20" font-family="ui-sans-serif,sans-serif">contradicted</text>
+    <text x="200" y="257" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Sky's shield: required for all life</text>
+    <rect x="1340" y="235" width="46" height="32" rx="5" fill="#f85149"/>
+    <text x="1363" y="257" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">X</text>
+    <text x="1700" y="257" text-anchor="end" fill="#f85149" font-size="20" font-family="ui-sans-serif,sans-serif">contradicted</text>
+    <text x="200" y="299" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Sky's shield: protects modern Earth</text>
+    <rect x="1340" y="277" width="46" height="32" rx="5" fill="#3b82f6"/>
+    <text x="1363" y="299" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">B</text>
+    <text x="1700" y="299" text-anchor="end" fill="#3b82f6" font-size="20" font-family="ui-sans-serif,sans-serif">supported</text>
+    <text x="200" y="341" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Sky's shield: ozone as biosignature</text>
+    <rect x="1340" y="319" width="46" height="32" rx="5" fill="#d29922"/>
+    <text x="1363" y="341" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#0b0e12">C</text>
+    <text x="1700" y="341" text-anchor="end" fill="#d29922" font-size="20" font-family="ui-sans-serif,sans-serif">narrowed hypothesis</text>
+    <text x="200" y="383" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Sky's shield: breath of a living world</text>
+    <rect x="1340" y="361" width="46" height="32" rx="5" fill="#a371f7"/>
+    <text x="1363" y="383" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">D</text>
+    <text x="1700" y="383" text-anchor="end" fill="#a371f7" font-size="20" font-family="ui-sans-serif,sans-serif">metaphor preserved</text>
+    <text x="200" y="425" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Weight: pressure replaces gravity</text>
+    <rect x="1340" y="403" width="46" height="32" rx="5" fill="#f85149"/>
+    <text x="1363" y="425" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">X</text>
+    <text x="1700" y="425" text-anchor="end" fill="#f85149" font-size="20" font-family="ui-sans-serif,sans-serif">contradicted</text>
+    <text x="200" y="467" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Weight: air pressure is real</text>
+    <rect x="1340" y="445" width="46" height="32" rx="5" fill="#3b82f6"/>
+    <text x="1363" y="467" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">B</text>
+    <text x="1700" y="467" text-anchor="end" fill="#3b82f6" font-size="20" font-family="ui-sans-serif,sans-serif">supported</text>
+    <text x="200" y="509" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Breath: proton gradient powers life</text>
+    <rect x="1340" y="487" width="46" height="32" rx="5" fill="#3b82f6"/>
+    <text x="1363" y="509" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">B</text>
+    <text x="1700" y="509" text-anchor="end" fill="#3b82f6" font-size="20" font-family="ui-sans-serif,sans-serif">supported</text>
+    <text x="200" y="551" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Breath: oxygen makes it efficient</text>
+    <rect x="1340" y="529" width="46" height="32" rx="5" fill="#3b82f6"/>
+    <text x="1363" y="551" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">B</text>
+    <text x="1700" y="551" text-anchor="end" fill="#3b82f6" font-size="20" font-family="ui-sans-serif,sans-serif">supported</text>
+    <text x="200" y="593" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Breath: oxygen required for all life</text>
+    <rect x="1340" y="571" width="46" height="32" rx="5" fill="#f85149"/>
+    <text x="1363" y="593" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">X</text>
+    <text x="1700" y="593" text-anchor="end" fill="#f85149" font-size="20" font-family="ui-sans-serif,sans-serif">contradicted</text>
+    <text x="200" y="635" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Breath: all life uses a gradient</text>
+    <rect x="1340" y="613" width="46" height="32" rx="5" fill="#d29922"/>
+    <text x="1363" y="635" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#0b0e12">C</text>
+    <text x="1700" y="635" text-anchor="end" fill="#d29922" font-size="20" font-family="ui-sans-serif,sans-serif">narrowed hypothesis</text>
+    <text x="200" y="677" fill="#e6edf3" font-size="22" font-family="ui-sans-serif,sans-serif">Breath: a sacred current</text>
+    <rect x="1340" y="655" width="46" height="32" rx="5" fill="#a371f7"/>
+    <text x="1363" y="677" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="20" font-weight="bold" fill="#fff">D</text>
+    <text x="1700" y="677" text-anchor="end" fill="#a371f7" font-size="20" font-family="ui-sans-serif,sans-serif">metaphor preserved</text>
+  <line x1="180" y1="697" x2="1720" y2="697" stroke="#30363d" stroke-width="2"/>
+  <rect x="0" y="633" width="1920" height="447" fill="#05070b" opacity="0.88"/>
+  <rect x="0" y="633" width="1920" height="3" fill="#89b4fa" opacity="0.5"/>
+  <text x="960" y="685" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Here, in one place, is the full ledger. Twelve readings of three claims. Four reading the</text>
+  <text x="960" y="719" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">green-blue colour of supported within model. Three reading the red of contradicted by</text>
+  <text x="960" y="753" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">test. Two reading the gentle gold of narrowed hypothesis. And three reading the violet of</text>
+  <text x="960" y="787" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">metaphor preserved. No reading was promoted by certainty. No reading was demoted by scorn.</text>
+  <text x="960" y="821" text-anchor="middle" font-family="ui-sans-serif,'Segoe UI',sans-serif" font-size="28" fill="#e6edf3">Each one is here because the math said it could be here, exactly here, and nowhere else.</text>
+  <rect x="800" y="835" width="320" height="2" fill="#89b4fa" opacity="0.3"/>
+  <text x="960" y="875" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">इथे, एका ठिकाणी, संपूर्ण खातावही आहे. तीन दाव्यांची बारा वाचने. चार 'मॉडेलमध्ये</text>
+  <text x="960" y="909" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">समर्थित' च्या हिरव्या-निळ्या रंगाची. तीन 'चाचणीत खोडलेली' च्या लाल रंगाची. दोन</text>
+  <text x="960" y="943" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">'संकुचित गृहीतक' च्या सौम्य सोनेरी रंगाची. आणि तीन 'रूपक जपलेले' च्या जांभळ्या</text>
+  <text x="960" y="977" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">रंगाची. कोणतेही वाचन निश्चिततेमुळे बढती मिळाली नाही. कोणतेही वाचन तिरस्कारामुळे</text>
+  <text x="960" y="1011" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">खाली आणले गेले नाही. प्रत्येक इथे आहे कारण गणिताने सांगितले की ते इथे, नेमके इथे,</text>
+  <text x="960" y="1045" text-anchor="middle" font-family="Nirmala UI,'Mangal','Noto Sans Devanagari',sans-serif" font-size="26" fill="#cdd6f4">असू शकते, आणि इतरत्र कुठेही नाही.</text>
+</svg>

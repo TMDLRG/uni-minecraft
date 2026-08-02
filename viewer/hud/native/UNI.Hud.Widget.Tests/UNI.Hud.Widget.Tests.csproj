@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <!-- We do NOT ProjectReference the widget (a WinExe/WPF app). RenderDecisions.cs has ZERO WPF
+       dependencies by design, so it is COMPILED DIRECTLY into this plain net10.0 test assembly.
+       This is exactly what makes the render-decision logic testable without WPF (gate
+       hud-renderer-honesty): the tests exercise the SAME source the widget calls, not a copy. -->
+  <ItemGroup>
+    <Compile Include="..\UNI.Hud.Widget\RenderDecisions.cs" Link="RenderDecisions.cs" />
+    <Compile Include="..\UNI.Hud.Widget\AlarmEngine.cs" Link="AlarmEngine.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UNI Broadcast — Now Playing lower-third</title>
+  <link rel="stylesheet" href="./assets/overlays.css" />
+  <style>
+    /* Lower-third for the music service now-playing. Reads spool.nowPlaying via
+       state.json (served by overlay_server on the same origin). Interpolates
+       positionSec between polls so the progress bar is smooth. */
+    :root { --np-w: 640px; --np-h: 116px; }
+    body { background: transparent; overflow: hidden; margin: 0; font-family: system-ui, sans-serif; color: #e6edf3; }
+    .np {
+      position: fixed; left: 64px; bottom: 84px;
+      display: grid; grid-template-columns: 96px 1fr; gap: 16px;
+      background: rgba(11,15,20,.86);
+      backdrop-filter: blur(10px) saturate(130%);
+      -webkit-backdrop-filter: blur(10px) saturate(130%);
+      border-left: 5px solid #3fd2ff;
+      border-radius: 10px; padding: 12px 20px 12px 14px;
+      width: var(--np-w); min-height: var(--np-h);
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 350ms ease, transform 350ms ease;
+    }
+    .np.on { opacity: 1; transform: translateY(0); }
+    .np .art { width: 88px; height: 88px; border-radius: 6px; background: #1a2230; object-fit: cover; }
+    .np .body { min-width: 0; }
+    .np .kicker { font-size: 11px; letter-spacing: .18em; color: #94a3b8; text-transform: uppercase; margin-bottom: 3px; }
+    .np .title { font-size: 22px; font-weight: 800; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .np .artist { font-size: 15px; color: #cbd5e1; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .np .album { font-size: 12px; color: #94a3b8; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .np .prog { position: absolute; left: 14px; right: 20px; bottom: 8px; height: 3px; background: #1a2230; border-radius: 2px; overflow: hidden; }
+    .np .prog .bar { height: 100%; background: #3fd2ff; width: 0; transition: width 800ms linear; }
+    .np .np-inner { position: relative; padding-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div id="np" class="np">
+    <img id="art" class="art" src="" alt="">
+    <div class="body np-inner">
+      <div class="kicker" id="kicker">NOW PLAYING</div>
+      <div class="title" id="title">—</div>
+      <div class="artist" id="artist">—</div>
+      <div class="album" id="album">—</div>
+      <div class="prog"><div id="bar" class="bar"></div></div>
+    </div>
+  </div>
+  <script>
+  // Poll spool via overlay_server's state.json (single trip on the same origin).
+  const STATE = "/state.json";
+  const POLL_MS = 3000;
+  let lastSeq = null, lastPos = null, lastPosAt = 0, dur = 0, animRAF = 0;
+  const $ = (id) => document.getElementById(id);
+  async function fetchState() {
+    try {
+      const r = await fetch(STATE, { cache: "no-store" });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function render(n) {
+    if (!n || n.err || !n.title) {
+      $("np").classList.remove("on");
+      return;
+    }
+    // STALE-PLAYHEAD HONESTY (2026-07-18, on-air live defect): when the cc's poller marked the
+    // service's /api/nowplaying as stuck (positionSec runs > durationSec + 30s), the specific track
+    // title is UNRELIABLE — the reporter is frozen on whatever track it advertised first, even though
+    // the underlying stream is playing something else. Do NOT put a specific song title on air we
+    // can't stand behind. Render a generic station card instead ("🎵 UNI Radio · The Collected
+    // Packages Radio"), no progress bar, no art (the artwork is for the wrong track). Once the
+    // service is fixed on the chip the poller clears stalePlayhead and the normal card returns.
+    if (n.stalePlayhead) {
+      $("title").textContent = "🎵 UNI Radio";
+      // We don't know the current artist, but the STATION identity is a safe thing to render.
+      $("artist").textContent = "current track unavailable — station stream is live";
+      $("album").textContent = "";
+      $("art").removeAttribute("src");
+      $("bar").style.width = "0";
+      $("kicker").textContent = "ON AIR";
+      $("np").classList.add("on");
+      return;
+    }
+    $("title").textContent = n.title;
+    $("artist").textContent = n.artist || "";
+    $("album").textContent = n.album || "";
+    if (n.artUrl && $("art").src !== n.artUrl) $("art").src = n.artUrl;
+    if (n.seq !== lastSeq) {
+      lastSeq = n.seq;
+      lastPos = (typeof n.positionSec === "number") ? n.positionSec : null;
+      lastPosAt = Date.now();
+      dur = n.durationSec || 0;
+    }
+    // sessionOpen=false => the cc is showing the STATION's reference track because ShowRadio isn't
+    // pulling /radio yet, so there is no per-session playhead. Draw NO progress bar rather than a
+    // fake one, and say the track is the station's, not ours.
+    if (n.sessionOpen === false) {
+      lastPos = null;
+      $("bar").style.width = "0";
+      $("kicker").textContent = "ON THE STATION";
+    } else {
+      $("kicker").textContent = "NOW PLAYING";
+    }
+    $("np").classList.add("on");
+  }
+  function tickBar() {
+    if (dur && lastPos != null) {
+      const inflight = lastPos + (Date.now() - lastPosAt) / 1000;
+      const pct = Math.min(100, Math.max(0, (inflight / dur) * 100));
+      $("bar").style.width = pct.toFixed(2) + "%";
+    }
+    animRAF = requestAnimationFrame(tickBar);
+  }
+  async function loop() {
+    const st = await fetchState();
+    render(st && st.nowPlaying);
+    setTimeout(loop, POLL_MS);
+  }
+  tickBar();
+  loop();
+  </script>
+</body>
+</html>

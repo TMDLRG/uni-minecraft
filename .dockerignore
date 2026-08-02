@@ -1,0 +1,26 @@
+_build
+cover
+deps
+doc
+.elixir_ls
+.git
+.github
+vendor
+tmp
+*.beam
+erl_crash.dump
+
+# heavy / rebuilt-in-image — keep them out of the build context (uni-colony deploy)
+**/_build
+**/deps
+**/node_modules
+mcserver
+# keep heavy run artifacts out, but let the operational launchers/probes into the image (motor RED lineage).
+runs/*
+!runs/motor_lineage.exs
+!runs/probe_motor.exs
+!runs/curiosity_lineage.exs
+!runs/probe_plateau.exs
+production
+*.bin
+test_merge.exs

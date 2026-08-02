@@ -1,0 +1,76 @@
+[
+  {
+    "id": "m3+m4_watch_two_lives",
+    "plate": "title",
+    "kicker": "HOW TO WATCH",
+    "line1": "Two things get called live.",
+    "line2": "One is a file being re-read. The other is a broadcast.",
+    "narration": "Two things get called live, and they are not the same. One means a surface re-reading a file on disk the moment you ask. The other means something on the air. The next two frames separate them, with commands.",
+    "tail_silence": 1.2
+  },
+  {
+    "id": "m3+m4_watch_disk",
+    "plate": "measurement",
+    "probe": "tree.mc",
+    "asks": "Was the tree clean when these frames were made?",
+    "source": "git status -sb in the estate's main repository, at the instant of capture",
+    "note": "A working tree is a fact about one machine at one instant, not about any other clone.",
+    "narration": "Here is what reading disk looks like. This command ran while these frames were being made, and it reports the film's own render code sitting edited, with captures not yet committed. Nobody tidied the tree before filming it. Read the lines.",
+    "tail_silence": 1.2
+  },
+  {
+    "id": "m3+m4_watch_not_on_air",
+    "plate": "measurement",
+    "probe": "golive.refuses_me",
+    "asks": "Is any of this reaching an audience today?",
+    "source": "viewer/prove_golive_refuses_me.cjs — every path to air, tried and recorded",
+    "note": "This binds the paths inside this codebase. The machine underneath is a separate question, and the operator's.",
+    "narration": "The other sense of live. A program here attempts to broadcast, deliberately, down every path this codebase offers, and writes down what stopped it. The last line is its result. The lines above it say what that binding covers and what it leaves open.",
+    "tail_silence": 1.5,
+    "prints_tail": 1,
+    "_narrowed": "This probe's full output names a surface the film may never show; the band is narrowed to the lines that carry the answer."
+  },
+  {
+    "id": "m3+m4_engine_no_reward_line",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/mc.ex",
+    "from": 9,
+    "to": 9,
+    "why": "The brain's own module documentation, one line, unedited",
+    "narration": "Now the engine. A system that chooses actions is usually pointed at a number to push upward. This one states otherwise in its own module documentation, and the line is on screen with its file, its line number and its digest. Go and check it.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "m3+m4_engine_no_reward_search",
+    "plate": "measurement",
+    "probe": "engine.no_reward",
+    "asks": "Where does the word reward appear in the brain?",
+    "source": "lib/sp/brain — the search, and the lines it returned, unedited",
+    "note": "This is a word search across the brain modules. A word search is not a search for a concept.",
+    "narration": "And here is the search behind that sentence. It reads the brain for the word reward and prints what it finds. A short list of comment lines comes back. They are on screen, whole, and nobody has summarised them for you.",
+    "tail_silence": 1.3
+  },
+  {
+    "id": "m3+m4_engine_efe_fence",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/plan.ex",
+    "from": 12,
+    "to": 16,
+    "why": "The planner, and the fence the same paragraph draws around it",
+    "narration": "This is how it chooses instead. It rolls its beliefs forward and scores expected free energy over the futures it expects to hold. The same paragraph draws the fence: this is planning, and it is not the other thing. Both halves are on screen together.",
+    "tail_silence": 1.4
+  },
+  {
+    "id": "m3+m4_engine_blanket_pipe",
+    "plate": "quotation",
+    "root": "minecraft",
+    "file": "lib/sp/brain/bridge.ex",
+    "from": 3,
+    "to": 5,
+    "why": "The Markov blanket, as it is actually implemented",
+    "narration": "And this is the boundary between brain and body. In theoretical biology it is called a Markov blanket. Here it is a pipe. Senses go in as one text line, one action atom comes back, and exactly @n.blanket.channels_out message kinds ever cross it.",
+    "tail_silence": 1.6
+  }
+]

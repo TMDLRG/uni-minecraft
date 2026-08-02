@@ -1,0 +1,16 @@
+PHASE 9 STEP 4.6 BUILD L2
+captured 2026-07-28  ·  HEAD 81feb53
+
+CAPTURED LATE, AND SAYING SO IS THE POINT. Builds L0-L3 shipped green with NO RECEIPT:
+the convention only started at L4, and nothing noticed because the anti-silence guard read
+steps and never builds. Step 4.6 is IN_PROGRESS, so its six DONE builds were filtered out
+entirely -- the Phase 5 failure mode reappearing one level down, inside the guard built to
+prevent it. This receipt is the gate re-run at the commit above, not a reconstruction of
+the original run.
+
+  ok  the render matches the golden - 3371 bytes, sha 6eed6e946344ac78
+  ok  all TEN pairs render differently - five materials, ten pairs, ten distinct rasters — 'he can tell them apart' has to be true of every pair, not only of the ones a test happened to pick
+  ok  they differ IN GREYSCALE too — form, not hue - quantised to three luminance levels with colour thrown away, all ten pairs still differ. A hue-only distinction dies in a greyscale screenshot and fails a colour-blind reader.
+
+GATE: PASS - lab-l2-shot, 3/3 checks
+  Now prove it bites:  node viewer/lab/verify_shot.cjs --mutate   (MUST fail)

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">Can this software put itself on air?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node viewer/prove_golive_refuses_me.cjs</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="64" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">RESULT: no path through</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">viewer/prove_golive_refuses_me.cjs — an agent walking every path to air in this codebase and recording what stops it</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">Paths the guard recognises: 7 — paths it permits right now: 0</text>
+</svg>

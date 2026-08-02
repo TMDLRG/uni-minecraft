@@ -1,0 +1,24 @@
+# =============================================================================
+# L1 — timer for uni-collector.service. Fires every 10 min, lock-step with the
+# other layers (L2 sidecar, L3 harness, L4 remote-node) so all collectors sample
+# the SAME 10-min cadence and their rows can be reconciled by the `cycle`/poll_ts
+# window (see docs/specs/collector.md → cross-collector reconciliation rule).
+#
+# Persistent=true => if the box was asleep/off at a fire time, it runs once on
+# resume (no silent multi-hour gap that looks like a dead colony).
+# =============================================================================
+[Unit]
+Description=Phase-2 RED collector timer (every 10 min, rootless uni L1)
+Documentation=file:docs/specs/collector.md
+
+[Timer]
+# anchor to wall-clock 10-min boundaries so L1..L4 align (00,10,20,30,40,50)
+OnCalendar=*:0/10
+# small randomized delay avoids 4 collectors hammering RCON in the same instant
+RandomizedDelaySec=20
+AccuracySec=10
+Persistent=true
+Unit=uni-collector.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,517 @@
+{
+  "_note": "Single source of truth for viewer/firstrun.html and viewer/firstrun.md. Every rung, fence row, aspiration, and fact is verbatim — this file must not be paraphrased. Aspirations are the operator's own voice (his register is the only correct register for the room-before-storm). Rungs are the delivery points he checks off as he lands them on air.",
+  "operator_name": "Michael",
+  "aspirations": [
+    {
+      "text": "We are building something in the open, and today we open the doors.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "We are going to show you the work, the tests it could fail, and where it still might.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "Do not take anything I say on faith. The record is open, and so is the invitation. Try to break it.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "A claim you cannot break is just a slogan. So we wrote ours down, with the test that would break it.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "Passing a gate demonstrates the named behaviour, never experience.",
+      "source": "honesty card / F1 fence"
+    },
+    {
+      "text": "You are not broken. The world around the loop is too small.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "It helps people lower the fear of the present so the future feels safe to explore.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "The simplest way in is one honest hour. We listen to you. No pitch. No catalog. Nothing to prepare and nothing to perform.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "We are not doing this alone, and we are not doing it behind glass. Come learn, come build, come help us find where it fails.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "grow the world, grow it together, no one left outside.",
+      "source": "launch-run-of-show.md"
+    },
+    {
+      "text": "We carry the receipts because we are on a path that, if it keeps building, ends in a public claim. Receipts beat rhetoric.",
+      "source": "the north-star line"
+    }
+  ],
+  "meta_promises": [
+    {
+      "id": "science",
+      "text": "the science and the tests",
+      "feeds_from": [
+        "0.0",
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "1.5"
+      ]
+    },
+    {
+      "id": "human",
+      "text": "why it might matter for a person",
+      "feeds_from": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5"
+      ]
+    },
+    {
+      "id": "invitation",
+      "text": "come learn, come build",
+      "feeds_from": [
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "5.0"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "cue": "0.0",
+      "title": "Cold open — open the doors",
+      "points": [
+        "Three slow breaths on camera before you speak. Let the room settle.",
+        "Say: \"We are building something in the open, and today we open the doors.\"",
+        "Frame plainly: working hypothesis on General Natural Intelligence, natural not artificial, tested in the open.",
+        "Say what this is NOT: not a demo, not hype, nothing is solved.",
+        "One rule: \"Do not take anything I say on faith. Try to break it.\""
+      ],
+      "never_say": "AI, AGI, artificial intelligence, proven, breakthrough, solved, human-level",
+      "fence_line": "A working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open.",
+      "lower_third": "L1 — General Natural Intelligence. Natural, not artificial. Tested in the open.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "1.1",
+      "title": "What UNI is — active inference, not AI",
+      "points": [
+        "Say: \"UNI is our work in active inference. A lens, not a product.\"",
+        "Mechanism in plain words: keep the gap small between expectation and what the world gives.",
+        "Name objective: expected free energy — epistemic term plus pragmatic term.",
+        "Say slowly: \"No reward, no reinforcement learning, no backprop. A property we checked in code.\"",
+        "Cite Parr, Pezzulo and Friston (2022) as the research line."
+      ],
+      "never_say": "AI, intelligence in the AI sense, thinking, understanding, machine intelligence",
+      "fence_line": "The mechanism is demonstrated and reproducible. Several behavioural gates are still in flight.",
+      "lower_third": "L2 — No reward. No reinforcement learning. No backprop.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "1.2",
+      "title": "The benchmark built to fail in public",
+      "points": [
+        "Name it: Stratified Palimpsest — hard sandbox, opaque senses, no-leak monitor.",
+        "Say: \"A claim you cannot break is just a slogan.\"",
+        "Show the open gate: a bet registered in public before the run.",
+        "Frame the discipline: evidence first, discrete verdicts, receipts.",
+        "CTA: L7 — \"Try to break it. solutionwright.com/falsify\"."
+      ],
+      "never_say": "proven, guaranteed, first, only, breakthrough, living",
+      "fence_line": "Passing a gate demonstrates the named behaviour, never experience.",
+      "lower_third": "L4 — Passing a gate demonstrates the named behaviour, never experience.",
+      "honest_row_ix": 1
+    },
+    {
+      "cue": "1.3",
+      "title": "The colony agent, live in a real game world",
+      "points": [
+        "Say: \"A colony agent acting in a real game world. Same engine. No scripted rules. No reward.\"",
+        "Narrate mechanically: inner loop landing actions, the body doing work in the world.",
+        "Honest status: \"Whether a hunger-like drive turns into foraging is the hypothesis we are testing right now.\"",
+        "Read F1 fence: \"Passing a gate demonstrates the named behaviour, never experience.\"",
+        "Contingency: if live drops, cut to clip — \"a capture from earlier, same engine\" — continue."
+      ],
+      "never_say": "it wants food, it is hungry (as literal claims), it decided, it is alive, Minecraft",
+      "fence_line": "Passing a gate demonstrates the named behaviour, never experience.",
+      "lower_third": "L4 then L2 — gate fence, then \"no reward, no RL, no backprop\"",
+      "honest_row_ix": 2
+    },
+    {
+      "cue": "1.4",
+      "title": "The paper and how it is judged",
+      "points": [
+        "Say: \"The working paper is on Zenodo. Unrefereed working preprint. Peer review pending.\"",
+        "Read the DOI out loud: 10.5281 slash zenodo.19785799.",
+        "Show the lab protocol: pre-registered gates, discrete verdicts, receipts anyone can check.",
+        "CTA: \"Read it, run it, and try to break it.\""
+      ],
+      "never_say": "peer-reviewed, published, refereed",
+      "fence_line": "An unrefereed working preprint. Peer review is pending. DOI 10.5281 slash zenodo.19785799.",
+      "lower_third": "L3 — Unrefereed working preprint. Peer review pending. DOI 10.5281/zenodo.19785799",
+      "honest_row_ix": 4
+    },
+    {
+      "cue": "1.5",
+      "title": "Breath reset — into hour 2",
+      "points": [
+        "Cut to title card.",
+        "Three slow breaths on camera, in silence.",
+        "One sentence, then hold: \"Now, why any of this might matter for a person.\""
+      ],
+      "never_say": "(no host beats — do not fill the silence)",
+      "fence_line": "Now, why any of this might matter for a person.",
+      "lower_third": "L9 — Grow the world. Grow it together. No one left outside.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "2.1",
+      "title": "The fence first — non-clinical, plainspoken",
+      "points": [
+        "Open with the fence, do not bury it: \"A design and modeling lens, not a clinical or diagnostic tool.\"",
+        "Add: \"Nothing here is medical advice. If you are in crisis, reach a professional or a local helpline.\"",
+        "Say gently: \"Lower the fear of the present so the future feels safe to explore.\"",
+        "Keep the subject the person — never the company, never a promise to fix anyone."
+      ],
+      "never_say": "treats trauma, heals, therapy, clinical outcome, cures, diagnoses",
+      "fence_line": "It is a design and modeling lens, not a clinical or diagnostic tool. Nothing here is medical advice.",
+      "lower_third": "L5 — A design and modeling lens, not a clinical or diagnostic tool. Not medical advice.",
+      "honest_row_ix": 5
+    },
+    {
+      "cue": "2.2",
+      "title": "You are not broken — Streets Shorts",
+      "points": [
+        "Introduce Streets Shorts: trauma-informed short-film series in six languages.",
+        "Say the core line and let it sit: \"You are not broken. The world around the loop is too small.\"",
+        "Frame as an invitation to a different reading of a hard moment, not a prescription.",
+        "Watch one short together in silence. Slow breath after.",
+        "CTA: \"The films are free. Share them with someone who needs the reminder.\""
+      ],
+      "never_say": "this will help your trauma, guaranteed relief",
+      "fence_line": "You are not broken. The world around the loop is too small.",
+      "lower_third": "L6 — You are not broken. The world around the loop is too small.",
+      "honest_row_ix": 5
+    },
+    {
+      "cue": "2.3",
+      "title": "The map in your head — belief as a tool",
+      "points": [
+        "Say: \"Belief is one of the oldest tools people have for lowering the fear of the present.\"",
+        "Tie to mechanism: \"A calmer prior is a smaller gap to the world. A smaller gap is room to move.\"",
+        "Reassert the fence briefly: \"A lens for thinking, not a clinic.\"",
+        "CTA: L8 — \"Start with one honest hour, solutionwright.com/begin.\""
+      ],
+      "never_say": "measurement of a patient, diagnosis, clinical",
+      "fence_line": "It is a design and modeling lens, not a clinical or diagnostic tool.",
+      "lower_third": "L5 — A design and modeling lens, not a clinical or diagnostic tool.",
+      "honest_row_ix": 5
+    },
+    {
+      "cue": "2.4",
+      "title": "Hold and hand off — gentle by design",
+      "points": [
+        "Short summary: \"Gentle by design, and we keep it non-clinical on purpose.\"",
+        "Hand off to the way in: \"If that landed, here is how you actually come and learn.\""
+      ],
+      "never_say": "any clinical or therapeutic claim, promise of relief",
+      "fence_line": "A lens for thinking, not a clinic.",
+      "lower_third": "L6 — You are not broken. The world around the loop is too small.",
+      "honest_row_ix": 5
+    },
+    {
+      "cue": "2.5",
+      "title": "Breath reset — into hour 3",
+      "points": [
+        "Cut to title card.",
+        "Three slow breaths on camera, in silence.",
+        "One sentence, then hold: \"Here is the front door, and it is wide open.\""
+      ],
+      "never_say": "(no host beats — do not fill the silence)",
+      "fence_line": "Here is the front door, and it is wide open.",
+      "lower_third": "L9 — Grow the world. Grow it together. No one left outside.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "3.1",
+      "title": "Reading Room tour",
+      "points": [
+        "Say: \"This is the Reading Room. Hundreds of short pieces, in many languages, free.\"",
+        "Tour on-ramps: UNI the vision, How your mind guesses, Bayesian Not Brain, Reality Theory.",
+        "Point at gentle entries: pop-culture playlists — Gravity Falls, Bluey, Avatar, Star Trek.",
+        "Say: \"Start wherever you already love something.\"",
+        "CTA: \"Pick one playlist and start. solutionwright.com/watch.\""
+      ],
+      "never_say": "the AI series, the channel @-handle",
+      "fence_line": "Our channel, the Reading Room, the playlists. Link people to solutionwright.com/watch.",
+      "lower_third": "L1 — General Natural Intelligence. Natural, not artificial. Tested in the open.",
+      "honest_row_ix": 7
+    },
+    {
+      "cue": "3.2",
+      "title": "Steer a lab yourself",
+      "points": [
+        "Say: \"You do not have to take my word for the mechanism. Steer it yourself.\"",
+        "Drive one lab. Narrate the loop: prediction, action, the gap getting smaller.",
+        "Read the come-build line: \"Test the build, inspect the gates, help us find where it fails.\"",
+        "CTA: L7 — falsify."
+      ],
+      "never_say": "it learns like a person, it is smart, it understands",
+      "fence_line": "Passing a gate demonstrates the named behaviour, never experience.",
+      "lower_third": "L4 — Passing a gate demonstrates the named behaviour, never experience.",
+      "honest_row_ix": 2
+    },
+    {
+      "cue": "3.3",
+      "title": "The workshop and the grants",
+      "points": [
+        "Say: \"Twelve weeks. You ship a model. You get the gates to check the claim yourself.\"",
+        "State the facts plainly: workshop is $75,000.",
+        "Grants: $20M for education, $5M for internships. \"Cost is not the wall.\"",
+        "CTA: \"Details and the grant path are on the site.\""
+      ],
+      "never_say": "certification, credential guarantees",
+      "fence_line": "A working hypothesis on an attainable path toward General Natural Intelligence, tested in the open.",
+      "lower_third": "L1 — General Natural Intelligence. Natural, not artificial. Tested in the open.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "3.4",
+      "title": "One honest hour",
+      "points": [
+        "Say: \"The simplest way in is one honest hour. We listen to you.\"",
+        "Say: \"No pitch. No catalog. Nothing to prepare and nothing to perform.\"",
+        "Walk the three-step intake on screen, slowly.",
+        "CTA: L8 — \"Start with one honest hour, solutionwright.com/begin.\""
+      ],
+      "never_say": "free trial, sales call",
+      "fence_line": "Start with one honest hour. solutionwright.com/begin",
+      "lower_third": "L8 — Start with one honest hour. solutionwright.com/begin",
+      "honest_row_ix": 5
+    },
+    {
+      "cue": "3.5",
+      "title": "Breath reset — into hour 4",
+      "points": [
+        "Cut to title card.",
+        "Three slow breaths on camera, in silence.",
+        "One sentence, then hold: \"Last hour. This is who it is all for.\""
+      ],
+      "never_say": "(no host beats — do not fill the silence)",
+      "fence_line": "Last hour. This is who it is all for.",
+      "lower_third": "L9 — Grow the world. Grow it together. No one left outside.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "4.1",
+      "title": "Where the value goes",
+      "points": [
+        "Mission plainly: \"Grow the world, grow it together, no one left outside.\"",
+        "Anti-extraction fact: \"$200 leaves outward with every engagement, to the people doing the work.\"",
+        "Add: \"We keep the receipt where you can see it.\"",
+        "EducateWright + grants as fact: \"Software does not end violence. We fund the humans who do that work.\""
+      ],
+      "never_say": "we solve poverty, we end violence, we cure",
+      "fence_line": "Grow the world. Grow it together. No one left outside.",
+      "lower_third": "L9 — Grow the world. Grow it together. No one left outside.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "4.2",
+      "title": "Built in the open, with receipts",
+      "points": [
+        "Show LOOP: Listen, Observe, Orchestrate, Partner, Build, Decide. Do not name the trademark.",
+        "Show the receipts page and the falsify page.",
+        "Say: \"Every strong claim ships with the test that would break it.\"",
+        "CTA: \"Bring a claim you can break. We will test it with you, on the record.\""
+      ],
+      "never_say": "the trademarked four-letter method name, flawless, bug-free",
+      "fence_line": "Try to break it. solutionwright.com/falsify",
+      "lower_third": "L7 — Try to break it. solutionwright.com/falsify",
+      "honest_row_ix": 6
+    },
+    {
+      "cue": "4.3",
+      "title": "Live falsification and Q&A",
+      "points": [
+        "Open the floor: \"Pick any claim I made today. Bring your source. Let us test it live.\"",
+        "Answer in plain words. Model the honesty.",
+        "If uncertain, state the evidence class and the gate still in flight.",
+        "If no answer yet, say so and add it to the open ledger out loud.",
+        "Rotate L7 and L8 as CTAs."
+      ],
+      "never_say": "we already proved that, trust me",
+      "fence_line": "Several behavioural gates are still in flight.",
+      "lower_third": "L4 — Passing a gate demonstrates the named behaviour, never experience.",
+      "honest_row_ix": 1
+    },
+    {
+      "cue": "4.4",
+      "title": "The come-build call",
+      "points": [
+        "Say: \"We are not doing this alone, and we are not doing it behind glass.\"",
+        "Say: \"Come learn, come build, come help us find where it fails.\"",
+        "Close-line: \"The record is open. So is the invitation.\"",
+        "CTA: L8 — begin."
+      ],
+      "never_say": "we solved it, this is finished",
+      "fence_line": "Grow the world. Grow it together. No one left outside.",
+      "lower_third": "L9 — Grow the world. Grow it together. No one left outside.",
+      "honest_row_ix": 0
+    },
+    {
+      "cue": "5.0",
+      "title": "Close — recap, frame, invitation, breath",
+      "points": [
+        "Recap the three promises kept: science + tests, why it matters for a person, the door open.",
+        "Restate the honest frame: \"Growing evidence, gates still in flight, nothing hidden.\"",
+        "Anthem-register invitation: \"Grow the world, grow it together, no one left outside.\"",
+        "Point home: solutionwright.com/begin, or solutionwright.com/falsify.",
+        "Three slow breaths on screen. Sign off: \"breathe in. breathe out.\""
+      ],
+      "never_say": "solved, proven, first, only (do not import them into the close)",
+      "fence_line": "A working hypothesis on an attainable path toward General Natural Intelligence — growing evidence, gates still in flight, nothing hidden.",
+      "lower_third": "L9 then L8 — anthem, then \"start with one honest hour.\"",
+      "honest_row_ix": 0
+    }
+  ],
+  "honest_rows": [
+    {
+      "say": "A working hypothesis on an attainable path toward General Natural Intelligence, natural not artificial, tested in the open.",
+      "never": "AI, AGI, artificial intelligence, machine intelligence."
+    },
+    {
+      "say": "The mechanism is demonstrated and reproducible. The evidence is growing and evidence-classed. Several behavioural gates are still in flight.",
+      "never": "Proven, first, only, breakthrough, solved, human-level."
+    },
+    {
+      "say": "Passing a gate demonstrates the named behaviour, never experience.",
+      "never": "It sees, wants, feels, understands, is aware, is conscious, is alive."
+    },
+    {
+      "say": "A colony agent acting in a real game world.",
+      "never": "Minecraft (say \"a real game world\" instead)."
+    },
+    {
+      "say": "An unrefereed working preprint. Peer review is pending. DOI 10.5281/zenodo.19785799.",
+      "never": "Peer-reviewed, published, refereed, \"unreferenced.\""
+    },
+    {
+      "say": "It helps people lower the fear of the present so the future feels safe to explore. It is a design and modeling lens, not a clinical or diagnostic tool. Nothing here is medical advice.",
+      "never": "Treats, cures, heals, diagnoses trauma. Any medical or clinical claim."
+    },
+    {
+      "say": "LOOP: Listen, Observe, Orchestrate, Partner, Build, Decide.",
+      "never": "The trademarked four-letter method name."
+    },
+    {
+      "say": "Our channel, the Reading Room, the playlists. Link people to solutionwright.com/watch.",
+      "never": "The channel @-handle on any lower-third or pinned text."
+    }
+  ],
+  "canonical_facts": [
+    "Preprint DOI 10.5281/zenodo.19785799, unrefereed, peer review pending.",
+    "Objective is expected free energy, an epistemic term plus a pragmatic term. No reward, no reinforcement learning, no backprop.",
+    "Workshop is $75,000. Grants are $20M for education and $5M for internships.",
+    "$200 leaves outward with every engagement, to the people doing the work.",
+    "Packages, fixed price, thirty days: Pathfinder $1,000, Scout $3,000, Explorer $5,000, Adventurer $8,000, Odyssey $15,000.",
+    "Cite Parr, Pezzulo and Friston (2022), Active Inference, the Free Energy Principle in Mind, Brain, and Behavior."
+  ],
+  "f1_fence_verbatim": "Passing a gate demonstrates the named behaviour, never experience.",
+  "recovery_fallback_line": "That question goes deeper than I can honestly answer live from memory — the receipts are in the repo under docs/receipts, and I would rather show you the exact math after the segment than paraphrase it wrong on air.",
+  "silence_line": "Silence on camera reads as thoughtfulness. A four-second pause is normal. A ten-second pause reads as authority. You do not have to fill air.",
+  "allowed_to_stop_line": "If you are unwell, close it. The show reschedules. That is not failure.",
+  "math_primer": [
+    "WHAT UNI IS DOING RIGHT NOW. Every tick — roughly once a second — each UNI on the server does one thing: it looks at what its body senses, updates its beliefs about the hidden world, considers a short list of actions it could take (walk, attack, eat, look around), scores each action with one number, and takes the one with the best score. That is the loop. There is no reward. There is no goal we typed in. There is no reinforcement learning. There is no neural network being trained by backprop. It is a mean-field active-inference tick, all the way down.",
+    "THE ONE NUMBER — EXPECTED FREE ENERGY. The number it scores each action with is called Expected Free Energy, or EFE. It is a sum of two parts. Part one is epistemic: how much would this action reduce my uncertainty about the world. Part two is pragmatic: how well do the outcomes I expect from this action line up with my innate preferences — my prior for \"full\" over \"empty,\" for \"safe\" over \"harmed.\" UNI picks the action whose EFE is best. That is the whole decision rule. Everything else on screen — the foraging, the hunting, the way it moves toward food — is emergent from that rule, not scripted.",
+    "WHAT \"REDUCE UNCERTAINTY\" ACTUALLY MEANS. When you hear us say UNI is \"curious\" or \"learning,\" what is literally happening is this: UNI compares two things — the spread of what it might observe after an action, and the sharpness of what it can predict from each hidden state. If the action would push the world into a state where its senses would say something informative, that action scores higher on the epistemic term. It is math, not feeling. UNI does not feel curious; the number that measures information gain goes up.",
+    "WHAT \"PREFERENCES\" ACTUALLY MEANS. UNI has a preference vector called C — a written-down set of numbers over possible outcomes. Higher number means \"I would rather see this outcome than that one.\" \"Full stomach\" is a high C. \"Empty stomach\" is a low C. These preferences are innate — they were built into the priors before UNI was born. They are NOT rewards it earns for good behaviour. They are shapes on the ledger that make some observed futures score better than others when UNI scores its options. This is the difference between \"reward on policy\" (which we do not do) and \"log-preference over outcomes\" (which we do). It matters. If asked, say it that way.",
+    "HOW UNI LEARNS. UNI's memory of \"which sense goes with which state\" and \"which action moves the world how\" is stored as Dirichlet counts — literal tallies of what it has seen. When something happens, the count for that pairing goes up by one. That is it. That is the learning. No gradient descent, no optimizer, no reward signal. Just tally marks. Over time the tallies sharpen the model. Novelty — the pull toward under-sampled actions — is math over those same tallies, and it provably decays to zero as counts grow. There is no smuggled reward hiding in it. That is checked by an automated test that would fail the build if it broke.",
+    "WHAT WE CAN AND CANNOT SAY. We can say: UNI's brain chose that action because its EFE was highest under its current model. We can say: UNI foraged, killed, ate, persisted through an extended soak on a slowed-drain runway. We can say: no food was given, no reward was paid, no goal was coded. We CANNOT say: UNI is aware, UNI is conscious, UNI feels hungry, UNI wants food, UNI enjoys hunting. Those words describe experience, and no behavioural gate on Earth can demonstrate experience. Passing a gate demonstrates the named behaviour, never experience — never what it is like from the inside. The whole product is keeping that line visible. If you accidentally cross it on air, cross it back — the audience will trust you more, not less, for the correction."
+  ],
+  "body_care": [
+    "Room-temperature water on the desk. Not iced (iced water constricts the vocal folds).",
+    "Avoid dairy or peanut butter within three hours — traditional broadcast practice; they coat the mouth and change how your voice feels, even if the mucus effect is contested.",
+    "Pee twice in the last twenty minutes before go-live. Yes, twice.",
+    "Honey stick on the desk for hour three — voice fatigue is real.",
+    "If you feel tears rising and want to hold them: look up fifteen degrees for four seconds. Gravity holds the tear film below the lash line, and the change of gaze breaks the reflex — usually buys 5 to 10 seconds. If you cry anyway, that is fine — wipe with the back of your hand, not a tissue, look up-and-away, drink water, say \"give me a moment.\"",
+    "Mute-toggle keybind. OBS ships this UNBOUND — set one tonight in Settings → Hotkeys → \"Mute Mic/Aux\". Pick something you cannot fat-finger. Write it on the desk sheet in the space marked MUTE. Test it three times before you sleep."
+  ],
+  "hand_signals": [
+    {
+      "signal": "flat palm on desk",
+      "means": "you drifted — next rung on ladder"
+    },
+    {
+      "signal": "index finger tapping desk slowly",
+      "means": "you are talking too fast — breathe"
+    },
+    {
+      "signal": "both palms together",
+      "means": "wrap this segment now"
+    },
+    {
+      "signal": "closed fist to sternum",
+      "means": "you are safe. the show is fine. keep going."
+    }
+  ],
+  "pre_live_ritual": [
+    "Phone face-down, out of arm's reach. Do Not Disturb on.",
+    "Door closed. Sign on the door.",
+    "Two sips of room-temperature water.",
+    "Look at one photo you love for four seconds. Pre-place it tonight at eye level next to the camera. Pick something safely warm — a place you love, a pet, a lyric you love. Not a photo of anyone you are grieving.",
+    "Hands on desk. Three slow breaths: in four, hold four, out six. The long exhale activates the vagal brake — heart rate slows, arousal drops.",
+    "Look at the fence line taped to the monitor bezel. Read it silently.",
+    "Then type CONFIRM on the launcher."
+  ],
+  "post_live_ritual": [
+    "End program in OBS.",
+    "Close the browser tab with the chat and comments.",
+    "Walk out of the room.",
+    "Drink a full glass of water.",
+    "Eat one piece of fruit.",
+    "Keep phone on for VOICE calls from your named people. Silence all app notifications. What you are avoiding is comments, DMs, and VOD stats — not people who love you.",
+    "Do NOT look at YouTube comments, Twitter, DMs, or VOD stats for twelve hours.",
+    "Text one person: \"it is done.\" Receive whatever they text back. Do not scroll.",
+    "Sleep before you look at numbers."
+  ],
+  "if_it_goes_wrong": [
+    {
+      "when": "You forget a number (DOI, price, grant)",
+      "do": "\"The number is on the record — I would rather look it up now than misquote it, so give me two seconds.\" Then look at the desk sheet. Say it. Move on."
+    },
+    {
+      "when": "Internet or encoder drops for more than twenty seconds",
+      "do": "Do not narrate the outage on camera. Reach under the desk, plug in the pre-paired phone-hotspot USB. If video does not restore in 90 seconds, hit your pre-armed OBS STANDBY scene (verify the keybind tonight) and stay at the desk. Text your emergency-out contact: \"EDGE DROPPED\". Return to program only when video is back."
+    },
+    {
+      "when": "You feel tears rising in hour 2",
+      "do": "Look up fifteen degrees for four seconds. If you cry anyway — wipe with the back of your hand, look up-and-away, drink water, say \"give me a moment.\" That sentence is the rung for tears."
+    },
+    {
+      "when": "A chat troll lands a hit that shakes you",
+      "do": "You are not reading chat live tonight. Chat window is CLOSED on your monitor. Silence is fine. If a real emergency reaches you through the pre-agreed channel with your emergency-out contact, address it. Otherwise, keep going."
+    },
+    {
+      "when": "A viewer asks a math question you cannot answer honestly",
+      "do": "\"That question goes deeper than I can honestly answer live from memory — the receipts are in the repo under docs/receipts, and I would rather show you the exact math after the segment than paraphrase it wrong on air.\""
+    },
+    {
+      "when": "You are unwell",
+      "do": "Close it. The show reschedules. That is not failure."
+    }
+  ],
+  "not_medical_advice": "These are broadcast conventions and calming rituals, not medical advice. If you feel unwell, close it. The show reschedules."
+}

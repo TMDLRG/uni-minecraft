@@ -1,0 +1,123 @@
+# UNI Production Platform - run-of-show template: COLONY-LIVE (COLONY feed + UNI narration)
+# Authored against docs/UNI_PRODUCTION_PLATFORM.md (fixed contracts). DESIGN, status: pending.
+#
+# A long ambient segment riding the live COLONY cam (:3020) - a "slow TV" model of
+# cooperation - punctuated by UNI narration beats and a calm ticker. The colony is a
+# self-contained source: the platform CONSUMES it and never edits inside it.
+#
+# Beat schema: { id, name, scene, durationSec, language, overlays:[{layer,payload}],
+#                narrate:{text,lang}|null, music:{volume,duck}, clip:{clipId,mode}|null, notes }
+# Scenes: COLONY GLASS GUESTS CLIP NEWSDESK TITLE STANDBY PIP
+# Verbs:  cut_to set_overlay narrate set_music_volume duck
+
+template: colony-live
+description: >
+  Ambient live-colony segment - the COLONY cam runs long with periodic UNI
+  narration beats and a calm mission ticker. Music sits slightly higher between
+  narration beats and ducks under each narration line.
+defaultLanguage: en
+
+beats:
+  - id: cl-01-open
+    name: Into the colony
+    scene: COLONY
+    durationSec: 20
+    language: en
+    overlays:
+      - layer: onAir
+        payload: { value: true, text: LIVE }
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: LIVE - COLONY
+          title: The UNI colony
+          subtitle: A working model of cooperation, in real time
+          tone: ok
+      - layer: ticker
+        payload:
+          - { text: "Slow feed - watch a small world cooperate", tone: ok }
+      - layer: nowPlaying
+        payload: { segment: Colony Live, lang: en, clipId: null }
+    narrate: null
+    music: { volume: 0.22, duck: false }
+    clip: null
+    notes: cut_to COLONY (consumes :3020 cam + :4000/stream); music breathes (no speech yet).
+
+  - id: cl-02-narration-1
+    name: UNI narration - what we are watching
+    scene: COLONY
+    durationSec: 25
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload: { visible: false }
+    narrate:
+      text: What you are watching is cooperation with no central boss - small agents, simple rules, a shared world.
+      lang: en
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: narrate (Piper -> narration bus, auto-duck); lower-third hidden so the picture breathes.
+
+  - id: cl-03-ambient-1
+    name: Ambient watch
+    scene: COLONY
+    durationSec: 120
+    language: en
+    overlays:
+      - layer: ticker
+        payload:
+          - { text: "EducateWright - the science feed, back on air", tone: ok }
+          - { text: "No central boss - simple rules - a shared world", tone: ok }
+    narrate: null
+    music: { volume: 0.20, duck: false }
+    clip: null
+    notes: Hold on the live feed; music up between narration; ticker carries calm mission lines.
+
+  - id: cl-04-narration-2
+    name: UNI narration - why it matters
+    scene: COLONY
+    durationSec: 25
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload: { visible: false }
+    narrate:
+      text: The same pattern scales - from this colony to a feed that wants free food, water, health, and a path to the stars.
+      lang: en
+    music: { volume: 0.10, duck: true }
+    clip: null
+    notes: narrate; auto-duck; honesty fences keep this aspirational, not a claim of fact.
+
+  - id: cl-05-ambient-2
+    name: Ambient watch - long
+    scene: COLONY
+    durationSec: 180
+    language: en
+    overlays:
+      - layer: ticker
+        payload:
+          - { text: "Watch the world build itself - then we talk again", tone: ok }
+    narrate: null
+    music: { volume: 0.20, duck: false }
+    clip: null
+    notes: Long ambient hold; producer can extend or loop this beat to fill slack time in a slot.
+
+  - id: cl-06-out
+    name: Out of the colony
+    scene: COLONY
+    durationSec: 15
+    language: en
+    overlays:
+      - layer: lowerThird
+        payload:
+          visible: true
+          kicker: COMING UP
+          title: Back to the desk
+          subtitle: More of the feed
+          tone: ok
+    narrate:
+      text: We will leave the colony there - it keeps building while we move on.
+      lang: en
+    music: { volume: 0.14, duck: true }
+    clip: null
+    notes: narrate the handoff; producer start_segment to the next template (COLONY keeps running underneath, untouched).

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#0d1017"/>
+  <text x="120" y="118" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">ASKS</text>
+  <text x="120" y="170" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">Which command would be worth the most to us if it printed</text>
+  <text x="120" y="216" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="38" fill="#dfe5ee">something else on your machine?</text>
+
+  <text x="120" y="300" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">RUNS</text>
+  <rect x="112" y="320" width="1696" height="62" rx="10" fill="#1a2029" stroke="#242c3a"/>
+  <text x="136" y="360" font-family="Consolas,Menlo,monospace" font-size="26" fill="#9a92ee">node safety/verify_provenance.cjs</text>
+
+  <text x="120" y="440" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="20" letter-spacing="3" fill="#9aa6b6" font-weight="600">PRINTS</text>
+  <rect x="112" y="460" width="1696" height="154" rx="10" fill="#141923" stroke="#242c3a"/>
+  <text x="136" y="494" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">PROVENANCE: PASS — 0 claim(s) of origin do not hold</text>
+  <text x="136" y="524" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  This proves published bytes match a named commit IN THIS CLONE. It cannot prove that</text>
+  <text x="136" y="554" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  commit is what a third party would receive, and no amount of code here can. Only</text>
+  <text x="136" y="584" font-family="Consolas,Menlo,monospace" font-size="22" fill="#dfe5ee" xml:space="preserve">  publishing the source repositories, or an independent custodian, closes that gap.</text>
+
+  <text x="120" y="1002" font-family="Consolas,Menlo,monospace" font-size="21" fill="#9aa6b6">UNI.Public safety/verify_provenance.cjs — every published page held against the commit its citation names</text>
+  <text x="120" y="1038" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="21" fill="#d9a441">The last lines are the check naming the one gap that no code inside it can close.</text>
+</svg>

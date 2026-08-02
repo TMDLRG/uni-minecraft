@@ -1,0 +1,19 @@
+# production/systemd/uni-heartbeat.timer
+# Fires uni-heartbeat.service on a fixed 60s cadence. The remediation plan describes an adaptive
+# "60s in-show / 300s idle" cadence, but that needs runtime state (is a broadcast live right now?) that
+# a timer UNIT cannot express - OnUnitActiveSec is a static interval, not a conditional one. This timer
+# stays a flat 60s; if/when idle-skipping is wanted, it belongs INSIDE heartbeat.sh (e.g. skip the deep
+# verify_p1.sh re-run when broadcast.json shows no active session, but still probe + log every tick) -
+# left as a TODO there, not attempted here.
+[Unit]
+Description=UNI Heartbeat timer (fixed 60s cadence; see uni-heartbeat.service for what it probes)
+
+[Timer]
+OnUnitActiveSec=60s
+# Also fire shortly after boot so the first ledger row doesn't wait a full 60s after a cold start.
+OnBootSec=60s
+Persistent=true
+Unit=uni-heartbeat.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,200 @@
+[body] mine_tree approached d=6.5 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.2
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=5.7 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree approached d=8.0 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=5.8
+[body] mine_tree approached d=8.0 (still out of reach)
+[body] mine_tree approached d=5.8 (still out of reach)
+[body] mine_tree approached d=5.2 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree approached d=5.7 (still out of reach)
+[body] mine_tree approached d=6.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=4.9 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=8.0 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree approached d=7.2 (still out of reach)
+[body] CRAFT no-recipe wooden_pickaxe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_axe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_sword (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_shovel (table) planks=1 sticks=0
+[body] TOOL-CRAFT no-tool: table=yes planks=1 sticks=0
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=6.0 (still out of reach)
+[body] mine_tree approached d=6.5 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=6.5 (still out of reach)
+[body] CRAFT no-recipe wooden_pickaxe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_axe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_sword (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_shovel (table) planks=1 sticks=0
+[body] TOOL-CRAFT no-tool: table=yes planks=1 sticks=0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=6.6 (still out of reach)
+[body] mine_tree approached d=7.2 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.2
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree approached d=6.3 (still out of reach)
+[body] mine_tree approached d=4.9 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree tree_visible=oak_log d=9.4
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree approached d=4.7 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree approached d=8.0 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=6.7
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=4.8 (still out of reach)
+[body] mine_tree approached d=6.0 (still out of reach)
+[body] mine_tree approached d=7.1 (still out of reach)
+[body] mine_tree approached d=7.0 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree approached d=4.9 (still out of reach)
+[body] mine_tree approached d=5.7 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=6.5 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] CRAFT no-recipe wooden_pickaxe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_axe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_sword (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_shovel (table) planks=1 sticks=0
+[body] TOOL-CRAFT no-tool: table=yes planks=1 sticks=0
+[body] mine_tree approached d=6.0 (still out of reach)
+[body] mine_tree approached d=6.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=6.3 (still out of reach)
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree approached d=6.6 (still out of reach)
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree approached d=6.6 (still out of reach)
+[body] mine_tree approached d=7.1 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=7.2 (still out of reach)
+[body] CRAFT no-recipe wooden_pickaxe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_axe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_sword (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_shovel (table) planks=1 sticks=0
+[body] TOOL-CRAFT no-tool: table=yes planks=1 sticks=0
+[body] mine_tree approached d=6.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.3
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=7.0 (still out of reach)
+[body] mine_tree approached d=7.1 (still out of reach)
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree approached d=4.8 (still out of reach)
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=6.7
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=7.0 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree approached d=7.1 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=6.8 (still out of reach)
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree approached d=6.0 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=9.4
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=5.8
+[body] mine_tree approached d=7.1 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=6.7 (still out of reach)
+[body] mine_tree approached d=5.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=6.8
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=5.3
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=4.7 (still out of reach)
+[body] mine_tree approached d=6.3 (still out of reach)
+[body] mine_tree approached d=5.8 (still out of reach)
+[body] mine_tree approached d=7.6 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree approached d=6.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=8.1
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=7.3 (still out of reach)
+[body] mine_tree approached d=5.7 (still out of reach)
+[body] mine_tree approached d=6.2 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] mine_tree approached d=5.7 (still out of reach)
+[body] mine_tree approached d=6.5 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4
+[body] CRAFT no-recipe wooden_pickaxe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_axe (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_sword (table) planks=1 sticks=0
+[body] CRAFT no-recipe wooden_shovel (table) planks=1 sticks=0
+[body] TOOL-CRAFT no-tool: table=yes planks=1 sticks=0
+[body] mine_tree approached d=6.0 (still out of reach)
+[body] mine_tree approached d=6.3 (still out of reach)
+[body] mine_tree tree_visible=oak_log d=7.0
+[body] mine_tree tree_visible=oak_log d=7.4

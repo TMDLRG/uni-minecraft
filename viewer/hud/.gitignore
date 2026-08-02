@@ -1,0 +1,11 @@
+node_modules/
+build/
+logs/
+*.log
+
+# .NET build output (native/UNI.Hud.Service, UNI.Hud.Widget, UNI.Hud.Service.Tests) --
+# these are compiled artifacts (~500MB across Debug/Release/publish), never source.
+# Rebuild via: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
+bin/
+obj/
+publish/

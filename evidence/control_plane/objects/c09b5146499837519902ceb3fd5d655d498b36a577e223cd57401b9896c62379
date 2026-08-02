@@ -1,0 +1,100 @@
+PHASE 7 ITEM 7.10 — GREEN
+date: 2026-07-26
+red commit: e055180
+git status --short at capture:
+   M lib/sp/control_plane/witness.ex
+   M test/sp/control_plane/control_plane_ledger_is_real_test.exs
+   M test/sp/control_plane/witness_out_of_reach_test.exs
+   M viewer/gaia/witness.json
+  ?? docs/receipts/control-plane/phase7_item710_green_2026-07-26.txt
+  ?? docs/receipts/control-plane/phase7_witness_compromised_2026-07-26T1705Z.json
+LIVE READING: compromised (node2 answers AND the writer's key works)
+cmd: mix test
+======================================================================
+Running ExUnit with seed: 424934, max_cases: 32
+Excluding tags: [:skip]
+
+..............................................warning: SP.Interface.Audit.forbidden_output_keys/1 not implemented yet. This is A-A6 in the deepening plan — queued to /lab-team-review. See production/mcp/SPEC_log_sensor_organ.md for the paired seam.
+  test/sp/brain/output_side_leak_audit_test.exs:80: SP.Brain.OutputSideLeakAuditTest."test SP.Interface.Audit exposes forbidden_output_keys/1 (soft check for now)"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+..............................................................................................................................................................................................................................................................................warning: has_food MASKED: inventory_index(%{"tools" => 1, "food" => 2}) == 2, not 3.
+A tool-holding UNI cannot observe has_food, so B[:attack] can never learn
+attack->has_food (docs/receipts/emergent_forage_cure1.md §2 steps 4-5) and the
+forage/graduation gates are unpassable for that lineage.
+Repair is an observation-space change (mc_codec.ex:118) — queued to /lab-team-review
+for a MERGED VERDICT. Do NOT edit the cond without one.
+
+  test/sp/brain/mc_test.exs:79: SP.Brain.MCTest."test MCCodec — sense discretisation matches the curriculum's outcome semantics TRIPWIRE: report whether a held tool masks has_food (soft check for now)"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+.............................................................warning: WITNESS COMPROMISED — the off-box custodian does not corroborate right now.
+  capture:      viewer/gaia/witness.json  (captured_at 2026-07-26T17:05:09.004Z)
+  reading:      compromised
+  bound:        3600s
+This is a BLOCKED gate, not a passing one and not a code defect. Per CLAUDE.md a
+required service that is absent is marked BLOCKED and never reported as a pass.
+Re-measure with `node viewer/gaia/witness_probe.cjs`.
+
+  test/sp/control_plane/witness_blocked_is_not_passed_test.exs:195: SP.ControlPlane.WitnessBlockedIsNotPassedTest."test 7.10 — the REAL committed capture is classified, and BLOCKED is reported not hidden"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+...................................................................................................................................
+[W4] self-loop entropy drop — v1 posterior-feedback=0.6561 vs v2 extrinsic-likelihood=-0.0008 (Q2 fix ⇒ v2 ≈ 0)
+.........................................................................................................................................................................................................................    warning: default values for the optional arguments in the private function custodian!/4 are never used
+    │
+ 92 │   defp custodian!(id, domain, anchor, opts \\ []) do
+    │        ~
+    │
+    └─ test/sp/control_plane/witness_out_of_reach_test.exs:92:8: SP.ControlPlane.WitnessOutOfReachTest (module)
+
+....................................................................................warning: WITNESS COMPROMISED — the refusal could not be re-measured.
+  capture: viewer/gaia/witness.json (captured_at 2026-07-26T17:05:09.004Z)
+BLOCKED, not passed. Re-measure with `node viewer/gaia/witness_probe.cjs`.
+
+  test/sp/control_plane/witness_out_of_reach_test.exs:247: SP.ControlPlane.WitnessOutOfReachTest."test the captured witness record records the REFUSAL, so it is evidence and not an assumption"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+................     warning: incompatible types given to SP.ControlPlane.Scene.entry/1:
+
+         SP.ControlPlane.Scene.entry(%{truth_class: :REAL, receipt_ref: "x"})
+
+     given types:
+
+         -%{id: not_set(), receipt_ref: binary(), truth_class: :REAL}-
+
+     but expected one of:
+
+         dynamic(%{..., id: term()})
+
+     typing violation found at:
+     │
+ 497 │     assert_raise FunctionClauseError, fn -> Scene.entry(%{truth_class: :REAL, receipt_ref: "x"}) end
+     │                                                   ~
+     │
+     └─ test/sp/control_plane/material_comes_from_truth_class_test.exs:497:51: SP.ControlPlane.MaterialComesFromTruthClassTest."test 7.6 REPAIR — making material/1 total moved entry/1's crash LATER; the head now refuses an id-less map"/1
+
+..............................................................................
+[P2] motor config posterior peak over life = 0.75 (uniform ⇒ 0)
+...........................warning: CORROBORATION BLOCKED — reading is compromised, not corroborated.
+  capture: viewer/gaia/witness.json (captured_at 2026-07-26T17:05:09.004Z)
+The local anchor stands on git alone, which is tamper-EVIDENT and not
+unforgeable. This is a BLOCKED gate. Re-measure with
+`node viewer/gaia/witness_probe.cjs`.
+
+  test/sp/control_plane/control_plane_ledger_is_real_test.exs:197: SP.ControlPlane.ControlPlaneLedgerIsRealTest."test the local anchor is corroborated by custodians in two domains, one unforgeable"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.3) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+......................................
+Finished in 128.5 seconds (118.7s async, 9.7s sync)
+4 doctests, 964 tests, 0 failures (4 excluded)

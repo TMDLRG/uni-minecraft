@@ -1,0 +1,44 @@
+# livekit.yaml - UNI Production Platform WebRTC SFU config (DESIGN/REFERENCE, pending; not deployed).
+# Mounted read-only at /etc/livekit.yaml inside uni-bcast-livekit (livekit/livekit-server).
+#
+# Role (ADR-PROD-004): green-room + on-air rooms for remote guests. The guest join app drops a guest
+# into the green-room room (off air); admit_guest moves them to the on-air room; the stage page
+# subscribes to the on-air room; OBS captures the stage page.
+#
+# Ports MUST match the quadlet PublishPort lines: ws/http 7880, rtc-tcp 7881, rtc-udp 50000-50200.
+
+# Signalling ws/http port.
+port: 7880
+
+rtc:
+  # TCP fallback when UDP is blocked (PublishPort 7881 in the quadlet).
+  tcp_port: 7881
+  # UDP media port range (PublishPort 50000-50200/udp in the quadlet). Keep the two in lockstep.
+  port_range_start: 50000
+  port_range_end: 50200
+  # On a single-NIC LAN node this can stay false. If the broadcast node is behind NAT for WAN guests,
+  # set use_external_ip: true (LiveKit STUN-discovers) OR pin node_ip to the public address.
+  use_external_ip: false
+  # node_ip: <broadcast-node-public-ip>   # TODO: set on a NAT'd node for WAN guests.
+
+# API keys. DEV keys below are placeholders - DO NOT ship them. Generate real keys on deploy with
+#   podman run --rm docker.io/livekit/livekit-server generate-keys
+# or inject API key/secret via env (LIVEKIT_KEYS) from /etc/uni/runtime.env. The guest app + the MCP
+# admit_guest tool sign join tokens with this key/secret pair.
+keys:
+  # TODO(dev-keys): replace this devkey/devsecret pair before any non-loopback use.
+  devkey: devsecret_change_me_min_32_chars_long_xx
+
+# Room defaults: auto-create the green-room + on-air rooms on first join; idle timeout reclaims rooms.
+room:
+  auto_create: true
+  empty_timeout: 300       # seconds an empty room lingers before teardown
+  max_participants: 16     # host + UNI expert + panel guests; raise for large panels
+
+# Logging
+logging:
+  level: info
+  json: false
+
+# TURN: not enabled here. For guests behind strict symmetric NAT, enable LiveKit's embedded TURN
+# (turn: { enabled: true, tls_port: 5349, ... }) and publish/firewall that port on the node. Pending.

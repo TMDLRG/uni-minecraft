@@ -1,0 +1,53 @@
+# /etc/containers/systemd/uni-bcast-mixer.container
+# UNI Production Platform - unit #1 uni-bcast-mixer.
+# STATUS: AS-DEPLOYED CANONICAL (deployed 2026-07-11 to uni-lab-79740c via uni-lab MCP,
+# P1-BRINGUP Phase G, verified: obs-websocket :4455 answers 426). Changes here must be
+# re-applied on the node or the node drifts.
+# Deviations vs the original design, found on REAL bring-up:
+#  1. Relay targets via host.containers.internal - the relay's ports are host-published and
+#     cross-quadlet container-DNS is not guaranteed on the default network.
+#  2. SRT streamid corrected to publish:uni/program - the design's publish:uni did not match
+#     the relay's configured path uni/program (the ingest would have been refused).
+#  3. --shm-size=512m - xvfb+OBS compositing on the default 64m shm is too tight.
+#  4. EnvironmentFile without the '-' prefix (same generator limitation as the relay).
+# Build fixes baked into Containerfile.obs (same commit lineage): ubuntu:24.04 stock UID-1000
+# user removed before useradd; obs-entrypoint.sh must be LF (see /.gitattributes).
+#
+# Vision mixer + encoder. Headless OBS Studio (xvfb) with obs-websocket v5. Set-once vision
+# mixer per the proven Director model. ONE program out over SRT to uni-bcast-relay.
+[Unit]
+Description=UNI Broadcast Mixer (headless OBS + obs-websocket, set-once vision mixer/encoder)
+After=podman.socket network-online.target
+Wants=podman.socket
+# Bound retries so a misconfigured mixer can never crash-loop/spam.
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Container]
+Image=localhost/uni-bcast-obs:latest
+ContainerName=uni-bcast-mixer
+# obs-websocket control surface, loopback only.
+PublishPort=127.0.0.1:4455:4455
+# Persistent broadcast spool (broadcast.json, run-of-show, logs).
+Volume=/var/lib/uni/broadcast:/var/lib/uni/broadcast:Z
+# OBS profile/scene-collection/config (named volume so set-once scenes survive rebuilds).
+Volume=uni_bcast_obs_config:/config:Z
+Environment=OBS_WEBSOCKET_BIND=0.0.0.0
+Environment=OBS_WEBSOCKET_PORT=4455
+# Encoder: x264 software floor (GAP G-ENC; no GPU confirmed on this node).
+Environment=UNI_BCAST_ENCODER=x264
+Environment=UNI_BCAST_X264_PRESET=faster
+Environment=UNI_BCAST_RES=1280x720
+Environment=UNI_BCAST_FPS=30
+# Relay target (SRT preferred; RTMP fallback) - host-published relay ports via the host gateway name.
+Environment=UNI_BCAST_RELAY_SRT=srt://host.containers.internal:8890?streamid=publish:uni/program
+Environment=UNI_BCAST_RELAY_RTMP=rtmp://host.containers.internal:1935/uni/program
+PodmanArgs=--shm-size=512m
+EnvironmentFile=/etc/uni/runtime.env
+
+[Service]
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target default.target

@@ -1,0 +1,58 @@
+# Containerfile.obs -- the uni-bcast-mixer image: headless OBS Studio + obs-websocket v5 +
+# Xvfb (software-GL virtual display) + ffmpeg, built to localhost/uni-bcast-obs:latest.
+#
+# DESIGN/REFERENCE, status: pending. This recipe is AUTHORED, not yet built/validated on a node
+# (no broadcast node + no podman available this session). Build + validate it on the broadcast
+# node (see production/docs/P1-BRINGUP.md), then pin the resolved digest into
+# uni-bcast-mixer.container (the portainer.container pre-pull-and-pin pattern). If the headless-OBS
+# path proves troublesome on the node, the fallback is OBS running natively on the node host (still
+# driven by the same obs-websocket director); document whichever path is chosen.
+#
+# Why OBS (ADR-PROD-001): it is the proven Director-model mixer (the foundation's director_show.cjs
+# cues it over obs-websocket). On Linux + software raster it does NOT hit the Windows dual-GPU
+# WebGL-black problem; obs-websocket v5 ships inside OBS 28+.
+#
+# Encoder is parameterised by UNI_BCAST_ENCODER (x264 | nvenc | vaapi); x264 is the zero-GPU floor.
+# NVENC/VAAPI need the quadlet to pass the device (PodmanArgs=--device ...; see DEPLOY.md step 10).
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    DISPLAY=:0 \
+    LIBGL_ALWAYS_SOFTWARE=1 \
+    OBS_WS_PORT=4455
+
+# OBS Studio (bundles obs-websocket v5) from the maintained PPA, plus a software-GL virtual display
+# (Xvfb + mesa llvmpipe), a tiny WM so OBS gets a root window, ffmpeg, and the loopback audio stack
+# (pulseaudio in null-sink mode) OBS needs for its audio bus / ducking.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        software-properties-common gnupg ca-certificates wget \
+    && add-apt-repository -y ppa:obsproject/obs-studio \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        obs-studio \
+        xvfb x11-utils openbox \
+        libgl1-mesa-dri mesa-utils \
+        ffmpeg \
+        pulseaudio pulseaudio-utils \
+        jq tini \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# A non-root run user (OBS + pulseaudio dislike running as uid 0). Rootful podman still maps it.
+# ubuntu:24.04 ships a stock 'ubuntu' user already holding UID 1000 - remove it first (found on
+# first real build 2026-07-11: "useradd: UID 1000 is not unique").
+RUN userdel -r ubuntu 2>/dev/null || true \
+    && useradd -m -u 1000 -s /bin/bash uni
+WORKDIR /home/uni
+
+# Seed an obs-websocket config so the server is ENABLED on :4455 at first launch. The password is
+# injected by the entrypoint from UNI_OBS_WS_PASSWORD (empty => auth off, which is fine loopback-only).
+COPY obs-entrypoint.sh /usr/local/bin/obs-entrypoint.sh
+RUN chmod +x /usr/local/bin/obs-entrypoint.sh && chown -R uni:uni /home/uni
+
+USER uni
+
+# obs-websocket (loopback by contract; the quadlet publishes 127.0.0.1:4455 only).
+EXPOSE 4455
+
+# tini reaps Xvfb/pulseaudio/OBS cleanly; the entrypoint brings the virtual display + audio + OBS up.
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/obs-entrypoint.sh"]
