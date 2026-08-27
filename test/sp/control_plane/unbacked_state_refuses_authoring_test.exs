@@ -212,9 +212,10 @@ defmodule SP.ControlPlane.UnbackedStateRefusesAuthoringTest do
   @tag :cross_repo
   test "SUPERSESSION — the old contract is gone from the register, and the new one names its rule" do
     modes =
-      Path.expand(
-        "../../../../UNI-Flagellum/UNI-FLAGELLUM/docs/control-plane/FAILURE-MODES.md",
-        __DIR__
+      Path.join(
+        System.get_env("UNI_FLAGELLUM_PATH") ||
+          Path.expand("../../../../UNI-Flagellum/UNI-FLAGELLUM", __DIR__),
+        "docs/control-plane/FAILURE-MODES.md"
       )
 
     text = File.read!(modes)

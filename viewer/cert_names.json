@@ -1,0 +1,28 @@
+{
+  "_why": [
+    "DECLARED DNS NAMES that viewer/auto.crt must carry, as DATA rather than as literals in code.",
+    "",
+    "The generator adds, on its own, every IP this box actually holds plus loopback, the machine's",
+    "own hostname, and the Tailscale MagicDNS name read live from `tailscale status`. This file is",
+    "only for names the box cannot discover about itself -- the LAN zone names and the public",
+    "name that resolves back to the estate.",
+    "",
+    "It exists because gen_auto_cert.ps1 used to hard-code ONE address (10.190.245.196) and mint a",
+    "cert valid for 3650 days. On 2026-08-03 that cert was 21 days old, covered exactly one of the",
+    "THREE network planes this box sits on, and could not regenerate for another ten years. A laptop",
+    "that moved from the Kilig LAN to the P-Zin WLAN could not open https://<wifi-ip>:8443/ at all:",
+    "the address was reachable (measured -- an established inbound TCP session from that same laptop",
+    "was live on another port at the time) but the certificate had never heard of it.",
+    "",
+    "Adding a name here does NOT make it resolve. DNS is a separate concern. This only ensures that",
+    "IF a name resolves to this box, the TLS handshake succeeds instead of hard-failing."
+  ],
+  "dns_names": [
+    "thinker.uni-lab.local",
+    "publisher.uni-lab.local",
+    "studio.uni-lab.local",
+    "thinker.uni-lab.solwright.com",
+    "publisher.uni-lab.solwright.com",
+    "studio.uni-lab.solwright.com"
+  ]
+}

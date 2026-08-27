@@ -128,7 +128,27 @@ const DOORS = [
     // 2026-07-15); the legacy v2 node's :4000 has no health route.
     probe: async () => { const r = await httpJson(COLONY_HOST, 4200, "/producer/health"); return r.status === 200; }, hrefFor: ["producer", "/stream"],
     how: { open: MANDATE + " Restoring the Producer = the science seat's colony-brain redeploy from HEAD, with the MANDATORY capture-before-destroy procedure (docs/handoffs/GAIA_CAPTURE_BEFORE_DESTROY_2026-07-14.md) run FIRST.", close: MANDATE, lock: "locked to the studio by the mandate; its life is science-track", unlock: "Organic Operator Michael Polzin directs the science seat; the studio only observes and reports its absence honestly" } },
-  { key: "world",     label: "World @UNI-LAB (:25565)", scope: "remote", probe: () => tcp(COLONY_HOST, 25565) },
+  // WORLD — the same defect the launcher's world tile carried, reported by the operator on air
+  // 2026-08-02: "there is a minecraft paper server and it was and is running look, UNI is on the chip
+  // and the world IS running". He was right, and this door was permanently CLOSED against a world
+  // that was ticking at 20 TPS with 5 UNIs in it.
+  //
+  // The probe was `tcp(COLONY_HOST, 25565)`. The colony runs rootless in Podman and 25565 is NOT
+  // LAN-published (the name resolves to a podman-internal 10.89.x address), so that probe can never
+  // succeed from this box — BY DESIGN. command_center.cjs:1382 and gaia/caps.cjs:218 had both already
+  // written that down; this door never got the memo and reported a structural networking fact as a
+  // shut door on the world itself. An alarm that can never clear is not an alarm.
+  //
+  // The world's OWN tick rate is the honest signal: /producer/health carries tps={up,tps}, and a
+  // Paper server reporting 20 TPS is definitionally running. Port reachability is still accepted as
+  // corroboration if it ever becomes LAN-published, but it is no longer the thing that decides.
+  { key: "world",     label: "World @UNI-LAB (Minecraft, by its own tick rate)", scope: "remote",
+    probe: async () => {
+      const r = await httpJson(COLONY_HOST, 4200, "/producer/health");
+      const tps = r && r.body && r.body.tps;
+      if (tps && tps.up === true && typeof tps.tps === "number" && tps.tps > 0) return true;
+      return tcp(COLONY_HOST, 25565);        // fallback only; :25565 is not LAN-published today
+    } },
   { key: "colony",    label: "UNI colony @UNI-LAB (:4000)", scope: "remote", probe: () => tcp(COLONY_HOST, 4000), hrefFor: ["colony", "/"] },
   { key: "colonycam", label: "Colony camera @UNI-LAB (:3020)", scope: "remote", probe: () => tcp(COLONY_HOST, 3020), hrefFor: ["colonycam", "/"] },
   // 2026-07-17 (gate journey-vectors-durable-and-probed, C4): this was a hard-coded node2 IP LITERAL

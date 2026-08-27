@@ -259,5 +259,48 @@ only) and never self-approves go-live.
 
 ## Shutdown
 
-`offair CONFIRM` → `restream.ps1 -Stop` → base runbook shutdown (save-all, stop MC, Ctrl-C the
-iex node, close OBS).
+`offair CONFIRM` → `powershell -File viewer\studio_up.ps1 -Stop` → base runbook shutdown
+(save-all, stop MC, Ctrl-C the iex node, close OBS).
+
+> **⚠ CORRECTED 2026-08-04. This section previously said `restream.ps1 -Stop`, and following it
+> would have left the show going out to YouTube and Twitch.** `restream.ps1` is not the fan-out and
+> nothing starts it — the only reference anywhere in the bring-up path is a comment
+> (`viewer/studio_up.ps1:433`). The live simulcast is `viewer/dual_push.cjs`.
+>
+> **`--stop` is not sufficient on its own, and it reports success either way.** Measured while
+> taking the 2026-08-03/04 run off air: `node viewer/dual_push.cjs --stop` printed
+> `stopped both pushers` while **both ffmpeg pushers were still running and still delivering the
+> broadcast**. Two independent reasons:
+>
+> 1. **The success line is unconditional.** The kill sits inside `try { … } catch (_) {}` and the
+>    "stopped" message is printed outside it, so it prints whether or not the kill matched anything.
+> 2. **Three separate things resurrect the pushers**, and `--stop` disables none of them:
+>    `dual_push.cjs`'s own supervisor respawns each pusher ~2 s after exit; `systray_watchdog.ps1`
+>    restarts the fan-out on a 5 s timer **with no on-air fence** (deliberate — for a fan-out,
+>    "down" already means the audience is gone); and `studio_up.ps1 -Watch` restarts it on a 5 s
+>    poll. On the night this was found, the supervisor had already restored both pushers before the
+>    next command ran.
+>
+> **The correct order for a deliberate shutdown is supervisors first, then pushers, then OBS:**
+>
+> ```
+> 1. speak the sign-off ON AIR   (ovl_voice is NOT on STANDBY — say it before you cut away)
+> 2. cut program to STANDBY, hold ~15 s so the end card lands in both VODs
+> 3. stop the supervisors        (systray_watchdog, obs_supervisor) — or they undo step 4
+> 4. node viewer/dual_push.cjs --stop, THEN verify, THEN kill any survivors by PID
+> 5. StopStream in OBS
+> ```
+>
+> Stopping the pushers **before** OBS is what gives YouTube and Twitch a clean end-of-stream so they
+> finalise their recordings, rather than a dropped ingest.
+>
+> **Never judge air-down by `--stop`'s output. Count processes:**
+>
+> ```powershell
+> @(Get-CimInstance Win32_Process -Filter "Name='ffmpeg.exe'").Count   # must be 0
+> ```
+>
+> `studio_up.ps1 -Stop`'s own "DOWN: VERIFIED CLEAN" verdict checks ports and process classes and
+> contains **no ffmpeg check at all**, so it too can report clean while orphaned pushers are still
+> streaming. This is the same class of defect as every other one this estate has hit: a signal that
+> measures existence of the thing it manages, rather than the outcome the audience experiences.

@@ -2,6 +2,8 @@ defmodule SP.Brain.MathTest do
   use ExUnit.Case, async: true
   alias SP.Brain.Math
 
+  doctest SP.Brain.Math
+
   describe "digamma vs scipy.special.digamma (frozen anchors)" do
     @anchors %{
       0.01 => -100.560885457869,

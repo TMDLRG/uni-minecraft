@@ -31,6 +31,51 @@ defmodule SP.Brain.Math do
     Enum.map(ex, &(&1 / s))
   end
 
+  @doc """
+  Numerically-stable log-sum-exp: `ln Σ_i exp(x_i)`, computed as
+  `max(x) + ln Σ_i exp(x_i − max(x))` so no term overflows.
+
+  This is `softmax`'s normaliser in log space — `softmax(x) = exp(x − logsumexp(x))`.
+
+      iex> Float.round(SP.Brain.Math.logsumexp([0.0, 0.0]), 12)
+      0.69314718056
+
+      iex> Float.round(SP.Brain.Math.logsumexp([1.0, 1.0, 1.0]) - 1.0, 12)
+      1.098612288668
+
+      iex> Float.round(SP.Brain.Math.logsumexp([-1000.0, -1000.0]) + 1000.0, 12)
+      0.69314718056
+  """
+  def logsumexp([]), do: log(0.0)
+
+  def logsumexp(v) do
+    mx = Enum.max(v)
+    s = Enum.reduce(v, 0.0, fn x, acc -> acc + :math.exp(x - mx) end)
+    s = if s < @eps, do: @eps, else: s
+    mx + :math.log(s)
+  end
+
+  @doc """
+  Per-state log-normaliser of the **γ-tempered** likelihood column:
+
+      Z_γ(s) = ln Σ_o A[o|s]^γ = logsumexp_o( γ · ln A[o|s] )
+
+  One entry per column (state) of the column-major likelihood `a`. Subtracting this
+  from `γ · ln A[o|s]` makes the tempered likelihood a genuine distribution over
+  outcomes for each state (§ the tempered-column repair), which is what stops `γ`
+  buying free energy by going blind. At `γ = 1` on a column-stochastic `A` this is
+  `ln 1 = 0` to within the ε-floor, so the validated `γ_m = 1` path is unchanged.
+
+      iex> SP.Brain.Math.tempered_log_norm([[0.9, 0.1], [0.5, 0.5]], 1.0) |> Enum.map(&Float.round(&1, 9))
+      [0.0, 0.0]
+
+      iex> SP.Brain.Math.tempered_log_norm([[0.25, 0.25, 0.25, 0.25]], 0.0) |> Enum.map(&Float.round(&1, 9))
+      [1.386294361]
+  """
+  def tempered_log_norm(a, gamma) do
+    Enum.map(a, fn col -> logsumexp(Enum.map(col, fn p -> gamma * log(p) end)) end)
+  end
+
   @doc "Normalise a vector to a probability distribution (sum→1, eps-floored)."
   def normalize(v) do
     s = Enum.sum(v)

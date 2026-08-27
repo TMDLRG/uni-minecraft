@@ -1,0 +1,6 @@
+﻿
+ProcessId CommandLine                                              CreationDate       
+--------- -----------                                              ------------       
+    13436 "C:\Program Files\nodejs\node.exe" viewer\publisher.cjs  8/2/2026 7:56:10 PM
+
+

@@ -120,7 +120,10 @@ function setShot(name, opts) {
   shotName = SHOTS[name] ? name : "orbit";
   P = { ...base, ...opts };
   wideSince = P.wide ? Date.now() : null;
-  if (!P.wide) clearForceload();
+  // PLAN 7 (2026-08-04): do NOT clear forceload when switching to a non-wide shot. Every shot now
+  // forceloads its own subject square in glide() (see :150), and ensureForceload moves it
+  // remove-before-add as the subject changes; teardown/disconnect still clear it (:232,:252). Clearing
+  // here is exactly what left the everyday shots with no pinned terrain -> empty sky.
 }
 
 function glide() {
@@ -147,7 +150,17 @@ function glide() {
   const base = centroid || (ent && ent.position) || null;
   const faceTo = centroid || (ent && ent.position) || null;
 
-  if (P.wide) ensureForceload(base);
+  // PLAN 7 A0/A-terrain (2026-08-04): forceload on EVERY shot, not just wide ones.
+  // Measured decisive: a BRAND-NEW prismarine-viewer client of :3020 shows the SAME empty sky --
+  // one UNI, a nametag, ZERO terrain -- so it is DATA (chunks never reach the client), producer-side,
+  // NOT a stale on-air client a reconnect would fix (a reconnect yields another empty client and
+  // blanks the live one, stream_live.ex:263-265). The mechanism is this file's own comment at :80-82:
+  // "we ask the SERVER to keep the colony chunk-square loaded; the client then streams it fine." That
+  // was gated behind `if (P.wide)`, so the four everyday shots (orbit/closeup/follow/beauty, all
+  // wide:false) pinned NO terrain and the fast-orbiting camera outran the server's chunk generation
+  // into blue void. ensureForceload dedups by chunk key (:88) so calling it every glide is cheap --
+  // RCON only fires when the square moves. Peak load is identical to what wide shots already produced.
+  ensureForceload(base);
 
   if (base) {
     // SMOOTH framing: glide to the orbiting pose, always facing the subject/colony.

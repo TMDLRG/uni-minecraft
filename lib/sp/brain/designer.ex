@@ -75,6 +75,9 @@ defmodule SP.Brain.Designer do
 
   # Likelihood prior selector. Default (`nil`) ⇒ the UNINFORMATIVE uniform likelihood (exteroception:
   # meaning is learned, never given). `:diagonal` ⇒ a near-identity PROPRIOCEPTIVE prior — see below.
+  # `{:prior_draw, name, domain}` ⇒ a DRAW from that same uninformative prior rather than its mean
+  # (the frozen-factor repair, gated off by default at `Genome.exteroceptive_a_init`) — see below.
+  defp likelihood({:prior_draw, name, domain}, no, ns), do: prior_draw_likelihood(name, domain, no, ns)
   defp likelihood(:diagonal, no, ns), do: diagonal_likelihood(no, ns)
   defp likelihood(_uniform, no, ns), do: uniform_likelihood(no, ns)
 
@@ -96,6 +99,44 @@ defmodule SP.Brain.Designer do
       d = min(s, no - 1)
       for o <- 0..(no - 1), do: if(o == d, do: hi, else: lo)
     end
+  end
+
+  @doc """
+  A DRAW from the uninformative likelihood prior, one per state-column:
+
+      Â₀[:,s] ~ Dir(κ·1_{n_o}),   κ = 1.0
+
+  **This changes no prior.** `uniform_likelihood/2` evaluates the MEAN of exactly this symmetric
+  Dirichlet, `E[Â₀] = 1/n_o`, and the mean is precisely the one point in the simplex that EVERY
+  permutation of the hidden states fixes. With identical A-columns, identity B and uniform D the whole
+  parameter set is S_ns-invariant, and every update rule reads state-indexed VALUES and never a state
+  INDEX — so the update map is S_ns-equivariant and `q(s)` stays uniform forever, as a matter of group
+  theory (`docs/whiteboard/DEFECTS-AND-REPAIRS.md` §2; measured `max|qᵢ−qⱼ|` ≈ 4e-16). Sampling the
+  prior instead of evaluating its mean leaves `E[pA]` byte-identical and only stops the REALISATION
+  sitting on the symmetric point.
+
+  κ = 1.0 is IMPOSED twice over: it is the same `+1` that `SP.Brain.Model.add1/1` adds to seed `pA`,
+  and it is the unique κ with a closed form — Gamma(1,1) = Exp(1), so `x_o = −ln u_o` and
+  `col = x/Σx`. Branch-free, no rejection loop, exactly one uniform per cell.
+
+  DETERMINISTIC: seeded from `SP.Determinism` (SplitMix64) on `domain <> name`, never `:rand` and
+  never the wall clock, so the draw is a pure function of a committed string and reproduces bit-exactly
+  from a clean clone. The seed is per-(domain, factor-name) — i.e. per LINEAGE, not per agent — which
+  is what makes the covenant falsifier (a second domain must give the same behaviour) checkable at all.
+  The log is floored at `1.0e-16` to match `SP.Brain.Math`'s ε, bounding `x_o` at 36.84.
+  """
+  def prior_draw_likelihood(name, domain, no, ns) do
+    rng = SP.Determinism.new(domain <> Atom.to_string(name))
+
+    {cols, _rng} =
+      Enum.map_reduce(1..ns//1, rng, fn _s, rng ->
+        {us, rng} = SP.Determinism.floats(rng, no)
+        x = Enum.map(us, fn u -> -:math.log(max(u, 1.0e-16)) end)
+        z = Enum.sum(x)
+        {Enum.map(x, &(&1 / z)), rng}
+      end)
+
+    cols
   end
 
   @doc "Identity transition: a \"states persist\" prior over `n` states."

@@ -74,6 +74,12 @@
   <div><div id="airlabel">OFF AIR</div><div id="airsub">nothing is being broadcast</div></div>
   <div id="airmeta"></div>
   <button id="helpbtn" title="Open / close the quick guide" style="margin-left:12px;font-size:16px;padding:6px 12px">?</button>
+  <!-- QUIET MODE (added 2026-08-10). This is the auto-opened operator window, so the switch lives
+       here too, not only on the Door and the tray. It delegates to the Door via a same-origin
+       command-center route, so it can never drift from the Door's version of the action. -->
+  <button id="quietbtn" title="Stop the video core (OBS, MediaMTX, channel windows, encoders) and get the machine back. Monitors stay up. One click to resume." style="margin-left:12px;font-size:14px;padding:6px 12px;border-color:var(--warn)">🌙 QUIET</button>
+  <button id="resumebtn" title="Bring the studio back up" style="margin-left:6px;font-size:14px;padding:6px 12px;border-color:var(--live);display:none">☀ RESUME</button>
+  <span id="quietstate" style="margin-left:10px;font-size:12px;color:var(--dim)"></span>
 </div>
 
 <details id="guide" style="background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:10px 14px;margin-bottom:10px">
@@ -351,6 +357,44 @@ const api = async (p, body) => {
   const r = await fetch(p, body ? { method:"POST", headers:{ "Content-Type":"application/json", "x-uni-cc":"1" }, body: JSON.stringify(body) } : undefined);
   return r.json();
 };
+// ---- QUIET MODE wiring (added 2026-08-10) ----
+async function refreshQuiet() {
+  try {
+    const q = await fetch("/api/quiet").then(r => r.json());
+    const on = !!(q && q.quiet);
+    $("quietbtn").style.display = on ? "none" : "";
+    $("resumebtn").style.display = on ? "" : "none";
+    // The POST-REBOOT verdict, shown right here so it needs no command to confirm.
+    let bh = "";
+    if (q && q.boot_health) {
+      const b = q.boot_health;
+      const col = b.verdict === "PASS" ? "var(--ok)" : (b.verdict === "FAIL" ? "var(--bad)" : "var(--warn)");
+      bh = ' <span style="color:' + col + ';font-weight:700">BOOT ' + b.verdict + '</span>'
+         + ' <span style="color:var(--dim)">(HUD ' + (b.hud_reboot_proven ? "survived reboot" : "NOT proven")
+         + ', monitors ' + (b.monitors_all_up ? "all up" : "INCOMPLETE")
+         + ', ' + (b.stayed_quiet ? "stayed quiet" : "WAS SLAMMED")
+         + ', chrome ' + (b.chrome_ram_mb || "?") + ' MB, checked ' + (b.ran_at || "?") + ')</span>';
+    }
+    $("quietstate").innerHTML = (on
+      ? ("QUIET since " + (q.since || "?") + " — video core stopped on purpose; monitors up")
+      : "studio is UP") + bh;
+  } catch (_) { $("quietstate").textContent = ""; }
+}
+async function doQuiet() {
+  if (!confirm("QUIET MODE?\n\nStops OBS, MediaMTX, the channel windows and the encoders (and the supervisors that would restart them). Keeps the HUD, Gaia, the Door and this console. Refuses if you are on air. One click to RESUME.")) return;
+  $("quietbtn").disabled = true; $("quietstate").textContent = "stopping the video core...";
+  const r = await api("/api/quiet", {});
+  $("quietbtn").disabled = false;
+  if (!(r && r.ok)) { alert((r && r.err) || "QUIET failed"); }
+  refreshQuiet();
+}
+async function doResume() {
+  $("resumebtn").disabled = true; $("quietstate").textContent = "bringing the studio back up...";
+  const r = await api("/api/resume", {});
+  $("resumebtn").disabled = false;
+  if (!(r && r.ok)) { alert((r && r.err) || "RESUME failed"); }
+  setTimeout(refreshQuiet, 3000);
+}
 let toastT = null;
 function toast(msg, fence) {
   const t = $("toast"); t.textContent = msg; t.className = fence ? "fence" : ""; t.style.display = "block";
@@ -389,6 +433,9 @@ function buildGrid(groups, desc) {
   }
 }
 
+$("quietbtn").onclick = doQuiet;
+$("resumebtn").onclick = doResume;
+refreshQuiet(); setInterval(refreshQuiet, 5000);
 $("takebtn").onclick = () => api("/api/take", {}).then(r => r.ok ? null : toast(r.err || "take failed"));
 $("projbtn").onclick = () => api("/api/projector", {}).then(r => r.ok ? toast("OBS 30fps program window opened — resize/move it; that is your smooth monitor") : toast(r.err || "projector failed"));
 document.querySelectorAll(".rolesel").forEach(sel => sel.onchange = () => api("/api/role", { role: sel.dataset.role, source: sel.value }).then(r => r.ok ? null : toast(r.err || "role failed")));

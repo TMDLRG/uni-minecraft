@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // director_show.cjs — THE DIRECTOR. The only thing that runs the show. Switches the OBS program scene
 // between the clean channels on a schedule, with a fade. OBS is never touched otherwise. Run in background.
 // (Future: replace the timer with cues from SP.Producer beats.)
@@ -23,7 +24,7 @@ function cut(){
   setTimeout(cut, step.secs*1000);
 }
 ws.on("message",d=>{const m=JSON.parse(d.toString());
-  if(m.op===0) ws.send(JSON.stringify({op:1,d:{rpcVersion:1}}));
+  if(m.op===0) ws.send(JSON.stringify({op:1,d:__obsauth.identifyD(m.d)}));
   else if(m.op===2){
     send("SetCurrentSceneTransition",{transitionName:TRANSITION});
     send("SetCurrentSceneTransitionDuration",{transitionDuration:TRANS_MS});

@@ -32,6 +32,25 @@ jobs:
           # not have', which was true of the checkout and false of the repository.
           fetch-depth: 0
 
+      # THE CROSS-REPOSITORY TESTS CAN NOW GENUINELY RUN HERE.
+      # Seven tests assert against documents in the UNI-FLAGELLUM repository. They were tagged
+      # :cross_repo and EXCLUDED in CI, and test_helper.exs said why: "Checking the sibling
+      # repository out in CI would let these tests genuinely run, and that needs a credential for a
+      # private repository -- an operator action, not a code change."
+      #
+      # That blocker is gone. On 2026-08-24 the operator ruled the snapshots into real mirrors, and
+      # TMDLRG/uni-flagellum-motor-stack is public -- so no credential is needed and this is a code
+      # change after all. Checking it out here turns seven excluded tests into seven run tests.
+      #
+      # It is the MIRROR, not the private repository, and the mirror is REDACTED. Verified before
+      # this step was written: all 7 pass against a fresh clone of the mirror exactly as they do
+      # against the private tree, because none of the three redacted files is one they read.
+      - name: Check out the public flagellum mirror (for the cross-repository tests)
+        uses: actions/checkout@v4
+        with:
+          repository: TMDLRG/uni-flagellum-motor-stack
+          path: .uni-flagellum-mirror
+
       - name: Set up Elixir/OTP
         uses: erlef/setup-beam@v1
         with:
@@ -46,6 +65,12 @@ jobs:
         run: mix format --check-formatted
 
       - name: Run the full QA suite
+        env:
+          # Without this the helper falls back to a sibling path that does not exist on a runner,
+          # and the seven cross-repository tests go on being excluded while the suite still reports
+          # green -- an exclusion that looks like coverage, which is the failure the banner in
+          # test_helper.exs exists to prevent.
+          UNI_FLAGELLUM_PATH: ${{ github.workspace }}/.uni-flagellum-mirror
         run: mix test
 
       - name: Regenerate and diff the golden trace (regression guard)

@@ -1,0 +1,209 @@
+<title>UNI Brain — The whole organism</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--bg:#0e1116;--pan:#161b22;--pan2:#1c2530;--ln:#2a3441;--tx:#e6edf3;--dim:#93a1b0;
+--acc:#7f9fdd;--ok:#4bd18a;--bad:#ff7a7a;--warn:#e8bb55;--dead:#66707c;
+--mono:ui-monospace,'SFMono-Regular',Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15.5px/1.6 ui-sans-serif,'Segoe UI',Roboto,sans-serif}
+.wrap{max-width:1300px;margin:0 auto;padding:26px 22px 100px}
+h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:15px;text-transform:uppercase;letter-spacing:1.2px;color:var(--acc);margin:44px 0 6px;font-weight:600}
+.lede{color:var(--dim);font-size:16px;max-width:80ch;margin:0 0 10px}
+.panel{background:var(--pan);border:1px solid var(--ln);border-radius:14px;padding:20px 22px;margin:14px 0}
+.plain{font-size:16.5px;line-height:1.65;margin:0 0 12px}.plain b{color:#fff}
+.say{color:var(--dim);font-size:14px;margin:8px 0 0}
+.m,code{font-family:var(--mono);font-size:.92em}
+.verdict{border:1px solid var(--bad);background:#241315;border-radius:14px;padding:22px 24px;margin:16px 0}
+.verdict h3{margin:0 0 10px;font-size:22px;color:#fff}
+.callout{border-left:3px solid var(--warn);background:#231d10;padding:13px 17px;border-radius:0 9px 9px 0;margin:12px 0}
+.callout.bad{border-color:var(--bad);background:#241315}
+.callout.ok{border-color:var(--ok);background:#0f2119}
+table.n{border-collapse:collapse;width:100%;font-size:13.5px}
+table.n th,table.n td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--ln);vertical-align:top}
+table.n th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px}
+table.n td.v{font-family:var(--mono);white-space:nowrap}
+.chip{display:inline-block;font:11px var(--mono);font-weight:600;padding:2px 9px;border-radius:20px}
+.OK{color:var(--ok);background:#12271c}.BAD{color:var(--bad);background:#2a1516}
+.DEAD{color:var(--dead);background:#1a1f26}.WARN{color:var(--warn);background:#2a2110}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:1050px){.grid2{grid-template-columns:1fr}}
+svg{max-width:100%;height:auto}
+.links a{color:var(--acc);font-size:13px;margin-right:16px;text-decoration:none;border-bottom:1px dotted var(--ln)}
+.big{font:34px var(--mono);font-weight:700;color:#fff}
+.stat{display:flex;gap:28px;flex-wrap:wrap;margin:10px 0}
+.stat div{min-width:120px}.stat .l{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+</style>
+<div class="wrap">
+<p class="links"><a href="/">&larr; dashboard</a><a href="/model">the whiteboard (one factor, the maths)</a><a href="/defects">defects &amp; repairs</a></p>
+
+<h1>The whole organism</h1>
+<p class="lede">Every part, and every connection between the parts. Drawn from the code, not from the design documents.</p>
+
+<div class="verdict">
+<h3>There is no hierarchy.</h3>
+<p class="plain" style="margin-bottom:8px">This is the answer to “where is the full model?”. The UI is not
+failing to draw the layers — <b>the layers do not exist.</b></p>
+<p class="plain" style="margin-bottom:8px">What is built is <b>21 separate little models sitting side by
+side</b>. They are <b>siblings, not layers</b>. There is no connection between any two of them: no message,
+no shared belief, no influence. Each one senses one thing and forms its own private opinion about it. The
+<i>only</i> place they meet is the choice of what to do next, where their scores are simply added up.</p>
+<p class="plain" style="margin-bottom:0">Above them sits <b>one</b> strategist, joined by a channel that
+carries <b>a single integer — about 2.3 bits — once every 12 ticks</b>. A third layer is wired in but dead.
+So: <b>two working levels and a straw</b>, where the design calls for eight, nested, recursively.</p>
+</div>
+
+<div class="stat panel">
+  <div><div class="l">levels declared</div><div class="big">3</div></div>
+  <div><div class="l">levels that run</div><div class="big">2</div></div>
+  <div><div class="l">factors at L1</div><div class="big">21</div></div>
+  <div><div class="l">connections between them</div><div class="big" style="color:var(--bad)">0</div></div>
+  <div><div class="l">bandwidth up to L2</div><div class="big">2.3<span style="font-size:16px"> bits/12t</span></div></div>
+  <div><div class="l">levels in the design</div><div class="big" style="color:var(--warn)">8</div></div>
+</div>
+
+<h2>1 · What is actually there</h2>
+<div class="panel">
+<svg viewBox="0 0 1240 560" role="img" aria-label="The full organism">
+ <defs>
+  <marker id="a1" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7f9fdd"/></marker>
+  <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#66707c"/></marker>
+  <marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#e8bb55"/></marker>
+ </defs>
+
+ <!-- dead layer -->
+ <rect x="360" y="6" width="520" height="46" rx="9" fill="#161b22" stroke="#2a3441" stroke-dasharray="6 5"/>
+ <text x="620" y="26" text-anchor="middle" fill="#66707c" font-size="14">slow “scene” layer — 4 states</text>
+ <text x="620" y="43" text-anchor="middle" fill="#66707c" font-size="11">DEAD: its weight matrix is uniform and never written, so its message is the same for every belief it could hold</text>
+ <line x1="620" y1="52" x2="620" y2="76" stroke="#66707c" stroke-dasharray="4 4" marker-end="url(#a2)"/>
+
+ <!-- L2 -->
+ <rect x="360" y="78" width="520" height="64" rx="9" fill="#1c2530" stroke="#7f9fdd"/>
+ <text x="620" y="103" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="600">L2 · strategist — ONE factor, 5 situations</text>
+ <text x="620" y="124" text-anchor="middle" fill="#93a1b0" font-size="12">picks one of: forage · build · flee · socialize · rest — once every 12 ticks</text>
+
+ <!-- channel -->
+ <line x1="500" y1="250" x2="500" y2="146" stroke="#7f9fdd" stroke-width="2" marker-end="url(#a1)"/>
+ <text x="488" y="180" text-anchor="end" fill="#7f9fdd" font-size="12.5">up: ONE integer, 0–4</text>
+ <text x="488" y="196" text-anchor="end" fill="#ff7a7a" font-size="11.5">≈2.3 bits · every 12 ticks · from ONE factor</text>
+ <text x="488" y="212" text-anchor="end" fill="#93a1b0" font-size="11">a shock across 20 of 21 factors cannot reach L2 at all</text>
+ <line x1="740" y1="146" x2="740" y2="250" stroke="#7f9fdd" stroke-width="2" marker-end="url(#a1)"/>
+ <text x="752" y="180" fill="#7f9fdd" font-size="12.5">down: what to want</text>
+ <text x="752" y="196" fill="#93a1b0" font-size="11.5">+ precision ×1.3 · learning rate ×0.88</text>
+ <text x="752" y="212" fill="#93a1b0" font-size="11">every tick, not every 12</text>
+
+ <!-- L1 band -->
+ <rect x="24" y="252" width="1192" height="196" rx="10" fill="#131922" stroke="#2a3441"/>
+ <text x="40" y="274" fill="#e6edf3" font-size="15" font-weight="600">L1 · the body — 21 factors, side by side</text>
+ <text x="330" y="274" fill="#ff7a7a" font-size="12.5">no arrows between them because there are none: they never exchange anything</text>
+
+ <g font-size="10.5" font-family="ui-monospace" text-anchor="middle">
+  <!-- 12 broken exteroceptive -->
+  <g fill="#ff7a7a">
+   <rect x="40"  y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="84"  y="303">status</text><text x="84"  y="314" font-size="9" fill="#93a1b0">4 st</text>
+   <rect x="136" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="180" y="303">inventory</text><text x="180" y="314" font-size="9" fill="#93a1b0">4 st</text>
+   <rect x="232" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="276" y="303">vision</text><text x="276" y="314" font-size="9" fill="#93a1b0">6 st</text>
+   <rect x="328" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="372" y="303">threat</text><text x="372" y="314" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="424" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="468" y="303">social</text><text x="468" y="314" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="520" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="564" y="303">self</text><text x="564" y="314" font-size="9" fill="#93a1b0">4 st</text>
+   <rect x="616" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="660" y="303">strategy</text><text x="660" y="314" font-size="9" fill="#93a1b0">5 st</text>
+   <rect x="712" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="756" y="303">light</text><text x="756" y="314" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="808" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="852" y="303">sky</text><text x="852" y="314" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="904" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="948" y="303">sight</text><text x="948" y="314" font-size="9" fill="#93a1b0">4 st</text>
+   <rect x="1000" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="1044" y="303">build</text><text x="1044" y="314" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="1096" y="288" width="88" height="30" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="1140" y="303">prey</text><text x="1140" y="314" font-size="9" fill="#93a1b0">4 st</text>
+  </g>
+  <text x="40" y="338" text-anchor="start" fill="#ff7a7a" font-size="11.5">▲ 12 exteroceptive — FROZEN: belief cannot move, ever. They contribute nothing to any decision.</text>
+  <!-- 9 working -->
+  <g fill="#4bd18a">
+   <rect x="40"  y="352" width="88" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="84"  y="367">aim</text><text x="84"  y="378" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="136" y="352" width="88" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="180" y="367">reach</text><text x="180" y="378" font-size="9" fill="#93a1b0">2 st</text>
+   <rect x="232" y="352" width="88" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="276" y="367">contact</text><text x="276" y="378" font-size="9" fill="#93a1b0">4 st</text>
+   <rect x="328" y="352" width="88" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="372" y="367">dig</text><text x="372" y="378" font-size="9" fill="#93a1b0">4 st</text>
+   <rect x="424" y="352" width="88" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="468" y="367">motion</text><text x="468" y="378" font-size="9" fill="#93a1b0">3 st</text>
+   <rect x="520" y="352" width="100" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="570" y="367">energy</text><text x="570" y="378" font-size="9" fill="#93a1b0">6 st</text>
+   <rect x="628" y="352" width="100" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="678" y="367">gut</text><text x="678" y="378" font-size="9" fill="#93a1b0">6 st</text>
+   <rect x="736" y="352" width="100" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="786" y="367">soma</text><text x="786" y="378" font-size="9" fill="#93a1b0">6 st</text>
+   <rect x="844" y="352" width="100" height="30" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="894" y="367">fatigue</text><text x="894" y="378" font-size="9" fill="#93a1b0">6 st</text>
+  </g>
+  <text x="40" y="402" text-anchor="start" fill="#4bd18a" font-size="11.5">▲ 9 body factors — these work: they sense their own state, so their beliefs move.</text>
+  <!-- the one lateral link -->
+  <path d="M570 384 C 600 412, 640 412, 678 384" fill="none" stroke="#e8bb55" stroke-dasharray="4 3" marker-end="url(#a3)"/>
+  <text x="700" y="424" text-anchor="start" fill="#e8bb55" font-size="11">the ONE lateral link in the whole brain — a single hard-wired “am I holding food?” column</text>
+ </g>
+
+ <!-- action bus -->
+ <rect x="24" y="464" width="1192" height="52" rx="9" fill="#1c2530" stroke="#7f9fdd"/>
+ <text x="620" y="486" text-anchor="middle" fill="#e6edf3" font-size="15" font-weight="600">the only place the 21 ever meet: their scores are ADDED UP to pick one action</text>
+ <text x="620" y="505" text-anchor="middle" fill="#93a1b0" font-size="12">G(action) = Σ over factors — a sum, not a conversation. 12 of the 21 add exactly zero.</text>
+ <g stroke="#2a3441"><line x1="84" y1="382" x2="84" y2="464"/><line x1="276" y1="382" x2="276" y2="464"/>
+ <line x1="468" y1="382" x2="468" y2="464"/><line x1="678" y1="382" x2="678" y2="464"/><line x1="894" y1="382" x2="894" y2="464"/></g>
+ <text x="620" y="540" text-anchor="middle" fill="#93a1b0" font-size="12">…then the chosen action feeds back into the world, and the tick begins again</text>
+</svg>
+</div>
+
+<h2>2 · Every connection that exists</h2>
+<div class="panel">
+<table class="n">
+<tr><th>from → to</th><th>what crosses</th><th>size</th><th>how often</th><th>status</th></tr>
+<tr><td>factor → factor <span class="say">(any of the 21 to any other)</span></td><td><b>nothing at all</b></td><td class="v">0 bits</td><td class="v">never</td><td><span class="chip BAD">ABSENT</span></td></tr>
+<tr><td>energy → gut <span class="say">(the single exception)</span></td><td>one hard-wired “holding food?” column</td><td class="v">1 column</td><td class="v">per tick</td><td><span class="chip WARN">HARD-WIRED</span></td></tr>
+<tr><td>all 21 → action choice</td><td>their scores, summed</td><td class="v">1 number each</td><td class="v">per tick</td><td><span class="chip OK">LIVE</span></td></tr>
+<tr><td>L1 → L2</td><td>one integer 0–4, read from <b>one</b> factor only</td><td class="v">≈2.3 bits</td><td class="v">1 in 12 ticks</td><td><span class="chip WARN">A STRAW</span></td></tr>
+<tr><td>L2 → L1</td><td>chosen option → preference override + precision ×1.3 + learning rate ×0.88</td><td class="v">7 vectors</td><td class="v">every tick</td><td><span class="chip OK">LIVE</span></td></tr>
+<tr><td>slow layer ↔ L1</td><td>would be belief vectors both ways</td><td class="v">—</td><td class="v">never</td><td><span class="chip DEAD">DEAD</span></td></tr>
+</table>
+<p class="say"><b>Read the first row again.</b> It is the whole point. Twenty-one models that never exchange
+anything are not a hierarchy and not a network — they are twenty-one separate animals wearing one coat,
+voting on what the coat should do next.</p>
+</div>
+
+<h2>3 · What was designed, against what exists</h2>
+<div class="grid2">
+<div class="panel" style="border-color:var(--warn)">
+<h3 style="margin-top:0;color:var(--warn);font-size:16px">The design — 8 layers, nested, recursive</h3>
+<p class="plain" style="font-size:15px">Each unit is an 8-layer stack. A unit then sits as <b>layer 1 of the
+unit above it</b> — flagellum inside cell, cell inside nerve, nerve inside nervous system — each joined
+through its own Markov blanket. Update rates between adjacent layers stand in a fixed ratio, so layers
+learn and unlearn at different speeds. Precision is a separate organ that steers attention; the ratio only
+sets timing.</p>
+<p class="say">Status: <span class="chip BAD">NOT BUILT</span> — no part of this exists in the engine. Not
+partially: the recursion has no instance anywhere, and there is no per-layer clock to put a ratio on.</p>
+</div>
+<div class="panel" style="border-color:var(--bad)">
+<h3 style="margin-top:0;color:var(--bad);font-size:16px">What exists — 2 levels and a straw</h3>
+<p class="plain" style="font-size:15px">One flat bank of 21 unconnected factors. One supervisor above it,
+reached by a 2.3-bit channel that only one factor can speak into. One dead layer. <b>No unit sits inside
+another unit anywhere.</b> The colony is peers under a supervisor sharing a world — there is no
+colony-level belief and no colony-level free energy.</p>
+<p class="say">So the gap is not “some layers are missing”. It is that the <b>nesting mechanism itself has
+never been built</b>, and there is nothing for a Fibonacci cycle ratio to be a ratio <i>of</i>.</p>
+</div>
+</div>
+<div class="callout"><b>Why this matters more than the individual defects.</b> A frozen likelihood is a bug
+you can fix in 40 lines. A missing hierarchy is a piece of architecture. The depth axis of the paralysis
+prediction — “a shock deep enough through enough layers” — is <b>unfalsifiable on this machine</b>, because
+there is no depth to propagate through: 2 levels give the depth axis exactly one degree of freedom, and the
+channel between them is too narrow for most shocks to cross at all.</div>
+
+<h2>4 · One tick, end to end</h2>
+<div class="panel">
+<table class="n">
+<tr><th>#</th><th>what happens</th><th>note</th></tr>
+<tr><td class="v">1</td><td>senses arrive and are binned into one outcome per factor</td><td class="say">21 numbers</td></tr>
+<tr><td class="v">2</td><td>once every 12 ticks, L2 re-picks an option from the single integer it can see</td><td class="say">otherwise the old option is held</td></tr>
+<tr><td class="v">3</td><td>the option is pushed down: preferences overwritten, precision ×1.3, learning rate ×0.88</td><td class="say">every tick, even when L2 did not think</td></tr>
+<tr><td class="v">4</td><td>each factor updates its belief from its own observation</td><td class="say"><span style="color:var(--bad)">12 of them cannot move</span></td></tr>
+<tr><td class="v">5</td><td>each factor learns — counts go up, and never down</td><td class="say">nothing ever decays</td></tr>
+<tr><td class="v">6</td><td>each factor scores every action; the scores are summed; one action is <b>sampled</b></td><td class="say"><span style="color:var(--warn)">the display shows a different, greedy calculation</span></td></tr>
+<tr><td class="v">7</td><td>the action is taken and only <b>that</b> action's transition block learns</td><td class="say"><span style="color:var(--bad)">this is the lock: taking it makes it look better</span></td></tr>
+</table>
+<p class="say">Step 4 runs <b>before</b> step 6, so a factor decides using the model it has just this instant
+revised. Step 7 is why one action ends up taken 95% of the time.</p>
+</div>
+
+<p class="say" style="margin-top:26px">Drawn from the engine at <span class="m">0c42216</span>; factor
+counts and state sizes read from the genome; connection inventory read from the message-passing code, not
+from design documents. If a connection is missing from the table above it is because it is missing from the
+code.</p>
+</div>

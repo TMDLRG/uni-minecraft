@@ -62,14 +62,89 @@ const server = http.createServer((req, res) => {
   if (url === "/clip.html") {
     // full-bleed YouTube embed wrapper: gives the embed a real embedding origin (top-level
     // embed loads die with "Error 153"); the CLIP channel window navigates here
+    //
+    // TWO MODES, AND THE SINGLE-VIDEO ONE IS UNCHANGED. ?v= alone is byte-for-byte the embed URL
+    // this file has always emitted, because it is what carries an hour of the Iliad tonight and it
+    // is already proven. ?list= adds playlist playback beside it; a request carrying both starts
+    // the playlist AT that video, which is what a pasted watch-with-list URL means.
     const q = new URLSearchParams((req.url || "").split("?")[1] || "");
     const v = q.get("v") || "";
-    if (!/^[\w-]{11}$/.test(v)) { res.writeHead(400); return res.end("bad or missing ?v= video id"); }
+    const list = q.get("list") || "";
+    const hasV = /^[\w-]{11}$/.test(v);
+    const hasList = /^[\w-]{2,}$/.test(list);
+    if (!hasV && !hasList) { res.writeHead(400); return res.end("need ?v= an 11-char video id, or ?list= a playlist id, or both"); }
+
+    // The embed URL. `loop=0` is deliberate: a playlist that silently restarts would put the
+    // operator back at video 1 with no signal that it happened. It ends, and ending is visible.
+    const src = hasList
+      ? (hasV
+          ? `https://www.youtube.com/embed/${v}?list=${encodeURIComponent(list)}&autoplay=1&rel=0&loop=0`
+          : `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(list)}&autoplay=1&rel=0&loop=0`)
+      : `https://www.youtube.com/embed/${v}?autoplay=1&rel=0`;
+
+    const title = hasList ? `UNI Playlist ${list}${hasV ? ` @ ${v}` : ""}` : `UNI Clip ${v}`;
     res.writeHead(200, { "Content-Type": MIME[".html"], "Cache-Control": "no-store" });
-    return res.end(`<!doctype html><html><head><meta charset="utf-8"><title>UNI Clip ${v}</title>
+    return res.end(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
 <style>html,body{margin:0;height:100%;background:#000;overflow:hidden}iframe{position:fixed;inset:0;width:100%;height:100%;border:0}</style>
-</head><body><iframe src="https://www.youtube.com/embed/${v}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe></body></html>`);
+</head><body><iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe></body></html>`);
   }
+  // ── LOCAL FILM PLAYBACK ────────────────────────────────────────────────────────────────────────
+  // /film.html?f=<name> plays a rendered film from lab/film/welcome/output/ full-bleed, and
+  // /film/<name>.mp4 serves the bytes with Range support so the browser source can seek.
+  //
+  // WHY THIS EXISTS: /clip.html only accepts an 11-character YouTube id, so the ONLY way to put
+  // moving pictures on air was to upload them first. The three WELCOME TO UNI LABS cuts are local
+  // files. A rundown row that calls for a film with no mechanism to play it is a row that fails at
+  // air time, on camera — which is the exact failure verify_rundown.cjs was written for.
+  //
+  // The allowlist is the point. `f` is matched against the real directory listing, so a traversal
+  // or a request for anything that is not a rendered film cannot be expressed, and no path from the
+  // query string is ever joined blind.
+  if (url === "/film.html" || url.startsWith("/film/")) {
+    const OUT = path.join(__dirname, "..", "lab", "film", "welcome", "output");
+    let available = [];
+    try { available = fs.readdirSync(OUT).filter((n) => n.toLowerCase().endsWith(".mp4")); } catch (_) {}
+
+    if (url === "/film.html") {
+      const want = new URLSearchParams((req.url || "").split("?")[1] || "").get("f") || "";
+      const name = available.find((n) => n === want || n === want + ".mp4" || n.replace(/\.mp4$/i, "") === want);
+      if (!name) {
+        res.writeHead(400, { "Content-Type": MIME[".html"] });
+        return res.end(`<!doctype html><meta charset="utf-8"><body style="font:16px system-ui;padding:2rem">` +
+          `<h1>no such film</h1><p>?f= must name a rendered film. Available:</p><ul>` +
+          available.map((n) => `<li>${n}</li>`).join("") + `</ul></body>`);
+      }
+      res.writeHead(200, { "Content-Type": MIME[".html"], "Cache-Control": "no-store" });
+      return res.end(`<!doctype html><html><head><meta charset="utf-8"><title>${name}</title>
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}video{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;background:#000}</style>
+</head><body><video src="/film/${encodeURIComponent(name)}" autoplay playsinline></video></body></html>`);
+    }
+
+    const want = decodeURIComponent(url.slice("/film/".length));
+    const name = available.find((n) => n === want);
+    if (!name) { res.writeHead(404); return res.end("not a rendered film"); }
+    const file = path.join(OUT, name);
+    const size = fs.statSync(file).size;
+    // Range matters: without it Chromium buffers the whole file before the first frame, and the
+    // documentary is 56 MB. A 30-minute black hold is indistinguishable from a dead source on air.
+    const range = req.headers.range && /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
+    if (range) {
+      const start = range[1] ? parseInt(range[1], 10) : 0;
+      const end = range[2] ? parseInt(range[2], 10) : size - 1;
+      if (!(start >= 0 && end < size && start <= end)) {
+        res.writeHead(416, { "Content-Range": `bytes */${size}` });
+        return res.end();
+      }
+      res.writeHead(206, {
+        "Content-Type": "video/mp4", "Content-Length": end - start + 1,
+        "Content-Range": `bytes ${start}-${end}/${size}`, "Accept-Ranges": "bytes", "Cache-Control": "no-store",
+      });
+      return fs.createReadStream(file, { start, end }).pipe(res);
+    }
+    res.writeHead(200, { "Content-Type": "video/mp4", "Content-Length": size, "Accept-Ranges": "bytes", "Cache-Control": "no-store" });
+    return fs.createReadStream(file).pipe(res);
+  }
+
   if (url === "/state.json" || url === "/overlays/state.json") {
     fs.readFile(SPOOL, (err, buf) => {
       if (err) { res.writeHead(500); return res.end("spool read error"); }

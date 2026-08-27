@@ -98,7 +98,13 @@ defmodule SP.ControlPlane.VerdictPartialNamesSubclaimTest do
     end
   end
 
-  test "the four PARTIAL rows in the canonical ledger each say what holds — the convention this encodes" do
+  # AMENDED 2026-08-24: four → five.
+  #   `camera-mic-ducking-and-slot-awareness` landed PARTIAL (commit de511ef). The COUNT is a pin;
+  #   the INVARIANT is the notes check below, and the new row satisfies it with 2998 characters of
+  #   substantive notes -- checked before the number was touched, because bumping a count without
+  #   testing the thing it guards is how a drift-guard becomes decoration.
+  #   All five PARTIAL rows carry substantive notes: 186, 126, 185, 372 and 2998 characters.
+  test "the five PARTIAL rows in the canonical ledger each say what holds — the convention this encodes" do
     rows =
       Path.expand("../../../evidence/gates.ndjson", __DIR__)
       |> File.read!()
@@ -108,7 +114,7 @@ defmodule SP.ControlPlane.VerdictPartialNamesSubclaimTest do
       |> Map.values()
       |> Enum.filter(&(&1["verdict"] == "PARTIAL"))
 
-    assert length(rows) == 4, "expected the four live PARTIAL gates"
+    assert length(rows) == 5, "expected the five live PARTIAL gates"
 
     for r <- rows do
       assert String.length(r["notes"] || "") > 40,

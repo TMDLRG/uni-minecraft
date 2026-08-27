@@ -53,6 +53,17 @@
 </style></head>
 <body>
 <a href="http://127.0.0.1:8102/" target="_blank" style="color:#7f77dd;text-decoration:none;border-bottom:1px dotted #444;margin-left:10px" title="UNI TRACK - project tracking">TRACK :8102</a><div class="wrap">
+  <!-- QUIET BAR - PINNED AT THE TOP ON PURPOSE (2026-08-17).
+       The first version of this control was placed inside the "Doors" panel far down the page. The
+       operator opened the Door, saw no button, and said so - correctly. A control you have to scroll
+       to find does not exist. It lives here now, above everything, and it is the first thing on the
+       page. Do not move it back down. -->
+  <div id="quietbar" style="display:flex;gap:12px;align-items:center;padding:14px 16px;margin:0 0 12px;border:2px solid var(--warn);border-radius:12px;background:#171104">
+    <button id="quietbtn" style="font-size:17px;font-weight:800;padding:12px 22px;border:2px solid var(--warn);border-radius:10px;background:#2a1e06;color:#ffe6a6;cursor:pointer">🌙 QUIET — stop the video, keep the monitors</button>
+    <button id="resumebtn" style="font-size:17px;font-weight:800;padding:12px 22px;border:2px solid var(--ok);border-radius:10px;background:#062a12;color:#b6ffcf;cursor:pointer;display:none">☀ RESUME — bring the studio back</button>
+    <div id="quietnote" class="muted" style="flex:1"></div>
+  </div>
+
   <div style="display:flex;align-items:center;gap:14px">
     <h1>UNI · The Door to the World</h1>
     <span class="stamp" id="stamp"></span>
@@ -97,6 +108,8 @@
       <button id="closeall" class="restore">CLOSE ALL (graceful)</button>
       <span class="muted">remote doors are observe-only — this system never impacts the UNIs (mandate: Organic Operator Michael Polzin directs them)</span>
     </div>
+    <!-- (The QUIET / RESUME control is PINNED AT THE TOP of this page - see #quietbar above.
+         It used to be here, buried, which is why the operator could not find it.) -->
     <div id="doorgrid"></div>
     <h2 style="margin-top:12px">Audit trail — all openings know of all closings</h2>
     <div id="doorledger" class="muted" style="font-size:12px"></div>
@@ -316,10 +329,48 @@ function renderMap(){
 const doorApi=(p,body)=>fetch(p,{method:"POST",headers:{"Content-Type":"application/json","x-uni-cc":"1"},body:JSON.stringify(body||{})}).then(r=>r.json()).catch(()=>null);
 $("openall").onclick=async()=>{ const r=await doorApi("/api/door/open",{door:"all"}); alert(r&&r.ok?"ONE KEY turned: opening every studio door (remote doors untouched by mandate)":(r&&(r.err||r.mandate))||"failed"); };
 $("closeall").onclick=async()=>{ if(!confirm("Gracefully close every STUDIO door? (The frame, Gaia, and every remote door stay open; the UNIs continue.)"))return; const r=await doorApi("/api/door/close",{door:"all"}); alert(r&&r.ok?"graceful close-all sent":(r&&(r.err||r.mandate))||"failed"); };
+// ---- QUIET MODE: the third state. Stops the video core; leaves the monitors awake. ----
+// Deliberately synchronous-feeling: /api/quiet returns the REAL per-step result (and refuses with a
+// 409 if MediaMTX says we are ingesting), so the operator is told what actually happened rather than
+// getting an optimistic "sent" for an action that may have been declined.
+$("quietbtn").onclick=async()=>{
+  if(!confirm("QUIET MODE?\n\nSTOPS: OBS, MediaMTX, the Chrome channel windows, the simulcast encoders, and the supervisors that would restart them.\nKEEPS: the HUD, Gaia, this Door, and the command center.\n\nRefuses if you are on air. One click to RESUME."))return;
+  $("quietbtn").disabled=true; $("quietnote").textContent="stopping the video core...";
+  const r=await doorApi("/api/quiet",{});
+  $("quietbtn").disabled=false;
+  if(!(r&&r.ok)) alert((r&&r.err)||"QUIET failed");
+  pollDoors();
+};
+$("resumebtn").onclick=async()=>{
+  $("resumebtn").disabled=true; $("quietnote").textContent="clearing the latch and bringing the studio up...";
+  const r=await doorApi("/api/resume",{});
+  $("resumebtn").disabled=false;
+  if(!(r&&r.ok)) alert((r&&r.err)||"RESUME failed");
+  pollDoors();
+};
+function renderQuiet(q){
+  const on=!!(q&&q.quiet);
+  $("quietbtn").style.display=on?"none":"";
+  $("resumebtn").style.display=on?"":"none";
+  $("quietbar").style.borderColor=on?"var(--warn)":"#2b3550";
+  // Say WHY the studio doors read closed. An unexplained red is what makes an operator start
+  // debugging something he did on purpose two hours ago.
+  const b=q&&q.boot_health;
+  const bh=b?`<div style="margin-top:6px;font-size:12px">
+      <b style="color:${b.verdict==="PASS"?"var(--ok)":(b.verdict==="FAIL"?"var(--bad)":"var(--warn)")}">POST-REBOOT HEALTH: ${b.verdict}</b>
+      — HUD ${b.hud_reboot_proven?"survived the reboot (5-clause proof PASSED)":"NOT proven"},
+      monitors ${b.monitors_all_up?"all up":"INCOMPLETE"},
+      ${b.stayed_quiet?"box stayed quiet":"box WAS SLAMMED (quiet re-asserted)"},
+      chrome ${b.chrome_ram_mb} MB. Checked ${b.ran_at} (boot ${b.last_boot}).
+    </div>`:"";
+  $("quietnote").innerHTML=(on
+    ? `<b style="color:var(--warn)">QUIET since ${q.since||"?"}</b> — the video core is deliberately stopped (by ${q.actor||"operator"}). The HUD, Gaia and this Door stayed awake. Every supervisor is standing down: a deliberate off state is not a fault.`
+    : `the box is a studio right now. QUIET gives you the machine back without losing the monitors.`)+bh;
+}
 async function pollDoors(){
   try{
     const s=await fetch("/api/door/state").then(r=>r.json());
-    window.__doorState=s; renderMap();
+    window.__doorState=s; renderMap(); renderQuiet(s.quiet);
     const chip=(txt,color)=>`<span style="border:1px solid ${color};color:${color};border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700">${txt}</span>`;
     $("doorgrid").innerHTML=(s.doors||[]).map(d=>{
       const st=d.open?chip("OPEN","var(--ok)"):chip("CLOSED","var(--dim)");

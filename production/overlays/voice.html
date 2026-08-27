@@ -1,0 +1,179 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>UNI VOICE</title>
+<!--
+  voice.html — the agent's voice, played INSIDE OBS as a browser source.
+
+  WHY A BROWSER SOURCE AND NOT A WINDOWS AUDIO CAPTURE.
+  The path this replaces captured a whole Windows playback device and hoped the agent's voice was
+  on it. Measured 2026-08-02: it was bound to a device GUID that no longer existed, while the voice
+  played to a different device entirely, so the broadcast carried silence with every indicator
+  green. A browser source has none of those failure modes: OBS owns the audio bus directly, there
+  is no device to drift, and nothing else on the machine can leak into it.
+
+  WHY THE FADE IS HERE AND NOT ON AN OBS FADER.
+  OBS input faders move in discrete steps over a websocket round-trip; ramping one mid-utterance is
+  audibly zippery. Doing the fade in the page keeps it local to the playback.
+
+  WHY THIS PLAYS THROUGH AN <audio> ELEMENT AND NOT THE WEB AUDIO API (changed 2026-08-04).
+  It used to build an AudioContext -> GainNode -> destination graph. That graph produced sound, and
+  the sound was REAL -- but it did not reach the broadcast. Measured on air 2026-08-04: with
+  reroute_audio enabled on this source, OBS metered every other source on the programme scene and
+  metered THIS one at nothing at all, while the operator heard the utterance come out of the room's
+  speakers. So the audio was going to the Windows playback device, not into the OBS mixer -- the
+  exact drifting-device failure this file's header says a browser source has "none of".
+  The working precedent in this studio is `chVidA` in studio_stage.cjs, which reroutes clip audio
+  into the mixer successfully -- and a clip plays through a media element. CEF's audio handler
+  captures media-element playback; it did not capture this page's Web Audio output.
+  So: an HTMLAudioElement, whose `.volume` is ramped in small steps for the fade. Coarser than a
+  sample-accurate GainNode ramp, and inaudibly so at these fade lengths -- and unlike the elegant
+  version, it is actually audible to the audience, which is the only property that matters.
+
+  THE PAGE REPORTS THE EDGES THAT MATTER.
+  It posts `started` when playback genuinely begins and `ended` when it genuinely finishes — not
+  when the request arrived, which is a different and useless moment. voice_server.cjs holds the
+  music duck between exactly those two events, which is why the duck cannot fire late or hang open.
+
+  IT IS INVISIBLE ON PURPose. The page renders nothing but a 1px transparent stage; its entire
+  contribution to the programme is audio. A small diagnostic readout is kept for the operator and
+  is hidden unless ?debug=1 is set, so it can never accidentally appear on air.
+-->
+<style>
+  html,body{margin:0;padding:0;background:transparent;overflow:hidden}
+  #dbg{position:fixed;left:8px;top:8px;font:12px ui-monospace,Menlo,Consolas,monospace;
+       color:#7fe3b0;background:rgba(0,0,0,.55);padding:6px 9px;border-radius:6px;display:none;
+       white-space:pre;pointer-events:none}
+  body.debug #dbg{display:block}
+</style>
+<div id="dbg">voice: booting…</div>
+<script>
+(function(){
+  "use strict";
+  const DEBUG = new URLSearchParams(location.search).has("debug");
+  if (DEBUG) document.body.classList.add("debug");
+  const dbg = (t) => { if (DEBUG) document.getElementById("dbg").textContent = "voice: " + t; };
+
+  // ── playback element ───────────────────────────────────────────────────────────────────────────
+  // ONE <audio> element, reused for every utterance. One element rather than one per clip for the
+  // same reason the old code reused one AudioContext: churning media objects leaks decoders and
+  // eventually stops producing sound — a classic, silent, hours-later failure.
+  //
+  // This element is what CEF's audio handler can actually see. See the note at the top of this file:
+  // the Web Audio graph this replaces made real sound that went to the machine's speakers and never
+  // reached the OBS mixer, so the broadcast carried silence while the room heard everything.
+  let el = null;
+  function ensureEl() {
+    if (el) return el;
+    el = new Audio();
+    el.preload = "auto";
+    el.crossOrigin = "anonymous";
+    el.volume = 0;
+    // Not appended to the DOM on purpose: a detached element still plays, and this page must render
+    // nothing. It is kept on `window` only so a human can poke it from the OBS source's inspector.
+    window.__uniVoiceEl = el;
+    return el;
+  }
+
+  // Linear volume ramp on the element. An HTMLMediaElement has no automation curve, so the fade is
+  // stepped in software. At 90ms in / 220ms out and ~20ms steps this is inaudible, and it is the
+  // honest trade for audio that actually reaches the audience.
+  function ramp(target, ms, done) {
+    const from = el.volume, delta = target - from, steps = Math.max(1, Math.round(ms / 20));
+    let i = 0;
+    const t = setInterval(() => {
+      i++;
+      const v = from + (delta * i) / steps;
+      el.volume = Math.min(1, Math.max(0, v));
+      if (i >= steps) { clearInterval(t); if (done) done(); }
+    }, 20);
+    return t;
+  }
+
+  // dB → linear. The server hands us the level the MUSIC BED was playing at, because the operator's
+  // rule is that the voice fires at exactly that level rather than at some fixed number: if he moves
+  // the music slider, the voice follows on the next utterance.
+  const dbToGain = (db) => Math.pow(10, db / 20);
+
+  let ws = null, backoff = 800;
+  const queue = [];
+  let playing = false;
+
+  function connect() {
+    ws = new WebSocket("ws://" + location.host + "/ws");
+    ws.onopen = () => { backoff = 800; dbg("connected, idle"); };
+    ws.onclose = () => { dbg("disconnected — retrying"); setTimeout(connect, backoff); backoff = Math.min(backoff * 2, 10000); };
+    ws.onerror = () => {};
+    ws.onmessage = (ev) => {
+      let m; try { m = JSON.parse(ev.data); } catch { return; }
+      if (m.type === "play") { queue.push(m); pump(); }
+    };
+  }
+
+  // Serial by construction. Two overlapping voices is never what anyone wants, and a queue is the
+  // honest way to say so — a second utterance waits rather than fighting the first.
+  async function pump() {
+    if (playing || !queue.length) return;
+    playing = true;
+    const job = queue.shift();
+    try { await playOne(job); }
+    catch (e) { dbg("FAILED " + (e && e.message)); try { ws.send(JSON.stringify({ type: "ended", id: job.id, error: String(e && e.message) })); } catch {} }
+    playing = false;
+    if (queue.length) pump();
+  }
+
+  function playOne(job) {
+    return new Promise((resolve, reject) => {
+      ensureEl();
+      const target = Math.min(1, dbToGain(typeof job.targetDb === "number" ? job.targetDb : -6));
+      const fin = Math.max(10, job.fadeInMs || 90);
+      const fout = Math.max(10, job.fadeOutMs || 220);
+
+      let settled = false, outTimer = null, guard = null;
+      const cleanup = () => {
+        el.onended = el.onerror = el.oncanplaythrough = null;
+        if (outTimer) clearTimeout(outTimer);
+        if (guard) clearTimeout(guard);
+      };
+      const finish = (err) => {
+        if (settled) return; settled = true;
+        cleanup();
+        el.volume = 0;
+        try { el.pause(); } catch {}
+        dbg(err ? "FAILED " + err.message : "idle");
+        // `ended` is what releases the music duck upstream, so it MUST be sent on the failure path
+        // too. A duck that is opened by `started` and never closed leaves the bed under the floor
+        // for the rest of the show -- worse than the missing line it was ducking for.
+        try { ws.send(JSON.stringify({ type: "ended", id: job.id, ms: Math.round((el.duration || 0) * 1000), error: err ? String(err.message) : undefined })); } catch {}
+        err ? reject(err) : resolve();
+      };
+
+      el.onerror = () => finish(new Error("media error " + ((el.error && el.error.code) || "?")));
+      el.onended = () => finish(null);
+
+      el.oncanplaythrough = () => {
+        el.oncanplaythrough = null;
+        const dur = isFinite(el.duration) && el.duration > 0 ? el.duration : 0;
+        el.play().then(() => {
+          ramp(target, fin);
+          if (dur > 0) {
+            // Start the fade-out so it LANDS on the end of the clip rather than starting there.
+            outTimer = setTimeout(() => ramp(0, fout), Math.max(fin + 20, dur * 1000 - fout));
+            // If `ended` never arrives (a truncated or malformed WAV), do not hang the queue and do
+            // not hold the duck open. Generous margin, because a slow box must not trip this.
+            guard = setTimeout(() => finish(null), dur * 1000 + 5000);
+          }
+          dbg("speaking " + dur.toFixed(1) + "s @ " + (job.targetDb || -6).toFixed(1) + "dB");
+          try { ws.send(JSON.stringify({ type: "started", id: job.id, ms: Math.round(dur * 1000) })); } catch {}
+        }).catch((e) => finish(new Error("play() rejected: " + e.message)));
+      };
+
+      // cache-bust: voice_server reuses ids rarely but a stale 200 would replay the wrong line.
+      el.volume = 0;
+      el.src = job.url + (job.url.indexOf("?") >= 0 ? "&" : "?") + "_t=" + Date.now();
+      el.load();
+    });
+  }
+
+  connect();
+})();
+</script>

@@ -67,6 +67,35 @@ def _softmax(x: np.ndarray) -> np.ndarray:
     return e / np.clip(e.sum(), EPS, None)
 
 
+def _logsumexp(x: np.ndarray, axis: int | None = None) -> np.ndarray:
+    """Numerically-stable ln sum exp — mirror of SP.Brain.Math.logsumexp/1."""
+    x = np.asarray(x, dtype=float)
+    mx = x.max(axis=axis, keepdims=True)
+    s = np.clip(np.exp(x - mx).sum(axis=axis, keepdims=True), EPS, None)
+    return np.squeeze(mx + np.log(s), axis=axis) if axis is not None else float(mx + np.log(s))
+
+
+def _tempered_log_lik(A_m: np.ndarray, o: int, gamma: float) -> np.ndarray:
+    """ln p_gamma(o|s) for the NORMALISED tempered likelihood — mirror of
+    SP.Brain.Infer.tempered_obs_log/3 (repair of 2026-08-19, operator co-signed;
+    defect at docs/receipts/red_preregistration_h_cycle_01.md section 13, D-1).
+
+        p_gamma(o|s) = A[o|s]^gamma / sum_o' A[o'|s]^gamma
+
+    Before the repair this was the raw `gamma * _log(A[o, :])`, i.e. an UNNORMALISED
+    A^gamma. That is not a likelihood (sum_o A[o|s]^gamma != 1 for gamma != 1), so
+    gamma parameterised no probability model, dF/dgamma > 0 everywhere, and F -> 0 as
+    gamma -> 0: the objective paid maximally for going blind. Normalised, F -> ln(n_o)
+    as gamma -> 0 and stays finite as gamma -> inf: a bounded interior optimum.
+
+    At gamma = 1 on a column-stochastic A the normaliser is ln 1 = 0 to within the
+    EPS floor, so every validated gamma_m = 1 anchor is unchanged.
+    """
+    lnA = _log(np.asarray(A_m, dtype=float))          # No x Ns
+    z = _logsumexp(gamma * lnA, axis=0)               # Ns — per-state normaliser
+    return gamma * lnA[o, :] - z
+
+
 def _entropy(p: np.ndarray) -> float:
     """Shannon entropy H(p) = -sum p log p (nats)."""
     p = np.asarray(p, dtype=float)
@@ -133,7 +162,8 @@ class ActiveInference:
         """Exact posterior q(s) given observations, minimising variational free energy.
 
         For this mean-field single-factor model the VFE-minimising posterior is
-        categorical:   q(s) = softmax( ln prior(s) + sum_m ln A_m[o_m, s] ).
+        categorical:   q(s) = softmax( ln prior(s) + sum_m ln p_gamma_m(o_m|s) ),
+        where p_gamma is the NORMALISED tempered likelihood (see _tempered_log_lik).
         """
         if self.last_action is None:
             prior = self.D
@@ -142,7 +172,7 @@ class ActiveInference:
 
         ln_post = _log(prior)
         for m, o in enumerate(obs):
-            ln_post = ln_post + self.gamma_m[m] * _log(self.A[m][o, :])
+            ln_post = ln_post + _tempered_log_lik(self.A[m], o, self.gamma_m[m])
 
         self.qs_prev = self.qs
         self.qs = _softmax(ln_post)
@@ -156,7 +186,7 @@ class ActiveInference:
             prior = self.B[:, :, self.last_action] @ self.qs_prev
         ln_lik = np.zeros(self.Ns)
         for m, o in enumerate(obs):
-            ln_lik = ln_lik + self.gamma_m[m] * _log(self.A[m][o, :])
+            ln_lik = ln_lik + _tempered_log_lik(self.A[m], o, self.gamma_m[m])
         return float((self.qs * (_log(self.qs) - _log(prior) - ln_lik)).sum())
 
     # -- action: minimise EXPECTED free energy -------------------------------------

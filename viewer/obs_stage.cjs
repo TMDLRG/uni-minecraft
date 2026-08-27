@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // ⛔ SUPERSEDED (marked 2026-08-01) — THIS IS NOT THE STAGE BUILDER. Use viewer/studio_stage.cjs,
 // which builds 33 templates in 11 groups plus 3 camera roles. This file predates it and builds FOUR
 // scenes, and it does so by REMOVING them first — so running it against the live "UNI" collection
@@ -61,7 +62,7 @@ function reqOf(s){
 function next(){ if(i>=steps.length){ console.log("STAGE BUILT (COLONY/GLASS_OS/OVERLOOK/PIP) — not switched"); try{ws.close();}catch(_){}; process.exit(0); }
   ws.send(JSON.stringify({op:6,d:reqOf(steps[i])})); }
 ws.on("message",d=>{const m=JSON.parse(d.toString());
-  if(m.op===0) ws.send(JSON.stringify({op:1,d:{rpcVersion:1}}));
+  if(m.op===0) ws.send(JSON.stringify({op:1,d:__obsauth.identifyD(m.d)}));
   else if(m.op===2) next();
   else if(m.op===7){ const s=steps[i], st=m.d.requestStatus;
     if(st.result && s.cap) ids[s.cap]=m.d.responseData.sceneItemId;

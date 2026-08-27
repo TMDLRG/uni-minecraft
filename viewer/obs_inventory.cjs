@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // read-only OBS inventory: current program scene, all scenes, all inputs, stream status
 const WebSocket=require("ws");const ws=new WebSocket("ws://127.0.0.1:4455");
 const reqs=[
@@ -9,7 +10,7 @@ const reqs=[
 let i=0;
 function send(){ if(i>=reqs.length){ try{ws.close();}catch(_){}; process.exit(0); } ws.send(JSON.stringify({op:6,d:reqs[i]})); }
 ws.on("message",d=>{const m=JSON.parse(d.toString());
- if(m.op===0) ws.send(JSON.stringify({op:1,d:{rpcVersion:1}}));
+ if(m.op===0) ws.send(JSON.stringify({op:1,d:__obsauth.identifyD(m.d)}));
  else if(m.op===2) send();
  else if(m.op===7){
    const rd=m.d.responseData||{};

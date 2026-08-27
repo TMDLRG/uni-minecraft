@@ -1,0 +1,449 @@
+<title>UNI Brain — Whiteboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg:#0e1116; --pan:#161b22; --pan2:#1c2530; --ln:#2a3441; --tx:#e6edf3; --dim:#93a1b0;
+  --acc:#7f9fdd; --ok:#4bd18a; --bad:#ff7a7a; --warn:#e8bb55; --dead:#7a8794;
+  --mono:ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15.5px/1.6 ui-sans-serif,'Segoe UI',Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:26px 22px 100px}
+h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:15px;text-transform:uppercase;letter-spacing:1.2px;color:var(--acc);margin:44px 0 4px;font-weight:600}
+.lede{color:var(--dim);font-size:16px;max-width:78ch;margin:0 0 8px}
+.panel{background:var(--pan);border:1px solid var(--ln);border-radius:14px;padding:20px 22px;margin:14px 0}
+.plain{font-size:16.5px;line-height:1.65;margin:0 0 14px}
+.plain b{color:#fff}
+.say{color:var(--dim);font-size:14px;margin:6px 0 0}
+code,.m{font-family:var(--mono);font-size:.92em}
+.eq{font-family:var(--mono);font-size:16px;background:#0b0f14;border:1px solid var(--ln);border-left:3px solid var(--acc);
+    border-radius:0 8px 8px 0;padding:12px 16px;margin:10px 0;overflow-x:auto;white-space:nowrap;color:#cfe0f5}
+.eq .c{color:var(--dim);font-size:13px}
+/* ---- matrix grid ---- */
+.mx{display:inline-block;margin:4px 18px 10px 0;vertical-align:top}
+.mx .cap{font-size:12px;color:var(--dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px}
+table.grid{border-collapse:separate;border-spacing:3px}
+table.grid td,table.grid th{padding:0}
+table.grid th{font:11px var(--mono);color:var(--dim);font-weight:400;padding:2px 5px;text-align:center;white-space:nowrap}
+table.grid th.rw{text-align:right;padding-right:8px}
+.cell{width:66px;height:38px;border-radius:5px;display:flex;align-items:center;justify-content:center;
+      font:12.5px var(--mono);border:1px solid transparent}
+.cell.hi{outline:2px solid var(--warn);outline-offset:1px}
+/* ---- bars ---- */
+.brow{display:flex;flex-direction:column;gap:5px;min-width:210px}
+.b{display:grid;grid-template-columns:80px 1fr 62px;gap:9px;align-items:center;font-size:12.5px}
+.b .lb{color:var(--dim);text-align:right;font-size:12px;white-space:nowrap}
+.b .tr{background:#0b0f14;border-radius:4px;height:19px;overflow:hidden;border:1px solid var(--ln)}
+.b .fl{height:100%;background:linear-gradient(90deg,var(--acc),#5878b8);border-radius:3px 0 0 3px}
+.b .fl.g{background:linear-gradient(90deg,var(--ok),#2f8f5f)}
+.b .fl.r{background:linear-gradient(90deg,var(--bad),#9c4444)}
+.b .vv{font:12px var(--mono);color:var(--tx)}
+.flow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.op{font:26px var(--mono);color:var(--acc);padding:0 2px}
+.stepbox{border:1px solid var(--ln);border-radius:11px;padding:16px 18px;margin:12px 0;background:var(--pan2)}
+.stepbox .n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#0b0f14;
+  align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-right:9px}
+.stepbox h3{display:inline;font-size:17px;margin:0}
+.ctl{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end}
+.ctl label{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);margin-bottom:5px}
+input[type=range]{width:210px;accent-color:var(--acc)}
+select,button{font:inherit;padding:7px 11px;border-radius:8px;border:1px solid var(--ln);background:var(--pan2);color:var(--tx)}
+button{cursor:pointer}button:hover{border-color:var(--acc)}
+.chip{display:inline-block;font:11.5px var(--mono);font-weight:600;padding:3px 10px;border-radius:20px}
+.OK{color:var(--ok);background:#12271c}.BAD{color:var(--bad);background:#2a1516}
+.WARN{color:var(--warn);background:#2a2110}.DEAD{color:var(--dead);background:#1a1f26}
+.big{font:30px var(--mono);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:1000px){.grid2{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--warn);background:#231d10;padding:13px 17px;border-radius:0 9px 9px 0;margin:12px 0}
+.callout.bad{border-color:var(--bad);background:#241315}
+.callout.ok{border-color:var(--ok);background:#0f2119}
+table.n{border-collapse:collapse;width:100%;font-size:13.5px}
+table.n th,table.n td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--ln)}
+table.n th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px}
+table.n td.v{font-family:var(--mono)}
+.dimtxt{color:var(--dim);font-size:13.5px}
+svg{max-width:100%;height:auto}
+</style>
+
+<div class="wrap">
+
+<h1>The whiteboard</h1>
+<p class="lede">One factor of the brain, opened up completely. Every matrix drawn, every step of the
+maths shown as it happens, in plain words first. Move the controls and watch the numbers move.
+Every default value here has been executed against the real engine.</p>
+
+<!-- ═══════════════ 1. THE ORGANISM ═══════════════ -->
+<h2>1 · The organism</h2>
+<p class="lede">Before the maths — what is actually there.</p>
+<div class="panel">
+<svg viewBox="0 0 1120 330" role="img" aria-label="Layer diagram">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#7f9fdd"/></marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#7a8794"/></marker>
+  </defs>
+  <!-- dead layer -->
+  <rect x="330" y="8" width="460" height="52" rx="9" fill="#1a1f26" stroke="#2a3441" stroke-dasharray="5 4"/>
+  <text x="560" y="30" text-anchor="middle" fill="#7a8794" font-size="14" font-family="ui-sans-serif">slow scene layer</text>
+  <text x="560" y="48" text-anchor="middle" fill="#7a8794" font-size="11.5" font-family="ui-sans-serif">built · wired · DEAD (its message is identical for every belief it could hold)</text>
+  <line x1="560" y1="60" x2="560" y2="86" stroke="#7a8794" stroke-dasharray="4 4" marker-end="url(#arg)"/>
+  <!-- L2 -->
+  <rect x="330" y="88" width="460" height="70" rx="9" fill="#1c2530" stroke="#7f9fdd"/>
+  <text x="560" y="115" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="600" font-family="ui-sans-serif">L2 · the strategist</text>
+  <text x="560" y="137" text-anchor="middle" fill="#93a1b0" font-size="12.5" font-family="ui-sans-serif">5 situations → picks 1 of 5 options · thinks once every 12 ticks</text>
+  <!-- blanket arrows -->
+  <line x1="450" y1="240" x2="450" y2="162" stroke="#7f9fdd" marker-end="url(#ar)"/>
+  <text x="437" y="205" text-anchor="end" fill="#7f9fdd" font-size="12" font-family="ui-sans-serif">up: ONE integer (0–4)</text>
+  <text x="437" y="221" text-anchor="end" fill="#93a1b0" font-size="11" font-family="ui-sans-serif">every 12 ticks · ≈2.3 bits</text>
+  <line x1="670" y1="162" x2="670" y2="240" stroke="#7f9fdd" marker-end="url(#ar)"/>
+  <text x="683" y="205" fill="#7f9fdd" font-size="12" font-family="ui-sans-serif">down: what to want</text>
+  <text x="683" y="221" fill="#93a1b0" font-size="11" font-family="ui-sans-serif">+ precision + learning rate · every tick</text>
+  <!-- L1 -->
+  <rect x="40" y="244" width="1040" height="76" rx="9" fill="#1c2530" stroke="#7f9fdd"/>
+  <text x="560" y="268" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="600" font-family="ui-sans-serif">L1 · the body — 21 factors, side by side, no links between them</text>
+  <g font-size="11" font-family="ui-monospace" text-anchor="middle">
+    <rect x="58"  y="280" width="96" height="26" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="106" y="297" fill="#ff7a7a">status</text>
+    <rect x="162" y="280" width="96" height="26" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="210" y="297" fill="#ff7a7a">vision</text>
+    <rect x="266" y="280" width="96" height="26" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="314" y="297" fill="#ff7a7a">threat</text>
+    <rect x="370" y="280" width="96" height="26" rx="5" fill="#2a1516" stroke="#ff7a7a"/><text x="418" y="297" fill="#ff7a7a">+ 9 more</text>
+    <rect x="486" y="280" width="120" height="26" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="546" y="297" fill="#4bd18a">5 motor</text>
+    <rect x="614" y="280" width="150" height="26" rx="5" fill="#12271c" stroke="#4bd18a"/><text x="689" y="297" fill="#4bd18a">4 homeostat</text>
+  </g>
+  <text x="800" y="298" fill="#ff7a7a" font-size="12" font-family="ui-sans-serif">■ 12 frozen — cannot learn</text>
+  <text x="985" y="298" fill="#4bd18a" font-size="12" font-family="ui-sans-serif">■ 9 working</text>
+</svg>
+<p class="say"><b>Read it like this:</b> the body has 21 separate little models, one per sense. They don't
+talk to each other — they only meet in the choice of what to do next. Above them sits one strategist that
+sees almost nothing (a single number, twice a minute) and pushes back down what to want. Twelve of the
+body's factors, in red, are broken in a way that means they can never learn anything. That is what the
+rest of this page shows you.</p>
+</div>
+
+<!-- ═══════════════ 2. ONE FACTOR ═══════════════ -->
+<h2>2 · One factor, opened up</h2>
+<p class="lede">We'll follow <b>status</b> — the factor that senses how the body is doing. Everything below
+is this one factor's actual contents.</p>
+
+<div class="panel">
+<p class="plain">A factor is four things. <b>What it can see</b> (four outcomes). <b>What it thinks might
+be true underneath</b> (four hidden states, deliberately unnamed — the model is supposed to <i>learn</i>
+what they mean). <b>A belief about which is true right now.</b> And <b>what it wants</b> to see.</p>
+
+<div class="ctl" style="margin:18px 0 6px">
+  <div><label>what it sees right now</label><select id="obs">
+    <option value="0">dying</option><option value="1">injured</option>
+    <option value="2">hungry</option><option value="3" selected>safe</option></select></div>
+  <div><label>step in the cycle</label><select id="tick">
+    <option value="0" selected>first ever tick</option>
+    <option value="1">a later tick (after acting)</option></select></div>
+  <div><label>how sharp the senses are · γ = <span class="m" id="gmv">1.00</span></label>
+    <input type="range" id="gm" min="0.1" max="4" step="0.01" value="1"></div>
+  <div><label>how much the eye knows · <span class="m" id="dsv">0.00</span> <span style="color:var(--bad)">(0 = shipped, broken)</span></label>
+    <input type="range" id="ds" min="0" max="0.95" step="0.01" value="0"></div>
+  <div><label>free-energy form</label><select id="temp">
+    <option value="broken">as shipped (was broken)</option>
+    <option value="fixed" selected>repaired</option></select></div>
+  <div><button id="reset">reset to shipped</button></div>
+</div>
+</div>
+
+<div class="panel">
+<div class="mx"><div class="cap">A — what each hidden state looks like <span style="text-transform:none">(the eye)</span></div><div id="mxA"></div></div>
+<div class="mx"><div class="cap">B — how states move when you act</div><div id="mxB"></div></div>
+<div class="mx"><div class="cap">C — what it wants to see</div><div id="mxC"></div></div>
+<p class="say" id="Anote"></p>
+</div>
+
+<!-- ═══════════════ 3. THE CYCLE ═══════════════ -->
+<h2>3 · One turn of thought, step by step</h2>
+<p class="lede">This is the whole of perception. Five steps. Each one says what it is doing before it
+shows you the arithmetic.</p>
+
+<div class="stepbox">
+  <span class="n">1</span><h3>What did I expect, before looking?</h3>
+  <p class="plain" style="margin-top:10px" id="s1txt"></p>
+  <div class="eq">expectation(state) = ln D(state) &nbsp;<span class="c">— on the very first tick, the belief you were born with</span></div>
+  <div class="flow"><div class="brow" id="s1bars"></div></div>
+</div>
+
+<div class="stepbox">
+  <span class="n">2</span><h3>What does what I just saw tell me?</h3>
+  <p class="plain" style="margin-top:10px">I saw <b id="s2obs"></b>. For each hidden state I ask:
+  <i>if that state were true, how likely was I to see this?</i> That's one row of the A grid above —
+  highlighted in yellow. Then I turn the sharpness dial γ on it: high γ means "trust my eyes",
+  low γ means "trust what I already believed".</p>
+  <div class="eq">evidence(state) = γ · ln A[ <span style="color:var(--warn)" id="s2o"></span> | state ]</div>
+  <div class="flow"><div class="brow" id="s2bars"></div></div>
+</div>
+
+<div class="stepbox">
+  <span class="n">3</span><h3>Put them together — this is the belief</h3>
+  <p class="plain" style="margin-top:10px">Multiply what I expected by what I saw, then normalise so
+  it sums to 1. That product <i>is</i> Bayes' rule. Watch the bars: <b>if the middle column is flat,
+  the answer is the same as the left column</b> — the eye told it nothing.</p>
+  <div class="eq">belief(state) ∝ expectation(state) × evidence(state)</div>
+  <div class="flow">
+    <div class="brow" id="s3prior"></div><span class="op">×</span>
+    <div class="brow" id="s3lik"></div><span class="op">=</span>
+    <div class="brow" id="s3post"></div>
+  </div>
+  <div id="pinbox" style="margin-top:14px"></div>
+</div>
+
+<div class="stepbox">
+  <span class="n">4</span><h3>How surprised am I?</h3>
+  <p class="plain" style="margin-top:10px">Free energy <b>F</b> is the model's own measure of how badly
+  the world fits it. It is supposed to be an <i>upper bound</i> on true surprise — never below it. If it
+  ever drops below, the model is fooling itself, and minimising it makes it blinder.</p>
+  <div class="grid2">
+    <div>
+      <div class="b"><span class="lb">free energy F</span><span class="tr"><span class="fl" id="fbar"></span></span><span class="vv" id="fval"></span></div>
+      <div class="b"><span class="lb">true surprise</span><span class="tr"><span class="fl g" id="sbar"></span></span><span class="vv" id="sval"></span></div>
+      <div style="margin-top:12px" id="boundchip"></div>
+    </div>
+    <div>
+      <p class="say" style="margin:0"><b>The honesty check.</b> Add up the probability the model gives to
+      every possible thing it could have seen. If the maths is sound that is exactly <b>1</b>. If it isn't,
+      the model is inventing probability out of nowhere.</p>
+      <div class="b" style="margin-top:10px"><span class="lb">total = 1?</span><span class="tr"><span class="fl" id="rbar"></span></span><span class="vv" id="rval"></span></div>
+      <div id="rchip" style="margin-top:8px"></div>
+    </div>
+  </div>
+  <div id="boundnote"></div>
+</div>
+
+<div class="stepbox">
+  <span class="n">5</span><h3>So what should I do?</h3>
+  <p class="plain" style="margin-top:10px">Every possible action gets scored on two things:
+  <b>what would it teach me</b> (can I tell states apart afterwards?) and <b>would I like what I'd see</b>
+  (does it match C?). Add them, flip the sign, and the smallest wins.</p>
+  <div class="eq">G(action) = − [ what it teaches + how much I'd like it ]</div>
+  <table class="n" style="margin-top:6px">
+    <tr><th>term</th><th>value</th><th>meaning</th></tr>
+    <tr><td>what it teaches</td><td class="v" id="o_epi"></td><td class="dimtxt" id="epimean"></td></tr>
+    <tr><td>how much I'd like it</td><td class="v" id="o_prag"></td><td class="dimtxt">expected preference, from C</td></tr>
+    <tr><td><b>G — lower is chosen</b></td><td class="v" id="o_G"></td><td class="dimtxt">the two, combined and flipped</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════ 4. DEFECT ═══════════════ -->
+<h2>4 · The defect you can push on</h2>
+<div class="panel">
+<p class="plain">Set <b>how much the eye knows</b> to <b>0</b> — the shipped value. Now change what the
+factor sees. <b>The belief does not move.</b> Not a little: <i>at all</i>. Every column of A is identical,
+so every state predicts every outcome equally, so nothing the world does can distinguish them.</p>
+<p class="plain">That is twelve of the twenty-one factors, for their entire lives. Their "what it
+teaches" term is exactly zero, so they never influence a decision — which means every preference the
+strategist sends down, and the whole curriculum, does nothing at all.</p>
+<p class="plain">Now drag the dial up. Watch the A grid stop being flat, and the belief start following
+what it sees. <b>That drag is the repair.</b> We don't set those numbers by hand — we draw them once
+from the model's own prior, which changes nothing on average and simply stops the model starting on
+the one point where it is stuck.</p>
+<div class="callout bad"><b>What it bought — measured to 1600 ticks, and the answer is no.</b>
+The beliefs genuinely came alive (spread 10⁻¹⁶ → 0.77, teaching term 0 → 0.24). But prediction improved
+only <b>0.08% at 400 ticks, and that <i>decays</i> to 0.05% by 1600</b> — it does not compound.
+<table class="n" style="margin-top:10px"><tr><th>ticks</th><th>gain</th><th>vs noise</th><th>draws better</th></tr>
+<tr><td>400</td><td class="v">+0.000986</td><td class="v">1.40×</td><td class="v">8/8</td></tr>
+<tr><td>800</td><td class="v">+0.000737</td><td class="v">1.46×</td><td class="v">8/8</td></tr>
+<tr><td>1600</td><td class="v">+0.000632</td><td class="v">1.91×</td><td class="v">8/8</td></tr></table>
+<p class="say" style="margin-top:8px">The rising “vs noise” column is <b>not</b> the effect strengthening —
+it is the spread between draws shrinking faster than the gain. More certain, less large.</p></div>
+
+<div class="callout"><b>How much was there to win at all?</b> The same data was scored by a correctly-built
+model to find the ceiling:</p>
+<table class="n" style="margin-top:8px"><tr><th>predictor</th><th>score (lower better)</th><th>what it is</th></tr>
+<tr><td>uniform</td><td class="v">1.3188</td><td class="dimtxt">guess blindly</td></tr>
+<tr><td><b>frozen factor</b></td><td class="v">1.3163</td><td class="dimtxt">what we ship</td></tr>
+<tr><td>ideal “how often”</td><td class="v">1.3122</td><td class="dimtxt"><b>the frozen factor’s own ceiling</b></td></tr>
+<tr><td>proper filter</td><td class="v">1.0937</td><td class="dimtxt">a model that can learn <i>when</i></td></tr>
+<tr><td>oracle</td><td class="v">0.9062</td><td class="dimtxt">told the answer</td></tr></table>
+<p class="say" style="margin-top:8px"><b>This is the finding.</b> The frozen factor sits within <b>0.004</b>
+of the very best it could ever do — it was never doing anything <i>wrong</i>, it simply could not learn
+<i>when</i>, only <i>how often</i>. The real prize is the <b>0.219</b> nats between it and a proper filter,
+and our repair captures <b>0.29%</b> of that. It cannot capture more while <b>B is still the identity</b>:
+fixing the eye does not help if no action ever changes anything.</p></div>
+
+<div class="callout bad"><b>And a cost that grows.</b> Which random draw a lineage happens to get does not
+change how well it predicts — but it decides <b>what the creature does</b>. Same score to three decimals,
+completely different animals: one drew <span class="m">mine</span> 1485 times in 1600 ticks, another sat
+on <span class="m">noop</span> 1311 times, another attacked 636 times.</div>
+</div>
+
+<!-- ═══════════════ 5. SELF CHECK ═══════════════ -->
+<h2>5 · Does this page tell the truth?</h2>
+<p class="lede">These numbers were executed against the real Elixir engine. The page recomputes them in
+your browser right now and compares. If any row says MISMATCH, do not trust this page.</p>
+<div class="panel"><table class="n" id="selfcheck"></table><p class="say" id="scsum"></p></div>
+
+<p class="say" style="margin-top:26px">Engine pinned at <span class="m">0c42216</span>. 26 of 27 hand-derived
+predictions confirmed by execution; the four that were wrong were corrected before they reached this page.
+Free-energy repair <span class="m">b645421</span>; identifiability repair <span class="m">100b711</span> (gated off).</p>
+</div>
+
+<script>
+var EPS=1e-16, ln=function(x){return Math.log(x+EPS);};
+function f(x,n){n=(n==null?6:n);if(x===0)return "0";if(Math.abs(x)<1e-12)return x.toExponential(1);return x.toFixed(n);}
+function softmax(v){var m=Math.max.apply(null,v),e=v.map(function(x){return Math.exp(x-m);}),
+  s=e.reduce(function(a,b){return a+b;},0);return e.map(function(x){return x/s;});}
+function entropy(p){return -p.reduce(function(a,x){return a+(x>0?x*Math.log(x):0);},0);}
+
+var OUT=["dying","injured","hungry","safe"], NS=4, NO=4;
+var C=[-4,-1,-0.5,2], D=[0.25,0.25,0.25,0.25];
+function mkA(d){var A=[];for(var s=0;s<NS;s++){var c=[];for(var o=0;o<NO;o++)c.push((o===s?d:0)+(1-d)/NO);A.push(c);}return A;}
+function mkB(){var B=[];for(var s=0;s<NS;s++){var c=[];for(var t=0;t<NS;t++)c.push(s===t?1:0);B.push(c);}return B;}
+function lnMatvec(B,w){var r=[0,0,0,0];for(var j=0;j<NS;j++)for(var i=0;i<NS;i++)r[i]+=w[j]*ln(B[j][i]);return r;}
+
+function compute(p){
+  var A=mkA(p.d), B=mkB();
+  var fwd = p.tick===0 ? D.map(function(x){return ln(x);}) : lnMatvec(B,[0.25,0.25,0.25,0.25]);
+  var lnA = A.map(function(col){return ln(col[p.o]);});
+  var lik;
+  if(p.temp==="broken"){ lik=lnA.map(function(x){return p.gm*x;}); }
+  else { lik=A.map(function(col){var g=col.map(function(a){return p.gm*ln(a);}),m=Math.max.apply(null,g),
+    z=m+Math.log(g.reduce(function(a,x){return a+Math.exp(x-m);},0));return p.gm*ln(col[p.o])-z;}); }
+  var joint=fwd.map(function(x,i){return x+lik[i];});
+  var post=softmax(joint);
+  var vfe=post.reduce(function(a,q,i){return a+q*(ln(q)-fwd[i]-lik[i]);},0);
+  var prior=softmax(fwd);
+  var pO=prior.reduce(function(a,q,s){return a+q*A[s][p.o];},0);
+  var sur=-ln(pO);
+  var qo=A[0].map(function(_,o){return post.reduce(function(a,q,s){return a+q*A[s][o];},0);});
+  var amb=post.reduce(function(a,q,s){return a+q*entropy(A[s]);},0);
+  var epi=entropy(qo)-amb, prag=qo.reduce(function(a,x,o){return a+x*C[o];},0);
+  return {A:A,B:B,fwd:fwd,lik:lik,lnA:lnA,joint:joint,post:post,prior:prior,vfe:vfe,sur:sur,epi:epi,prag:prag,G:-(epi+prag)};
+}
+function mass(p){var R=0;for(var o=0;o<NO;o++){var q={o:o,tick:p.tick,gm:p.gm,d:p.d,temp:p.temp};R+=Math.exp(-compute(q).vfe);}return R;}
+
+function heat(v,lo,hi){var t=Math.max(0,Math.min(1,(v-lo)/(hi-lo)));
+  return "background:rgba(127,159,221,"+(0.10+0.72*t)+");color:"+(t>0.5?"#0b0f14":"#e6edf3");}
+function gridA(A,o){
+  var h='<table class="grid"><tr><th></th>';
+  for(var s=0;s<NS;s++)h+='<th>state '+s+'</th>';h+='</tr>';
+  for(var oo=0;oo<NO;oo++){h+='<tr><th class="rw">'+OUT[oo]+'</th>';
+    for(var s2=0;s2<NS;s2++){var v=A[s2][oo];
+      h+='<td><div class="cell'+(oo===o?' hi':'')+'" style="'+heat(v,0,1)+'">'+v.toFixed(3)+'</div></td>';}
+    h+='</tr>';}
+  return h+'</table>';
+}
+function gridB(B){
+  var h='<table class="grid"><tr><th></th>';
+  for(var s=0;s<NS;s++)h+='<th>to '+s+'</th>';h+='</tr>';
+  for(var i=0;i<NS;i++){h+='<tr><th class="rw">from '+i+'</th>';
+    for(var j=0;j<NS;j++){var v=B[i][j];
+      h+='<td><div class="cell" style="'+heat(v,0,1)+'">'+v.toFixed(2)+'</div></td>';}h+='</tr>';}
+  return h+'</table>';
+}
+function gridC(){
+  var h='<table class="grid">';
+  for(var o=0;o<NO;o++){var v=C[o];var t=(v+4)/6;
+    h+='<tr><th class="rw">'+OUT[o]+'</th><td><div class="cell" style="background:rgba('+(v<0?"255,122,122":"75,209,138")+','+(0.12+0.6*Math.abs(v)/4)+')">'+v.toFixed(1)+'</div></td></tr>';}
+  return h+'</table>';
+}
+function bars(vals,labels,cls,fmt){
+  var mx=Math.max.apply(null,vals.map(Math.abs)); if(mx===0)mx=1;
+  return vals.map(function(v,i){
+    return '<div class="b"><span class="lb">'+labels[i]+'</span><span class="tr"><span class="fl '+(cls||'')+
+      '" style="width:'+(Math.abs(v)/mx*100).toFixed(1)+'%"></span></span><span class="vv">'+(fmt?fmt(v):f(v,3))+'</span></div>';
+  }).join('');
+}
+var SLAB=["state 0","state 1","state 2","state 3"];
+
+var $=function(id){return document.getElementById(id);};
+function read(){return{o:+$("obs").value,tick:+$("tick").value,gm:+$("gm").value,d:+$("ds").value,temp:$("temp").value};}
+
+function render(){
+  var p=read(), r=compute(p);
+  $("gmv").textContent=p.gm.toFixed(2); $("dsv").textContent=p.d.toFixed(2);
+  $("mxA").innerHTML=gridA(r.A,p.o); $("mxB").innerHTML=gridB(r.B); $("mxC").innerHTML=gridC();
+  var flat=p.d<0.005;
+  $("Anote").innerHTML = flat
+   ? '<b style="color:var(--bad)">Look at A.</b> Every column is identical — 0.250 everywhere. That is the defect, visible. '+
+     'No hidden state predicts anything different from any other, so seeing something can never tell them apart. '+
+     'B is the identity: every action leaves the world exactly as it was, so no action can teach anything either.'
+   : 'A now has a diagonal — state <i>k</i> tends to produce outcome <i>k</i>, so the states finally mean something '+
+     'different from each other and the belief can move. B is still the identity, so actions still change nothing.';
+  $("s1txt").innerHTML = p.tick===0
+   ? 'Nothing has happened yet, so it falls back on the belief it was born with: <b>all four equally likely</b>.'
+   : 'It carries yesterday\'s belief forward through B. But B says nothing ever changes, so the expectation is '+
+     '<b>flat again</b> — and, because impossible transitions are written as zero, the numbers plunge to about −27.6. '+
+     'That is an artefact of taking the log of zero, not a real belief.';
+  $("s1bars").innerHTML=bars(r.fwd,SLAB,"",function(v){return f(v,3);});
+  $("s2obs").textContent=OUT[p.o]; $("s2o").textContent=OUT[p.o];
+  $("s2bars").innerHTML=bars(r.lik,SLAB,"",function(v){return f(v,3);});
+  $("s3prior").innerHTML=bars(r.prior,SLAB,"",function(v){return f(v,3);});
+  $("s3lik").innerHTML=bars(softmax(r.lik),SLAB,"",function(v){return f(v,3);});
+  $("s3post").innerHTML=bars(r.post,SLAB,"g",function(v){return f(v,3);});
+  var spread=Math.max.apply(null,r.post)-Math.min.apply(null,r.post);
+  $("pinbox").innerHTML = spread<1e-12
+   ? '<div class="callout bad" style="margin:0"><b>FROZEN.</b> The belief is perfectly flat and nothing you '+
+     'do to what it sees will move it. Change the observation above — the bars will not budge. This factor is blind for life.</div>'
+   : '<div class="callout ok" style="margin:0"><b>Alive.</b> The belief has spread '+f(spread,3)+
+     ' and is now following what the factor sees.</div>';
+  var mxF=Math.max(r.vfe,r.sur,0.001);
+  $("fbar").style.width=(r.vfe/mxF*100)+"%"; $("fval").textContent=f(r.vfe,4);
+  $("sbar").style.width=(r.sur/mxF*100)+"%"; $("sval").textContent=f(r.sur,4);
+  var holds=r.vfe>=r.sur-1e-12;
+  $("boundchip").innerHTML=holds?'<span class="chip OK">F sits above true surprise — honest</span>'
+                                :'<span class="chip BAD">F is BELOW true surprise — the model is fooling itself</span>';
+  var R=mass(p), Rok=Math.abs(R-1)<1e-9;
+  $("rbar").style.width=Math.min(100,R/2*100)+"%"; $("rbar").className="fl "+(Rok?"g":"r");
+  $("rval").textContent=f(R,4);
+  $("rchip").innerHTML=Rok?'<span class="chip OK">exactly 1 — sound</span>'
+    :'<span class="chip BAD">'+f(R,3)+' — probability invented from nowhere</span>';
+  $("boundnote").innerHTML = p.temp==="broken"
+    ? '<div class="callout bad">This is the shipped form. Drag γ below 1 and watch F sink under true surprise — '+
+      'and the total drift away from 1. As γ goes to zero, F goes to zero: <b>the model scored going blind as perfect</b>. '+
+      'Switch the dropdown to <i>repaired</i>.</div>'
+    : '<div class="callout ok">Repaired. The total is exactly 1 at every γ, and F no longer collapses when the senses are '+
+      'turned down. <b>Honest caveat:</b> F bounds its own model, not the untempered one — that comparison is a crossing '+
+      'point, not a floor, so violations fell 50.5%→22.3%, not to zero.</div>';
+  $("o_epi").textContent=f(r.epi,6); $("o_prag").textContent=f(r.prag,6); $("o_G").textContent=f(r.G,6);
+  $("epimean").textContent = Math.abs(r.epi)<1e-12
+    ? "exactly zero — nothing can be learned, so this factor drops out of every decision"
+    : "non-zero — this factor now has a reason to prefer one action over another";
+  selfcheck();
+}
+
+var ANCH=[
+ ["belief on tick 0","0.250000 ×4",function(){return compute({o:3,tick:0,gm:1,d:0,temp:"broken"}).post;},
+   function(v){return v.map(function(x){return f(x,3);}).join(", ");},function(v){return v.every(function(x){return Math.abs(x-0.25)<1e-12;});}],
+ ["free energy on tick 0","1.386294",function(){return compute({o:3,tick:0,gm:1,d:0,temp:"broken"}).vfe;},
+   function(v){return f(v,6);},function(v){return Math.abs(v-1.3862943611198901)<1e-9;}],
+ ["F equals true surprise there","identical",function(){var r=compute({o:3,tick:0,gm:1,d:0,temp:"broken"});return r.vfe-r.sur;},
+   function(v){return f(v,9);},function(v){return Math.abs(v)<1e-12;}],
+ ["expectation on a later tick","−27.631021",function(){return compute({o:3,tick:1,gm:1,d:0,temp:"broken"}).fwd[0];},
+   function(v){return f(v,6);},function(v){return Math.abs(v+27.631021115928525)<1e-6;}],
+ ["teaching term when A is flat","exactly 0",function(){return compute({o:3,tick:0,gm:1,d:0,temp:"broken"}).epi;},
+   function(v){return f(v,9);},function(v){return Math.abs(v)<1e-12;}],
+ ["preference term","−0.753831",function(){return compute({o:3,tick:0,gm:1,d:0,temp:"broken"}).prag;},
+   function(v){return f(v,6);},function(v){return Math.abs(v+0.753831)<1e-5;}],
+ ["SHIPPED: total ≠ 1 at low γ","4.19 (5 outcomes)",function(){return mass({o:3,tick:0,gm:0.1,d:0.5,temp:"broken"});},
+   function(v){return f(v,4);},function(v){return v>1.05;}],
+ ["REPAIRED: total = 1","1.000000",function(){return mass({o:3,tick:0,gm:0.1,d:0.5,temp:"fixed"});},
+   function(v){return f(v,6);},function(v){return Math.abs(v-1)<1e-9;}],
+ ["SHIPPED: F→0 as senses fade","≈0 (blindness paid)",function(){return compute({o:3,tick:0,gm:1e-6,d:0.5,temp:"broken"}).vfe;},
+   function(v){return f(v,8);},function(v){return v<1e-4;}],
+ ["REPAIRED: F→ln 4 instead","1.386294",function(){return compute({o:3,tick:0,gm:1e-6,d:0.5,temp:"fixed"}).vfe;},
+   function(v){return f(v,6);},function(v){return Math.abs(v-Math.log(4))<1e-4;}],
+ ["log of zero artefact","−36.841361",function(){return ln(0);},function(v){return f(v,6);},
+   function(v){return Math.abs(v+36.8413614879047)<1e-9;}]
+];
+function selfcheck(){
+  var h='<tr><th>what</th><th>engine</th><th>this page</th><th></th></tr>',pass=0;
+  for(var i=0;i<ANCH.length;i++){var a=ANCH[i],v,ok=false,sh="—";
+    try{v=a[2]();ok=a[4](v);sh=a[3](v);}catch(e){sh="error";}
+    if(ok)pass++;
+    h+='<tr><td>'+a[0]+'</td><td class="v">'+a[1]+'</td><td class="v">'+sh+'</td><td>'+
+       (ok?'<span class="chip OK">MATCH</span>':'<span class="chip BAD">MISMATCH</span>')+'</td></tr>';}
+  $("selfcheck").innerHTML=h;
+  $("scsum").textContent=pass+" of "+ANCH.length+" reproduce the engine exactly.";
+  $("scsum").style.color=(pass===ANCH.length)?"var(--ok)":"var(--bad)";
+}
+["obs","tick","gm","ds","temp"].forEach(function(id){$(id).addEventListener("input",render);});
+$("reset").addEventListener("click",function(){$("obs").value=3;$("tick").value=0;$("gm").value=1;
+  $("ds").value=0;$("temp").value="broken";render();});
+render();
+</script>

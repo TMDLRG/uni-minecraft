@@ -27,6 +27,7 @@ const path = require("path");
 const http = require("http");
 const net = require("net");
 const doors = require("./door_lifecycle.cjs");
+const quiet = require("./quiet_mode.cjs");   // the QUIET latch — the second deliberate-off state
 const buildIdentity = require("./build_identity.cjs");
 
 const RUNTIME = path.join(__dirname, "runtime");
@@ -115,6 +116,57 @@ function orient(s) {
   return { gaps, colonyGaps, healthy: gaps.length === 0 };
 }
 
+// ---- DELIBERATELY-OFF LATCH (added 2026-08-04) -----------------------------------------------------
+// WHY: decide() previously had only one fence, `if (s.streaming)`. That fence is correct but
+// insufficient — an OFF-AIR studio is EXACTLY what a deliberate takedown produces, and there was
+// no way to distinguish "the operator just brought it down" from "the stack has crashed and needs
+// heal". Measured 2026-08-04: from the 11:28:19Z close-all onward, the healer read the operator's
+// deliberate off state as a fault and fired `bring_up_stack` every ~130s, without pause, for hours.
+//
+// The only reason it did not actually restart the studio was a SEPARATE bug (swapped arguments in
+// act() — see ADR-263) that made every "heal" a no-op. Fixing act() without adding this latch
+// FIRST would have caused an immediate outage: the studio would come back up within two minutes
+// of the operator taking it down, on every takedown, forever.
+//
+// The signal we read is the door_lifecycle ledger — the SAME ledger that records real spawns and
+// where door_healer's ZERO real actions were measured. It is append-only, human-visible, and is
+// where every `open all` / `close all` decision (whether from the operator, the healer, or a
+// script) is durably recorded. A close-all newer than the most recent open-all = the operator
+// (or someone) said stop, don't bring it back up until someone says start.
+//
+// FAILSAFE: any error reading the ledger returns OPEN (fence disengaged). Better to allow the
+// healer to attempt than to silently block on an unreadable ledger — the operator can always kill
+// the healer process. This matches the estate's habit of never failing SILENT on an instrument.
+const DOOR_LEDGER = path.join(RUNTIME, "door_lifecycle.ndjson");
+function operatorHasClosedAll() {
+  // Return true iff the MOST RECENT `door:"all"` row in door_lifecycle is a `close`. That means
+  // the current state was set by a stop and not yet cleared by a start. Reads the tail of the file
+  // (last ~64KB is plenty for weeks of operator activity — this file grows slowly) so we do not
+  // parse the whole ledger every cycle.
+  try {
+    if (!fs.existsSync(DOOR_LEDGER)) return false;
+    const st = fs.statSync(DOOR_LEDGER);
+    const TAIL = 65536;
+    const start = Math.max(0, st.size - TAIL);
+    const fd = fs.openSync(DOOR_LEDGER, "r");
+    const buf = Buffer.alloc(st.size - start);
+    fs.readSync(fd, buf, 0, buf.length, start);
+    fs.closeSync(fd);
+    const lines = buf.toString("utf8").split("\n").filter(Boolean);
+    // walk BACKWARDS to find the most recent door:"all" row; return true if its verb is "close".
+    for (let i = lines.length - 1; i >= 0; i--) {
+      try {
+        const row = JSON.parse(lines[i]);
+        if (row && row.door === "all") return row.verb === "close";
+      } catch (_) { /* skip malformed row and keep looking */ }
+    }
+    return false; // no all-row in tail — no deliberate state has been asserted
+  } catch (_) {
+    // FAILSAFE: fence disengaged. Better to attempt and be visible than to silently refuse.
+    return false;
+  }
+}
+
 // ---- DECIDE: the ONE remediation minimising EFE, under the fences ----------------------------------
 // cooldowns so a slow bring-up cannot be stacked
 const cooldown = { bring_up_stack: 0, reseed_spool: 0 };
@@ -126,6 +178,24 @@ function decide(s, o) {
     // the only live-safe heal is a leaf: a torn spool can be re-seeded without touching OBS.
     if (s.overlaysUp && !s.spool.fresh && Date.now() > cooldown.reseed_spool) return { action: "reseed_spool", reason: "spool stale/corrupt while LIVE — leaf fix only (never restart the mixer under the audience)" };
     return { action: null, reason: "LIVE — down surfaces need a stack action; will NOT restart under the audience. Observing." };
+  }
+  // FENCE: never bring the stack up while the operator's most recent all-verb was CLOSE. See
+  // operatorHasClosedAll() above and ADR-263. A leaf fix (reseed_spool) is still allowed under
+  // this fence because it does not touch OBS, does not start any service, and cannot escalate a
+  // takedown — it only writes a valid overlay spool to disk.
+  if (operatorHasClosedAll()) {
+    if (s.overlaysUp && !s.spool.fresh && Date.now() > cooldown.reseed_spool) return { action: "reseed_spool", reason: "operator has closed all — leaf-only heal (spool re-seed does not restart anything)" };
+    return { action: null, reason: "operator has closed all (door_lifecycle tail: latest door:\"all\" is \"close\"). Deliberate off is not a fault. Observing until an open-all is recorded." };
+  }
+  // FENCE: the QUIET latch (added 2026-08-10). The SAME principle as the close-all fence above, for a
+  // DIFFERENT deliberate state. QUIET stops only the video core and deliberately leaves the console,
+  // overlays, publisher and voice UP — so orient() sees a partially-down studio (obs + mediamtx
+  // absent) and would fire bring_up_stack every 130s, exactly the loop this file already documents
+  // against itself. close-all and quiet are distinct states and each needs its own fence; neither
+  // implies the other. The leaf spool re-seed stays allowed here for the same reason as above.
+  if (quiet.isQuiet()) {
+    if (s.overlaysUp && !s.spool.fresh && Date.now() > cooldown.reseed_spool) return { action: "reseed_spool", reason: "QUIET MODE — leaf-only heal (spool re-seed starts nothing)" };
+    return { action: null, reason: "QUIET MODE latched (viewer/runtime/quiet_mode.json): the operator stopped the video core to get his machine back. Deliberate off is not a fault. Observing until RESUME clears the latch." };
   }
   // ROOT-first (epistemic): if any core process surface is down, the coherent bring-up fixes them all.
   const coreDown = !s.obs || !s.consoleUp || !s.overlaysUp || !s.mediamtx || !s.publisher;
@@ -153,8 +223,16 @@ const HONEST_SPOOL = () => ({
 async function act(remediation) {
   if (remediation.action === "bring_up_stack") {
     cooldown.bring_up_stack = Date.now() + COOL.bring_up_stack;
-    try { await doors.verb("open", "all"); return { ok: true, did: "verb open all (studio_up.ps1 idempotent bring-up)" }; }
-    catch (e) { return { ok: false, did: "verb open all FAILED: " + (e && e.message) }; }
+    // ARGUMENT ORDER + RESULT PROPAGATION (fixed 2026-08-04). Previous line was:
+    //   await doors.verb("open", "all"); return { ok: true, did: "verb open all (...)" };
+    // The signature is verb(doorKey, action, actor) so passing "open" as the doorKey took the
+    // fall-through path and returned {ok:false, err:"unknown door: open"} — the {ok:true} above
+    // was a LITERAL that never inspected the callee, and the ledger recorded 7,038 fabricated
+    // successes over the file's lifetime. See ADR-263. Correct call and propagate the real ok.
+    try {
+      const r = await doors.verb("all", "open", "door_healer");
+      return { ok: !!(r && r.ok), did: "verb all open (studio_up.ps1 idempotent bring-up)", ledger: r && r.ledger, err: r && r.err };
+    } catch (e) { return { ok: false, did: "verb all open FAILED: " + (e && e.message) }; }
   }
   if (remediation.action === "reseed_spool") {
     cooldown.reseed_spool = Date.now() + COOL.reseed_spool;

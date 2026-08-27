@@ -37,14 +37,17 @@ function Node-Running($script){ [bool](Get-CimInstance Win32_Process -Filter "Na
 # $ROOT\logs\ so nothing pops a visible console. The old -NoExit powershell wrapper (5 visible
 # windows total across the bring-up) is gone. Watch a live log via the systray icon or:
 #   Get-Content $ROOT\logs\command_center.out.log -Wait
-function Start-NodeHidden($title,$script){
+function Start-NodeHidden($title,$script,$nodeArgs){
   if(Node-Running $script){ "  reuse $script"; return }
   if(-not (Test-Path "$ROOT\logs")){ New-Item -ItemType Directory -Path "$ROOT\logs" -Force | Out-Null }
   $base = ($script -replace '\.cjs$','' -replace '\.js$','')
   $out  = "$ROOT\logs\$base.out.log"
   $err  = "$ROOT\logs\$base.err.log"
-  Start-Process -WindowStyle Hidden -FilePath 'node.exe' -ArgumentList "viewer\$script" -WorkingDirectory $ROOT -RedirectStandardOutput $out -RedirectStandardError $err | Out-Null
-  "  started $script (hidden; logs -> $out)"
+  # $nodeArgs added 2026-08-02: obs_supervisor needs --watch, and without a way to pass a flag the
+  # only options were a second copy of this function or a resident service that never supervises.
+  $argList = @("viewer\$script"); if($nodeArgs){ $argList += $nodeArgs }
+  Start-Process -WindowStyle Hidden -FilePath 'node.exe' -ArgumentList $argList -WorkingDirectory $ROOT -RedirectStandardOutput $out -RedirectStandardError $err | Out-Null
+  "  started $script $nodeArgs (hidden; logs -> $out)"
 }
 # Back-compat alias so any lingering caller still works.
 Set-Alias -Name Start-NodeWindow -Value Start-NodeHidden -Scope Script -Option AllScope
@@ -71,18 +74,30 @@ function Kill-Everything(){
   # 4) node children -- studio servers AND the now-parentless Elixir-node Port children (camera
   #    director.js + per-UNI body.js bots + colony throttle). Supervisor is already dead (step 2),
   #    so these cannot respawn -- this reap is authoritative on the first pass.
-  foreach($n in 'overlay_server.cjs','command_center.cjs','publisher.cjs','obs_bridge.cjs','lan_broadcast.cjs','director.js','body.js','throttle_colony.cjs'){
+  # dual_push owns two ffmpeg children; ask it to stop them cleanly first, so the reap below is not
+  # racing orphaned pushers still holding sockets to YouTube/Twitch.
+  try { & node "$ROOT\viewer\dual_push.cjs" --stop 2>&1 | Out-Null } catch {}
+  foreach($n in 'overlay_server.cjs','command_center.cjs','publisher.cjs','obs_supervisor.cjs','dual_push.cjs','health_ticker.cjs','music_director.cjs','voice_server.cjs','obs_bridge.cjs','lan_broadcast.cjs','director.js','body.js','throttle_colony.cjs'){
     Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like "*$n*" } | ForEach-Object { "  kill $n PID=$($_.ProcessId)"; Stop-Process -Id $_.ProcessId -Force -Confirm:$false; $killed += $n }
   }
   # 5) OBS + MediaMTX
   Get-Process -Name obs64,mediamtx -ErrorAction SilentlyContinue | ForEach-Object { "  kill $($_.Name) PID=$($_.Id)"; $_ | Stop-Process -Force -Confirm:$false; $killed += $_.Name }
-  # 6) Chrome channel windows we launched (colony, glass) - only if channels.json contains our
-  #    marker titles; do NOT kill the operator's other Chromes. Best-effort match.
+  # 6) Chrome channel windows we launched. KEYED ON THE PROFILE (--user-data-dir), not the title.
+  #
+  # BUG FIXED 2026-08-02: this loop iterated 'colony','glass' ONLY and matched by MainWindowTitle
+  # equality, so THE OVERLOOK WINDOW SURVIVED EVERY -Stop -- the operator's most important view,
+  # orphaned on every teardown and then fighting the next bring-up. Title matching is doubly wrong:
+  # a channel's title only resolves ~13s after launch (so a window mid-load matches nothing), and a
+  # page that changes its own <title> escapes the reap entirely.
+  #
+  # The profile tag is assigned by studio_channels.ps1 and can never drift, which makes this both
+  # complete and safe: it CANNOT match the operator's own Chrome, the command-center window
+  # (chrome-profiles\command) or the Door window, because none of them carry a ch_* profile.
   try {
-    $ch = Get-Content (Join-Path $ROOT 'viewer\channels.json') -Raw | ConvertFrom-Json
-    foreach($k in 'colony','glass'){
-      $title = $ch.$k
-      if($title){ Get-Process chrome -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -eq $title } | ForEach-Object { "  kill chrome '$title' PID=$($_.Id)"; $_ | Stop-Process -Force -Confirm:$false; $killed += 'chrome' } }
+    foreach($tag in 'ch_colony','ch_glass','ch_overlook'){
+      Get-CimInstance Win32_Process -Filter "Name='chrome.exe'" -ErrorAction SilentlyContinue |
+        Where-Object { $_.CommandLine -like "*$tag*" -and $_.CommandLine -notlike '*--type=*' } |
+        ForEach-Object { "  kill chrome [$tag] PID=$($_.ProcessId)"; Stop-Process -Id $_.ProcessId -Force -Confirm:$false -ErrorAction SilentlyContinue; $killed += 'chrome' }
     }
   } catch {}
   # 7) the wrapper shells that launched Phoenix/Minecraft (killing the child above does not close
@@ -174,7 +189,7 @@ if($Status){
   foreach($s in @(@('Minecraft',25565),@('Phoenix',4000),@('Colony cam',3020),@('OBS ws',4455),@('Overlay srv',8099),@('MediaMTX api',9997),@('Command center',8098),@('Air JSON',8097),@('Publisher regs',8095),@('Source gateway',8443))){
     "{0,-16} {1}" -f $s[0], $(if(Test-Port $s[1]){'UP'}else{'down'})
   }
-  foreach($n in 'overlay_server.cjs','command_center.cjs','publisher.cjs'){ "{0,-20} {1}" -f $n, $(if(Node-Running $n){'running'}else{'DOWN'}) }
+  foreach($n in 'overlay_server.cjs','command_center.cjs','publisher.cjs','obs_supervisor.cjs','dual_push.cjs','health_ticker.cjs','music_director.cjs','voice_server.cjs'){ "{0,-20} {1}" -f $n, $(if(Node-Running $n){'running'}else{'DOWN'}) }
   # Zombie / duplicate detection: process alive but port down (or MORE THAN ONE process) is the
   # exact state that caused a silent duplicate Phoenix node before. Surface it loudly.
   $phx = @(Phoenix-Procs)
@@ -199,6 +214,23 @@ if($MutexProbe){
   exit 0
 }
 if(-not $got){ 'another studio_up bring-up is already in flight (UNI_STUDIO_UP mutex busy) - exiting; shells can never stack'; exit 0 }
+
+# ---- QUIET-MODE LATCH (added 2026-08-10) --------------------------------------------------------
+# A quiet box must not be slammed back to life by a bare studio_up -- and the boot shim used to run
+# exactly that unconditionally, which is how a reboot re-slammed the machine even with quiet latched.
+# RESUME (viewer\quiet_mode.cjs) CLEARS the latch BEFORE it calls this script, so the operator's way
+# back on is unaffected: only an un-cleared quiet state is refused here. -Force overrides for the
+# rare case the operator deliberately wants a full bring-up without first leaving quiet.
+# -Stop / -Status / -MutexProbe are all ABOVE this line on purpose, so they always work in quiet.
+$quietLatch = Join-Path $PSScriptRoot 'runtime\quiet_mode.json'
+$isQuietLatched = $false
+try { if(Test-Path $quietLatch){ $isQuietLatched = [bool]((Get-Content -LiteralPath $quietLatch -Raw | ConvertFrom-Json).quiet) } } catch { $isQuietLatched = $false }
+if($isQuietLatched -and -not $Force){
+  "QUIET MODE latched (viewer\runtime\quiet_mode.json) -- REFUSING the full studio bring-up so a quiet box is not slammed."
+  "  This is deliberate, not a fault. RESUME (Door button / tray / POST 127.0.0.1:8090/api/resume) clears the latch and brings the studio up."
+  "  To bring up anyway WITHOUT leaving quiet, re-run with -Force."
+  exit 0
+}
 
 "=== BRINGING UP THE UNI BROADCAST STUDIO ==="
 
@@ -313,10 +345,33 @@ $sentinelDir = Join-Path $obsData '.sentinel'
 # "Failed to find locale/en-US.ini" dialog was a launcher bug: obs launched via `cmd /c start` had the
 # WRONG working dir. This script launches with -WorkingDirectory (Split-Path $OBS) = the bin dir, so
 # obs resolves ..\..\data\obs-studio\locale correctly. NEVER launch obs any other way.
+# BULLETPROOF SENTINEL CLEAR (hardened 2026-08-04, operator mandate: OBS comes up clean EVERY time,
+# safe mode NEVER appears). .sentinel is a DIRECTORY holding run_<uuid> marker files (this OBS
+# version's design; obs_supervisor.cjs documents it). A marker left by a crashed or hard-killed OBS
+# is what makes the next start declare "unclean shutdown" and offer safe mode, which skips
+# obs-websocket so :4455 never binds and the studio hangs - exactly the failure measured this day.
+# (ASCII-only, deliberately: PowerShell 5.1 reads a BOM-less .ps1 as CP1252, and an em-dash decodes
+#  to a smart quote that can silently close a string. Harmless inside a comment, fatal outside one -
+#  studio_boot.ps1 was killed by exactly that on 2026-08-05. Keep every .ps1 here pure ASCII.)
+# The OLD line here was `Remove-Item -Recurse -Force -ErrorAction SilentlyContinue`, which can hit a
+# NonInteractive confirmation prompt and SILENTLY FAIL, leaving the markers in place. .NET's
+# Directory.Delete NEVER prompts, so it is deterministic. This is the boot-path twin of
+# obs_supervisor.cjs's clearSentinel(); --disable-shutdown-check is the belt to these braces.
+try {
+  if([System.IO.Directory]::Exists($sentinelDir)){
+    [System.IO.Directory]::Delete($sentinelDir, $true)   # whole dir incl. every run_<uuid> marker; OBS recreates it clean
+    "  cleared OBS .sentinel (all crash/safe-mode markers) via .NET"
+  } elseif([System.IO.File]::Exists($sentinelDir)){
+    [System.IO.File]::Delete($sentinelDir); "  cleared OBS .sentinel file"
+  }
+} catch {
+  # last-ditch: delete the marker files one by one, still without a prompt
+  try { Get-ChildItem -LiteralPath $sentinelDir -Force -Recurse -File -ErrorAction Stop | ForEach-Object { [System.IO.File]::Delete($_.FullName) }; "  cleared OBS .sentinel markers individually" }
+  catch { "  WARN: could not fully clear .sentinel: $($_.Exception.Message)" }
+}
 if(Test-Path $sentinelDir){
-  Remove-Item -LiteralPath $sentinelDir -Recurse -Force -ErrorAction SilentlyContinue
-  if(Test-Path $sentinelDir){ Get-ChildItem -Path $sentinelDir -Force -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue }
-  "  cleared OBS .sentinel (crash/safe-mode trigger)"
+  $sn = @(Get-ChildItem -LiteralPath $sentinelDir -Force -Recurse -ErrorAction SilentlyContinue).Count
+  if($sn -gt 0){ "  WARN: .sentinel still holds $sn marker(s) -- OBS may offer safe mode" }
 }
 foreach($marker in @('safe_mode','crashed','SafeMode','profiler-data.csv.lock')){
   $p = Join-Path $obsData $marker
@@ -341,9 +396,79 @@ powershell -ExecutionPolicy Bypass -File "$ROOT\viewer\studio_channels.ps1" | Ou
 "  channels launched"; Start-Sleep 2
 node "$ROOT\viewer\throttle_colony.cjs" | Out-Null
 
+# 4a) THE CHANNEL WINDOW GUARD (wired in 2026-08-03). studio_channels.ps1 runs ONCE and never looks
+# again; channels.json is a frozen snapshot that studio_stage.cjs binds cap_colony / cap_overlook
+# from at build time. If a channel window dies afterwards, the OBS window_capture captures pure
+# black and REPORTS NO ERROR ANYWHERE -- and nothing in this script noticed.
+#
+# The guard existed since 2026-08-03 but was never started here, so it only ran when someone typed
+# it. Its own receipt says so: "The watchdog is not boot-persistent. It is a resident process
+# started by hand tonight." It is now also in the per-user Startup folder
+# (UNI-Channel-Windows-Watchdog.vbs) for the reboot case.
+#
+# The guard now asks three independent questions -- process existence, PAGE liveness over CDP
+# (added 2026-08-03, after a crash page went to air), and WINDOW capturability (added 2026-08-04,
+# after a MINIMIZED window fed OBS pure black for hours while every other check said healthy).
+# See channel_windows_watchdog.ps1's header; do not assume any one of the three covers another.
+#
+# THE ALREADY-RUNNING CHECK USED TO BE BROKEN, and it is worth knowing why (measured 2026-08-04).
+# It was `Get-Process ... | Where-Object { $_.CommandLine -like ... }`. Windows PowerShell 5.1's
+# Get-Process has NO CommandLine property -- that was added in PowerShell 6. So $_.CommandLine was
+# $null for every process, the filter matched nothing, the else branch always ran, and every single
+# studio_up run started ANOTHER watchdog while printing "started" as though it were the first.
+# Three were found running concurrently, each with its OWN in-memory rate-limit state, which
+# silently divided that script's anti-storm backoff by three. Get-CimInstance Win32_Process does
+# expose CommandLine and is what the watchdog itself uses to find the Chrome windows.
+$guard = @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
+             Where-Object { $_.CommandLine -like '*channel_windows_watchdog*' })
+if ($guard.Count -gt 0) {
+  "  channel-window guard already running ($($guard.Count))"
+} else {
+  Start-Process -FilePath 'powershell.exe' -WindowStyle Hidden -ArgumentList '-NoProfile','-WindowStyle','Hidden','-ExecutionPolicy','Bypass','-File',"$ROOT\viewer\channel_windows_watchdog.ps1" | Out-Null
+  "  channel-window guard started"
+}
+
+# 4c) CAMERA LINK WATCHER (added 2026-08-04, at the operator's instruction: "I need the camera link
+# to always work from any LANs ... I cannot chase this configuration and you must pin it hard").
+# camera_link.cjs decides the canonical publish URL by STABILITY rather than by whatever answered
+# fastest, and --watch announces exactly two events: the URL changed, or it stopped working. Both
+# are things that would otherwise be discovered by failing to start a camera in front of an
+# audience. It probes four paths every 5 minutes and is silent in between, on purpose.
+# NOTE the dedup idiom: Get-CimInstance, NOT Get-Process. Windows PowerShell 5.1's Get-Process has
+# no CommandLine property, which is exactly how this script silently stacked duplicate watchdogs.
+$camw = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue |
+            Where-Object { $_.CommandLine -like '*camera_link*--watch*' })
+if ($camw.Count -gt 0) {
+  "  camera-link watcher already running ($($camw.Count))"
+} else {
+  Start-Process -FilePath 'node.exe' -ArgumentList 'viewer/camera_link.cjs','--watch','300' -WorkingDirectory $ROOT -WindowStyle Hidden | Out-Null
+  "  camera-link watcher started"
+}
+
 # 5) overlay server
 Start-NodeWindow 'UNI OVERLAY SERVER' 'overlay_server.cjs'
 Wait-Port 8099 'Overlay server' 20 | Out-Null
+
+# 5a) THE FOUR LIVE-BROADCAST SUPERVISORS (added 2026-08-02, all four written and proven during a
+# live show). Before this they ran as loose background processes and would NOT have survived a
+# reboot -- the simulcast and the OBS crash-healer would have been silently absent next boot.
+#   obs_supervisor --watch : heals OBS safe-mode / the zombie single-instance lock / a dead
+#                            websocket. REFUSES to restart OBS while streaming (checks first).
+#   dual_push              : the YouTube + Twitch simulcast pushers off the local relay, each
+#                            auto-restarting. Started after MediaMTX below, since it reads the relay.
+#   health_ticker          : folds the real /api/health onto the ON-AIR ticker -- the estate's
+#                            "say what is broke, on air" rule made literal.
+#   music_director         : ducks the bed under a hot mic and enforces ONE bed at a time.
+Start-NodeHidden 'UNI OBS SUPERVISOR' 'obs_supervisor.cjs' '--watch'
+Start-NodeHidden 'UNI HEALTH TICKER'  'health_ticker.cjs'
+Start-NodeHidden 'UNI MUSIC DIRECTOR' 'music_director.cjs'
+# The agent's VOICE, as a first-class broadcast source. It renders Piper to a file and plays it via
+# the ovl_voice browser source INSIDE OBS -- no Windows audio device is captured at any point, which
+# is what makes it survive a headset being unplugged or Windows changing its default output. It also
+# owns the music duck, because it gets play-start/play-end from the player itself rather than
+# inferring them from a level meter. Must be up BEFORE ovl_voice loads or the page has nothing to
+# connect to and simply retries with backoff.
+Start-NodeHidden 'UNI VOICE'          'voice_server.cjs'
 
 # 6) mediamtx (remote-source + restreamer ingest)
 if(-not (Test-Port 9997)){
@@ -352,6 +477,11 @@ if(-not (Test-Port 9997)){
   "started MediaMTX (hidden; logs -> $ROOT\logs\mediamtx.out.log)"
 }
 Wait-Port 9997 'MediaMTX' 20 | Out-Null
+
+# 6a) the simulcast pushers -- AFTER MediaMTX, because they read the relay at rtmp://127.0.0.1:1935/uni.
+# They wait and reconnect if the relay is not publishing yet, so ordering here is a courtesy, not a
+# dependency. This is what carries YouTube AND Twitch off ONE encode.
+Start-NodeHidden 'UNI SIMULCAST' 'dual_push.cjs'
 
 # 7) build the stage on EVERY bring-up. studio_stage.cjs itself refuses to touch OBS while it is
 #    actively streaming (the only state a rebuild could disrupt), so the old "skip when the command
@@ -425,12 +555,15 @@ else { "=== STUDIO UP - WARNING: overlays UNVERIFIED - do NOT go live until veri
 ""
 
 if($Watch){
-  "watchdog: restarting overlay_server / command_center / publisher if they die (Ctrl-C to stop)"
+  "watchdog: restarting overlay_server / command_center / publisher / obs_supervisor / dual_push / health_ticker / music_director if they die (Ctrl-C to stop)"
   while($true){
     Start-Sleep 5
-    foreach($n in 'overlay_server.cjs','command_center.cjs','publisher.cjs'){
+    # the four broadcast supervisors are watched too -- a dead supervisor is a silent single point of
+    # failure: the simulcast or the OBS healer would be gone and nothing would say so.
+    foreach($n in 'overlay_server.cjs','command_center.cjs','publisher.cjs','obs_supervisor.cjs','dual_push.cjs','health_ticker.cjs','music_director.cjs','voice_server.cjs'){
       if(-not (Node-Running $n)){
-        $t = switch($n){ 'overlay_server.cjs'{'UNI OVERLAY SERVER'} 'command_center.cjs'{'UNI COMMAND CENTER'} 'publisher.cjs'{'UNI SOURCE GATEWAY'} }
+        $t = switch($n){ 'overlay_server.cjs'{'UNI OVERLAY SERVER'} 'command_center.cjs'{'UNI COMMAND CENTER'} 'publisher.cjs'{'UNI SOURCE GATEWAY'} 'obs_supervisor.cjs'{'UNI OBS SUPERVISOR'} 'dual_push.cjs'{'UNI SIMULCAST'} 'health_ticker.cjs'{'UNI HEALTH TICKER'} 'music_director.cjs'{'UNI MUSIC DIRECTOR'} 'voice_server.cjs'{'UNI VOICE'} }
+        if($n -eq 'obs_supervisor.cjs'){ Start-NodeHidden $t $n '--watch'; "$(Get-Date -Format HH:mm:ss) $n DOWN - restarted"; continue }
         "$(Get-Date -Format HH:mm:ss) $n DOWN - restarting"
         Start-NodeWindow $t $n
       }

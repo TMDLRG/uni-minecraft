@@ -142,13 +142,28 @@ defmodule SP.ControlPlane.LedgerSchemaConformanceTest do
   #   alias in lib/mix/tasks/sp.uni.prove.ex failed the compile step, so `mix test` never executed in
   #   CI at all — across the entire recorded history of the workflow. The suite has been running only
   #   where someone ran it by hand. That is why a stale expectation survived a row landing.
+  #
+  # AMENDED 2026-08-24: PASS 93 → 94, PARTIAL 4 → 5.
+  #   Cause: exactly TWO NEW gate names since the 2026-08-01 baseline (commit de32604), both
+  #   additions that supersede nothing and move no existing gate:
+  #     `radio-bed-rolling`                     PASS     (commit 4f05a3a)
+  #     `camera-mic-ducking-and-slot-awareness` PARTIAL  (commit de511ef, receipt
+  #                                                       docs/receipts/camera_mic_ducking_pre_reg_2026-08-03.md)
+  #   Verified by diffing the EFFECTIVE per-name verdict map at de32604 against this tree before
+  #   touching the number: 2 NEW, 0 MOVED, 0 GONE. So this test's own claim -- that no gate's
+  #   verdict changed -- is still literally true; what moved is the population, not a verdict.
+  #   Effective ledger at amendment: 212 rows, 112 unique names,
+  #   94 PASS · 5 PARTIAL · 12 PENDING · 1 FAIL.
+  #
+  #   The guard did its job. It was red because the ledger legitimately grew, which is the intended
+  #   cost written down directly above -- not a defect, and not a reason to loosen the assertion.
   test "no gate's verdict tally changed — this correction moved no science" do
     tally =
       rows()
       |> effective()
       |> Enum.frequencies_by(& &1["verdict"])
 
-    assert tally == %{"PASS" => 93, "PARTIAL" => 4, "FAIL" => 1, "PENDING" => 12},
+    assert tally == %{"PASS" => 94, "PARTIAL" => 5, "FAIL" => 1, "PENDING" => 12},
            "the effective verdict tally moved: #{inspect(tally)}"
   end
 end

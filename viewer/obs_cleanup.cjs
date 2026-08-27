@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // obs_cleanup.cjs — retire every scene/input from the old experiments, leaving ONLY the clean stage
 // (COLONY / GLASS_OS / PIP + cap_colony / cap_glass / ShowMusic). Mutes Desktop Audio (so only the music
 // bed is on air). Idempotent; never removes the live program's sources.
@@ -12,7 +13,7 @@ let i=0;
 function next(){ if(i>=steps.length){ console.log("CLEANUP DONE"); try{ws.close();}catch(_){}; process.exit(0); }
   ws.send(JSON.stringify({op:6,d:{requestType:steps[i].t,requestId:"x"+i,requestData:steps[i].d}})); }
 ws.on("message",d=>{const m=JSON.parse(d.toString());
-  if(m.op===0) ws.send(JSON.stringify({op:1,d:{rpcVersion:1}}));
+  if(m.op===0) ws.send(JSON.stringify({op:1,d:__obsauth.identifyD(m.d)}));
   else if(m.op===2) next();
   else if(m.op===7){ const st=m.d.requestStatus; console.log((st.result?"ok  ":"--  ")+steps[i].t+" "+JSON.stringify(steps[i].d).slice(0,40)); i++; next(); }});
 ws.on("error",e=>{console.log("ERR "+e.message);process.exit(2)});

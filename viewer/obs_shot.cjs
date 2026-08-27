@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // obs_shot.cjs <sourceName> <outPath>
 // Captures what OBS is compositing for a given source/scene and writes a PNG to disk.
 const WebSocket = require("ws");
@@ -11,7 +12,7 @@ ws.on("message", (data) => {
   let m;
   try { m = JSON.parse(data.toString()); } catch (_) { return; }
   if (m.op === 0) {
-    ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } }));
+    ws.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) }));
   } else if (m.op === 2) {
     ws.send(JSON.stringify({ op: 6, d: { requestType: "GetSourceScreenshot", requestId: "s1",
       requestData: { sourceName: source, imageFormat: "png", imageWidth: 1280, imageHeight: 720 } } }));

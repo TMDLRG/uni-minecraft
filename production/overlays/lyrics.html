@@ -60,7 +60,11 @@
     // STALE-PLAYHEAD HONESTY (2026-07-18): if the /api/nowplaying report is stuck, the title is
     // frozen — do not air lyrics for the wrong track. Suppress the overlay entirely until the
     // service recovers.
-    if (n.stalePlayhead) { $("wrap").classList.remove("on"); setTimeout(loop, POLL_MS); return; }
+    // NO-SESSION (2026-08-02): same class, added for the same reason. With no open session the spool
+    // carries the service's `reference` track, which WALKS THE CATALOGUE between polls — airing a
+    // lyric sheet for it would put the words of one song under a different song. Suppress entirely;
+    // a lyrics panel has no honest degraded form, so it does not get one.
+    if (n.stalePlayhead || n.sessionOpen === false) { $("wrap").classList.remove("on"); setTimeout(loop, POLL_MS); return; }
     $("track").textContent = `${n.title} — ${n.artist || ""}`;
     if (n.lyricsDocUrl && n.seq !== lastSeq) {
       lastSeq = n.seq;
