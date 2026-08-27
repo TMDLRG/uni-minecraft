@@ -24,6 +24,13 @@ const bad = (n, d) => results.push({ pass: false, name: n, detail: d });
 
 const R = JSON.parse(fs.readFileSync(RUNDOWN, "utf8"));
 
+// THE PRE-SHOW IS AIRTIME AND IS CHECKED AS AIRTIME. `preroll` rows go on the same program output
+// as `rows`, so checks 1-3 (the scene exists · it can be previewed · the strap passes the fence)
+// sweep both. Only the CLOCK differs, and deliberately: check 4 holds the SHOW to 240 while check 6
+// holds the pre-roll to its own declared sum. Folding the two together would let 98 minutes of
+// pre-roll silently eat the programme while the arithmetic stayed green.
+const ALL_ROWS = [...(R.rows || []), ...(R.preroll || [])];
+
 // ---- the real scene set, read from the studio's own template file ------------------------------
 const tRaw = JSON.parse(fs.readFileSync(TEMPLATES, "utf8"));
 const realScenes = new Set();
@@ -47,7 +54,7 @@ R.rows && R.rows.length > 0 && realScenes.size > 0
 {
   const FIELDS = ["scene", "then_scene", "alt_scene", "contingency_scene", "contingency_scene_2"];
   const named = new Map();
-  for (const row of R.rows) for (const f of FIELDS) if (row[f]) named.set(row[f], (named.get(row[f]) || []).concat(`${row.id}.${f}`));
+  for (const row of ALL_ROWS) for (const f of FIELDS) if (row[f]) named.set(row[f], (named.get(row[f]) || []).concat(`${row.id}.${f}`));
   if (R.preflight && R.preflight.scene) named.set(R.preflight.scene, (named.get(R.preflight.scene) || []).concat("preflight.scene"));
 
   const missing = [...named.keys()].filter((s) => !realScenes.has(s));
@@ -74,7 +81,7 @@ R.rows && R.rows.length > 0 && realScenes.size > 0
 
   const FIELDS = ["scene", "then_scene", "alt_scene", "contingency_scene", "contingency_scene_2"];
   const offenders = [];
-  for (const row of R.rows) for (const f of FIELDS) if (row[f] && !previewable.has(row[f])) offenders.push(`${row.id}.${f}=${row[f]}`);
+  for (const row of ALL_ROWS) for (const f of FIELDS) if (row[f] && !previewable.has(row[f])) offenders.push(`${row.id}.${f}=${row[f]}`);
 
   offenders.length === 0
     ? ok("no row calls a scene that cannot be previewed",
@@ -103,7 +110,7 @@ R.rows && R.rows.length > 0 && realScenes.size > 0
     const refusedInBank = Object.entries(bank).filter(([, v]) => { FENCE.lastIndex = 0; return FENCE.exec(v.text); }).map(([k]) => k);
 
     const called = [];
-    for (const row of R.rows) for (const f of ["super", "then_super"]) if (row[f]) called.push({ row: row.id, f, id: row[f] });
+    for (const row of ALL_ROWS) for (const f of ["super", "then_super"]) if (row[f]) called.push({ row: row.id, f, id: row[f] });
     const wouldFail = called.filter((c) => refusedInBank.includes(c.id));
 
     // Every refusal in the bank must be DECLARED as refused, and must not be called as a super.
@@ -144,7 +151,7 @@ R.rows && R.rows.length > 0 && realScenes.size > 0
     new RegExp('"' + f.replace(/\//g, "\\/")).test(src));
   // /api/cut and /api/golive appear in PROSE here deliberately, as warnings. Distinguish: they must
   // never appear as a row's route.
-  const asRoute = R.rows.some((r) => forbidden.some((f) => String(r.route || "") === f));
+  const asRoute = ALL_ROWS.some((r) => forbidden.some((f) => String(r.route || "") === f));
   !asRoute
     ? ok("no row can start a stream",
         `no row carries a route field naming /api/golive, /api/cut, /api/broadcast_test or StartStream. ` +
@@ -153,6 +160,116 @@ R.rows && R.rows.length > 0 && realScenes.size > 0
         `viewer/golive_guard.cjs, which refuses all seven paths for want of a presence token nothing in ` +
         `the repository mints.`)
     : bad("no row can start a stream", "a row carries a go-live or unvalidated-cut route");
+}
+
+// ---- 6. THE PRE-SHOW'S OWN CLOCK, AND IT IS NOT THE SHOW'S ------------------------------------
+//
+// WHY THIS EXISTS: the pre-roll block was written declaring 93 minutes and its rows summed to 98.
+// Every check above passed, because every check above read `rows` and the pre-roll is not in it.
+// A block of airtime nothing checks is exactly the 2026-07-17 failure in a new place.
+if (R.preroll) {
+  const sum = R.preroll.reduce((a, r) => a + (Number(r.minutes) || 0), 0);
+  const A = R.preroll_arithmetic || {};
+  const faults = [];
+  if (sum !== A.declared_minutes_sum) faults.push(`rows sum to ${sum}, file declares ${A.declared_minutes_sum}`);
+  if (A.counted_in_show_clock !== false) faults.push("preroll_arithmetic must declare counted_in_show_clock:false — the show is 240 minutes and this block is not part of it");
+  if (A.rows !== R.preroll.length) faults.push(`declares ${A.rows} rows, has ${R.preroll.length}`);
+
+  faults.length === 0
+    ? ok("the pre-show's own clock closes, and is declared separate from the show's",
+        `${R.preroll.length} pre-roll row(s) summing to ${sum} minutes, declared and not counted in the ` +
+        `240. Written first as 93 against rows summing to 98 — and every other check passed over it, ` +
+        `because every other check read 'rows'.`)
+    : bad("the pre-show's own clock closes, and is declared separate from the show's", faults.join(" · "));
+}
+
+// ---- 7. EVERY ROW THAT PLAYS SOMETHING CAN ACTUALLY PLAY IT ------------------------------------
+//
+// A row calling for a film is a claim that the film can reach the program output. The studio has
+// exactly one clip path and it accepts an 11-character platform id or an http(s) URL. A local
+// render is NEITHER until something serves it, so a `local-film` row is checked against the file on
+// disk AND against the route that serves it. This is the check that stops a rundown promising
+// pictures the studio has no way to show.
+{
+  // ALL FIVE SCENE FIELDS, not just `scene`. This predicate read `scene` alone, and a row can reach
+  // a clip player through `then_scene` or `alt_scene` just as surely — which is not hypothetical:
+  // row 1.3 ("the colony agent, live") is `scene: COLONY` with `alt_scene: CLIP_HOST`, so its
+  // BACKUP — the thing the operator reaches for when the live colony will not come up, which the
+  // row's own live_status note says has already happened — was never checked for a playable asset.
+  // The check reported PASS with that hole open, which is the worse failure of the two: an unchecked
+  // fallback that LOOKS checked is what makes a person reach for it confidently at hour three.
+  const SCENE_FIELDS = ["scene", "then_scene", "alt_scene", "preview_scene", "fallback_scene"];
+  const playsAClip = (r) => SCENE_FIELDS.some((f) => /^CLIP/.test(String(r[f] || "")));
+  const players = ALL_ROWS.filter(playsAClip);
+  const faults = [];
+  const unresolved = [];
+  let localFilms = 0, remote = 0, fallbacks = 0;
+  const ovSrc = (() => { try { return fs.readFileSync(path.join(REPO, "viewer", "overlay_server.cjs"), "utf8"); } catch { return ""; } })();
+  const ccSrc = (() => { try { return fs.readFileSync(CC, "utf8"); } catch { return ""; } })();
+
+  for (const r of players) {
+    const s = r.source;
+    // Name the field that made this a clip row. Saying "plays COLONY" of a row whose clip is in
+    // alt_scene sends the reader to look at the wrong thing.
+    const via = SCENE_FIELDS.filter((f) => /^CLIP/.test(String(r[f] || ""))).map((f) => `${f}=${r[f]}`).join(", ");
+    if (!s || !s.kind) { faults.push(`${r.id}: reaches a clip player via ${via} and declares no source`); continue; }
+    if (s.kind === "youtube") {
+      remote++;
+      if (!/^[\w-]{11}$/.test(String(s.id || ""))) faults.push(`${r.id}: youtube source id is not an 11-character id`);
+      // A DECLARED FALLBACK IS A CLAIM AND IS CHECKED LIKE ONE. Moving the films to the platform
+      // pushed the local renders down into source.local_fallback, where nothing looked at them —
+      // so the thing that exists to save the show if the platform is unavailable was one silent
+      // file deletion away from being a sentence in a JSON file.
+      const fb = s.local_fallback;
+      if (fb && fb.file) {
+        fallbacks++;
+        const abs = path.join(REPO, String(fb.file));
+        if (!fs.existsSync(abs)) faults.push(`${r.id}: declared local fallback ${fb.file} is not on disk`);
+        else if (fs.statSync(abs).size < 100000) faults.push(`${r.id}: local fallback ${fb.file} is too small to be a rendered film`);
+        else if (!/\/film\.html/.test(ovSrc)) faults.push(`${r.id}: declares a local fallback but overlay_server.cjs serves no /film.html route to play it`);
+      }
+    } else if (s.kind === "youtube-playlist") {
+      remote++;
+      // A playlist id is NOT 11 characters — that is a video id, and the two are checked apart for
+      // the same reason ytList() refuses length 11: putting the wrong one on air produces a picture
+      // with no error to notice.
+      const L = String(s.list || "");
+      if (!/^[\w-]{2,}$/.test(L)) faults.push(`${r.id}: youtube-playlist source has no usable list id`);
+      else if (L.length === 11) faults.push(`${r.id}: '${L}' is 11 characters — that is a video id, not a playlist id`);
+      // The route must actually be able to send it. Checked against the source, not assumed.
+      if (!/ytList/.test(ccSrc)) faults.push(`${r.id}: declares a playlist but viewer/command_center.cjs cannot parse a list= id`);
+      if (!/videoseries|[?&]list=/.test(ovSrc)) faults.push(`${r.id}: declares a playlist but viewer/overlay_server.cjs /clip.html cannot embed one`);
+    } else if (s.kind === "local-film") {
+      localFilms++;
+      const abs = path.join(REPO, String(s.file || ""));
+      if (!s.file || !fs.existsSync(abs)) { faults.push(`${r.id}: local-film ${s.file || "(none)"} is not on disk`); continue; }
+      const bytes = fs.statSync(abs).size;
+      if (bytes < 100000) faults.push(`${r.id}: local-film ${s.file} is ${bytes} bytes — too small to be a rendered film`);
+      if (!/\/film\.html/.test(ovSrc) || !/\/film\//.test(ovSrc)) faults.push(`${r.id}: declares a local film but viewer/overlay_server.cjs serves no /film.html route to play it`);
+      if (!/Content-Range/.test(ovSrc)) faults.push(`${r.id}: the film route does not support Range — a browser source buffers the whole file before the first frame, and a long black hold on air is indistinguishable from a dead source`);
+    } else if (s.kind === "unresolved") {
+      // DECLARED, NOT EXCUSED. An unresolved source is a known hole with an owner and a way to close
+      // it. It passes the check because it is honest, and it is printed on every run because it is
+      // still a row that cannot play. What must never pass is a clip row with no source field at all
+      // — silence about a gap is the thing this check exists to end.
+      if (!s.blocked_on || !s.owner || !s.how_to_close) faults.push(`${r.id}: source is unresolved but does not name blocked_on, owner and how_to_close`);
+      else unresolved.push(`${r.id} (${r.start}, ${r.minutes}min, ${s.owner}'s)`);
+    } else {
+      faults.push(`${r.id}: unknown source kind '${s.kind}'`);
+    }
+  }
+
+  faults.length === 0
+    ? ok("every row that plays something can actually play it",
+        `${players.length} clip row(s): ${remote} platform-hosted (11-character id) · ${localFilms} local ` +
+        `render(s), each present on disk and served by viewer/overlay_server.cjs /film.html with Range ` +
+        `support, plus ${fallbacks} declared local fallback(s) verified present on disk. Before this route ` +
+        `existed, a local film could not reach air at all — the clip wrapper accepts only a platform id.` +
+        (unresolved.length
+          ? `\n      ⚠ ${unresolved.length} CLIP ROW(S) STILL CANNOT PLAY: ${unresolved.join(", ")}. Declared, ` +
+            `owned and printed on every run — NOT a pass for those rows. They will cut to a blank source.`
+          : ``))
+    : bad("every row that plays something can actually play it", faults.join(" · "));
 }
 
 // ---- verdict -----------------------------------------------------------------------------------

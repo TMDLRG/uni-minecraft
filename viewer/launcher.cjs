@@ -21,6 +21,7 @@ const infra = require("./infra.cjs");   // LIVE-INFRA observability snapshot (SS
 const { cachedTcp } = require("./probes.cjs"); // TTL-cached probe for the OFF-BOX relay only (see mission())
 const discovery = require("./discovery.cjs");   // LLM REST discovery — self-describing manifest at /api/discovery
 const doors = require("./door_lifecycle.cjs");  // THE CIRCLE — door state machine + audit ledger + one key
+const quiet = require("./quiet_mode.cjs");      // THE QUIET SWITCH — video core off, monitors awake
 const journey = require("./door_journey.cjs");  // THE JOURNEY — the reboot-surviving vector sequence
 const buildIdentity = require("./build_identity.cjs"); // BOOT IDENTITY — the commit+module-set this process runs
 
@@ -122,8 +123,42 @@ async function mission() {
   const air = (cc.body && cc.body.air) || null;
   const airStale = cc.ok ? (cc.body && cc.body.airStale === true) : true;
 
+  // ── THE WORLD TILE MEASURED THIS BOX'S NETWORKING AND CALLED IT THE WORLD ────────────────────────
+  // Reported by the operator, live on air, 2026-08-02: "there is a minecraft paper server and it was
+  // and is running look, UNI is on the chip and the world IS running". He was right.
+  //
+  // This tile was `up: mc` — a bare TCP probe of COLONY_HOST:25565 FROM THINKER. The colony runs
+  // rootless in Podman on the chip and 25565 is not published to the LAN (the name resolves to
+  // 10.89.1.40, a podman-internal address), so that probe can never succeed from here and the tile
+  // was PERMANENTLY red. What it measured is "this box cannot open that port". What it rendered,
+  // under the label "World (Minecraft)", is "the world is down". Those are different claims and only
+  // the first was measured. The `detail` string said so honestly; the BOOLEAN is what draws the light.
+  //
+  // And the refutation was already inside the same payload: `/producer/health` was returning
+  // verdict=LIVE, driver=producer, colony_count=5, frame advancing, and tps={up:true,tps:20} — a
+  // Minecraft server ticking at a full 20 TPS, which is a number that cannot exist unless the Paper
+  // server is running — while `colonycam` reported a prismarine bot CONNECTED TO THAT WORLD on :3020.
+  // So one payload asserted the world was down and, two fields later, published its tick rate. That
+  // is precisely what gate `status-endpoint-honest` forbids: "no two fields in one payload disagree
+  // about the same subject."
+  //
+  // FIX: liveness now comes from the world's OWN tick rate, which actually measures the world. Port
+  // reachability from this box is still reported — it is real and occasionally useful — but as the
+  // separate networking fact it always was, never as the world's vital sign. If the producer is
+  // unreachable we fall back to the port probe, and if BOTH are silent we say UNKNOWN rather than
+  // asserting down, because at that point we have measured nothing about the world at all.
+  const tps = (ph && ph.tps && ph.tps.up === true && typeof ph.tps.tps === "number") ? ph.tps.tps : null;
+  const worldKnownLive = tps !== null || mc;
+  const worldMeasurable = phx.ok || mc;
+  const lanNote = mc ? `${COLONY_HOST}:25565 reachable from here` : `:25565 not LAN-published (normal — rootless podman; capture is via :3020)`;
   const tiles = [
-    { key: "world",     label: "World (Minecraft) @UNI-LAB",   up: mc, warn: !mc, detail: mc ? `${COLONY_HOST}:25565 accepting` : `${COLONY_HOST}:25565 not reachable from here (LAN publish NV; colony captured via :3020)` },
+    { key: "world", label: "World (Minecraft) @UNI-LAB",
+      up: worldKnownLive, warn: !worldKnownLive,
+      detail: !worldMeasurable
+        ? `UNKNOWN — producer health unreachable AND :25565 unreachable from here; nothing here measures the world right now`
+        : tps !== null
+          ? `server ticking ${tps.toFixed(1)} TPS (the world's own clock, via :4200) · ${lanNote}`
+          : `:25565 accepting · producer health unreachable, so TPS not read` },
     { key: "colony",    label: "UNI colony (Phoenix) @UNI-LAB", up: phx.ok && ph.producer_up, warn: phx.ok && ph.colony_count === 0,
       detail: phx.ok ? `driver=${ph.driver} verdict=${ph.verdict} colony=${ph.colony_count} frame=${ph.frame}` : `down ${COLONY_HOST}:4200 (uni-producer health)` },
     { key: "colonycam", label: "Colony camera @UNI-LAB",       up: cam3020,  detail: cam3020 ? `prismarine ${COLONY_HOST}:3020` : `down ${COLONY_HOST}:3020` },
@@ -358,8 +393,18 @@ const server = http.createServer(async (req, res) => {
     } catch (e) { return j(res, 500, { err: "status failed", detail: String(e && e.message || e) }); }
   }
   if (req.method === "GET" && url === "/api/door/state") {
-    try { return j(res, 200, await doors.state()); }
+    // The quiet latch rides along with the door register so the Door page renders one coherent
+    // picture. Without it a quiet box looks like a HALF-BROKEN box: obs and mediamtx read closed with
+    // no stated reason, which is the exact "unexplained red" that makes an operator start debugging
+    // something he did on purpose.
+    try { const st = await doors.state(); st.quiet = quiet.latchState(); return j(res, 200, st); }
     catch (e) { return j(res, 500, { err: "door state failed", detail: String(e && e.message || e) }); }
+  }
+  // Standalone, cheap, and CORS-free for the HUD widget to poll: the quiet latch on its own.
+  // GET-only and side-effect-free, so it is safe to expose LAN-wide alongside the other GETs.
+  if (req.method === "GET" && url === "/api/quiet") {
+    try { return j(res, 200, quiet.latchState()); }
+    catch (e) { return j(res, 500, { err: "quiet state failed", detail: String(e && e.message || e) }); }
   }
   if (req.method === "GET" && url === "/api/door/journey") {
     try { return j(res, 200, await journey.state()); }
@@ -403,6 +448,29 @@ const server = http.createServer(async (req, res) => {
     if (url === "/api/start")   { runPs(["-File", UP], "START");                                   return j(res, 202, { ok: true, action: "START" }); }
     if (url === "/api/stop")    { runPs(["-File", UP, "-Stop"], "STOP");                            return j(res, 202, { ok: true, action: "STOP" }); }
     if (url === "/api/restart") { runPs(["-Command", `& '${UP}' -Stop; & '${UP}'`], "RESTART");    return j(res, 202, { ok: true, action: "RESTART" }); }
+    // ---- QUIET / RESUME (added 2026-08-10) ----------------------------------------------------
+    // THE THIRD STATE, and it is not a synonym for either of the two above. START and STOP are
+    // all-or-nothing; QUIET is the state this box actually needs most of the time, because it is the
+    // operator's computer as well as a studio: the video core (OBS, MediaMTX, the Chrome channel
+    // windows, the simulcast encoders and the supervisors that resurrect them) stops, while the HUD,
+    // Gaia, the Door and the console stay awake so he can still see the estate and get it back in one
+    // action. quiet_mode.cjs owns the whole list; this route never duplicates it.
+    // Synchronous on purpose (unlike START, which spawns): the caller gets the REAL per-step result
+    // and a refusal if we are ingesting, rather than a 202 that means nothing happened.
+    if (url === "/api/quiet") {
+      try {
+        const r = quiet.enterQuiet({ actor: "operator@door", force: !!b.force });
+        lastAction = { action: "QUIET", at: new Date().toISOString(), note: r.ok ? "video core stopped; monitors awake" : (r.err || "refused") };
+        return j(res, r.ok ? 200 : 409, r);
+      } catch (e) { return j(res, 500, { err: "quiet failed", detail: String(e && e.message || e) }); }
+    }
+    if (url === "/api/resume") {
+      try {
+        const r = quiet.resume({ actor: "operator@door" });
+        lastAction = { action: "RESUME", at: new Date().toISOString(), note: r.ok ? "latch cleared; studio_up.ps1 running" : (r.err || "failed") };
+        return j(res, r.ok ? 202 : 500, r);
+      } catch (e) { return j(res, 500, { err: "resume failed", detail: String(e && e.message || e) }); }
+    }
     if (url === "/api/door/open" || url === "/api/door/close") {
       // THE CIRCLE verbs: open/close any door (or "all" — the one key). Remote doors REFUSE by
       // mandate (this system never impacts the UNIs; only Organic Operator Michael Polzin directs them).

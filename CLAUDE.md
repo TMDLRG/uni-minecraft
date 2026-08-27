@@ -723,7 +723,7 @@ Do not do this:
 > <!-- END GENERATED uni.state.plan_tally -->
 >
 > <!-- BEGIN GENERATED uni.state.gates prefix="> " — DO NOT EDIT. node viewer/generate_state_blocks.cjs -->
-> **Gates:** **34 registered**, of which **31 `ci:true`** and 3 `ci:false` (`colony`, `hud`, `overlays` — listed, never run, never a fabricated pass). **7 lab gates** (`lab-l0`, `lab-l1`, `lab-l2-shot`, `lab-l3`, `lab-l4`, `lab-l5`, `lab-l6`).
+> **Gates:** **36 registered**, of which **33 `ci:true`** and 3 `ci:false` (`colony`, `hud`, `overlays` — listed, never run, never a fabricated pass). **7 lab gates** (`lab-l0`, `lab-l1`, `lab-l2-shot`, `lab-l3`, `lab-l4`, `lab-l5`, `lab-l6`).
 >
 > Both numbers are stated because both were written before without saying which was which:
 > one banner paragraph said 25 and another said 23, and a single file said 23 at one line and
@@ -731,7 +731,7 @@ Do not do this:
 > <!-- END GENERATED uni.state.gates -->
 >
 > <!-- BEGIN GENERATED uni.state.gate_ledger prefix="> " — DO NOT EDIT. node viewer/generate_state_blocks.cjs -->
-> **Gate ledger** `evidence/gates.ndjson` — `1daac9124c0ce483...`, **207 rows / 110 unique names**. Last row per name: 93 PASS · 4 PARTIAL · 12 PENDING · 1 FAIL.
+> **Gate ledger** `evidence/gates.ndjson` — `ca8fd61ab5380994...`, **212 rows / 112 unique names**. Last row per name: 94 PASS · 5 PARTIAL · 12 PENDING · 1 FAIL.
 >
 > The per-name tally is stated as such because the per-ROW tally is a different set of numbers,
 > and a count whose derivation is unstated is how a backlog and the history of a backlog came
@@ -739,7 +739,7 @@ Do not do this:
 > <!-- END GENERATED uni.state.gate_ledger -->
 >
 > <!-- BEGIN GENERATED uni.state.registry_ledger_gap prefix="> " — DO NOT EDIT. node viewer/generate_state_blocks.cjs -->
-> **Registry vs. the canonical ledger:** of **34 registered gates, 1 appear in `evidence/gates.ndjson`** and **33 do not** (0 of those carry a glob `gate_row`, which no kebab-case row can ever bear). `gate_row.schema.json` says every gate the project claims MUST be represented there.
+> **Registry vs. the canonical ledger:** of **36 registered gates, 1 appear in `evidence/gates.ndjson`** and **35 do not** (0 of those carry a glob `gate_row`, which no kebab-case row can ever bear). `gate_row.schema.json` says every gate the project claims MUST be represented there.
 >
 > **The intersection is NOT empty, and four governing documents said it was.** They declared "EVERY registered gate has ZERO rows" and "the intersection is empty by `id` *and* by `gate_row`" for two weeks after a row landed for one of them on 2026-07-17 — inside the paragraph that says these numbers are generated. It was hand-written. It is not any more.
 >
@@ -831,3 +831,107 @@ Do not do this:
 > The untracked copy is **still tracked
 > by no git repository**, so no diff and no CI run can ever reach it; only the gate can, and only when
 > someone runs it. That remains a standing hazard, not a fixed one.
+
+---
+
+## THE VOICE, AND SPEAKING TO THE PUBLIC (binding, 2026-08-02, set live on air)
+
+### The mechanism — read this before you try to speak
+
+**`mcp__claude-voice__speak` DOES NOT REACH THE BROADCAST.** It renders locally. The studio no
+longer captures ANY Windows audio device, deliberately. To be heard on air:
+
+```
+POST http://127.0.0.1:8106/api/say   {"text": "..."}
+GET  http://127.0.0.1:8106/healthz    -> {clients, speaking, ducked, obs}
+```
+
+`viewer/voice_server.cjs` renders Piper to a WAV and hands it to `ovl_voice`, a **browser
+source inside OBS**. The full chain is:
+
+```
+text -> piper.exe -> .wav -> loopback HTTP -> ovl_voice browser source -> OBS audio bus
+```
+
+No Windows playback device is captured at any point. That is the whole design: a headset being
+unplugged, or Windows changing its default output, can no longer move the broadcast's audio.
+
+<!-- @claim archived: the sentence above USED to end "present on 34 scenes". That count was
+     hand-written and was ZERO for an unknown period. The quote is the evidence; keep it. -->
+**Corrected 2026-08-04.** This said the source was *"present on 34 scenes"*. It was present on
+**none** — absent from OBS entirely, wiped by a `studio_stage.cjs` rebuild that had no declaration
+to recreate it from. It is now declared in `studio_stage.cjs` (ADR-255). **No scene count is
+restated here on purpose** — that is a fact about a running OBS, not about this tree. Ask the tool:
+`node viewer/voice_everywhere.cjs --status`.
+
+**The design above is correct but it is NOT self-verifying, and that gap cost the broadcast its
+voice.** The page originally drove a Web Audio graph, whose output OBS's browser-source rerouting
+**does not capture** — so the "no Windows playback device" guarantee held while the audio went to a
+Windows playback device anyway. It now plays through an `<audio>` element (ADR-254). The only
+honest check is the level, not the configuration:
+
+```
+node viewer/audio_meter.cjs 8 ovl_voice
+```
+
+**If `/healthz` reports `clients: 0`, NOBODY HEARS YOU** — the page is not loaded. `/api/say`
+returns **503** in that case rather than pretending it worked. Check it; do not assume.
+
+**Why this exists, measured 2026-08-02:** the previous path relied on OBS's global "Desktop
+Audio" capture, which was bound to a device GUID that no longer existed on the machine (a
+removed headset) while Piper played to the monitor's HDMI audio — a different device. The
+source was unmuted, sat at a healthy fader, showed a working level slider, and captured
+**silence**: 78 meter frames in 4 seconds, every one empty. Nothing anywhere compared "where
+the voice went out" against "where the studio is listening." Desktop Audio is now MUTED and
+must stay muted — it captures the entire operating system, which is an open microphone aimed
+at a public broadcast.
+
+**The level rule, and the arithmetic behind it.** The operator's rule is that the voice fires
+at the level the music was playing at before it ducks. Copying the bed's *fader* is not enough:
+measured, the bed's fader sat at **-16.2 dB** while its post-fader peak metered **-4.5 dB**,
+because music is mastered dense and speech is sparse. `VOICE_TRIM_DB = 12` closes that gap and
+lands the voice at **-4.2 dB**, within 0.3 dB of where the music actually peaks. It tracks the
+operator's slider — move the music and the voice follows on the next utterance. Clamped at
+-3.5 dB because Web Audio does not clip gracefully and distortion is worse than quiet.
+
+**voice_server owns the music duck.** The page reports `started` and `ended` from the player
+itself, so the bed is held down between exactly those two edges. Do NOT add a second duck
+controller: `music_director.cjs` has one built and deliberately stood down
+(`DESKTOP_VOICE_DUCK = false`) because two controllers on one bed fight — each reads a level
+the other just moved. Its MIC duck is separate and still live.
+
+### Speaking to the public
+
+The work is broadcast live on YouTube and Twitch, and the plan is published at `/live` on the
+public site. **Strangers are watching this being built.** They are not auditors and not
+customers — they are people who found something being made in the open and stayed.
+
+**Tell the story, don't read the log.** Someone joining at hour four does not know what a gate
+ledger is or why a missing receipt matters. Give the shape first: what we are building, what
+just happened, why it mattered, what is next. Identifiers are for the operator and the record;
+the story is for them.
+
+- Say the plain name before the technical one — "the camera that shows the colony" before
+  "`:3020`". Using both is how a newcomer becomes someone who can follow along.
+- Explain failures as readily as fixes, and explain them kindly. *What broke, how we found it,
+  what it cost.* No apology, no drama. A well-told failure teaches more than a clean success,
+  and refusing to hide them is this project's entire claim.
+- Include them in the reasoning: *"we thought it was the throttle — it wasn't, and we proved
+  that by turning it off and watching it stay broken."*
+- Credit the operator's rulings out loud. The audience should see exactly where human judgement
+  enters, because that boundary is the most important thing here to teach.
+- Never perform confidence you do not have. Stuck is a fine thing to say. Trust spent on false
+  certainty does not come back.
+- No hype, no launch language. Warmth lives in plainness, not adjectives — treating a listener
+  as someone who can handle the truth IS the supportive move.
+- "Not yet" is a respectable state. Much of this estate is scaffolding that is honest about
+  being scaffolding; present it that way without embarrassment.
+
+**Rhythm:** speak at the edges — something starts, something is found, something is fixed,
+something is handed to the operator, a phase closes. Not continuously; silence while work
+happens is fine and lets the bed carry. But a stranger should never watch for ten minutes with
+no idea what they are looking at.
+
+**An adverse result is spoken FIRST, and to BOTH audiences.** The operator because he must act
+on it; the public because a project that only narrates its wins is advertising, and this is not
+one.

@@ -1,0 +1,11 @@
+ M evidence/gates.ndjson
+ M evidence/track_comments.ndjson
+ M viewer/music_director.cjs
+?? docs/receipts/camera_mic_ducking_pre_reg_2026-08-03.md
+?? evidence/camera-duck-final-green.txt
+?? evidence/camera-duck-red0-before.txt
+?? evidence/camera-duck-target-green-after.txt
+?? evidence/camera-duck-target-red-before.txt
+?? evidence/live-camera-duck-20260803T003819Z/
+?? viewer/camera_duck_engine.cjs
+?? viewer/tests/

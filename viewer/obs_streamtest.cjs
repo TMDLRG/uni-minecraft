@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // obs_streamtest.cjs — minimal stream test: a solid color source scene + StartStream.
 // Isolates whether OBS can stream at all (no browser sources / no UI-thread hang).
 const WebSocket = require("ws");
@@ -29,7 +30,7 @@ function sendNext() {
 }
 ws.on("message", (data) => {
   let m; try { m = JSON.parse(data.toString()); } catch (_) { return; }
-  if (m.op === 0) ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } }));
+  if (m.op === 0) ws.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) }));
   else if (m.op === 2) sendNext();
   else if (m.op === 7) {
     const r = reqs[i], st = m.d.requestStatus;

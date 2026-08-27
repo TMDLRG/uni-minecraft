@@ -1,0 +1,3 @@
+{"at":"2026-08-03T00:59:21.946Z","phase":"probe-start","case":"stale-takeover","slot":"cam2"}
+A registered; waiting 31s for STALE_MS timeout (A stays connected, does NOT heartbeat)...
+PASS case=stale-takeover event=slot_taken_over slot=cam2 oldClientId=uni-slot-gate-a newClientId=uni-slot-gate-b raw={"type":"slot_taken_over","slot":"cam2","why":"your claim went stale and the slot was reused"}

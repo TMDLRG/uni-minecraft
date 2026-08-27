@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // obs_build.cjs — build the UNI colony stream scenes programmatically via obs-websocket v5.
 // Scenes: "Colony Live" (Colony Cam :3020 + Glass HUD /stream overlay) and "Mind Cockpit" (/ Overlooker).
 const WebSocket = require("ws");
@@ -29,7 +30,7 @@ function sendNext() {
 }
 ws.on("message", (data) => {
   let m; try { m = JSON.parse(data.toString()); } catch (_) { return; }
-  if (m.op === 0) ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } }));
+  if (m.op === 0) ws.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) }));
   else if (m.op === 2) sendNext();
   else if (m.op === 7) {
     const r = reqs[i], st = m.d.requestStatus;

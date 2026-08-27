@@ -33,6 +33,16 @@ COPY viewer/director.js ./viewer/director.js
 RUN cd viewer && npm install --omit=dev --no-audit --no-fund --no-save \
       mineflayer@4.37.1 prismarine-viewer@1.33.0 canvas@3.2.3 gl@8.1.6
 
+# PLAN 7 A3 (2026-08-04): re-apply the camera ROTATION tween the npm install above leaves out.
+# prismarine-viewer ships with camera POSITION tweened over 50ms but rotation SNAPPED; on the director
+# camera that snap is the dominant on-air judder (10Hz pose, every shot an orbit with a `facing`
+# target -> ten visible rotation steps/sec at any frame rate). Without this step the patch that is
+# applied on the host node_modules is silently lost in the image (this is the npm-ci-erases-it trap).
+# The script is content-matched, idempotent, self-verifying, and self-rolls-back if the result won't
+# parse. NB: the build context must include patches/ (it lives at repo root).
+COPY patches ./patches
+RUN node patches/apply_prismarine_rotation_tween.cjs /app/viewer/node_modules/prismarine-viewer/viewer/lib/viewer.js
+
 COPY deploy/uni-producer/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

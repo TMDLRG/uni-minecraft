@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // obs_req.cjs <requestFile.json> [outImagePath]
 // Sends one obs-websocket v5 request read from a JSON file: {requestType, requestData}.
 // Prints requestStatus + responseData (imageData truncated). Saves imageData to outImagePath if present.
@@ -27,7 +28,7 @@ ws.on("message", (data) => {
   let m;
   try { m = JSON.parse(data.toString()); } catch (_) { return; }
   if (m.op === 0) {
-    ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } }));
+    ws.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) }));
   } else if (m.op === 2) {
     ws.send(JSON.stringify({ op: 6, d: { requestType: spec.requestType, requestId: "q1", requestData: spec.requestData || {} } }));
   } else if (m.op === 7) {

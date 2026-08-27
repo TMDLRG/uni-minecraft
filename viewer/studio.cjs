@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // studio.cjs — THE OPERATOR CONSOLE. Drive the live show from one prompt, working WITH the
 // autonomous SP.Producer (colony feed) rather than replacing it.
 //
@@ -41,7 +42,7 @@ const obs = {
     this.ws = w;
     w.on("message", (raw) => {
       const m = JSON.parse(raw.toString());
-      if (m.op === 0) w.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } }));
+      if (m.op === 0) w.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) }));
       else if (m.op === 2) { this.connected = true; console.log("  [obs connected]"); }
       else if (m.op === 7) {
         const p = this.pending.get(m.d.requestId);

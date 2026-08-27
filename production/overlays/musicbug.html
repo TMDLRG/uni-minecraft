@@ -64,7 +64,20 @@
           // (positionSec ran past durationSec + 30s, service /api/nowplaying not advancing), the
           // n.title we have is the frozen first-track name — do NOT air it. Render the station
           // identity instead. Same fix as nowplaying.html.
-          if (n.stalePlayhead) {
+          // NO-SESSION HONESTY (2026-08-02) — this guard was MISSING here and present in both
+          // nowplaying.html and musichero.html, so the three surfaces DISAGREED on air. When the
+          // studio is not actually pulling /radio there is no session, and the spool carries the
+          // service's `reference` field with sessionOpen:false. `reference` is NOT a playhead: it
+          // WALKS THE CATALOGUE on every poll (measured 2026-08-02: seq 37,0,15,30,45,8,23,38 over
+          // 8 polls 15s apart). The other two surfaces degraded to "ON THE STATION"; this corner bug
+          // kept naming a specific track, with a listener count, as though it were playing. It was
+          // the most confident and the least correct thing on the frame.
+          //
+          // The underlying cause is fixed (the studio now holds a real session — see
+          // viewer/radio_everywhere.cjs), so this path should not be reached in normal operation.
+          // It is kept and corrected because the next service outage re-arms exactly this state, and
+          // a surface that lies only during an outage is a surface that lies when it matters most.
+          if (n.stalePlayhead || n.sessionOpen === false) {
             $("track").textContent = "🎵 UNI Radio";
             $("stat").textContent = `${n.listeners || 0} listener${n.listeners === 1 ? "" : "s"} · station stream live`;
           } else {

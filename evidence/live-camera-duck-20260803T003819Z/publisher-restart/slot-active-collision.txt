@@ -1,0 +1,2 @@
+{"at":"2026-08-03T00:57:40.920Z","phase":"probe-start","case":"active-collision","slot":"cam2"}
+PASS case=active-collision event=slot_busy slot=cam2 clientId=uni-slot-gate-b raw={"type":"slot_busy","slot":"cam2","heldBy":{"label":"probe-A","deviceLabel":"probe-A","hostname":"uni-slot-probe","since":"2026-08-03T00:57:41.701Z"},"free":["cam4","cam6","cam7","cam8","cam9","cam10"],"why":"that slot is already publishing. Pick a free one, or ask the operator to release it."}

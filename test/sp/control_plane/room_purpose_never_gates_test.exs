@@ -42,6 +42,7 @@ defmodule SP.ControlPlane.RoomPurposeNeverGatesTest do
   test "a purpose is not a claim about cleanliness — every room still starts green" do
     for p <- Room.purposes() do
       assert {:ok, r} = Room.new("a-room", p)
+
       assert Room.state(r) == :green,
              "naming a room #{inspect(p)} proves nothing about it; it still has to earn clean"
     end

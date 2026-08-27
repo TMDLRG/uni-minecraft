@@ -158,6 +158,8 @@ public partial class MainWindow : Window
 
         // Fan-out arm/disarm status (direct to command center, :8098)
         await RefreshArmStatus();
+        // QUIET state + the post-reboot health verdict (same console surface)
+        await RefreshQuiet();
 
         // Provenance — including the loop's MEASURED period next to its nominal one. The deployed
         // service advertised poll_interval_ms:3000 while really running at 11.1s (a doomed 20s Gaia
@@ -894,6 +896,118 @@ public partial class MainWindow : Window
         // Never offer a button whose only possible outcome is a failure seconds before air.
         ArmBtn.IsEnabled = hasPin && !armed && !pinOrphan;
         ArmPinBox.IsEnabled = hasPin && !armed && !pinOrphan;
+    }
+
+    // ── QUIET MODE (2026-08-17, operator instruction: the button MUST be on BOTH the HUD and the Door)
+    // Posts to the command center (:8098), the same surface ARM/DISARM already use. quiet_mode.cjs is
+    // the single owner of what QUIET actually stops, so this button can never drift from the Door's or
+    // the tray's version of the same action.
+    private bool _quietBusy;
+
+    private async Task RefreshQuiet()
+    {
+        if (_quietBusy) return; // don't fight an in-flight click with a concurrent poll
+        JsonElement? r = null;
+        try
+        {
+            using var resp = await _cc.GetAsync(CcBase + "/api/quiet");
+            var raw = await resp.Content.ReadAsStringAsync();
+            r = JsonSerializer.Deserialize<JsonElement>(raw);
+        }
+        catch { r = null; }
+
+        if (r == null)
+        {
+            // UNKNOWN IS NOT "NOT QUIET". A monitor that reports a comfortable default when it cannot
+            // see is the failure this estate keeps writing down. Say we cannot tell, and offer neither
+            // button rather than a button whose outcome we cannot predict.
+            QuietStatus.Text = "quiet: console unreachable — state UNKNOWN";
+            QuietStatus.Foreground = (Brush)FindResource("Dim");
+            QuietBtn.Visibility = Visibility.Collapsed;
+            ResumeBtn.Visibility = Visibility.Collapsed;
+            BootHealthLine.Text = "";
+            return;
+        }
+
+        var quiet = r.Value.TryGetProperty("quiet", out var q) && q.ValueKind == JsonValueKind.True;
+        QuietBtn.Visibility   = quiet ? Visibility.Collapsed : Visibility.Visible;
+        ResumeBtn.Visibility  = quiet ? Visibility.Visible   : Visibility.Collapsed;
+        if (quiet)
+        {
+            var since = r.Value.TryGetProperty("since", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : "?";
+            QuietStatus.Text = $"QUIET since {since} — video core stopped on purpose; monitors up";
+            QuietStatus.Foreground = (Brush)FindResource("Warn");
+        }
+        else
+        {
+            QuietStatus.Text = "studio is UP — QUIET stops the video and gives the box back";
+            QuietStatus.Foreground = (Brush)FindResource("Dim");
+        }
+
+        // The post-reboot verdict, shown right here so it needs no command to confirm.
+        if (r.Value.TryGetProperty("boot_health", out var bh) && bh.ValueKind == JsonValueKind.Object)
+        {
+            string V(string k) => bh.TryGetProperty(k, out var v) ? (v.ValueKind == JsonValueKind.String ? v.GetString() : v.ToString()) : "?";
+            bool B(string k) => bh.TryGetProperty(k, out var v) && v.ValueKind == JsonValueKind.True;
+            BootHealthLine.Text =
+                $"BOOT {V("verdict")} — HUD {(B("hud_reboot_proven") ? "survived reboot" : "NOT proven")}, " +
+                $"monitors {(B("monitors_all_up") ? "all up" : "INCOMPLETE")}, " +
+                $"{(B("stayed_quiet") ? "stayed quiet" : "WAS SLAMMED")}, chrome {V("chrome_ram_mb")} MB (checked {V("ran_at")})";
+            BootHealthLine.Foreground = (Brush)FindResource(V("verdict") == "PASS" ? "Ok" : "Warn");
+        }
+        else { BootHealthLine.Text = ""; }
+    }
+
+    private async void OnQuiet(object sender, RoutedEventArgs e)
+    {
+        _quietBusy = true; QuietBtn.IsEnabled = false;
+        QuietStatus.Text = "stopping the video core…";
+        try
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Post, CcBase + "/api/quiet")
+            { Content = new StringContent("{}", Encoding.UTF8, "application/json") };
+            req.Headers.Add("x-uni-cc", "1");
+            using var resp = await _cc.SendAsync(req);
+            var raw = await resp.Content.ReadAsStringAsync();
+            var j = JsonSerializer.Deserialize<JsonElement>(raw);
+            if (j.TryGetProperty("err", out var errEl) && errEl.ValueKind == JsonValueKind.String)
+            {
+                // The commonest refusal is "you are LIVE" — say it, do not swallow it.
+                QuietStatus.Text = "QUIET refused — " + errEl.GetString();
+                QuietStatus.Foreground = (Brush)FindResource("Bad");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            QuietStatus.Text = "QUIET failed — " + ex.Message;
+            QuietStatus.Foreground = (Brush)FindResource("Bad");
+            return;
+        }
+        finally { _quietBusy = false; QuietBtn.IsEnabled = true; }
+        await RefreshQuiet();
+    }
+
+    private async void OnResume(object sender, RoutedEventArgs e)
+    {
+        _quietBusy = true; ResumeBtn.IsEnabled = false;
+        QuietStatus.Text = "bringing the studio back up…";
+        try
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Post, CcBase + "/api/resume")
+            { Content = new StringContent("{}", Encoding.UTF8, "application/json") };
+            req.Headers.Add("x-uni-cc", "1");
+            using var resp = await _cc.SendAsync(req);
+            _ = await resp.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            QuietStatus.Text = "RESUME failed — " + ex.Message;
+            QuietStatus.Foreground = (Brush)FindResource("Bad");
+            return;
+        }
+        finally { _quietBusy = false; ResumeBtn.IsEnabled = true; }
+        await RefreshQuiet();
     }
 
     private async void OnArm(object sender, RoutedEventArgs e)

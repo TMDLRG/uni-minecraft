@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // studio_stage.cjs — build the FULL broadcast studio (idempotent). Professional suite:
 //
 // CAMERA ROLES (real-switcher model): helper scenes ROLE_A / ROLE_B / ROLE_C each hold all
@@ -88,6 +89,33 @@ const browserSized = (url, w, h) => ({ inputKind: "browser_source", inputSetting
 const chVid = (url) => ({ inputKind: "browser_source", inputSettings: { url, width: 1920, height: 1080, restart_when_active: true, shutdown: false } });
 const chVidA = (url) => ({ inputKind: "browser_source", inputSettings: { url, width: 1920, height: 1080, restart_when_active: true, shutdown: false, reroute_audio: true } });
 
+// THE AGENT'S VOICE. Declared here 2026-08-04 because its ABSENCE from this file took it off air.
+//
+// What happened, from OBS's own log: at 22:53:31 on 2026-08-03 the scene collection loaded with
+// `ovl_voice` on ~18 scenes; at 22:53:48 -- seventeen seconds later -- a stage rebuild ran during a
+// post-crash bring-up and removed every scene. ovl_voice was created by hand and appears NOWHERE in
+// this file, so the rebuild had nothing to recreate it from. It simply never came back, silently,
+// because an absent audio source produces no error -- only silence. The agent went on speaking to
+// an audience that could not hear it. See the note above OVERLAY_STACK: a declaration is not an
+// instantiation, and the converse bites just as hard -- an instantiation with no declaration cannot
+// survive a rebuild.
+//
+// IT IS NOT `browser()`, AND THE DIFFERENCES ARE THE WHOLE POINT:
+//   restart_when_active:false  browser() sets this TRUE, which is right for a visual overlay and
+//                              catastrophic here. This source lives on EVERY scene, so every cut
+//                              would re-init CEF, drop its websocket to voice_server, and chop any
+//                              sentence in progress.
+//   reroute_audio:true         without it the page's audio goes to a Windows playback device rather
+//                              than the OBS mixer -- which is exactly the drifting-device failure
+//                              that `Desktop Audio` was retired for.
+//   160x90                     the page renders nothing (a transparent 1px stage; its whole
+//                              contribution is audio), so compositing it full-frame on 35 scenes
+//                              would cost real bandwidth to draw nothing.
+// The URL is loopback and deliberately not a name: voice_server binds 127.0.0.1 and the CEF page
+// runs inside OBS on this same box, so a name here could only ever resolve somewhere wrong.
+const VOICE_URL = "http://127.0.0.1:8106/voice.html";
+const voiceBrowser = () => ({ inputKind: "browser_source", inputSettings: { url: VOICE_URL, width: 160, height: 90, restart_when_active: false, shutdown: false, reroute_audio: true } });
+
 const INPUTS = {
   // colony = WebGL hero, must stay a real window (Intel iGPU, irreducible).
   cap_colony: winCap(winOf(ch.colony)),
@@ -124,8 +152,24 @@ const INPUTS = {
   MicHost: { inputKind: "wasapi_input_capture", inputSettings: { device_id: "default" } },
   ShowMusic: { inputKind: "ffmpeg_source", inputSettings: { local_file: AUDIO, is_local_file: true, looping: true, restart_on_activate: false } },
   // P5: SMPTE bars + 1kHz tone reference — cut to BARS_TONE for the SEEN-sweep stage of the BROADCAST
-  // TEST. looping+restart_on_activate so each cut restarts the 60s clip cleanly.
-  BarsTone: { inputKind: "ffmpeg_source", inputSettings: { local_file: BARS, is_local_file: true, looping: true, restart_on_activate: true, hw_decode: true, clear_on_media_end: false } },
+  // TEST.
+  //
+  // restart_on_activate WAS true, "so each cut restarts the 60s clip cleanly". Measured 2026-08-02:
+  // that made /api/preflight report a permanent NO-GO. OBS does not decode a restart_on_activate
+  // media source while it is INACTIVE — GetSceneItemList reported sourceWidth/sourceHeight 0x0 and
+  // the media cursor sat frozen at 33ms — and the preflight sweep renders every scene OFFSCREEN.
+  // So the one scene that exists to prove the studio can put a picture out was the one scene the
+  // picture test could never see, and it failed as BLACK/STUCK with every input present.
+  //
+  // Proven, not assumed: cutting BARS_TONE to program (off air) took it to 1280x720 with the cursor
+  // advancing, and a GetSourceScreenshot showed real SMPTE bars. The bars were always fine ON AIR.
+  // The gate was measuring a source OBS had switched off.
+  //
+  // restart_on_activate:false + looping:true keeps it decoding continuously — the same pair
+  // ShowMusic already uses two lines above. Restarting a STATIC TEST PATTERN at frame 0 on each cut
+  // buys nothing, and a source that always renders is worth more on air than one that has to be
+  // activated before it exists. With this, preflight goes GO:true with 18 scenes passing on pixels.
+  BarsTone: { inputKind: "ffmpeg_source", inputSettings: { local_file: BARS, is_local_file: true, looping: true, restart_on_activate: false, hw_decode: true, clear_on_media_end: false } },
   bg_desk: { inputKind: "color_source_v3", inputSettings: { color: 4279769112, width: 1920, height: 1080 } },
   ovl_lower3rd: browser(OVL + "/lower-third.html"),
   ovl_ticker: browser(OVL + "/ticker.html"),
@@ -151,13 +195,28 @@ const INPUTS = {
   // distortion. Keep this in sync with the transform in MUSIC_CARD / COLONY_SIDE_MUSIC below.
   ovl_music_card: browserSized(OVL + "/musichero.html?mode=card", 924, 780),
   ovl_lyrics: browser(OVL + "/lyrics.html"),
+  // The agent's voice. See voiceBrowser() above for why it is not browser().
+  ovl_voice: voiceBrowser(),
   // ShowRadio = the /radio MP3 stream from the music service. HTTP URL is resolved in main()
   // (stageMusicUrl below) before CreateInput runs; here we stage with a placeholder that either
   // gets rewritten to the resolved URL, or falls back to about:blank if the service is down
   // (same "did not resolve -> staged unbound" honest-degrade pattern as cap_web).
   // 2026-07-17 PRODUCTION HARDENING: restart_on_activate:true — a live stream must re-establish on
   // cut. Was `false` — that let a stalled connection linger silently across cuts.
-  ShowRadio: { inputKind: "ffmpeg_source", inputSettings: { input: "", is_local_file: false, buffering_mb: 2, reconnect_delay_sec: 3, clear_on_media_end: false, restart_on_activate: true } },
+  //
+  // 2026-08-02 REVERSED BACK TO false, ON AIR, AT THE OPERATOR'S DIRECTION — and the reversal is the
+  // whole point, so read why before flipping it a third time. Once ShowRadio became the bed on EVERY
+  // scene (below), restart_on_activate:true meant the music re-cued on EVERY SINGLE CUT. The
+  // operator's words: "when change scenes the music should keep rolling just like radio". A bed that
+  // restarts on each cut is not a radio, and re-establishing the connection is audible.
+  //
+  // SAY THE COST PLAINLY: this gives back the 2026-07-17 protection. A stalled connection can now
+  // linger across cuts instead of being cleared by the next activation. What replaces it is NOT
+  // nothing, but it is not equivalent either: reconnect_delay_sec:3 recovers a DROPPED connection,
+  // and ShowMusic stays loaded-but-muted on the same scenes as an instant fallback. A silent STALL
+  // (socket open, no audio) is the residual hole and nothing currently detects it automatically —
+  // verify_radio_bed.cjs catches it only when someone runs it. Do not claim that gap is closed.
+  ShowRadio: { inputKind: "ffmpeg_source", inputSettings: { input: "", is_local_file: false, buffering_mb: 2, reconnect_delay_sec: 3, clear_on_media_end: false, restart_on_activate: false } },
 };
 // up to 10 LAN source slots (cam1..cam10) — the unified launcher (pub.html) publishes a
 // Camera / Screen / Video into any slot; MediaMTX re-serves each on loopback RTSP for OBS. Idle
@@ -364,10 +423,90 @@ for (const s of Object.keys(SCENES)) {
   if (s === "MUSIC_CARD") { SCENES[s].push(...["ovl_watermark", "ovl_lower3rd", "ovl_onair"].map((o) => [o, F])); continue; }
   SCENES[s].push(...OVERLAY_STACK.map((o) => [o, F]));
 }
+// THE VOICE GOES ON EVERY SCENE, and it is its own pass rather than a member of any chrome list.
+// It is not chrome: it draws nothing, so it has no business in a stack whose whole purpose is
+// z-order and visual collision. It also must land on the MUSIC scenes, which deliberately opt OUT
+// of OVERLAY_STACK above -- an agent must still be able to say "this next track is licensed" over a
+// music card. It is given its NATIVE 160x90 rather than F: stretching a transparent page to
+// full-frame on 35 scenes is scaling work done to draw nothing.
+// STANDBY and STANDBY_OFFLINE are excluded on purpose, matching the convention
+// claudespeak_source.cjs declared: an agent talking over a standby card is worse than silence.
+const VOICE_SILENT_SCENES = new Set(["STANDBY", "STANDBY_OFFLINE"]);
+for (const s of Object.keys(SCENES)) {
+  if (VOICE_SILENT_SCENES.has(s)) continue;
+  SCENES[s].push(["ovl_voice", { x: 0, y: 0, w: 160, h: 90 }]);
+}
 // ovl_lyrics is NOT in any default stack — it is a per-segment operator choice, and on MUSIC_HOUR
 // it would collide with the hero's right column. It exists as an input so the operator can enable
 // it by hand on MUSIC_HOUR for a lyrics segment; it is created here DISABLED so it never surprises.
 SCENES.MUSIC_HOUR.push(["ovl_lyrics", { ...F, disabled: true }]);
+
+// ── THE BED PLAYS EVERYWHERE (2026-08-02, live, at the operator's direction) ─────────────────────
+// Measured mid-broadcast: ShowMusic was on only 8 of 34 scenes — COLONY/PIP/GLASS_OS/OVERLOOK/WEB
+// plus the three music templates. Cutting to ANY camera, share, clip, desk or grid shot dropped the
+// show into silence, which reads on air as a fault. The operator's words: "it MUST be available to
+// all views and scenes... without fail, without collapse."
+//
+// Applied live to the running OBS by viewer/music_everywhere.cjs (26 scenes, no rebuild, no feed
+// interruption); this loop is the DURABLE half so a future rebuild reproduces it. Without both, the
+// next bring-up would silently undo the fix.
+//
+// Two deliberate exclusions, and they are not oversights:
+//   - STANDBY / STANDBY_OFFLINE stay SILENT. The honest "please stand by" slate is silent on purpose;
+//     music over a fault slate would dress up an outage as programming.
+//   - Scenes already carrying ShowRadio (the live music service) do NOT also get ShowMusic — two beds
+//     at once is double audio, not redundancy.
+// ── THE SYSTEM STATUS SHOT (2026-08-02, built live) ─────────────────────────────────────────────
+// A full-frame board naming every broadcast subsystem and, first, the ones that are DOWN. It reads
+// state.health from the same spool the ticker line is derived from (written server-side by
+// viewer/health_ticker.cjs from /api/health), so the board, the ticker and the operator's private
+// panel are three surfaces over ONE set of bytes and cannot disagree.
+//
+// It carries watermark + onair only: station identity, nothing that would decorate a fault. Created
+// live in the running OBS during the show; this is the durable half so a rebuild reproduces it.
+INPUTS.ovl_health = browser(OVL + "/health.html");
+SCENES.HEALTH = [["ovl_health", F], ["ovl_watermark", F], ["ovl_onair", F]];
+GROUPS.find((g) => g.name === "FULL SCREEN").scenes.push("HEALTH");
+
+const SILENT_BY_DESIGN = new Set(["STANDBY", "STANDBY_OFFLINE"]);
+
+// ── THE BED IS THE RADIO, NOT A FILE (2026-08-02, live, operator-reported on air) ────────────────
+// The loop below USED TO push ShowMusic — the local file bed — onto every scene lacking one. That is
+// what the operator heard and reported: "the music ... is stuck on one album ... the music service
+// needs to run like radio, always going and then we listen it".
+//
+// He was exactly right, and the file made it structurally impossible to be otherwise. ShowMusic is
+// one ffmpeg_source on C:/Users/mpolz/Downloads/Album/album_full.m4a with looping:true. That file is
+// 13 tracks of ONE album (Dependency Tree) concatenated — ffprobe sums to 2705.92s, which matched
+// OBS's reported mediaDuration of 2705920ms exactly. Looping it can never reach a second album. The
+// real station (52 tracks, 4 albums) was healthy the whole time and attached to just 3 of 37 scenes,
+// muted: it rolled, and nobody listened.
+//
+// THE NOW-PLAYING CARD WAS THE SAME DEFECT, NOT A SECOND ONE. command_center's poller asks
+// /api/nowplaying?session=obs-studio-thinker. With nothing pulling /radio there is no session, so the
+// service answers {status:"no-session", reference:<track>} — and `reference` is NOT a playhead, it
+// WALKS THE CATALOGUE on every call (measured: seq 37,0,15,30,45,8,23,38 over 8 polls 15s apart).
+// Recorded on air: across 4 minutes the audience heard ONE track while the card named EIGHT titles
+// from FOUR albums. No overlay change could have fixed that — there was no true answer to read. The
+// cure is to OPEN THE SESSION; the service then reports a real advancing positionSec and the existing
+// card code tells the truth untouched. Proven off-air before the change (own listener: positionSec
+// 6/12/18/…/48 second-for-second, matching the ICY StreamTitle in that connection's own bytes).
+//
+// So: the bed is ShowRadio everywhere. ShowMusic is LEFT WHERE IT ALREADY IS and kept MUTED as the
+// instant fallback for a service outage — the one case the radio cannot be the bed. Two beds in one
+// scene is only safe because music_director.cjs enforceOneBed() mutes the loser every tick AND
+// main() below mutes ShowMusic explicitly at bring-up; without both, this would be double audio.
+// Applied live by viewer/radio_everywhere.cjs (32 scenes, program last, no feed interruption);
+// this loop is the DURABLE half. Gate: viewer/verify_radio_bed.cjs.
+for (const s of Object.keys(SCENES)) {
+  if (SILENT_BY_DESIGN.has(s)) continue;               // a fault slate stays silent; see below
+  const names = SCENES[s].map((it) => (Array.isArray(it) ? it[0] : it));
+  if (!names.includes("ShowRadio")) SCENES[s].push(["ShowRadio"]);
+}
+// STANDBY / STANDBY_OFFLINE stay SILENT, and that is not an oversight: music over a fault slate
+// dresses an outage up as programming. STANDBY_OFFLINE keeps its explicit ShowMusic FILE bed on
+// purpose — it is the honest degrade for "the music service is unreachable", which is precisely the
+// moment the radio cannot be the bed.
 // voice anchors on every talk template (any scene carrying MicHost)
 for (const s of Object.keys(SCENES)) if (SCENES[s].some(([n]) => n === "MicHost")) SCENES[s].push(...VOICE_ANCHORS.map(([n, t]) => [n, { ...t }]));
 
@@ -413,7 +552,7 @@ function req(type, data) {
 }
 ws.on("message", (raw) => {
   const m = JSON.parse(raw.toString());
-  if (m.op === 0) ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } }));
+  if (m.op === 0) ws.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) }));
   else if (m.op === 2) main().catch((e) => { console.log("FATAL " + (e.stack || e)); process.exit(1); });
   else if (m.op === 7) {
     const p = pending.get(m.d.requestId);
@@ -533,6 +672,13 @@ async function main() {
   // Music beds live at -14dBFS as before.
   await req("SetInputVolume", { inputName: "ShowMusic", inputVolumeDb: -14 });
   await req("SetInputVolume", { inputName: "ShowRadio", inputVolumeDb: -14 });
+  // ONE BED AT BRING-UP (2026-08-02). Both beds now sit on the same scenes (ShowRadio is THE bed;
+  // ShowMusic is the muted file fallback for a service outage), so the collection must come up in the
+  // arbitrated state rather than waiting for music_director.cjs's first enforceOneBed() tick. Without
+  // this, a rebuild would open with BOTH unmuted — double audio on air, which is a fault the audience
+  // hears. The two levels are set equal above so the fallback cannot jump loud when it takes over.
+  await req("SetInputMute", { inputName: "ShowRadio", inputMuted: false });
+  await req("SetInputMute", { inputName: "ShowMusic", inputMuted: true });
   await req("SetInputMute", { inputName: "MicHost", inputMuted: true });
   await req("SetInputMute", { inputName: "RemoteCam1", inputMuted: true });
   await req("SetInputMute", { inputName: "RemoteCam2", inputMuted: true });

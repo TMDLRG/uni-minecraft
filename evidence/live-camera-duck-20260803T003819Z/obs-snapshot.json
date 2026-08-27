@@ -1,0 +1,35 @@
+{
+  "takenUtc": "2026-08-03T00:38:43.380Z",
+  "streamActive": true,
+  "outputSkippedFrames": 441,
+  "outputTotalFrames": 1341778,
+  "outputCongestion": 0,
+  "outputReconnecting": false,
+  "recording": false,
+  "program": "TRIO",
+  "showRadio": {
+    "muted": false,
+    "volDb": -20.700000762939453
+  },
+  "showMusic": {
+    "muted": true,
+    "volDb": -20.700000762939453
+  },
+  "micHost": {
+    "muted": true
+  },
+  "cams": {
+    "RemoteCam1": false,
+    "RemoteCam2": true,
+    "RemoteCam3": true,
+    "RemoteCam4": true,
+    "RemoteCam5": true,
+    "RemoteCam6": true,
+    "RemoteCam7": true,
+    "RemoteCam8": true,
+    "RemoteCam9": true,
+    "RemoteCam10": true
+  },
+  "cpu": 8.892986092903971,
+  "memMB": 1613
+}
