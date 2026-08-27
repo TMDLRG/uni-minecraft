@@ -1,0 +1,3 @@
+{"at":"2026-08-03T00:57:55.932Z","phase":"probe-start","case":"stale-takeover","slot":"cam2"}
+waiting 31s for STALE_MS timeout...
+PASS case=stale-takeover event=b-registered-successfully-after-A-went-stale slot=cam2 newClientId=uni-slot-gate-b raw={"type":"quality","state":"idle","profile":{"maxBitrate":120000,"targetW":160,"maxFramerate":4}}

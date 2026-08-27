@@ -1,0 +1,98 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>UNI — SYSTEM STATUS</title>
+<!--
+  health.html — the full-frame SYSTEM STATUS shot. The operator's rule, made literal:
+  "this is public to BE public, NOT to hide — say what is broke ON AIR, show our guts."
+
+  It reads the SAME spool every other overlay reads (./state.json on :8099, same-origin, no CORS),
+  where viewer/health_ticker.cjs writes the real /api/health result server-side. So this page can
+  never disagree with the ticker or with the operator's own private health panel — one source, three
+  surfaces.
+
+  It is deliberately plain: a broadcast status shot must be legible at 1080p from a sofa, and it must
+  never look like a dashboard that is decorating a failure. Green is stated, red is NAMED.
+-->
+<style>
+  html,body{margin:0;height:100%;background:#080b0f;color:#e8eef5;
+    font:16px/1.45 ui-monospace,"Cascadia Mono",Consolas,monospace;overflow:hidden}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:54px 72px;box-sizing:border-box}
+  .kicker{color:#3fd2ff;letter-spacing:.34em;font-size:19px;font-weight:700}
+  h1{margin:8px 0 4px;font-size:58px;letter-spacing:.02em;font-weight:800}
+  .sub{color:#8ea3b8;font-size:20px;margin-bottom:26px}
+  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px 26px;align-content:start}
+  .row{display:flex;align-items:center;gap:12px;font-size:22px;padding:5px 0}
+  .dot{width:13px;height:13px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 12px currentColor}
+  .ok .dot{background:#39d98a;color:#39d98a}
+  .bad .dot{background:#ff5c5c;color:#ff5c5c}
+  .ok{color:#cfe6d8}
+  .bad{color:#ffd0d0;font-weight:700}
+  .name{flex:0 0 auto}
+  .detail{color:#7d8ea1;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bad .detail{color:#ffb0b0}
+  .foot{margin-top:20px;border-top:1px solid #1b2734;padding-top:14px;
+    display:flex;justify-content:space-between;align-items:baseline;color:#8ea3b8;font-size:17px}
+  .tally{font-size:26px;font-weight:800}
+  .tally .g{color:#39d98a}.tally .b{color:#ff5c5c}
+  .creed{color:#5f7488;font-size:16px;font-style:italic}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="kicker">UNI · LIVE SYSTEM STATUS</div>
+  <h1 id="head">reading…</h1>
+  <div class="sub" id="sub">every subsystem, measured — not asserted</div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">
+    <div class="tally" id="tally">—</div>
+    <div class="creed">nothing here is hidden · a failure shown is the system working</div>
+  </div>
+</div>
+<script>
+// Fixed, human-readable names. An id with no entry still renders (under its raw id) — an unknown
+// subsystem must never be silently dropped from a status board.
+var LABEL = {
+  obs:"OBS mixer", restreamer:"Restreamer", fanout:"Simulcast fan-out", streamq:"Stream queue",
+  web:"WEB source", clip:"CLIP source", overlook:"UNI Producer view", overlays:"Overlay plane",
+  colonycam:"Colony camera", glass:"Glass cockpit", phoenix:"Colony node", mc:"Minecraft world",
+  cam1:"Camera 1", cam2:"Camera 2", ascii_lint:"Script lint"
+};
+// Slots that are absent BY DESIGN in normal operation (unused cameras, the local colony that lives
+// on the lab). Showing them red would cry wolf and bury the real signal.
+function ignored(id){ return /^(cam([3-9]|10)|phoenix|mc|ascii_lint)$/.test(id); }
+
+function draw(checks){
+  var real = checks.filter(function(c){ return !ignored(c.id); });
+  var bad  = real.filter(function(c){ return !c.ok; });
+  document.getElementById("head").textContent =
+    bad.length ? (bad.length + " SUBSYSTEM" + (bad.length>1?"S":"") + " DOWN") : "ALL SYSTEMS GREEN";
+  document.getElementById("head").style.color = bad.length ? "#ff5c5c" : "#39d98a";
+  document.getElementById("sub").textContent = bad.length
+    ? "named below, in the open, while we fix them"
+    : "every subsystem, measured — not asserted";
+  // broken first: a status board that buries the fault under greens is decoration
+  real.sort(function(a,b){ return (a.ok?1:0)-(b.ok?1:0); });
+  document.getElementById("grid").innerHTML = real.map(function(c){
+    var d = (c.detail||"").replace(/https?:\/\/\S+/g,"").slice(0,46);
+    return '<div class="row '+(c.ok?"ok":"bad")+'"><span class="dot"></span>'
+         + '<span class="name">'+(LABEL[c.id]||c.id)+'</span>'
+         + '<span class="detail">'+d+'</span></div>';
+  }).join("");
+  document.getElementById("tally").innerHTML =
+    '<span class="g">'+(real.length-bad.length)+' up</span> · '
+    + (bad.length ? '<span class="b">'+bad.length+' down</span>' : '<span class="g">0 down</span>');
+}
+
+function tick(){
+  fetch("./state.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(s){
+    if (s && s.health && s.health.checks) return draw(s.health.checks);
+    // The spool carries no health block yet. SAY SO — a status board that renders an empty grid
+    // looks like "nothing is wrong", which is the one lie it must never tell.
+    document.getElementById("head").textContent = "STATUS FEED UNAVAILABLE";
+    document.getElementById("head").style.color = "#ffb84d";
+    document.getElementById("sub").textContent = "the health probe is not reporting — this is itself a fault, shown";
+    document.getElementById("grid").innerHTML = "";
+    document.getElementById("tally").textContent = "—";
+  }).catch(function(){});
+}
+tick(); setInterval(tick, 3000);
+</script>
+</body></html>

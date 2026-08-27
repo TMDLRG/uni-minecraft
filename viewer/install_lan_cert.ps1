@@ -1,8 +1,8 @@
-# install_lan_cert.ps1 — trust the LAN's self-signed certs so CEF (OBS's browser source) and every
+# install_lan_cert.ps1 -- trust the LAN's self-signed certs so CEF (OBS's browser source) and every
 # browser on this box loads glass/producer/horologium/etc. WITHOUT a warning page.
 #
 # THE PROBLEM this exists to solve (found LIVE 2026-07-17): OBS's CEF browser source silently
-# refuses to load a self-signed HTTPS URL — there is NO way to click through in CEF as there is in
+# refuses to load a self-signed HTTPS URL -- there is NO way to click through in CEF as there is in
 # a normal browser. cap_web renders BLACK. Same on any future cap_web navigation to LAN HTTPS.
 #
 # THE FIX: install the LAN server cert into `Cert:\CurrentUser\Root`. Modern OBS/CEF consult the
@@ -35,7 +35,7 @@ foreach ($name in $hosts) {
     } catch {}
     if (-not $addr) { L "  $fqdn -> no DNS answer, skip"; $skipped++; continue }
 
-    # Pull the cert from the live TLS handshake — no dependency on a checked-in .cer file that
+    # Pull the cert from the live TLS handshake -- no dependency on a checked-in .cer file that
     # would rot the first time a host is re-issued.
     try {
         $tcp = New-Object System.Net.Sockets.TcpClient

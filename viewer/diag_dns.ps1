@@ -12,7 +12,7 @@ $ErrorActionPreference = 'Continue'
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { Write-Host "ELEVATION REQUIRED - re-run from admin PowerShell." -ForegroundColor Red; exit 1 }
 
-# $chip was hardcoded "10.190.245.122" until 2026-07-26 — dead since the lease moved
+# $chip was hardcoded "10.190.245.122" until 2026-07-26 -- dead since the lease moved
 # .122 -> .121 on 2026-07-16. A DNS DIAGNOSTIC pointed at the wrong host is worse than
 # no diagnostic: every test below would have failed and the conclusion "DNS is broken"
 # would have been wrong. The chip's LAN address is a DHCP lease and is NOT DECLARABLE
@@ -20,7 +20,7 @@ if (-not $isAdmin) { Write-Host "ELEVATION REQUIRED - re-run from admin PowerShe
 #
 # Resolution uses getaddrinfo, which is a DIFFERENT path from the one under test here
 # (Resolve-DnsName -Server / NRPT / c-ares), so this is not circular. If it cannot
-# resolve, the script REFUSES rather than falling back to a stale literal — a
+# resolve, the script REFUSES rather than falling back to a stale literal -- a
 # diagnostic that guesses its own target has nothing to report.
 if (-not $Chip) {
   try {

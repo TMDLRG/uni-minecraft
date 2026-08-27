@@ -172,6 +172,35 @@ defmodule SP.Brain.Genome do
   # (hunt for food). Appended last so existing action indices are unchanged.
   @actions [:forward, :turn_left, :turn_right, :mine, :eat, :noop, :jump, :place, :craft, :attack]
 
+  # FROZEN-FACTOR REPAIR (§2). The COMMITTED domain string of the A₀ prior draw. It is
+  # pre-registered so the covenant falsifier is checkable: a SECOND domain (…v2:) must give
+  # materially the SAME per-factor behaviour, else the specific realisation is carrying
+  # information and a prior has been smuggled in — which does not ship.
+  @gauge_domain "uni.exterocept.gauge.v1:"
+  def gauge_domain, do: @gauge_domain
+
+  # The CONTESTED set: the twelve EXTEROCEPTIVE factors measured frozen by symmetry. Every one of
+  # them ships no `:init_a` today, so gate-off leaves each untouched. The proprioceptive/interoceptive
+  # modalities (motor_cortex, metabolism, homeostat) already carry `:diagonal` and are NOT listed —
+  # they self-sense, so their symmetry was already broken by a signed decision. `:scene` is also NOT
+  # listed: it is exteroceptive but its observation is a learned posterior from a separate cortex,
+  # a different evidential object that this repair does not claim to have measured.
+  @contested_exteroceptive [
+    :status,
+    :inventory,
+    :vision,
+    :threat,
+    :social,
+    :self,
+    :strategy,
+    :light,
+    :sky,
+    :sight,
+    :build,
+    :prey
+  ]
+  def contested_exteroceptive, do: @contested_exteroceptive
+
   @enforce_keys [:growth_plan]
   defstruct growth_plan: [],
             gamma: 8.0,
@@ -248,7 +277,32 @@ defmodule SP.Brain.Genome do
             # signal. Removes the false "eat always refills" belief so the ONLY route to raise energy when hungry+
             # empty is acquire-food(hunt)→eat ⇒ hunting EMERGES via the existing novelty + has_food-C. Gated to the
             # forage-honest lineage; the live homeostat_colony/0 is untouched.
-            consummation_honest: false
+            consummation_honest: false,
+            # FROZEN-FACTOR REPAIR (docs/whiteboard/DEFECTS-AND-REPAIRS.md §2, opt-in, heritable).
+            # nil (default, and EVERY existing lineage) ⇒ no `:init_a` on any exteroceptive modality ⇒
+            # `Map.take` yields the exact prior key-set ⇒ card/1 and express/1 are BYTE-IDENTICAL to today.
+            # `:prior_draw` ⇒ each contested exteroceptive factor's A₀ column is DRAWN from its own
+            # symmetric Dirichlet prior, `Â₀[:,s] ~ Dir(κ·1_{n_o})` with κ = 1 (the κ imposed by
+            # `Model.add1`'s `+1`, and the unique κ with a closed form: Gamma(1,1) = Exp(1) ⇒
+            # `x_o = −ln u_o`, `col = x/Σx`, branch-free, one uniform per cell).
+            #
+            # WHY. For the twelve exteroceptive factors A has identical columns, B is the identity and D
+            # is uniform, so the whole parameter set is invariant under relabelling hidden states (S_ns),
+            # and every update rule reads state-indexed VALUES, never a state INDEX — so the update map is
+            # S_ns-equivariant. An equivariant map applied to an invariant point returns an invariant
+            # point: q(s) is uniform FOREVER, the epistemic term is exactly 0, and every C-override is
+            # behaviourally inert. Measured max|qᵢ−qⱼ| = 4.4e-16 / 3.0e-15 / 1.8e-15.
+            #
+            # The defect is choosing the prior's MEAN (1/n_o — the one point in the simplex every
+            # permutation fixes) as the initial point estimate. It is NOT the prior, NOT the learning
+            # rule, and NOT `ns == no`. `E[Â₀] = 1/n_o` EXACTLY, so `E[pA]` is unchanged: the prior is not
+            # changed by one iota; only its realisation stops sitting on the symmetric point.
+            #
+            # OPERATOR GATE (genome.ex:5-9, docs/UNIVERSE.md:138-141 — the DNA encodes no world
+            # knowledge): a draw from the UNCHANGED prior asserts nothing about the world, which is why
+            # this is more conservative than the already-signed `:diagonal`. Enabling it for a SCORED
+            # lineage is the operator's call, not an agent's.
+            exteroceptive_a_init: nil
 
   @type t :: %__MODULE__{}
 
@@ -511,6 +565,16 @@ defmodule SP.Brain.Genome do
     honest? = Map.get(dna, :consummation_honest, false)
     inv_i = honest? && Enum.find_index(mods, &(&1.name == :inventory))
 
+    # FROZEN-FACTOR REPAIR (§2, gated). nil (default + EVERY existing lineage) ⇒ no branch taken ⇒ no
+    # `:init_a` key ⇒ `Map.take` yields the exact prior key-set ⇒ byte-identical card. `:prior_draw` ⇒
+    # each CONTESTED exteroceptive modality carries `{:prior_draw, name, domain}`, which the Designer
+    # routes to a deterministically-seeded draw from the SAME symmetric Dirichlet prior it evaluates the
+    # mean of today. Ordered AFTER the honest? branches so the already-signed honest-consummation
+    # semantics wins where they overlap: with BOTH gates on, `:inventory` keeps its `:diagonal`
+    # self-sensing A (the couple reads q_inv[has_food] and needs that channel identifiable), and every
+    # other contested factor still gets its draw.
+    prior_draw? = Map.get(dna, :exteroceptive_a_init, nil) == :prior_draw
+
     %{
       # carry :init_a when a modality declares it (proprioception ⇒ :diagonal). Map.take omits absent keys,
       # so default/exteroceptive modality cards are byte-unchanged (no :init_a ⇒ designer uses uniform A).
@@ -523,6 +587,9 @@ defmodule SP.Brain.Genome do
 
               (honest? and inv_i) && m.name in [:energy_reserve, :gut_satiety] ->
                 Map.put(m, :couple, %{parent_index: inv_i, parent_state: 3})
+
+              prior_draw? and m.name in @contested_exteroceptive ->
+                Map.put(m, :init_a, {:prior_draw, m.name, @gauge_domain})
 
               true ->
                 m
@@ -693,6 +760,10 @@ defmodule SP.Brain.Genome do
     |> Map.put_new(:max_phase, nil)
     |> Map.put_new(:nursery, nil)
     |> Map.put_new(:consummation_honest, false)
+    # FROZEN-FACTOR REPAIR (§2): back-filled the same way, and deliberately NOT given a Det draw in
+    # mutate/2 or recombine/3 — it is a structural RED field, not an evolvable trait — so every
+    # existing lineage's rng draw-order, and thus its mutation behaviour, is byte-identical.
+    |> Map.put_new(:exteroceptive_a_init, nil)
   end
 
   # --- helpers ---------------------------------------------------------------

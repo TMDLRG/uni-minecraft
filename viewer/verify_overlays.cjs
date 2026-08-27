@@ -1,3 +1,4 @@
+const __obsauth = require("./lib/obs_auth.cjs");
 // verify_overlays.cjs — THE OVERLAY PROOF GATE (binding; see docs/STUDIO_SYSTEMS.md).
 // "Overlay server running" is NOT proof of overlays. This verifies against OBS itself:
 //   1. obs-websocket reachable (:4455)
@@ -27,6 +28,7 @@ const WebSocket = require("ws");
 const fs = require("fs");
 const path = require("path");
 const { expectedOverlaysFor } = require("./studio_stage.cjs");
+const probe = require("./lib/frame_probe.cjs");
 const OVERLAY_HOST = "127.0.0.1:8099";
 const ws = new WebSocket("ws://127.0.0.1:4455");
 let idc = 0;
@@ -43,7 +45,7 @@ ws.on("error", (e) => fail("obs-websocket :4455 unreachable (" + e.message + ")"
 setTimeout(() => fail("timeout talking to OBS"), 15000);
 ws.on("message", async (raw) => {
   const m = JSON.parse(raw.toString());
-  if (m.op === 0) { ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1 } })); return; }
+  if (m.op === 0) { ws.send(JSON.stringify({ op: 1, d: __obsauth.identifyD(m.d) })); return; }
   if (m.op === 7) { const r = pending[m.d.requestId]; if (r) { delete pending[m.d.requestId]; r(m.d); } return; }
   if (m.op !== 2) return;
   try {
@@ -65,6 +67,13 @@ ws.on("message", async (raw) => {
       const it = byName[name];
       if (!it) return fail(`scene '${scene}' declares '${name}' but it is NOT in the scene — stage never built or drifted (run studio_stage.cjs)`);
       if (!it.sceneItemEnabled) return fail(`source '${name}' present but DISABLED in '${scene}'`);
+      // ovl_voice is the AGENT VOICE source. It legitimately comes from voice_server (:8106), NOT
+      // the visual overlay server (:8099), so the :8099 URL assertion below does not apply to it.
+      // Its present+enabled is still verified above (that IS the important part for go-live); its
+      // audio actually reaching the mixer is proven separately by audio_meter.cjs. Added 2026-08-04
+      // when ovl_voice joined every scene in studio_stage.cjs — without this exemption verify_overlays
+      // FAILs on every scene and wrongly blocks go-live. (RAID f3871277 / the voice architecture.)
+      if (name === "ovl_voice") continue;
       const s = (await req("GetInputSettings", { inputName: name })).responseData.inputSettings || {};
       if (!s.url || !s.url.includes(OVERLAY_HOST)) return fail(`source '${name}' url is '${s.url}' — not the overlay server ${OVERLAY_HOST}`);
     }
@@ -92,9 +101,36 @@ ws.on("message", async (raw) => {
       fs.writeFileSync(out, Buffer.from(shot.responseData.imageData.split(",")[1], "base64"));
     }
 
+    // ── AND NOW LOOK AT IT (2026-08-05) ───────────────────────────────────────────────────────────
+    // Everything above this line measures EXISTENCE: the sources this scene declares are present,
+    // enabled, and addressed at the overlay server. All of it can be true over a black frame, and on
+    // 2026-08-05 it was: this gate wrote overlay_proof.png at 20:06:03Z with a mean luma of 1.86/255
+    // — 98.7% black — printed PASS and exited 0. studio_up.ps1 and studio_boot.ps1 both turn that
+    // exit code into the words "OVERLAYS PROVEN". Nothing in this file had ever read a pixel.
+    //
+    // A second, tiny (160x90) UNCOMPRESSED grab is taken for measurement — uncompressed because the
+    // byte count of a JPEG was deliberately removed as "the byte-count lie" (command_center.cjs:653),
+    // and small because this runs on a CPU-saturated live box and 160x90 answers the question.
+    const bmpShot = await req("GetSourceScreenshot", { sourceName: scene, imageFormat: "bmp", imageWidth: 160, imageHeight: 90 });
+    if (!bmpShot.requestStatus || bmpShot.requestStatus.result !== true) {
+      return fail(`could not grab a BMP frame of '${scene}' to inspect`
+        + ` (OBS said: ${(bmpShot.requestStatus && bmpShot.requestStatus.comment) || "no comment"}).`
+        + ` The overlay SOURCE checks passed, but this gate will not certify a picture it could not look at.`);
+    }
+    const frame = probe.analyzeBmp(Buffer.from(String(bmpShot.responseData.imageData).split(",")[1], "base64"));
+    const v = probe.verdictFor(scene, frame);
+    if (v.fail) {
+      return fail(`scene '${scene}' has all its overlays and NO PICTURE — ${v.verdict}.\n`
+        + `       ${v.why}\n`
+        + `       Every source check above PASSED, and that is exactly the point: a source can be\n`
+        + `       present, enabled and correctly addressed while the frame is black. Look at ${out}.`);
+    }
+
     const carried = required.length ? required.join("/") : "(this scene declares no overlays by design)";
     console.log(`OVERLAY PROOF: PASS — scene '${scene}' carries ${carried} (enabled, -> ${OVERLAY_HOST});`
       + ` state.json updatedUtc=${state.updatedUtc || "?"}; screenshot ${out}`
+      + `\n  PICTURE: ${v.verdict} — ${v.why}`
+      + (v.verdict === "FLAT" ? `\n  ^^ NOT a failure, but the frame is nearly uniform. LOOK at it before you cut.` : "")
       + (extras.length ? `\n  NOTE: also enabled but not declared for this scene: ${extras.join(", ")}`
         + ` — expected if you turned one on for a segment; investigate if you did not.` : ""));
     process.exit(0);

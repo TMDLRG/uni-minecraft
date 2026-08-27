@@ -1,0 +1,244 @@
+diff --git a/viewer/music_director.cjs b/viewer/music_director.cjs
+index 59d0158..328ed6e 100644
+--- a/viewer/music_director.cjs
++++ b/viewer/music_director.cjs
+@@ -23,7 +23,9 @@
+ 
+ const WebSocket = require("ws");
+ const fs = require("fs");
++const http = require("http");
+ const path = require("path");
++const { createEngine, readConfig } = require("./camera_duck_engine.cjs");
+ 
+ const OBS = "ws://127.0.0.1:4455";     // unauthenticated on loopback (operator-accepted, S2)
+ const MUSIC = ["ShowMusic", "ShowRadio"];
+@@ -33,6 +35,170 @@ const DUCK_DB = 15;                    // how far the bed drops under a live mic
+ const EVERY_MS = 1500;
+ const LOG = path.join(__dirname, "runtime", "music_director.ndjson");
+ 
++// ── CAMERA-MIC THREE-STATE DUCK (gate camera-mic-ducking-and-slot-awareness, 2026-08-03) ────────
++// Purpose. The mic-duck above watches MicHost ONLY (line 30). When the operator picks a camera as
++// voice via command_center.setVoice() (line 402), MicHost is MUTED and one of RemoteCam1..10 is
++// unmuted — so micIsHot() reads MicHost as cold and NO duck fires. That is the live symptom
++// the operator reported (audio from cameras is no longer ducking).
++//
++// This block adds a SEPARATE three-state camera duck via the pure viewer/camera_duck_engine.cjs
++// module, with two hard rules:
++//   1. voice_server owns the fader. Every camera-originated write is preceded by a fresh voice-
++//      ownership check consulting BOTH /healthz and viewer/runtime/voice_server.ndjson. Any
++//      ambiguity fails closed to CEDE — no write.
++//   2. enforceOneBed() and the existing MicHost duck are untouched. The camera duck only writes
++//      after both of those had a chance to run and voice_server is not the current writer.
++//
++// The engine defaults to STUB mode. UNI_CAMERA_DUCK_FULL=1 activates full three-state logic
++// including TUCK, 10s trailing, mute filter, and ceding. This is set BELOW so the service always
++// runs in full mode when launched by studio_up.ps1 / restart; the flag is a safety valve.
++process.env.UNI_CAMERA_DUCK_FULL = process.env.UNI_CAMERA_DUCK_FULL || "1";
++const CAMS = Array.from({ length: 10 }, (_, i) => "RemoteCam" + (i + 1));
++const camCfg = readConfig(process.env);
++const camEngine = createEngine(camCfg);
++const VOICE_HEALTHZ = "http://127.0.0.1:8106/healthz";
++const VOICE_LEDGER = path.join(__dirname, "runtime", "voice_server.ndjson");
++const RAMP_SLACK_MS = 2000;             // voice_server DUCK_MS+RESTORE_MS + slack — treat any
++                                        //   non-settled ledger event younger than this as RAMPING
++const SETTLED_EVENTS = new Set(["restore", "obs_connected", "page_connected", "page_gone", "duck_released_on_disconnect"]);
++
++// Per-cam mute mirror. Populated at connect + updated by InputMuteStateChanged events.
++// Missing / null / undefined here means UNKNOWN — treated as NOT unmuted (fail-closed).
++const camMute = new Map();               // 'RemoteCam1' -> boolean OR undefined
++// Per-cam meter ring buffer of most recent peak-dB frames.
++const camMeterHist = new Map();          // 'RemoteCam1' -> [peakDb, ...]
++
++// Consult voice_server ownership. Returns { status, reason }.
++async function consultVoiceOwnership() {
++  // 1) /healthz — primary "is currently ducked / speaking" signal.
++  let hz = null;
++  try {
++    hz = await new Promise((res, rej) => {
++      const r = http.get(VOICE_HEALTHZ, { timeout: 500 }, (rs) => {
++        let b = ""; rs.on("data", (d) => (b += d));
++        rs.on("end", () => { try { res(JSON.parse(b)); } catch (e) { rej(e); } });
++      });
++      r.on("error", rej); r.on("timeout", () => { r.destroy(); rej(new Error("timeout")); });
++    });
++  } catch (e) {
++    return { status: "UNKNOWN", reason: "healthz_unreachable:" + e.message };
++  }
++  if (hz && (hz.ducked === true || hz.speaking === true)) {
++    return { status: "OWNS", reason: "healthz_active" };
++  }
++  // 2) Ledger tail — detect ramp gap. /healthz says "not ducked" but ramp may still be running.
++  try {
++    const raw = fs.readFileSync(VOICE_LEDGER, "utf8");
++    const lines = raw.trim().split("\n");
++    if (lines.length === 0) return { status: "IDLE", reason: "ledger_empty" };
++    const last = JSON.parse(lines[lines.length - 1]);
++    if (SETTLED_EVENTS.has(last.event)) {
++      return { status: "IDLE", reason: "settled_" + last.event };
++    }
++    const ageMs = Date.now() - new Date(last.at).getTime();
++    if (Number.isFinite(ageMs) && ageMs < RAMP_SLACK_MS) {
++      return { status: "RAMPING", reason: "ledger_" + last.event + "_" + Math.round(ageMs) + "ms" };
++    }
++    // Old non-settled event AND /healthz says idle → most likely IDLE, but be conservative.
++    return { status: "IDLE", reason: "ledger_stale_" + last.event };
++  } catch (e) {
++    return { status: "UNKNOWN", reason: "ledger_unreadable:" + e.message };
++  }
++}
++
++// Which bed is currently the audible one? Reuses enforceOneBed's rule: prefer ShowRadio if PLAYING.
++// This is best-effort: on failure return null and the camera tick skips this cycle.
++async function activeBed() {
++  try {
++    const rm = await req("GetMediaInputStatus", { inputName: "ShowRadio" }).catch(() => null);
++    const radioPlaying = rm && rm.mediaState === "OBS_MEDIA_STATE_PLAYING";
++    if (radioPlaying) return "ShowRadio";
++    return "ShowMusic";
++  } catch { return null; }
++}
++
++// Which bed is UNMUTED in program (the one actually sounding)? Ceilings are what enforceOneBed
++// enforces — mic-duck's `ceiling[n]` holds the operator-selected level captured at cold→hot edge.
++// The camera engine needs the CURRENT operator level, not a cached one, so read live.
++async function readOperatorLevel(bed) {
++  try {
++    // If the mic-duck currently has the bed ducked, `ceiling[bed]` holds the pre-duck operator
++    // level (that's the whole point of that ceiling map). Prefer it when set — it survives across
++    // camera evaluations. If not set, read the live fader.
++    if (ducked && ceiling[bed] != null) return ceiling[bed];
++    const v = await req("GetInputVolume", { inputName: bed });
++    return v.inputVolumeDb;
++  } catch { return null; }
++}
++
++// One camera-duck tick. Runs AFTER the existing tick()'s work is complete.
++async function cameraDuckTick() {
++  // Fail-closed: any unknown → cede.
++  const own = await consultVoiceOwnership();
++  if (own.status !== "IDLE") {
++    record("CAM_DUCK_CEDED", { owner: "voice_server", reason: own.status.toLowerCase() + ":" + own.reason });
++    return;
++  }
++  // Also cede if the MIC duck (existing) is currently active — the existing engine already ducked
++  // the bed for MicHost; adding a camera write on top would be a second controller on the fader.
++  if (ducked) {
++    record("CAM_DUCK_CEDED", { owner: "mic_duck", reason: "mic_duck_active" });
++    return;
++  }
++  const bed = await activeBed();
++  if (!bed) return;
++  const opLevel = await readOperatorLevel(bed);
++  if (opLevel == null) return;
++
++  // Build normalized inputs for the engine. Missing per-cam mute → engine treats as NOT unmuted.
++  const ui_mute = {};
++  const recent_hot = {};
++  for (const cam of CAMS) {
++    ui_mute[cam] = camMute.has(cam) ? camMute.get(cam) : null;
++    const hist = camMeterHist.get(cam) || [];
++    recent_hot[cam] = hist.some((p) => p > camCfg.HOT_DB);
++  }
++
++  const now = performance.now();
++  const decision = camEngine.evaluate({
++    ui_mute, recent_hot,
++    voice_owned: false,                  // already checked above; engine's own ceding is defense-in-depth
++    monotonic_now_ms: now,
++    operator_level_db: opLevel,
++  });
++
++  if (decision.action === "cede" || decision.action === "nothing") return;
++  if (decision.action !== "write") return;
++
++  // Re-consult ownership RIGHT before the write — voice_server may have grabbed the fader
++  // during our own evaluation window.
++  const own2 = await consultVoiceOwnership();
++  if (own2.status !== "IDLE") {
++    record("CAM_DUCK_CEDED", { owner: "voice_server", reason: own2.status.toLowerCase() + ":" + own2.reason + ":pre-write" });
++    return;
++  }
++  try {
++    await req("SetInputVolume", { inputName: bed, inputVolumeDb: decision.target_db });
++    record("CAM_DUCK_WRITE", {
++      state: decision.state, prevState: decision.prevState, targetDb: decision.target_db,
++      bed, unmutedCams: decision.unmutedCams, anyHot: decision.anyUnmutedHot,
++    });
++  } catch (e) {
++    record("CAM_DUCK_WRITE_ERR", { err: e.message, targetDb: decision.target_db, bed });
++  }
++}
++
++// Hydrate per-cam mute map at connect. Missing / errored inputs are LEFT unset (UNKNOWN).
++async function hydrateCamMuteMap() {
++  for (const cam of CAMS) {
++    try {
++      const r = await req("GetInputMute", { inputName: cam });
++      camMute.set(cam, !!r.inputMuted);
++    } catch { /* leave unset — treated as UNKNOWN, fail-closed */ }
++  }
++  record("CAM_DUCK_MUTE_HYDRATED", { size: camMute.size });
++}
++
+ // ── RETIRED 2026-08-02, SAME DAY IT WAS BUILT, AND THE REASON IS WORTH KEEPING ───────────────────
+ // DESKTOP_VOICE_DUCK is now false. The level-threshold duck below was correct engineering for the
+ // wrong architecture: it inferred "is the agent speaking" by watching the peak level of a Windows
+@@ -111,9 +277,23 @@ function frameToPeakDb(inputLevelsMul) {
+ }
+ 
+ function onMeters(inputs) {
++  // Camera meter path — always active. Populates camMeterHist for the pure engine.
++  // Bounded per-cam ring buffer; malformed frames yield -Infinity via frameToPeakDb which never
++  // exceeds HOT_DB so a broken payload can never falsely trigger DUCK/TUCK.
++  const arr = inputs || [];
++  for (const inp of arr) {
++    if (!inp || typeof inp.inputName !== "string") continue;
++    if (!inp.inputName.startsWith("RemoteCam")) continue;
++    if (!CAMS.includes(inp.inputName)) continue;
++    const peak = frameToPeakDb(inp.inputLevelsMul);
++    const hist = camMeterHist.get(inp.inputName) || [];
++    hist.push(peak);
++    while (hist.length > camCfg.HOT_WINDOW_FRAMES) hist.shift();
++    camMeterHist.set(inp.inputName, hist);
++  }
+   if (!DESKTOP_VOICE_DUCK) return;   // voice_server.cjs owns the voice duck now — see the note above
+   const now = Date.now();
+-  const me = (inputs || []).find((i) => i.inputName === DESKTOP);
++  const me = arr.find((i) => i.inputName === DESKTOP);
+   if (!me) return;
+   const db = frameToPeakDb(me.inputLevelsMul);
+   lastDesktopSample = db;
+@@ -240,6 +420,15 @@ function connect() {
+     else if (m.op === 5 /* Event */) {
+       // Only the meter stream matters here; everything else is default subscription noise we ignore.
+       if (m.d && m.d.eventType === "InputVolumeMeters") onMeters(m.d.eventData && m.d.eventData.inputs);
++      // Camera mute mirror — updated by OBS whenever a RemoteCam input's mute flag flips.
++      // This is the authoritative "UI mute" signal the camera engine reads.
++      else if (m.d && m.d.eventType === "InputMuteStateChanged") {
++        const ed = m.d.eventData || {};
++        if (typeof ed.inputName === "string" && CAMS.includes(ed.inputName)) {
++          camMute.set(ed.inputName, !!ed.inputMuted);
++          record("CAM_MUTE_EVENT", { input: ed.inputName, muted: !!ed.inputMuted });
++        }
++      }
+     }
+     else if (m.op === 2) {
+       identified = true;
+@@ -254,9 +443,17 @@ function connect() {
+         process.exit(0);
+       }
+       record("connected", {});
++      // Hydrate camera mute mirror BEFORE the first camera tick so a fresh boot cannot briefly
++      // read every cam as UNKNOWN and cede indefinitely without ever seeing a real event.
++      await hydrateCamMuteMap();
+       tick();
+       setInterval(tick, EVERY_MS);
++      // Camera duck tick runs on the SAME cadence as the mic duck — but LATER in each cycle
++      // (setImmediate) so enforceOneBed + micIsHot ran first. Both live in one process; there is
++      // no cross-process race here, only sequencing.
++      setInterval(() => { setImmediate(() => { cameraDuckTick().catch(() => {}); }); }, EVERY_MS);
+       console.log("music_director: ducking the bed under a live mic every " + (EVERY_MS / 1000) + "s (does NOT change scenes)");
++      console.log("music_director: camera-mic duck engine ACTIVE (UNI_CAMERA_DUCK_FULL=" + process.env.UNI_CAMERA_DUCK_FULL + "), cfg=" + JSON.stringify(camCfg));
+     } else if (m.op === 7) {
+       const p = pending[m.d.requestId];
+       if (p) { delete pending[m.d.requestId]; const st = m.d.requestStatus; st && st.result ? p.res(m.d.responseData || {}) : p.rej(new Error((st && st.comment) || "obs error")); }

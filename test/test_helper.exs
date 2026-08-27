@@ -55,11 +55,27 @@
 # guard inside each test would have produced a green suite that had quietly stopped asserting
 # anything, which is strictly worse than a red one.
 #
-# THE STRONGER CURE IS NOT AVAILABLE HERE. Checking the sibling repository out in CI would let these
-# tests genuinely run, and that needs a credential for a private repository — an operator action, not
-# a code change. Until then this is exclusion with disclosure, and the banner below says so on every
-# run so the gap cannot be mistaken for coverage.
-cross_repo = Path.expand("../../UNI-Flagellum/UNI-FLAGELLUM", __DIR__)
+# THE STRONGER CURE IS NOW AVAILABLE, AND IT IS APPLIED. This block used to read: "Checking the
+# sibling repository out in CI would let these tests genuinely run, and that needs a credential for
+# a private repository — an operator action, not a code change."
+#
+# That stopped being true on 2026-08-24, when the operator ruled the frozen snapshots into real
+# mirrors and TMDLRG/uni-flagellum-motor-stack became a public repository. No credential is needed
+# to check out a public repository, so it WAS a code change after all. ci.yml now checks the mirror
+# out and sets UNI_FLAGELLUM_PATH, and these seven tests RUN in CI instead of being excluded there.
+#
+# What is checked out is the MIRROR, which is redacted. Measured before the CI step was written: all
+# 7 pass against a fresh clone of the mirror exactly as against the private tree, because none of
+# the three redacted files is one these tests read. That is a fact about today, not a guarantee — if
+# a future redaction touches ARCHITECTURE.md, FAILURE-MODES.md or phases/PHASE-7.md, this turns red
+# in CI and green locally, and THAT DIVERGENCE IS THE SIGNAL, not a CI fault to be worked around.
+#
+# The exclusion path below is kept for anyone running without the repository present. The banner
+# still fires, because an excluded test is still not a passing test.
+cross_repo =
+  System.get_env("UNI_FLAGELLUM_PATH") ||
+    Path.expand("../../UNI-Flagellum/UNI-FLAGELLUM", __DIR__)
+
 cross_repo_present? = File.dir?(Path.join(cross_repo, "docs/control-plane"))
 
 exclusions =

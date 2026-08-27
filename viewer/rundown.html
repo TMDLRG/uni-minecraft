@@ -37,6 +37,12 @@
   main{display:grid;grid-template-columns:340px 1fr;gap:0;min-height:calc(100vh - 92px)}
   #list{border-right:1px solid var(--line);overflow-y:auto;max-height:calc(100vh - 92px)}
   .row{padding:9px 14px;border-bottom:1px solid #1a2429;cursor:pointer;display:grid;grid-template-columns:64px 1fr;gap:10px}
+  /* Pre-roll rows are real airtime and are listed with the rest, but they are NOT on the show clock,
+     so they are marked rather than blended in. The left rule is the visual statement of that. */
+  .row.pre{border-left:3px solid #3a5a6a;background:#0e1519}
+  .row.pre .t{color:#5f8497;font-style:italic}
+  .alt{color:#7fb3c8;font-size:11px;letter-spacing:.04em}
+  .meta.src{color:#9fb6bf;font-style:italic}
   .row:hover{background:#101820}
   .row.sel{background:#16222b;box-shadow:inset 3px 0 0 var(--say)}
   .row .t{font:11px ui-monospace,monospace;color:var(--dim)}
@@ -74,7 +80,14 @@
     <span class="chip prog">PROGRAM <b id="prog">?</b></span>
     <span class="chip prev">PREVIEW <b id="prev">?</b></span>
     <span class="chip">STREAM <b id="stream">?</b></span>
-    <span class="chip">CLOCK <b id="clock">0:00</b> / <b id="planned">4:00</b></span>
+    <!-- The CLOCK half of this chip was DELETED, not wired. Nothing anywhere ever wrote el("clock"):
+         it rendered a hardcoded 0:00 for the whole of a four-hour show, beside a live PROGRAM chip,
+         which makes it worse than absent — a stopped clock next to moving indicators reads as a
+         measurement. There is no show-start timestamp anywhere to drive it from (no show_start,
+         showStart or started_at in viewer/*.cjs or production/run-of-show/*.json), so wiring it
+         would have meant inventing one. Deleting it is the honest act until a real start time
+         exists to count from. `planned` is real and generated, and it stays. -->
+    <span class="chip">PLANNED <b id="planned">4:00</b></span>
     <span class="cannot">this page cannot start a stream</span>
   </div>
 </header>
@@ -120,12 +133,33 @@ async function poll() {
 // button was clicked -- when the studio agrees. The difference is the whole point.
 const armed = (row) => !!row && S.preview === row.scene;
 
+// THE PRE-ROLL IS AIRTIME AND IT WAS INVISIBLE HERE.
+//
+// first-show.rundown.json declares SIX pre-roll rows summing to 98 minutes — the settle, the Iliad,
+// the breath reset, both WELCOME films, and the first live hit — and `preroll_arithmetic` at :635
+// calls them "real airtime", ending exactly at the show's 0:00 so the pre-roll and the programme
+// cannot overlap. The gate sweeps them (verify_rundown.cjs:32) and /api/rundown already ships them
+// (command_center.cjs:1466-1473). This page rendered NONE of it: a grep for "preroll" returned zero.
+// So the operator drove 98 minutes of live output off a page whose first row was the show's row 0.
+//
+// They are prepended as one list, because the operator's question at any moment is "what is on now
+// and what is next", and that question does not respect the boundary between the two arrays. They
+// stay VISUALLY distinct and OUT of the 240-minute show clock, per the file's own
+// `counted_in_show_clock: false` — counting them would silently turn a 240-minute show into a
+// 338-minute one.
+const ROWS = () => [...(R.preroll || []), ...(R.rows || [])];
+const isPre = (r) => !!r && /^PRE-/.test(r.id || "");
+
 function drawList() {
-  el("list").innerHTML = R.rows.map((r, i) => {
+  el("list").innerHTML = ROWS().map((r, i) => {
     const brk = /^BR-/.test(r.id) ? " brk" : "";
-    return '<div class="row' + (i === sel ? " sel" : "") + brk + '" data-i="' + i + '">' +
-      '<div class="t">' + esc(r.start) + "</div><div><div class=\"n\">" + esc(r.id) + " &middot; " + esc(r.title) +
-      '</div><div class="s">' + esc(r.scene) + (r.then_scene ? " &rarr; " + esc(r.then_scene) : "") + "</div></div></div>";
+    const pre = isPre(r) ? " pre" : "";
+    // A pre-roll row has no `start` on the show clock, because it is deliberately not on it.
+    const when = r.start ? esc(r.start) : "pre";
+    return '<div class="row' + (i === sel ? " sel" : "") + brk + pre + '" data-i="' + i + '">' +
+      '<div class="t">' + when + "</div><div><div class=\"n\">" + esc(r.id) + " &middot; " + esc(r.title) +
+      '</div><div class="s">' + esc(r.scene || "&mdash;") + (r.then_scene ? " &rarr; " + esc(r.then_scene) : "") +
+      (r.alt_scene ? ' <span class="alt">alt ' + esc(r.alt_scene) + "</span>" : "") + "</div></div></div>";
   }).join("");
   [...document.querySelectorAll(".row")].forEach((d) =>
     d.addEventListener("click", () => { sel = +d.dataset.i; draw(); }));
@@ -134,22 +168,35 @@ function drawList() {
 function draw() {
   if (!R) return;
   drawList();
-  const r = R.rows[sel];
+  const r = ROWS()[sel];
+  if (!r) return;
   const L = R.lower_thirds || {};
   const strap = r.super ? L[r.super] : null;
   const refused = strap && /REFUSED/i.test(String(strap.fence || ""));
   const isArmed = armed(r);
 
   const P = [];
-  P.push("<h2>" + esc(r.id) + " &middot; " + esc(r.title) + "</h2>");
-  P.push('<div class="meta">' + esc(r.start) + " &ndash; " + esc(r.end) + " &middot; " + r.minutes + " min &middot; scene <code>" +
-    esc(r.scene) + "</code>" + (r.then_scene ? " then <code>" + esc(r.then_scene) + "</code>" : "") +
+  P.push("<h2>" + esc(r.id) + " &middot; " + esc(r.title) + (isPre(r) ? ' <span class="alt">PRE-ROLL</span>' : "") + "</h2>");
+  P.push('<div class="meta">' + (r.start ? esc(r.start) + " &ndash; " + esc(r.end) + " &middot; " : "not on the show clock &middot; ") +
+    (r.minutes != null ? r.minutes + " min &middot; " : "") + "scene <code>" +
+    esc(r.scene || "—") + "</code>" + (r.then_scene ? " then <code>" + esc(r.then_scene) + "</code>" : "") +
     (r.flex ? " &middot; FLEX" : "") + "</div>");
+
+  // `source` is the row's own "how" line — it is where a row tells the operator it needs a clip
+  // loaded, or a guest cued, before it can be taken. The page never displayed it, so the one
+  // instruction attached to a row was readable only by opening the JSON.
+  if (r.source) P.push('<div class="meta src">how &middot; ' + esc(r.source) + "</div>");
+
+  // alt_scene is declared on seven rows and was rendered nowhere — not a button, not even text.
+  // It is shown, and it is ARMABLE, because an alternate that the operator cannot reach under
+  // pressure is the same as no alternate at all.
+  if (r.alt_scene) P.push('<div class="meta">alternate &middot; <code>' + esc(r.alt_scene) + "</code></div>");
 
   P.push('<div class="acts">');
   P.push('<button class="arm" id="bArm">ARM PREVIEW &rarr; ' + esc(r.scene) + "</button>");
   P.push('<button class="take" id="bTake"' + (isArmed ? "" : " disabled") + ">TAKE TO PROGRAM</button>");
   if (r.then_scene) P.push('<button id="bArm2">ARM ' + esc(r.then_scene) + "</button>");
+  if (r.alt_scene) P.push('<button id="bAlt">ARM ALT &rarr; ' + esc(r.alt_scene) + "</button>");
   P.push('<button id="bBack">BACK (undo)</button>');
   P.push("</div>");
   P.push('<div class="why">' + (isArmed
@@ -203,6 +250,10 @@ function draw() {
   const on = (id, fn) => { const b = el(id); if (b) b.addEventListener("click", fn); };
   on("bArm", async () => { await post("/api/preview", { scene: r.scene }); poll(); });
   on("bArm2", async () => { await post("/api/preview", { scene: r.then_scene }); poll(); });
+  // Same preview-then-take path as every other arm: it puts the alternate in PREVIEW and never on
+  // program. The page's doctrine is that nothing here cuts, and the alternate does not get to be
+  // the exception just because it is the one you reach for when something has already gone wrong.
+  on("bAlt", async () => { await post("/api/preview", { scene: r.alt_scene }); poll(); });
   on("bCont", async () => { await post("/api/preview", { scene: r.contingency_scene }); poll(); });
   on("bTake", async () => { if (!armed(r)) return err("not armed"); await post("/api/take", {}); poll(); });
   on("bBack", async () => { await post("/api/back", {}); poll(); });
@@ -218,8 +269,13 @@ function draw() {
     if (!r.ok) { const e = await r.json().catch(() => ({})); err("/api/rundown -> " + (e.err || r.status)); return; }
     R = await r.json();
   } catch (e) { err("/api/rundown -> " + e.message); return; }
-  el("src").innerHTML = esc(R.rows.length) + " rows &middot; " + esc((R.arithmetic || {}).declared_minutes_sum || "?") +
-    " min &middot; words verbatim from <code>" + esc((R.source || {}).document || "?") + "@" + esc((R.source || {}).commit || "?") + "</code>";
+  // Both blocks counted, and counted SEPARATELY, because they are on different clocks and adding
+  // them would report a 240-minute show as a 338-minute one.
+  const pre = (R.preroll || []).length;
+  const preMin = (R.preroll_arithmetic || {}).declared_minutes_sum;
+  el("src").innerHTML = esc(R.rows.length) + " rows &middot; " + esc((R.arithmetic || {}).declared_minutes_sum || "?") + " min" +
+    (pre ? " &nbsp;+&nbsp; <b>" + esc(pre) + " pre-roll &middot; " + esc(preMin != null ? preMin : "?") + " min</b> (off the show clock)" : "") +
+    " &middot; words verbatim from <code>" + esc((R.source || {}).document || "?") + "@" + esc((R.source || {}).commit || "?") + "</code>";
   el("planned").textContent = Math.floor(((R.arithmetic || {}).declared_minutes_sum || 240) / 60) + ":" +
     String(((R.arithmetic || {}).declared_minutes_sum || 240) % 60).padStart(2, "0");
   draw();

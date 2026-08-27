@@ -268,8 +268,33 @@ function calibration(led, ph, gaia) {
 async function snapshot() {
   const led = ledger();
   const ph = phases();
-  const gaia = await fetchJson(GAIA);
-  const voice = await fetchJson(VOICE);
+  // MEASURED 2026-08-02, LIVE, and it is why the operator called his own tracking surface "broken":
+  // these two reads were awaited SEQUENTIALLY at fetchJson's 25-SECOND default. So /api/track could
+  // not answer for half a minute, the page shell loaded, the data never arrived, and it read as dead
+  // software rather than as slow software. Two independent faults, both fixed here:
+  //
+  //   1. THEY ARE INDEPENDENT, so they run in parallel. Neither read feeds the other.
+  //   2. THE BUDGET IS HUMAN-SCALED. This is a polled read for a page a person is watching; a probe
+  //      that takes longer than a person will wait has already failed, whatever it returns.
+  //
+  // AND THE FIRST DIAGNOSIS OF *WHY* GAIA WAS SLOW WAS WRONG, WHICH IS THE MORE IMPORTANT NOTE.
+  // The first version of this comment said Gaia "accepts the SYN and never answers" — a hung process.
+  // Measured directly: Gaia is UP and SLOW. `GET /api/gaia` returns 1,232,014 bytes in 19.1 s, while
+  // its own HTML root answers in 0.3 s. NO page-load budget can contain a 19-second read, so a short
+  // timeout here does not make Gaia readable — it only makes TRACK fast. That distinction has to
+  // survive into what the page SAYS, because "Gaia is unreachable" and "Gaia did not answer inside
+  // this page's budget" are different facts about the world, and reporting the second as the first
+  // would be this surface telling the operator a service is absent when it is merely slow. The gaia
+  // branch below therefore probes the port and reports which of the two actually happened.
+  //
+  // Deliberately NOT "fixed" by caching: a stale panel that looks live is the failure mode this
+  // estate exists to refuse, and the law printed at the top of this very snapshot forbids it.
+  const GAIA_BUDGET_MS = 2500;
+  const [gaia, voice, gaiaPortOpen] = await Promise.all([
+    fetchJson(GAIA, GAIA_BUDGET_MS),
+    fetchJson(VOICE, 4000),
+    probe("127.0.0.1", Number(new URL(GAIA).port) || 80),
+  ]);
   const sigs = gaia ? (gaia.result?.signals || []) : [];
   const seats = {};
   for (const s of sigs) seats[s.seat] = (seats[s.seat] || 0) + 1;
@@ -287,7 +312,16 @@ async function snapshot() {
     ledger: led,
     phases: ph,
     decisions: decisions(),
-    gaia: gaia ? { up: true, signals: sigs.length, seats, drift, source: GAIA, git_commit: gaia.envelope?.git_commit, fetch_ms: gaia.__ms } : { up: false, source: GAIA, note: "Gaia unreachable — this is a true signal, not a defect. Nothing is fabricated." },
+    // THREE OUTCOMES, NOT TWO. A read that timed out and a service that is absent are different
+    // facts, and collapsing them is how a surface comes to report a slow dependency as a missing one.
+    gaia: gaia
+      ? { up: true, signals: sigs.length, seats, drift, source: GAIA, git_commit: gaia.envelope?.git_commit, fetch_ms: gaia.__ms }
+      : gaiaPortOpen
+        ? {
+            up: false, reachable: true, timed_out: true, budget_ms: GAIA_BUDGET_MS, source: GAIA,
+            note: `Gaia is RUNNING and did not answer within this page's ${GAIA_BUDGET_MS}ms budget. Measured 2026-08-02: a full /api/gaia read is ~1.2 MB and takes ~19 s, so no page-load budget can contain it — this panel is empty because Gaia is SLOW, not because Gaia is absent. Read it directly if you need the signals.`,
+          }
+        : { up: false, reachable: false, source: GAIA, note: "Gaia unreachable — nothing is listening. This is a true signal, not a defect. Nothing is fabricated." },
     voice: voice ? { up: true, count: Array.isArray(voice) ? voice.length : (voice.entries || []).length, entries: (Array.isArray(voice) ? voice : voice.entries || []).slice(0, 25), source: VOICE } : { up: false, source: VOICE },
     history: [history(FLAG, "UNI-FLAGELLUM"), history(MC, "UNI.Minecraft")],
     comments: comments(),

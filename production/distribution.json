@@ -1,0 +1,31 @@
+{
+  "note": [
+    "WHERE THE BROADCAST CAN BE WATCHED. Operator-declared, 2026-08-02, given by him directly.",
+    "",
+    "THIS FILE EXISTS SO THAT NO AGENT EVER GUESSES A WATCH URL. generators/build_live_status.cjs in",
+    "the public site reads it and publishes the links; if the file is absent or malformed it publishes",
+    "NOTHING and says so on the page. A plausible-looking channel address on a public page is a",
+    "fabrication whether or not it happens to resolve, and the public page said exactly that for the",
+    "hours between going live and this file existing.",
+    "",
+    "Only https URLs are published. The generator drops anything else rather than rewriting it.",
+    "",
+    "NOTHING SECRET BELONGS HERE. These are public addresses anyone can visit. Stream KEYS live in",
+    "viewer/runtime/air_destination.json, which is gitignored, and must never appear in this file."
+  ],
+  "schema_version": 1,
+  "declared_by": "operator",
+  "declared_at": "2026-08-02",
+  "links": [
+    {
+      "platform": "YouTube",
+      "url": "https://www.youtube.com/@ORCHESTRATEMaster",
+      "note": "ORCHESTRATE Master. The live broadcast is featured on the channel home page while it is running."
+    },
+    {
+      "platform": "Twitch",
+      "url": "https://www.twitch.tv/mregenerativearchitect",
+      "note": "mregenerativearchitect."
+    }
+  ]
+}

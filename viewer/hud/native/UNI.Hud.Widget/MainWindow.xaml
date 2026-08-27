@@ -83,6 +83,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="34"/>
                 <RowDefinition Height="Auto"/>  <!-- THE AIR ALARM banner (0px when not firing) -->
+                <RowDefinition Height="Auto"/>  <!-- THE QUIET BAR (always visible, never scrolls away) -->
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -122,8 +123,47 @@
                 </StackPanel>
             </Border>
 
+            <!-- ============ THE QUIET BAR (2026-08-17, operator instruction) ============
+                 "HUD MUST always stay running ... and stay in quiet mode until changed" and the
+                 button MUST be on BOTH the HUD and the Door.
+
+                 It gets its OWN GRID ROW, exactly like the air alarm above, so it can never be
+                 scrolled away. The first attempt at this control was buried inside a panel on the
+                 Door page and the operator reported - correctly - that there was no button. A
+                 control you have to scroll to find does not exist.
+
+                 This posts to the command center (:8098), the SAME surface the ARM/DISARM buttons a
+                 few lines below already post to. The :8100 HUD service stays GET-only; the widget is
+                 a CLIENT, and it already mutates through the console. So nothing about the HUD
+                 service's read-only law changes here. -->
+            <Border Grid.Row="2" x:Name="QuietBar" Background="#171104" BorderBrush="{StaticResource Warn}"
+                    BorderThickness="0,2,0,2" Padding="10,8">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Name="QuietStatus" Text="quiet: —" FontSize="16" FontWeight="Bold"
+                                   Foreground="{StaticResource Warn}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Name="QuietBtn" Content="🌙 QUIET" Padding="12,5" Margin="0,0,6,0" Click="OnQuiet"
+                                    Background="#2A1E06" Foreground="#FFE6A6" BorderBrush="{StaticResource Warn}" BorderThickness="2"
+                                    FontSize="16" FontWeight="Bold" Cursor="Hand"
+                                    ToolTip="Stop the video core (OBS, MediaMTX, channel windows, encoders). Monitors stay up. Refuses if you are on air."/>
+                            <Button Name="ResumeBtn" Content="☀ RESUME" Padding="12,5" Click="OnResume"
+                                    Background="#062A12" Foreground="#B6FFCF" BorderBrush="{StaticResource Ok}" BorderThickness="2"
+                                    FontSize="16" FontWeight="Bold" Cursor="Hand" Visibility="Collapsed"
+                                    ToolTip="Bring the studio back up"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Name="BootHealthLine" Text="" FontSize="14" Foreground="{StaticResource Mute}"
+                               Margin="0,4,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
             <!-- ============ THE BODY: one scroller, everything expanded ============ -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                           PanningMode="VerticalOnly">
               <StackPanel>
 
@@ -315,8 +355,8 @@
               </StackPanel>
             </ScrollViewer>
 
-            <!-- Provenance footer -->
-            <Border Grid.Row="3" Background="#080B10" Padding="10,6"
+            <!-- Provenance footer (Grid.Row 4 since the QUIET bar took row 2 and the body moved to 3) -->
+            <Border Grid.Row="4" Background="#080B10" Padding="10,6"
                     BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>

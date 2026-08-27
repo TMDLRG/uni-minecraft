@@ -23,7 +23,7 @@ READ FIRST (ground truth — do not skip):
   http://10.190.245.122:4100/ (LAN). It carries the honest project status + the claim fence + how agents
   collaborate. Read it; you can reflect your go-live status back to the owner through it.
 - viewer/obs_stage.cjs, viewer/director_show.cjs, viewer/obs_golive.cjs, viewer/obs_ctl.cjs,
-  viewer/launch_channels.ps1 — the WORKING OBS pipeline (obs-websocket 127.0.0.1:4455, no auth).
+  viewer/studio_channels.ps1 — the WORKING OBS pipeline (was launch_channels.ps1, superseded 2026-08-02) (obs-websocket 127.0.0.1:4455, no auth).
 - lib/sp/producer.ex — the existing autonomous show-runner (drives colony camera/overlays/cast).
 
 THE HONEST STATE (so you don't chase a dead end):
@@ -43,7 +43,13 @@ TASKS (fastest honest path):
    camera). HARD RULE: never also run `mix producer.run` — a second node fights over camera port :3020 and
    the "Director" MC login and crash-loops. (The lab-box colony at 10.190.245.122 is headless/UNI_CAM=0 and
    is being concluded separately — do not use it as the camera source.)
-2. Build the OBS scenes: run viewer/launch_channels.ps1 then node viewer/obs_stage.cjs. Verify with
+2. Build the OBS scenes: run viewer/studio_channels.ps1 then node viewer/obs_stage.cjs.
+   (CORRECTED 2026-08-02: this line said launch_channels.ps1, which is SUPERSEDED. It brings up
+   three channels where studio_channels.ps1 brings up five, and BOTH write viewer/channels.json --
+   so following the old instruction overwrote that file with the subset and silently stranded the
+   WEB and CLIP channels, the sources that carry every film, playlist and browser shot. The old
+   script now refuses to run, but a work order can be copied and a refusal cannot, so both were
+   fixed.) Verify with
    viewer/obs_shot.cjs. NOTE the dual-GPU gotcha: the WebGL camera must be a WINDOW-CAPTURE of a real Chrome
    window at http://localhost:3020, NOT an OBS browser source (BrowserHWAccel=true white-screens; =false
    drops terrain). This is already how obs_stage.cjs works — keep it.

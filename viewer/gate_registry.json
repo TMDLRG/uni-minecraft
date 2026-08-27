@@ -1,252 +1,265 @@
 {
-  "schema": "uni.gate_runner.registry.v1",
-  "note": "The runnable node gates gate_runner.cjs invokes. COMPLETENESS is cross-checked against filesystem discovery of viewer/**/{verify_*,*_lint}.cjs (excluding gate_runner.cjs and verify_gate_runner.cjs) — a gate file on disk but absent here, or an entry with no file, fails the runner. `ci:true` gates are self-contained and reach a real PASS/FAIL under CI; `ci:false` need live external resources and are listed-not-run (never a fabricated pass). This registry is the RUNNER's list; it is not the canonical verdict ledger (that is evidence/gates.ndjson). `gate_row` names the ONE row a gate's single exit code would be recorded as, and MUST NOT be a glob — a glob is refused by the runner's completeness check, because gate_row.schema.json requires kebab-case and so no row could ever bear one, which made the schema's own \"every gate MUST be represented here\" impossible to satisfy. `gate_row_family` is a REGISTRY-ONLY key listing the real rows a suite gate's one verdict covers; it is not a ledger field, no row may carry it, and gate_row.schema.json is unchanged.",
-  "gates": [
-    {
-      "id": "build-identity",
-      "file": "viewer/verify_build_identity.cjs",
-      "ci": true,
-      "gate_row": "boot-identity"
-    },
-    {
-      "id": "gaia",
-      "file": "viewer/gaia/verify_gaia.cjs",
-      "ci": true,
-      "gate_row": "gaia-suite",
-      "gate_row_family": [
-        "gaia-boot-persistence-honest",
-        "gaia-drift-surfaced",
-        "gaia-every-emitted-seat-declared",
-        "gaia-honest-probe",
-        "gaia-mcp-caps-agree",
-        "gaia-no-ip-literal",
-        "gaia-no-summarization-lint",
-        "gaia-read-only-fence",
-        "gaia-rehash-integrity",
-        "gaia-self-mirror",
-        "gaia-signal-provenance-complete",
-        "gaia-write-fence-and-gate-row"
-      ],
-      "_why_umbrella": "WAS \"gaia-*\", WHICH MADE A SCHEMA REQUIREMENT IMPOSSIBLE TO SATISFY. production/schemas/gate_row.schema.json requires a kebab-case `name`, so NO row in evidence/gates.ndjson could ever bear a glob — while that same schema's description says every gate the project claims MUST be represented there. The entry demanded a row and simultaneously named a shape no row can take. AN UMBRELLA ROW IS THE HONEST REPAIR, NOT A CONVENIENCE: verify_gaia.cjs is ONE process that runs every check above and prints ONE verdict, and its exit code — the thing the runner law binds — is that single suite verdict. A suite row is therefore exactly what this gate computes. Splitting it into per-row registry entries would invent per-row verdicts the runner never produces: the gate cannot exit 0 for gaia-honest-probe and 1 for gaia-drift-surfaced, so a ledger carrying twelve independent verdicts sourced from this one gate would be recording twelve claims where one measurement was made. `gate_row_family` is a REGISTRY key ONLY — it records which real rows the suite verdict covers so the coverage is not lost when the glob goes. It is not a ledger field and nothing may write it into a row; production/schemas/gate_row.schema.json is UNCHANGED (S5, the operator's).",
-      "_family_derived_by": "node -e \"const s=require('fs').readFileSync('viewer/gaia/verify_gaia.cjs','utf8');const n=new Set();const re=/\\b(?:pass|fail|skip)\\(\\s*\\\"([a-z0-9]+(?:-[a-z0-9]+)+)\\\"/g;let m;while((m=re.exec(s)))n.add(m[1]);console.log([...n].sort())\" — the gate's OWN check labels, read off the gate, not remembered. These are already kebab-case and already in the gaia- namespace, so the family here is measured rather than invented."
-    },
-    {
-      "id": "gaia-lint",
-      "file": "viewer/gaia/gaia_lint.cjs",
-      "ci": true,
-      "gate_row": "gaia-no-summarization"
-    },
-    {
-      "id": "lint-bites",
-      "file": "viewer/gaia/verify_lint_bites.cjs",
-      "ci": true,
-      "gate_row": "gaia-lint-bites"
-    },
-    {
-      "id": "golden-pins",
-      "file": "viewer/gaia/verify_golden_pins.cjs",
-      "ci": true,
-      "gate_row": "gaia-golden-pins"
-    },
-    {
-      "id": "drift-wellformed",
-      "file": "viewer/gaia/verify_drift_wellformed.cjs",
-      "ci": true,
-      "gate_row": "gaia-drift-wellformed"
-    },
-    {
-      "id": "schema-pointers",
-      "file": "viewer/verify_schema_pointers.cjs",
-      "ci": true,
-      "gate_row": "schema-pointers-resolve"
-    },
-    {
-      "id": "host-tracking",
-      "file": "viewer/verify_host_tracking.cjs",
-      "ci": true,
-      "gate_row": "host-address-tracking"
-    },
-    {
-      "id": "hud",
-      "file": "viewer/hud/verify_hud.cjs",
-      "ci": false,
-      "external_needs": "UNI-HUD service on :8100",
-      "gate_row": "hud-suite",
-      "gate_row_family": [
-        "hud-bind-health",
-        "hud-snapshot",
-        "hud-audience-accept",
-        "hud-audience-reject-unvouched",
-        "hud-audience-refuses-cross-site",
-        "hud-method-fence",
-        "hud-no-ip-literal"
-      ],
-      "_why_umbrella": "WAS \"hud-*\", unwritable for the same reason as gaia's: production/schemas/gate_row.schema.json requires kebab-case, so no ledger row can bear a glob, while the schema says every claimed gate MUST be represented. The umbrella is honest for the same reason too — verify_hud.cjs is ONE process that runs its probes and prints ONE line, `HUD GATE: PASS|FAIL`, and that single verdict is what its exit code carries. Per-row registry entries would invent per-probe verdicts this gate never produces. AND THE GLOB WAS NOT ONLY UNWRITABLE, IT OVER-CLAIMED: `hud-*` matches every hud- row in evidence/gates.ndjson, including rows this gate does not touch and rows docs/HUD.md:396-400 records as describing the RETIRED NSSM architecture verbatim. Naming a family measured off the gate replaces a pattern that swept rows by spelling with a list that says what was actually probed.",
-      "_family_derived_by": "node -e \"const s=require('fs').readFileSync('viewer/hud/verify_hud.cjs','utf8');const re=/\\b(?:pass|fail)\\(\\s*\\\"([^\\\"]+)\\\"/g;let m;const n=[];while((m=re.exec(s)))n.push(m[1]);console.log([...new Set(n)])\" — the gate's OWN probe labels. UNLIKE GAIA'S, THESE NEEDED NORMALISING AND THAT IS SAID RATHER THAN HIDDEN: the gate emits bare, un-namespaced labels and one of them (`bind+health`) is not kebab-case, so each is prefixed `hud-` and `+` becomes `-` to land in the ledger's namespace and pass its kebab rule. Of the seven, `hud-no-ip-literal` already exists in the ledger; the others are the names a suite verdict WOULD cover and are not a claim that rows exist today. Nothing here is written to evidence/gates.ndjson — that is S4, the operator's."
-    },
-    {
-      "id": "overlays",
-      "file": "viewer/verify_overlays.cjs",
-      "ci": false,
-      "external_needs": "overlay server :8099",
-      "gate_row": "overlay-proof"
-    },
-    {
-      "id": "colony",
-      "file": "viewer/verify_colony.cjs",
-      "ci": false,
-      "external_needs": "colony RCON + producer on the LAN",
-      "gate_row": "colony-count-consistency"
-    },
-    {
-      "id": "deploy-lag",
-      "file": "viewer/gaia/verify_deploy_lag_tripwire.cjs",
-      "ci": true,
-      "gate_row": "gaia-deploy-lag-tripwire"
-    },
-    {
-      "id": "capture-age",
-      "file": "viewer/gaia/verify_capture_age_fence.cjs",
-      "ci": true,
-      "gate_row": "gaia-capture-age-fence"
-    },
-    {
-      "id": "witness-blocked",
-      "file": "viewer/gaia/verify_witness_blocked.cjs",
-      "ci": true,
-      "gate_row": "gaia-witness-blocked"
-    },
-    {
-      "id": "control-plane-evidence",
-      "file": "viewer/verify_control_plane_evidence.cjs",
-      "ci": true,
-      "gate_row": "control-plane-evidence-retrievable"
-    },
-    {
-      "id": "golive-refuses-agents",
-      "file": "viewer/verify_golive_refuses_agents.cjs",
-      "ci": true,
-      "gate_row": "f31-golive-refuses-agents"
-    },
-    {
-      "id": "limitations-doc",
-      "file": "viewer/verify_limitations_doc.cjs",
-      "ci": true,
-      "gate_row": "limitations-doc-cannot-drift"
-    },
-    {
-      "id": "gate-attempts",
-      "file": "viewer/verify_gate_attempts.cjs",
-      "ci": true,
-      "gate_row": "gate-attempts-sidecar"
-    },
-    {
-      "id": "ip-fence",
-      "file": "viewer/verify_ip_fence.cjs",
-      "ci": true,
-      "gate_row": "repo-wide-ip-fence-landed-red"
-    },
-    {
-      "id": "lab-l0",
-      "file": "viewer/lab/verify_lab_l0.cjs",
-      "ci": true,
-      "gate_row": "lab-l0-empty-room"
-    },
-    {
-      "id": "lab-l1",
-      "file": "viewer/lab/verify_lab_l1.cjs",
-      "ci": true,
-      "gate_row": "lab-l1-five-materials"
-    },
-    {
-      "id": "lab-l2-shot",
-      "file": "viewer/lab/verify_shot.cjs",
-      "ci": true,
-      "gate_row": "lab-l2-screenshot-bites"
-    },
-    {
-      "id": "lab-l3",
-      "file": "viewer/lab/verify_lab_l3.cjs",
-      "ci": true,
-      "gate_row": "lab-l3-projection-tells-the-truth"
-    },
-    {
-      "id": "lab-l4",
-      "file": "viewer/lab/verify_lab_l4.cjs",
-      "ci": true,
-      "gate_row": "lab-l4-three-kinds-of-closed"
-    },
-    {
-      "id": "lab-l5",
-      "file": "viewer/lab/verify_lab_l5.cjs",
-      "ci": true,
-      "timeout_ms": 240000,
-      "_why_timeout": "PREVENTIVE, AND IT FIXES NOTHING CURRENTLY RED. This gate carried no timeout_ms and therefore inherited DEFAULT_TIMEOUT_MS = 90000. Measured under a harness replicating the runner's exact spawn, order and load on 2026-07-29, three consecutive passes: 51122 ms, 71471 ms, 55173 ms. THE MIDDLE ONE IS 79% OF THE 90000 IT WAS INHERITING. That is the same thin-margin defect that made lab-l6 fragile, sitting undeclared in the gate the runner executes immediately before it, and it was found only because lab-l6's flakiness forced someone to instrument the suite. It has not been observed failing. THIS IS NOT A FIX FOR LAB-L6, WHICH REMAINS FLAKY WITH ITS CAUSE UNESTABLISHED -- see _why_timeout_did_not_fix_it on that entry. 240000 is ~3.4x the slowest measurement.",
-      "_measured_2026_07_29": "51122 / 71471 / 55173 ms across three full-suite passes; captured by a read-only harness rather than by editing gate_runner.cjs, which is the instrument under investigation.",
-      "gate_row": "lab-l5-desk-shows-the-bytes"
-    },
-    {
-      "id": "track",
-      "file": "viewer/track/verify_track.cjs",
-      "ci": true,
-      "gate_row": "track-write-route-is-fenced"
-    },
-    {
-      "id": "plan-consistency",
-      "file": "viewer/verify_plan_consistency.cjs",
-      "ci": true,
-      "gate_row": "plan-does-not-contradict-itself"
-    },
-    {
-      "id": "lab-l6",
-      "file": "viewer/lab/verify_lab_l6.cjs",
-      "ci": true,
-      "gate_row": "lab-l6-gauntlet-and-cosign",
-      "timeout_ms": 300000,
-      "_why_timeout": "RAISED 120000 -> 300000 on 2026-07-29 on the operator's instruction, after this gate was measured FLAKY under the runner. Standalone it is 9/9 exit 0 in ~102-103 SECONDS, reproduced three times -- 86% of the old 120000 budget consumed by the happy path, which is too thin regardless. THIS IS A BUDGET CORRECTION, NOT A LOOSENED TOLERANCE: no acceptance criterion changed, no check removed or weakened, and the gate still fails if any build genuinely fails.",
-      "_why_timeout_did_not_fix_it": "THE RAISE DID NOT RESOLVE THE FLAKINESS, AND THE HYPOTHESIS BEHIND IT IS DISPROVEN. Measured across four consecutive runner runs on 2026-07-29: PASS, FAIL, PASS (with the 300000 budget), FAIL (with the 300000 budget). The agent that raised this stated 'the raise held' after the single passing run, which was too confident for one observation, and the claim is withdrawn here rather than left standing. TWO HYPOTHESES ARE NOW DEAD: (1) the outer budget -- it still fails at 300000, and the runner reports exit=1 rather than its own DID_NOT_FINISH state, so the outer timeout was never firing; (2) throwaway-worktree collision with lab-l5, which runs immediately before it -- measured directly, lab-l5 passes 26/26 and leaves `git worktree list` with exactly one entry, the repository itself. WHAT IS ESTABLISHED: standalone PASS is reproducible; runner FAIL is intermittent; the differentiator is the runner context and NOT the budget. WHAT IS NOT ESTABLISHED: the actual cause. The runner buffers each gate's stdout (gate_runner.cjs:82) and prints only a summary line, so no failing-run output has been captured yet -- that is the next measurement, and it should be taken before anyone changes anything else. A FLAKY GATE IS A DEFECT: it is not safe to read this gate's green as evidence, and it is not safe to read its red as a real failure, until the cause is known."
-    },
-    {
-      "id": "claims",
-      "file": "viewer/verify_claims.cjs",
-      "ci": true,
-      "gate_row": "claims-checked-against-disk",
-      "_why": "The first instrument in this project pointed at PROSE. Three audits on 2026-07-29 found the commit log clean and the remediation record honest, and every single defect in hand-written documents: five files at six locations declaring a next act that had shipped six hours earlier, one banner stating 25 registered gates in one paragraph and 23 in another, and a review marking those counts CORRECTED while the documents still carried them wrong. Of the 28 gates registered at that moment, the three touching documents pinned a GENERATED file, resolved JSON pointers, or checked a JSON vocabulary. Nothing checked a claim in prose, which is exactly where the failures landed."
-    },
-    {
-      "id": "decision",
-      "file": "viewer/verify_decision.cjs",
-      "ci": true,
-      "gate_row": "decision-records-only",
-      "_why": "POST /api/decision is the FIRST MUTATING SURFACE BUILT FOR THE OPERATOR RATHER THAN FOR AN AGENT, and the only new one in the Phase 3 plan. Until 2026-07-31 nothing on the plane could record his answer: TRACK renders all ten stops and every not_mine item with no form, no input and no button; /lab/l6 asks Checkpoint E outright and deliberately has no control (correctly -- a page that could cross that threshold would be crossing it); all 85 rows of track_comments.ndjson are author:claude, and every co-sign in the 32-entry control-plane ledger is actor:claude, role:agent. His answers lived in a chat window, which is not an artifact, is not greppable, is not hash-chained and does not survive the session. A WRITE ROUTE ON A SERVER THAT BINDS 0.0.0.0 IS EXACTLY WHERE THIS REPOSITORY HAS BEEN BITTEN: TRACK's comment route shipped with a read law and NO write fence at all while its header claimed 'a polled READ never spawns anything'. So this gate asks three questions that fail in different directions. It REFUSES -- non-loopback peer, rebound Host, missing x-uni-cc, wrong content-type, >64KB, and a subject the plan never asks about. It ACCEPTS -- a correctly-fenced decision is recorded, which is the negative control without which the whole gate passes by refusing everything, the cheapest false green a fence gate can ship. And THAT IS ALL IT DOES -- a real append must leave evidence/gates.ndjson (S4, the operator's alone), the control-plane ledger, the comment ledger and viewer/.presence BYTE-IDENTICAL, hashed either side of live requests rather than read off the source, because 'it only writes one file' is a claim about behaviour and this repository has already convicted itself once for evidencing a behavioural claim with three regexes. THE CLAIM LEVEL IS presence_evident AND IS CHECKED AS A CLAIM: every row must carry it plus a caveat naming what was NOT proved, because an agent on this box satisfies every fence and can post any row this endpoint accepts. The chain makes it tamper-EVIDENT, never authentic. The last check greps the tree to prove NOTHING ELSE READS decisions.ndjson -- if a gate ever consumed it as authorisation, an agent would have gained the ability to authorise itself by writing a file."
-    },
-    {
-      "id": "decide-page",
-      "file": "viewer/verify_decide_page.cjs",
-      "ci": true,
-      "gate_row": "decide-page-records-never-acts",
-      "_why": "THE SURFACE, not the endpoint -- verify_decision proves the route's fences, chain and refusals; this proves the properties that only matter because a HUMAN uses it, and that no amount of correct server code supplies. THE FIRST ONE IS MECHANICAL AND WOULD HAVE RUINED THE FEATURE: track.html rewrites app.innerHTML wholesale on a 10-second setInterval, so a textarea living on the main page would have a half-typed answer to 'the writer's key on node2' destroyed mid-sentence, repeatedly, with nothing recoverable. /decide is therefore a separate page and this gate fails if ANY timer appears in it -- the check most likely to be broken later by someone adding a harmless-looking auto-refresh. It also proves the page calls EXACTLY /api/decisions and /api/decision and nothing else (it records, it never acts: answering 'go ahead' to a stop writes down that he said go ahead, it does not do the thing -- the same reasoning that correctly leaves /lab/l6 with no button for Checkpoint E); that nothing is written until he presses (no sendBeacon, no unload handler, no autosave, and the only POST inside a click handler, so closing the tab mid-sentence leaves the ledger untouched); that the irreversibility is declared ABOVE the button rather than in the receipt, measured POSITIONALLY, because there is no undo on an append-only chain and a page that reveals that afterwards has told him too late; that a FAILED write keeps his words in the box, since losing a considered answer to a failed request is the page destroying what it exists to capture; and that a successful write hands back seq + hash + the file path so he need not trust the page's word for it. THE ENDPOINT SCAN STRIPS COMMENTS FIRST, and that is not tidiness: an earlier check in this programme reported '/api/golive: True' against the run-of-show page when the only occurrence was in a comment block explaining what the page must NEVER call. This gate's own header names /api/golive for the same reason, so a scan that did not strip comments would convict itself. THE CLAIM LEVEL IS PINNED TO THE MODULE: the page must DECLARE 'Claim level: presence_evident' and it must equal decisions.cjs's CLAIM_LEVEL, read from the declaration rather than from any occurrence of the word -- the first version of that check scanned for /authenticated/ anywhere and convicted the sentence 'Tamper-evident, not authenticated', i.e. the page DENYING the stronger claim. A negation is not a claim. WHAT IT CANNOT ESTABLISH, and says so every run: that the page is USABLE. It measures structure, not experience. Whether it is survivable at hour three is the operator's eye and the organic-operator review, and no gate stands in for either."
-    },
-    {
-      "id": "sight-blind",
-      "file": "viewer/hud/verify_sight_blind.cjs",
-      "ci": true,
-      "gate_row": "hud-sight-shows-blind",
-      "_why": "THE HUD WAS GETTING GREENER AS ITS SENSOR ROTTED. viewer/hud/hud_user_sight.ps1 has pushed nothing since 2026-07-14 and the live snapshot still reports user_sight.fresh=false with last_push_at=null. Before this gate, hud.html's renderSight printed 'all fabric resonant -- no contradictions, no rot, no runaway' for that exact payload: a DEAD DETECTOR REPORTED AS HARMONY, on the one surface whose whole job is to tell the operator when something is wrong. The native widget already had the rule right (RenderDecisions.cs:53-65 prints 'user detectors NOT REPORTING') and its C# test asserts it -- but .github/workflows/ci.yml has no dotnet step, so NO PIPELINE RUNS THAT TEST, and the eight tests in viewer/hud/tests/ are wired only into viewer/hud/package.json, which no pipeline invokes either. This gate is ci:true and sits under viewer/, so gate_runner discovers it FROM THE FILESYSTEM and the registry cannot silently drop it. It extracts the page's own renderSight, esc and fmtSince rather than re-implementing the rule, so it cannot pass by agreeing with itself. Four mutations prove it bites -- removing the guard, treating ABSENT user_sight as fresh, dropping the banner from the findings branch (an overwrite bug that would have restored the defect while looking correct in a diff), and printing the green sentence unconditionally -- each with a negative control so a blunt break cannot be mistaken for detection. Its live probe is declared NOT RUN rather than passed when :8100 is absent, and it asserts AGREEMENT with the real sensor state rather than pinning 'must say blind', so repairing the sensor will not turn the fix into a failure."
-    },
-    {
-      "id": "bagit",
-      "file": "viewer/verify_bag.cjs",
-      "ci": true,
-      "gate_row": "bagit-round-trips",
-      "_why": "EVIDENCE THAT CANNOT LEAVE THE BOX IT WAS MADE ON IS EVIDENCE ONLY TO THE BOX. Every receipt in docs/receipts/ and every object in evidence/control_plane/objects/ is retrievable ONLY through this repository's own conventions -- there is no portable container, no declared payload, no way to hand a stranger a directory and have them establish that it holds what it says it holds. viewer/bag.cjs builds RFC 8493 BagIt 1.0 packs, zero dependencies, and this gate refuses to believe them. THE DESIGN POINT IS THAT BAGS ARE HOLEY BY DEFAULT: fetch.txt points at the existing content-addressed store, so one copy of the bytes serves N bags and a bag adds zero payload octets -- measured, not asserted (the gate builds two independent bags over the same object and checks both name it and neither copies it). AND BECAUSE AN OBJECT'S FILENAME IS ITS DIGEST, the manifest and fetch.txt are two statements of one number, so a manifest edited to launder a swapped payload is caught by STRING COMPARISON before any file is opened (mutation M5, fault fetch_digest_mismatch, zero I/O). THE ROUND TRIP IS BYTE-IDENTICAL, NOT SET-EQUAL: the bag is materialised to a temp dir, the manifest re-derived from the resolved bytes, and the two required to match byte for byte -- M8 reorders the manifest lines and repairs the tagmanifest, which a set-equality check would wave through and which this one refuses. TWELVE MUTATIONS RUN ON EVERY INVOCATION, NOT BEHIND A FLAG, each demanding a NAMED fault code so a check that has quietly stopped looking cannot pass because a different one happened to trip; where an attack would disturb the tagmanifest the mutation REPAIRS it, because an adversary who edits a manifest and forgets its digest is not the adversary worth testing against. The extra-file case is tested twice and excuses nothing, dotfiles included -- M3 deletes a manifest line so a payload file becomes undeclared, M7 drops a .hidden_notes into data/ -- because that is how something rides along inside an otherwise valid bag. THE HONEST LIMIT IS ITSELF A CHECK. M12 is a NEGATIVE CONTROL that must NOT be caught: a coherent forgery -- payload edited, manifest recomputed, tagmanifest recomputed -- verifies CLEAN, and this gate goes RED if that ever stops being true, because the day it stops being true is the day this file's header became a false statement about what the instrument does. A bag verified by the box that built it is a SELF-CERTIFICATION; BagIt makes a pack tamper-evident and portable, it does not make it witnessed. The estate's off-box witness is COMPROMISED (independent_custodians: 0) and nothing in this gate changes that. Claim level tamper_evident, declared in every bag's bag-info.txt as UNI-Claim-Level and enforced there -- a bag that stops carrying its caveat fails (M11). Real bags are READ ONLY here: every mutation runs on a temp-dir bag built against a temp-dir object store, and this gate writes nothing under evidence/. gate_row bagit-round-trips has NO ROW in evidence/gates.ndjson, in common with every other registered gate -- authoring those rows is S4, the operator's alone, and this gate did not and must not append one."
-    },
-    {
-      "id": "concepts",
-      "file": "viewer/verify_concepts.cjs",
-      "ci": true,
-      "gate_row": "concept-registry-locators-resolve",
-      "_why": "The specification asked for a Latin-anchored semantic layer and nothing of the kind existed. This gate holds the registry to the one property that makes it a MAP OF THE SYSTEM rather than a glossary invented beside it: NO ROW MAY EXIST WITHOUT A locator THAT RESOLVES. 18 rows point at a real line found by searching for the token rather than by guessing a number; 3 name a declared external namespace (uni-lab-mcp) and are REFUSED any confidence above provisional, because an unpinned locator cannot support more. Four further fences each guard a distinct way this becomes false precision: ipa may be null and 11 rows are, but ipa WITHOUT ipa_source is refused since Classical and Ecclesiastical pronunciations genuinely differ and an unlabelled transcription asserts a precision nobody has; confidence attested requires a corpus citation, otherwise the ceiling is constructed (three words, no number -- the release verdict discipline); back_translation must DIFFER from the definition, because it is produced without sight of it and a byte-identical result is evidence the procedure was skipped rather than evidence the translation is good; and LATIN IS AN ANNOTATION, checked by SCANNING THE OPERATOR SURFACES rather than promised -- no lemma may appear as a heading or a control label, because a Latin word you must learn in order to drive the system is the exact opposite of what the education ladder is for. --mutate proves all five bite. WHAT IT CANNOT DO, printed every run: it cannot judge a translation. Whether a lemma is the right anchor is a human call, and reviewer is a CLAIM by a named person, not a measurement -- most rows have none yet and that is rendered, not hidden."
-    }
-  ]
+ "schema": "uni.gate_runner.registry.v1",
+ "note": "The runnable node gates gate_runner.cjs invokes. COMPLETENESS is cross-checked against filesystem discovery of viewer/**/{verify_*,*_lint}.cjs (excluding gate_runner.cjs and verify_gate_runner.cjs) — a gate file on disk but absent here, or an entry with no file, fails the runner. `ci:true` gates are self-contained and reach a real PASS/FAIL under CI; `ci:false` need live external resources and are listed-not-run (never a fabricated pass). This registry is the RUNNER's list; it is not the canonical verdict ledger (that is evidence/gates.ndjson). `gate_row` names the ONE row a gate's single exit code would be recorded as, and MUST NOT be a glob — a glob is refused by the runner's completeness check, because gate_row.schema.json requires kebab-case and so no row could ever bear one, which made the schema's own \"every gate MUST be represented here\" impossible to satisfy. `gate_row_family` is a REGISTRY-ONLY key listing the real rows a suite gate's one verdict covers; it is not a ledger field, no row may carry it, and gate_row.schema.json is unchanged.",
+ "gates": [
+  {
+   "id": "build-identity",
+   "file": "viewer/verify_build_identity.cjs",
+   "ci": true,
+   "gate_row": "boot-identity"
+  },
+  {
+   "id": "gaia",
+   "file": "viewer/gaia/verify_gaia.cjs",
+   "ci": true,
+   "gate_row": "gaia-suite",
+   "gate_row_family": [
+    "gaia-boot-persistence-honest",
+    "gaia-drift-surfaced",
+    "gaia-every-emitted-seat-declared",
+    "gaia-honest-probe",
+    "gaia-mcp-caps-agree",
+    "gaia-no-ip-literal",
+    "gaia-no-summarization-lint",
+    "gaia-read-only-fence",
+    "gaia-rehash-integrity",
+    "gaia-self-mirror",
+    "gaia-signal-provenance-complete",
+    "gaia-write-fence-and-gate-row"
+   ],
+   "_why_umbrella": "WAS \"gaia-*\", WHICH MADE A SCHEMA REQUIREMENT IMPOSSIBLE TO SATISFY. production/schemas/gate_row.schema.json requires a kebab-case `name`, so NO row in evidence/gates.ndjson could ever bear a glob — while that same schema's description says every gate the project claims MUST be represented there. The entry demanded a row and simultaneously named a shape no row can take. AN UMBRELLA ROW IS THE HONEST REPAIR, NOT A CONVENIENCE: verify_gaia.cjs is ONE process that runs every check above and prints ONE verdict, and its exit code — the thing the runner law binds — is that single suite verdict. A suite row is therefore exactly what this gate computes. Splitting it into per-row registry entries would invent per-row verdicts the runner never produces: the gate cannot exit 0 for gaia-honest-probe and 1 for gaia-drift-surfaced, so a ledger carrying twelve independent verdicts sourced from this one gate would be recording twelve claims where one measurement was made. `gate_row_family` is a REGISTRY key ONLY — it records which real rows the suite verdict covers so the coverage is not lost when the glob goes. It is not a ledger field and nothing may write it into a row; production/schemas/gate_row.schema.json is UNCHANGED (S5, the operator's).",
+   "_family_derived_by": "node -e \"const s=require('fs').readFileSync('viewer/gaia/verify_gaia.cjs','utf8');const n=new Set();const re=/\\b(?:pass|fail|skip)\\(\\s*\\\"([a-z0-9]+(?:-[a-z0-9]+)+)\\\"/g;let m;while((m=re.exec(s)))n.add(m[1]);console.log([...n].sort())\" — the gate's OWN check labels, read off the gate, not remembered. These are already kebab-case and already in the gaia- namespace, so the family here is measured rather than invented."
+  },
+  {
+   "id": "gaia-lint",
+   "file": "viewer/gaia/gaia_lint.cjs",
+   "ci": true,
+   "gate_row": "gaia-no-summarization"
+  },
+  {
+   "id": "lint-bites",
+   "file": "viewer/gaia/verify_lint_bites.cjs",
+   "ci": true,
+   "gate_row": "gaia-lint-bites"
+  },
+  {
+   "id": "golden-pins",
+   "file": "viewer/gaia/verify_golden_pins.cjs",
+   "ci": true,
+   "gate_row": "gaia-golden-pins"
+  },
+  {
+   "id": "drift-wellformed",
+   "file": "viewer/gaia/verify_drift_wellformed.cjs",
+   "ci": true,
+   "gate_row": "gaia-drift-wellformed"
+  },
+  {
+   "id": "schema-pointers",
+   "file": "viewer/verify_schema_pointers.cjs",
+   "ci": true,
+   "gate_row": "schema-pointers-resolve"
+  },
+  {
+   "id": "host-tracking",
+   "file": "viewer/verify_host_tracking.cjs",
+   "ci": true,
+   "gate_row": "host-address-tracking"
+  },
+  {
+   "id": "hud",
+   "file": "viewer/hud/verify_hud.cjs",
+   "ci": false,
+   "external_needs": "UNI-HUD service on :8100",
+   "gate_row": "hud-suite",
+   "gate_row_family": [
+    "hud-bind-health",
+    "hud-snapshot",
+    "hud-audience-accept",
+    "hud-audience-reject-unvouched",
+    "hud-audience-refuses-cross-site",
+    "hud-method-fence",
+    "hud-no-ip-literal"
+   ],
+   "_why_umbrella": "WAS \"hud-*\", unwritable for the same reason as gaia's: production/schemas/gate_row.schema.json requires kebab-case, so no ledger row can bear a glob, while the schema says every claimed gate MUST be represented. The umbrella is honest for the same reason too — verify_hud.cjs is ONE process that runs its probes and prints ONE line, `HUD GATE: PASS|FAIL`, and that single verdict is what its exit code carries. Per-row registry entries would invent per-probe verdicts this gate never produces. AND THE GLOB WAS NOT ONLY UNWRITABLE, IT OVER-CLAIMED: `hud-*` matches every hud- row in evidence/gates.ndjson, including rows this gate does not touch and rows docs/HUD.md:396-400 records as describing the RETIRED NSSM architecture verbatim. Naming a family measured off the gate replaces a pattern that swept rows by spelling with a list that says what was actually probed.",
+   "_family_derived_by": "node -e \"const s=require('fs').readFileSync('viewer/hud/verify_hud.cjs','utf8');const re=/\\b(?:pass|fail)\\(\\s*\\\"([^\\\"]+)\\\"/g;let m;const n=[];while((m=re.exec(s)))n.push(m[1]);console.log([...new Set(n)])\" — the gate's OWN probe labels. UNLIKE GAIA'S, THESE NEEDED NORMALISING AND THAT IS SAID RATHER THAN HIDDEN: the gate emits bare, un-namespaced labels and one of them (`bind+health`) is not kebab-case, so each is prefixed `hud-` and `+` becomes `-` to land in the ledger's namespace and pass its kebab rule. Of the seven, `hud-no-ip-literal` already exists in the ledger; the others are the names a suite verdict WOULD cover and are not a claim that rows exist today. Nothing here is written to evidence/gates.ndjson — that is S4, the operator's."
+  },
+  {
+   "id": "overlays",
+   "file": "viewer/verify_overlays.cjs",
+   "ci": false,
+   "external_needs": "overlay server :8099",
+   "gate_row": "overlay-proof"
+  },
+  {
+   "id": "colony",
+   "file": "viewer/verify_colony.cjs",
+   "ci": false,
+   "external_needs": "colony RCON + producer on the LAN",
+   "gate_row": "colony-count-consistency"
+  },
+  {
+   "id": "deploy-lag",
+   "file": "viewer/gaia/verify_deploy_lag_tripwire.cjs",
+   "ci": true,
+   "gate_row": "gaia-deploy-lag-tripwire"
+  },
+  {
+   "id": "capture-age",
+   "file": "viewer/gaia/verify_capture_age_fence.cjs",
+   "ci": true,
+   "gate_row": "gaia-capture-age-fence"
+  },
+  {
+   "id": "witness-blocked",
+   "file": "viewer/gaia/verify_witness_blocked.cjs",
+   "ci": true,
+   "gate_row": "gaia-witness-blocked"
+  },
+  {
+   "id": "control-plane-evidence",
+   "file": "viewer/verify_control_plane_evidence.cjs",
+   "ci": true,
+   "gate_row": "control-plane-evidence-retrievable"
+  },
+  {
+   "id": "golive-refuses-agents",
+   "file": "viewer/verify_golive_refuses_agents.cjs",
+   "ci": true,
+   "gate_row": "f31-golive-refuses-agents"
+  },
+  {
+   "id": "presence-mint",
+   "file": "viewer/verify_presence_mint.cjs",
+   "ci": true,
+   "gate_row": "f31-presence-mint"
+  },
+  {
+   "id": "limitations-doc",
+   "file": "viewer/verify_limitations_doc.cjs",
+   "ci": true,
+   "gate_row": "limitations-doc-cannot-drift"
+  },
+  {
+   "id": "gate-attempts",
+   "file": "viewer/verify_gate_attempts.cjs",
+   "ci": true,
+   "gate_row": "gate-attempts-sidecar"
+  },
+  {
+   "id": "ip-fence",
+   "file": "viewer/verify_ip_fence.cjs",
+   "ci": true,
+   "gate_row": "repo-wide-ip-fence-landed-red"
+  },
+  {
+   "id": "lab-l0",
+   "file": "viewer/lab/verify_lab_l0.cjs",
+   "ci": true,
+   "gate_row": "lab-l0-empty-room"
+  },
+  {
+   "id": "lab-l1",
+   "file": "viewer/lab/verify_lab_l1.cjs",
+   "ci": true,
+   "gate_row": "lab-l1-five-materials"
+  },
+  {
+   "id": "lab-l2-shot",
+   "file": "viewer/lab/verify_shot.cjs",
+   "ci": true,
+   "gate_row": "lab-l2-screenshot-bites"
+  },
+  {
+   "id": "lab-l3",
+   "file": "viewer/lab/verify_lab_l3.cjs",
+   "ci": true,
+   "gate_row": "lab-l3-projection-tells-the-truth"
+  },
+  {
+   "id": "lab-l4",
+   "file": "viewer/lab/verify_lab_l4.cjs",
+   "ci": true,
+   "gate_row": "lab-l4-three-kinds-of-closed"
+  },
+  {
+   "id": "lab-l5",
+   "file": "viewer/lab/verify_lab_l5.cjs",
+   "ci": true,
+   "timeout_ms": 240000,
+   "_why_timeout": "PREVENTIVE, AND IT FIXES NOTHING CURRENTLY RED. This gate carried no timeout_ms and therefore inherited DEFAULT_TIMEOUT_MS = 90000. Measured under a harness replicating the runner's exact spawn, order and load on 2026-07-29, three consecutive passes: 51122 ms, 71471 ms, 55173 ms. THE MIDDLE ONE IS 79% OF THE 90000 IT WAS INHERITING. That is the same thin-margin defect that made lab-l6 fragile, sitting undeclared in the gate the runner executes immediately before it, and it was found only because lab-l6's flakiness forced someone to instrument the suite. It has not been observed failing. THIS IS NOT A FIX FOR LAB-L6, WHICH REMAINS FLAKY WITH ITS CAUSE UNESTABLISHED -- see _why_timeout_did_not_fix_it on that entry. 240000 is ~3.4x the slowest measurement.",
+   "_measured_2026_07_29": "51122 / 71471 / 55173 ms across three full-suite passes; captured by a read-only harness rather than by editing gate_runner.cjs, which is the instrument under investigation.",
+   "gate_row": "lab-l5-desk-shows-the-bytes"
+  },
+  {
+   "id": "track",
+   "file": "viewer/track/verify_track.cjs",
+   "ci": true,
+   "gate_row": "track-write-route-is-fenced"
+  },
+  {
+   "id": "plan-consistency",
+   "file": "viewer/verify_plan_consistency.cjs",
+   "ci": true,
+   "gate_row": "plan-does-not-contradict-itself"
+  },
+  {
+   "id": "lab-l6",
+   "file": "viewer/lab/verify_lab_l6.cjs",
+   "ci": true,
+   "gate_row": "lab-l6-gauntlet-and-cosign",
+   "timeout_ms": 300000,
+   "_why_timeout": "RAISED 120000 -> 300000 on 2026-07-29 on the operator's instruction, after this gate was measured FLAKY under the runner. Standalone it is 9/9 exit 0 in ~102-103 SECONDS, reproduced three times -- 86% of the old 120000 budget consumed by the happy path, which is too thin regardless. THIS IS A BUDGET CORRECTION, NOT A LOOSENED TOLERANCE: no acceptance criterion changed, no check removed or weakened, and the gate still fails if any build genuinely fails.",
+   "_why_timeout_did_not_fix_it": "THE RAISE DID NOT RESOLVE THE FLAKINESS, AND THE HYPOTHESIS BEHIND IT IS DISPROVEN. Measured across four consecutive runner runs on 2026-07-29: PASS, FAIL, PASS (with the 300000 budget), FAIL (with the 300000 budget). The agent that raised this stated 'the raise held' after the single passing run, which was too confident for one observation, and the claim is withdrawn here rather than left standing. TWO HYPOTHESES ARE NOW DEAD: (1) the outer budget -- it still fails at 300000, and the runner reports exit=1 rather than its own DID_NOT_FINISH state, so the outer timeout was never firing; (2) throwaway-worktree collision with lab-l5, which runs immediately before it -- measured directly, lab-l5 passes 26/26 and leaves `git worktree list` with exactly one entry, the repository itself. WHAT IS ESTABLISHED: standalone PASS is reproducible; runner FAIL is intermittent; the differentiator is the runner context and NOT the budget. WHAT IS NOT ESTABLISHED: the actual cause. The runner buffers each gate's stdout (gate_runner.cjs:82) and prints only a summary line, so no failing-run output has been captured yet -- that is the next measurement, and it should be taken before anyone changes anything else. A FLAKY GATE IS A DEFECT: it is not safe to read this gate's green as evidence, and it is not safe to read its red as a real failure, until the cause is known."
+  },
+  {
+   "id": "claims",
+   "file": "viewer/verify_claims.cjs",
+   "ci": true,
+   "gate_row": "claims-checked-against-disk",
+   "_why": "The first instrument in this project pointed at PROSE. Three audits on 2026-07-29 found the commit log clean and the remediation record honest, and every single defect in hand-written documents: five files at six locations declaring a next act that had shipped six hours earlier, one banner stating 25 registered gates in one paragraph and 23 in another, and a review marking those counts CORRECTED while the documents still carried them wrong. Of the 28 gates registered at that moment, the three touching documents pinned a GENERATED file, resolved JSON pointers, or checked a JSON vocabulary. Nothing checked a claim in prose, which is exactly where the failures landed."
+  },
+  {
+   "id": "decision",
+   "file": "viewer/verify_decision.cjs",
+   "ci": true,
+   "gate_row": "decision-records-only",
+   "_why": "POST /api/decision is the FIRST MUTATING SURFACE BUILT FOR THE OPERATOR RATHER THAN FOR AN AGENT, and the only new one in the Phase 3 plan. Until 2026-07-31 nothing on the plane could record his answer: TRACK renders all ten stops and every not_mine item with no form, no input and no button; /lab/l6 asks Checkpoint E outright and deliberately has no control (correctly -- a page that could cross that threshold would be crossing it); all 85 rows of track_comments.ndjson are author:claude, and every co-sign in the 32-entry control-plane ledger is actor:claude, role:agent. His answers lived in a chat window, which is not an artifact, is not greppable, is not hash-chained and does not survive the session. A WRITE ROUTE ON A SERVER THAT BINDS 0.0.0.0 IS EXACTLY WHERE THIS REPOSITORY HAS BEEN BITTEN: TRACK's comment route shipped with a read law and NO write fence at all while its header claimed 'a polled READ never spawns anything'. So this gate asks three questions that fail in different directions. It REFUSES -- non-loopback peer, rebound Host, missing x-uni-cc, wrong content-type, >64KB, and a subject the plan never asks about. It ACCEPTS -- a correctly-fenced decision is recorded, which is the negative control without which the whole gate passes by refusing everything, the cheapest false green a fence gate can ship. And THAT IS ALL IT DOES -- a real append must leave evidence/gates.ndjson (S4, the operator's alone), the control-plane ledger, the comment ledger and viewer/.presence BYTE-IDENTICAL, hashed either side of live requests rather than read off the source, because 'it only writes one file' is a claim about behaviour and this repository has already convicted itself once for evidencing a behavioural claim with three regexes. THE CLAIM LEVEL IS presence_evident AND IS CHECKED AS A CLAIM: every row must carry it plus a caveat naming what was NOT proved, because an agent on this box satisfies every fence and can post any row this endpoint accepts. The chain makes it tamper-EVIDENT, never authentic. The last check greps the tree to prove NOTHING ELSE READS decisions.ndjson -- if a gate ever consumed it as authorisation, an agent would have gained the ability to authorise itself by writing a file."
+  },
+  {
+   "id": "decide-page",
+   "file": "viewer/verify_decide_page.cjs",
+   "ci": true,
+   "gate_row": "decide-page-records-never-acts",
+   "_why": "THE SURFACE, not the endpoint -- verify_decision proves the route's fences, chain and refusals; this proves the properties that only matter because a HUMAN uses it, and that no amount of correct server code supplies. THE FIRST ONE IS MECHANICAL AND WOULD HAVE RUINED THE FEATURE: track.html rewrites app.innerHTML wholesale on a 10-second setInterval, so a textarea living on the main page would have a half-typed answer to 'the writer's key on node2' destroyed mid-sentence, repeatedly, with nothing recoverable. /decide is therefore a separate page and this gate fails if ANY timer appears in it -- the check most likely to be broken later by someone adding a harmless-looking auto-refresh. It also proves the page calls EXACTLY /api/decisions and /api/decision and nothing else (it records, it never acts: answering 'go ahead' to a stop writes down that he said go ahead, it does not do the thing -- the same reasoning that correctly leaves /lab/l6 with no button for Checkpoint E); that nothing is written until he presses (no sendBeacon, no unload handler, no autosave, and the only POST inside a click handler, so closing the tab mid-sentence leaves the ledger untouched); that the irreversibility is declared ABOVE the button rather than in the receipt, measured POSITIONALLY, because there is no undo on an append-only chain and a page that reveals that afterwards has told him too late; that a FAILED write keeps his words in the box, since losing a considered answer to a failed request is the page destroying what it exists to capture; and that a successful write hands back seq + hash + the file path so he need not trust the page's word for it. THE ENDPOINT SCAN STRIPS COMMENTS FIRST, and that is not tidiness: an earlier check in this programme reported '/api/golive: True' against the run-of-show page when the only occurrence was in a comment block explaining what the page must NEVER call. This gate's own header names /api/golive for the same reason, so a scan that did not strip comments would convict itself. THE CLAIM LEVEL IS PINNED TO THE MODULE: the page must DECLARE 'Claim level: presence_evident' and it must equal decisions.cjs's CLAIM_LEVEL, read from the declaration rather than from any occurrence of the word -- the first version of that check scanned for /authenticated/ anywhere and convicted the sentence 'Tamper-evident, not authenticated', i.e. the page DENYING the stronger claim. A negation is not a claim. WHAT IT CANNOT ESTABLISH, and says so every run: that the page is USABLE. It measures structure, not experience. Whether it is survivable at hour three is the operator's eye and the organic-operator review, and no gate stands in for either."
+  },
+  {
+   "id": "sight-blind",
+   "file": "viewer/hud/verify_sight_blind.cjs",
+   "ci": true,
+   "gate_row": "hud-sight-shows-blind",
+   "_why": "THE HUD WAS GETTING GREENER AS ITS SENSOR ROTTED. viewer/hud/hud_user_sight.ps1 has pushed nothing since 2026-07-14 and the live snapshot still reports user_sight.fresh=false with last_push_at=null. Before this gate, hud.html's renderSight printed 'all fabric resonant -- no contradictions, no rot, no runaway' for that exact payload: a DEAD DETECTOR REPORTED AS HARMONY, on the one surface whose whole job is to tell the operator when something is wrong. The native widget already had the rule right (RenderDecisions.cs:53-65 prints 'user detectors NOT REPORTING') and its C# test asserts it -- but .github/workflows/ci.yml has no dotnet step, so NO PIPELINE RUNS THAT TEST, and the eight tests in viewer/hud/tests/ are wired only into viewer/hud/package.json, which no pipeline invokes either. This gate is ci:true and sits under viewer/, so gate_runner discovers it FROM THE FILESYSTEM and the registry cannot silently drop it. It extracts the page's own renderSight, esc and fmtSince rather than re-implementing the rule, so it cannot pass by agreeing with itself. Four mutations prove it bites -- removing the guard, treating ABSENT user_sight as fresh, dropping the banner from the findings branch (an overwrite bug that would have restored the defect while looking correct in a diff), and printing the green sentence unconditionally -- each with a negative control so a blunt break cannot be mistaken for detection. Its live probe is declared NOT RUN rather than passed when :8100 is absent, and it asserts AGREEMENT with the real sensor state rather than pinning 'must say blind', so repairing the sensor will not turn the fix into a failure."
+  },
+  {
+   "id": "bagit",
+   "file": "viewer/verify_bag.cjs",
+   "ci": true,
+   "gate_row": "bagit-round-trips",
+   "_why": "EVIDENCE THAT CANNOT LEAVE THE BOX IT WAS MADE ON IS EVIDENCE ONLY TO THE BOX. Every receipt in docs/receipts/ and every object in evidence/control_plane/objects/ is retrievable ONLY through this repository's own conventions -- there is no portable container, no declared payload, no way to hand a stranger a directory and have them establish that it holds what it says it holds. viewer/bag.cjs builds RFC 8493 BagIt 1.0 packs, zero dependencies, and this gate refuses to believe them. THE DESIGN POINT IS THAT BAGS ARE HOLEY BY DEFAULT: fetch.txt points at the existing content-addressed store, so one copy of the bytes serves N bags and a bag adds zero payload octets -- measured, not asserted (the gate builds two independent bags over the same object and checks both name it and neither copies it). AND BECAUSE AN OBJECT'S FILENAME IS ITS DIGEST, the manifest and fetch.txt are two statements of one number, so a manifest edited to launder a swapped payload is caught by STRING COMPARISON before any file is opened (mutation M5, fault fetch_digest_mismatch, zero I/O). THE ROUND TRIP IS BYTE-IDENTICAL, NOT SET-EQUAL: the bag is materialised to a temp dir, the manifest re-derived from the resolved bytes, and the two required to match byte for byte -- M8 reorders the manifest lines and repairs the tagmanifest, which a set-equality check would wave through and which this one refuses. TWELVE MUTATIONS RUN ON EVERY INVOCATION, NOT BEHIND A FLAG, each demanding a NAMED fault code so a check that has quietly stopped looking cannot pass because a different one happened to trip; where an attack would disturb the tagmanifest the mutation REPAIRS it, because an adversary who edits a manifest and forgets its digest is not the adversary worth testing against. The extra-file case is tested twice and excuses nothing, dotfiles included -- M3 deletes a manifest line so a payload file becomes undeclared, M7 drops a .hidden_notes into data/ -- because that is how something rides along inside an otherwise valid bag. THE HONEST LIMIT IS ITSELF A CHECK. M12 is a NEGATIVE CONTROL that must NOT be caught: a coherent forgery -- payload edited, manifest recomputed, tagmanifest recomputed -- verifies CLEAN, and this gate goes RED if that ever stops being true, because the day it stops being true is the day this file's header became a false statement about what the instrument does. A bag verified by the box that built it is a SELF-CERTIFICATION; BagIt makes a pack tamper-evident and portable, it does not make it witnessed. The estate's off-box witness is COMPROMISED (independent_custodians: 0) and nothing in this gate changes that. Claim level tamper_evident, declared in every bag's bag-info.txt as UNI-Claim-Level and enforced there -- a bag that stops carrying its caveat fails (M11). Real bags are READ ONLY here: every mutation runs on a temp-dir bag built against a temp-dir object store, and this gate writes nothing under evidence/. gate_row bagit-round-trips has NO ROW in evidence/gates.ndjson, in common with every other registered gate -- authoring those rows is S4, the operator's alone, and this gate did not and must not append one."
+  },
+  {
+   "id": "concepts",
+   "file": "viewer/verify_concepts.cjs",
+   "ci": true,
+   "gate_row": "concept-registry-locators-resolve",
+   "_why": "The specification asked for a Latin-anchored semantic layer and nothing of the kind existed. This gate holds the registry to the one property that makes it a MAP OF THE SYSTEM rather than a glossary invented beside it: NO ROW MAY EXIST WITHOUT A locator THAT RESOLVES. 18 rows point at a real line found by searching for the token rather than by guessing a number; 3 name a declared external namespace (uni-lab-mcp) and are REFUSED any confidence above provisional, because an unpinned locator cannot support more. Four further fences each guard a distinct way this becomes false precision: ipa may be null and 11 rows are, but ipa WITHOUT ipa_source is refused since Classical and Ecclesiastical pronunciations genuinely differ and an unlabelled transcription asserts a precision nobody has; confidence attested requires a corpus citation, otherwise the ceiling is constructed (three words, no number -- the release verdict discipline); back_translation must DIFFER from the definition, because it is produced without sight of it and a byte-identical result is evidence the procedure was skipped rather than evidence the translation is good; and LATIN IS AN ANNOTATION, checked by SCANNING THE OPERATOR SURFACES rather than promised -- no lemma may appear as a heading or a control label, because a Latin word you must learn in order to drive the system is the exact opposite of what the education ladder is for. --mutate proves all five bite. WHAT IT CANNOT DO, printed every run: it cannot judge a translation. Whether a lemma is the right anchor is a human call, and reviewer is a CLAIM by a named person, not a measurement -- most rows have none yet and that is rendered, not hidden."
+  },
+  {
+   "id": "obs-fence",
+   "file": "viewer/verify_obs_fence.cjs",
+   "ci": true,
+   "gate_row": "obs-supervisor-refuses-to-kill-a-live-encoder",
+   "_why": "Found by audit on 2026-08-02 while the estate was TWO HOURS LIVE on two platforms, with the faulty watcher resident and re-deciding every fifteen seconds. obs_supervisor.cjs decides whether it may force-terminate OBS, and it asked 'are we streaming?' over the OBS WEBSOCKET -- but every state it exists to repair (a blocking safe-mode dialog, a dead websocket) is a state in which that websocket cannot answer. Its fence, written 'if (st.known && st.streaming)', declined ONLY on a confident yes, so 'I do not know' fell through to killAll() and its WMI Terminate. OBS pushes RTMP to the audience the whole time its websocket is unreachable, so the exact condition that made the supervisor believe nobody was watching was also the condition under which it was most likely wrong -- the sicker OBS got, the more certain the supervisor became that killing it was safe. studio_up.ps1:110-123 already had the right answer and said so in its own words: ask MediaMTX, whose 'uni' path reads ready:true exactly when OBS is ingesting, INDEPENDENT of the websocket. The supervisor was never taught it. This gate drives the extracted repairAllowed() across its whole truth table -- not a grep, which would pass against code that imported MediaMTX and then ignored it -- and enforces the inverted default: repair requires an affirmative sourced 'we are NOT on air', and every other answer including uncertainty declines. --mutate reinstalls the historical fence verbatim and it is caught by 5 checks. WHAT IT CANNOT DO, printed every run: it proves the decision and that the relay is consulted; it cannot prove MediaMTX is telling the truth. A relay reporting a ready path while nothing reaches the platform makes this fence decline a repair for a broadcast that is already dead -- the safe direction, but not a correct one. Platform-side confirmation is external and is not claimed."
+  }
+ ]
 }

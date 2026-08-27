@@ -62,6 +62,30 @@ function New-TrayIcon {
   return $icon
 }
 
+# ---- QUIET-MODE LATCH (added 2026-08-10) ---------------------------------------
+# This box is the operator's computer as well as a studio. QUIET stops the VIDEO CORE and leaves the
+# monitors awake. This watchdog is one of the four supervisors whose job is to resurrect what dies,
+# so it has to know the difference between "crashed" and "deliberately off" or it undoes the quiet
+# within one 5s tick.
+#
+# THE DISTINCTION THAT MATTERS, and why this is not a blanket "do nothing when quiet":
+#   * QUIET-STOPPED (fan/sup/tick/mus) - the broadcast-only services. In QUIET these are SUPPOSED to
+#     be down. Restarting them is the bug.
+#   * KEPT ALIVE (cc/pub/ovl/voi) - the operator surfaces and the way back on. QUIET does not stop
+#     these, so if one dies while quiet it is a GENUINE crash and must still be restarted. Standing
+#     down completely would mean the operator loses his console during the very mode designed to
+#     keep him working, and nothing would say why.
+# FAILSAFE: a missing/corrupt latch reads NOT quiet, so normal supervision is the default.
+$script:QuietStopped = @('fan','sup','tick','mus')
+function Test-QuietMode {
+  try {
+    $latch = Join-Path $PSScriptRoot 'runtime\quiet_mode.json'
+    if (-not (Test-Path $latch)) { return $false }
+    $j = Get-Content -LiteralPath $latch -Raw -ErrorAction Stop | ConvertFrom-Json
+    return [bool]$j.quiet
+  } catch { return $false }
+}
+
 # ---- restart functions -------------------------------------------------------
 # P3.1 (2026-07-12): hidden auto-restart. Log file per script under $ROOT\logs\.
 function Start-NodeHidden { param($title, $script)
@@ -71,10 +95,43 @@ function Start-NodeHidden { param($title, $script)
   $err  = "$ROOT\logs\$base.err.log"
   Start-Process -WindowStyle Hidden -FilePath 'node.exe' -ArgumentList "viewer\$script" -WorkingDirectory $ROOT -RedirectStandardOutput $out -RedirectStandardError $err | Out-Null
 }
+
+# Same as Start-NodeHidden but carries script ARGUMENTS. obs_supervisor.cjs is useless without
+# --watch: relaunching it bare would leave a one-shot that exits immediately and a supervisor slot
+# that looks filled while nothing is supervising. That is the shape of failure this whole file is
+# being extended to remove, so the arg is not optional.
+function Start-NodeArgs { param($title, $script, $extra)
+  if(-not (Test-Path "$ROOT\logs")){ New-Item -ItemType Directory -Path "$ROOT\logs" -Force | Out-Null }
+  $base = ($script -replace '\.cjs$','' -replace '\.js$','')
+  $out  = "$ROOT\logs\$base.out.log"
+  $err  = "$ROOT\logs\$base.err.log"
+  Start-Process -WindowStyle Hidden -FilePath 'node.exe' -ArgumentList "viewer\$script $extra" -WorkingDirectory $ROOT -RedirectStandardOutput $out -RedirectStandardError $err | Out-Null
+}
 Set-Alias -Name Start-NodeInWindow -Value Start-NodeHidden -Scope Script -Option AllScope
 function Restart-Overlay { if (-not (Node-Running 'overlay_server.cjs')) { Start-NodeHidden 'UNI OVERLAY SERVER' 'overlay_server.cjs' } }
 function Restart-CC      { if (-not (Node-Running 'command_center.cjs')) { Start-NodeHidden 'UNI COMMAND CENTER' 'command_center.cjs' } }
 function Restart-Pub     { if (-not (Node-Running 'publisher.cjs')) { Start-NodeHidden 'UNI SOURCE GATEWAY' 'publisher.cjs' } }
+
+# ---- THE FAN-OUT, and the five other always-on services nothing was watching ------------------
+#
+# ADDED 2026-08-03 after measuring that dual_push.cjs -- the ONLY thing putting the show on YouTube
+# and Twitch -- had NO supervisor at all. This timer covered exactly @('cc','pub','ovl');
+# studio_up.ps1 -Watch is the only other candidate and it was NOT RUNNING (confirmed by process
+# list). So: if dual_push exited, ALL PUBLIC AIR STOPPED, nothing restarted it, and every local
+# surface stayed green -- OBS keeps encoding happily into MediaMTX, so congestion and
+# skipped-frame counters cannot see it. The studio would have looked perfect with no audience.
+#
+# ON THE MISSING AIR FENCE, DELIBERATELY: door_healer and obs_supervisor both abstain while
+# streaming, and are right to -- they would interrupt a WORKING stream. That reasoning INVERTS
+# here. Every service below is restarted only after 10s of being DOWN, and for dual_push "down"
+# means the audience is ALREADY gone. Refusing to act because we are "on air" would be refusing to
+# restore the very thing that makes us on air. No fence is correct for this list, and that is a
+# decision, not an oversight.
+function Restart-Fan     { if (-not (Node-Running 'dual_push.cjs'))     { Start-NodeHidden 'UNI DUAL PUSH'      'dual_push.cjs' } }
+function Restart-Sup     { if (-not (Node-Running 'obs_supervisor.cjs')){ Start-NodeArgs   'UNI OBS SUPERVISOR' 'obs_supervisor.cjs' '--watch' } }
+function Restart-Tick    { if (-not (Node-Running 'health_ticker.cjs')) { Start-NodeHidden 'UNI HEALTH TICKER'  'health_ticker.cjs' } }
+function Restart-Music   { if (-not (Node-Running 'music_director.cjs')){ Start-NodeHidden 'UNI MUSIC DIRECTOR' 'music_director.cjs' } }
+function Restart-Voice   { if (-not (Node-Running 'voice_server.cjs'))  { Start-NodeHidden 'UNI VOICE SERVER'   'voice_server.cjs' } }
 function Restart-Bridge  { if (-not (Node-Running 'obs_bridge.cjs')) {
     # only if the bridge exists on disk (Phase 2 addition)
     if (Test-Path (Join-Path $ROOT 'viewer\obs_bridge.cjs')) { Start-NodeHidden 'UNI OBS BRIDGE' 'obs_bridge.cjs' }
@@ -109,8 +166,18 @@ function Probe-Health {
   $pub = Test-Port 8443
   $ovl = Test-Port 8099
   $col = Test-Port 3020
+  # The fan-out and the other always-on node services have NO PORT to probe -- they are process
+  # existence only. dual_push especially: it is the only thing feeding YouTube and Twitch, and its
+  # death is invisible to every port check on this box.
+  $fan  = Node-Running 'dual_push.cjs'
+  $sup  = Node-Running 'obs_supervisor.cjs'
+  $tick = Node-Running 'health_ticker.cjs'
+  $mus  = Node-Running 'music_director.cjs'
+  $voi  = Node-Running 'voice_server.cjs'
   $core = $obs -and $mtx -and $cc -and $pub
-  $warn = -not $ovl -or -not $col
+  # $fan is a WARN, not part of $core, on purpose: off-air the pushers are legitimately absent, and
+  # an icon that sits red whenever we are not broadcasting teaches the operator to ignore red.
+  $warn = -not $ovl -or -not $col -or -not $fan -or -not $sup
   $color = 'red'
   if ($core) { $color = if ($warn) { 'yellow' } else { 'green' } }
   # idle mode: /api/state.idle == true (WS1-L). Best-effort HTTP probe with 1s timeout.
@@ -124,7 +191,8 @@ function Probe-Health {
     $sr.Close(); $r.Close()
     if ($body -match '"idle"\s*:\s*true') { $idle = $true }
   } catch {}
-  return @{ obs=$obs; mtx=$mtx; cc=$cc; pub=$pub; ovl=$ovl; col=$col; color=$color; idle=$idle }
+  return @{ obs=$obs; mtx=$mtx; cc=$cc; pub=$pub; ovl=$ovl; col=$col; color=$color; idle=$idle;
+            fan=$fan; sup=$sup; tick=$tick; mus=$mus; voi=$voi }
 }
 function Health-Summary { param($h)
   $lines = @()
@@ -165,6 +233,25 @@ Add-Menu 'Open Command Center' {
 } | Out-Null
 Add-Menu 'Show Logs' { if(-not (Test-Path "$ROOT\logs")){ New-Item -ItemType Directory -Path "$ROOT\logs" -Force | Out-Null }; Start-Process explorer.exe -ArgumentList "$ROOT\logs" } | Out-Null
 Add-Menu 'Show Status'  { [System.Windows.Forms.MessageBox]::Show((Health-Summary (Probe-Health)), 'UNI Studio status') | Out-Null } | Out-Null
+Add-Menu '-' $null | Out-Null
+# ---- QUIET MODE (added 2026-08-10) --------------------------------------------
+# The always-available control. The tray icon outlives a quiet (it is not part of the video core),
+# needs no elevation and no rebuild, so this is the one place the operator can ALWAYS reach the
+# switch even with OBS, the channel windows and the mixer all gone.
+# Both items shell out to viewer/quiet_mode.cjs, which is the single owner of the logic - the tray
+# never duplicates the kill list, so it can never drift from the Door's version of the same action.
+Add-Menu 'QUIET MODE - stop video, keep monitoring' {
+  $r = & node "$ROOT\viewer\quiet_mode.cjs" --quiet 2>&1 | Out-String
+  if ($LASTEXITCODE -eq 0) {
+    $tray.ShowBalloonTip(6000,'UNI QUIET','Video core stopped. HUD, Gaia and the Door stay awake. Right-click here to RESUME.',[System.Windows.Forms.ToolTipIcon]::Info)
+  } else {
+    [System.Windows.Forms.MessageBox]::Show($r,'QUIET refused') | Out-Null
+  }
+} | Out-Null
+Add-Menu 'RESUME - bring the studio back up' {
+  & node "$ROOT\viewer\quiet_mode.cjs" --resume 2>&1 | Out-Null
+  $tray.ShowBalloonTip(6000,'UNI RESUME','studio_up.ps1 running - full stage in about 60-120s.',[System.Windows.Forms.ToolTipIcon]::Info)
+} | Out-Null
 Add-Menu '-' $null | Out-Null
 Add-Menu 'Restart All'          { Restart-All } | Out-Null
 Add-Menu 'Restart OBS'          { Restart-OBS } | Out-Null
@@ -253,14 +340,27 @@ $timer.Add_Tick({
   # Auto-restart any dead service that was up last cycle. Only restart after 10s of down
   # to avoid ping-pong on brief hiccups.
   $now = Get-Date
-  foreach ($k in @('cc','pub','ovl')) {
+  # 'fan' FIRST in the list on purpose: it is the only one whose absence means the AUDIENCE IS GONE.
+  # The rest are the services studio_up.ps1 -Watch claims to supervise while not running.
+  $quietNow = Test-QuietMode
+  foreach ($k in @('fan','cc','pub','ovl','sup','tick','mus','voi')) {
+    # QUIET: the broadcast-only services are deliberately down. Do not resurrect them, and do not
+    # accumulate downSince state for them either - otherwise the instant the latch clears they would
+    # all be judged ">10s down" and restart in a single burst, which is the ping-pong this timer's
+    # 10s rule exists to prevent. Clearing the key makes resume start their clock fresh.
+    if ($quietNow -and ($script:QuietStopped -contains $k)) { $state.downSince.Remove($k) | Out-Null; continue }
     if (-not $h.$k) {
       if (-not $state.downSince.ContainsKey($k)) { $state.downSince[$k] = $now }
       elseif (($now - $state.downSince[$k]).TotalSeconds -gt 10) {
         switch ($k) {
-          'cc'  { Restart-CC }
-          'pub' { Restart-Pub }
-          'ovl' { Restart-Overlay }
+          'cc'   { Restart-CC }
+          'pub'  { Restart-Pub }
+          'ovl'  { Restart-Overlay }
+          'fan'  { Restart-Fan }
+          'sup'  { Restart-Sup }
+          'tick' { Restart-Tick }
+          'mus'  { Restart-Music }
+          'voi'  { Restart-Voice }
         }
         $tray.ShowBalloonTip(4000, 'UNI Studio', "restarted $k after being DOWN >10s", [System.Windows.Forms.ToolTipIcon]::Warning)
         $state.downSince.Remove($k) | Out-Null

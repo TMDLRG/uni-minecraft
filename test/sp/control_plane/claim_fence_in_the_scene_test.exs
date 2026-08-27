@@ -179,7 +179,11 @@ defmodule SP.ControlPlane.ClaimFenceInTheSceneTest do
   @tag :cross_repo
   test "STATED LIMIT — this file proves the DATA carries no claim; it cannot prove a PICTURE does not look alive" do
     plan =
-      Path.expand("../../../../UNI-Flagellum/UNI-FLAGELLUM/docs/control-plane/phases/PHASE-7.md", __DIR__)
+      Path.join(
+        System.get_env("UNI_FLAGELLUM_PATH") ||
+          Path.expand("../../../../UNI-Flagellum/UNI-FLAGELLUM", __DIR__),
+        "docs/control-plane/phases/PHASE-7.md"
+      )
 
     assert File.exists?(plan)
     text = File.read!(plan)

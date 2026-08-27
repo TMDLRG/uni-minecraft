@@ -92,6 +92,13 @@ authInternalUsers:
 
 paths:
   uni:
+  # uni_air (PLAN 7 B0, 2026-08-04): the continuity switcher (viewer/continuity_switch.cjs) re-encodes
+  # filler+studio on NVENC and publishes HERE; dual_push then reads uni_air instead of uni, so an OBS
+  # restart / the x264->NVENC swap / a channel-window crash never ends the platform session. Without
+  # this path declared, the switcher's publish is refused and reset (-10054, WSAECONNRESET) exactly as
+  # a scratch `proof_src` was on 2026-08-03 -- this file has an explicit paths list and no all_others,
+  # so an undeclared path is rejected. Declaring it is inert until the switcher actually runs.
+  uni_air:
   cam1:
   cam2:
   cam3:

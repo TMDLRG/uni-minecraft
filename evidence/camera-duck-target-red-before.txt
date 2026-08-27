@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: RED-1 hot UI-unmuted RemoteCam1 enters TUCK
+not ok 1 - RED-1 hot UI-unmuted RemoteCam1 enters TUCK
+  ---
+  duration_ms: 2.6945
+  type: 'test'
+  location: 'C:\\Users\\mpolz\\Documents\\UNI.Minecraft\\viewer\\tests\\camera_duck_engine.test.cjs:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hot unmuted cam must reach TUCK
+    
+    'DUCK' !== 'TUCK'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'TUCK'
+  actual: 'DUCK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\mpolz\Documents\UNI.Minecraft\viewer\tests\camera_duck_engine.test.cjs:34:10)
+    Test.runInAsyncScope (node:async_hooks:213:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: RED-2 UI-muted hot RemoteCam1 cannot cause DUCK or TUCK
+not ok 2 - RED-2 UI-muted hot RemoteCam1 cannot cause DUCK or TUCK
+  ---
+  duration_ms: 0.3043
+  type: 'test'
+  location: 'C:\\Users\\mpolz\\Documents\\UNI.Minecraft\\viewer\\tests\\camera_duck_engine.test.cjs:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    UI-muted hot cam must NOT cause DUCK or TUCK
+    
+    'DUCK' !== 'RESTORED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'RESTORED'
+  actual: 'DUCK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\mpolz\Documents\UNI.Minecraft\viewer\tests\camera_duck_engine.test.cjs:50:10)
+    Test.runInAsyncScope (node:async_hooks:213:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: RED-3 remuting every camera restores the operator level
+not ok 3 - RED-3 remuting every camera restores the operator level
+  ---
+  duration_ms: 0.2751
+  type: 'test'
+  location: 'C:\\Users\\mpolz\\Documents\\UNI.Minecraft\\viewer\\tests\\camera_duck_engine.test.cjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hot → TUCK
+    
+    'DUCK' !== 'TUCK'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'TUCK'
+  actual: 'DUCK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\mpolz\Documents\UNI.Minecraft\viewer\tests\camera_duck_engine.test.cjs:76:10)
+    Test.runInAsyncScope (node:async_hooks:213:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: RED-4 TUCK requires 10000ms continuous all-camera cold before DUCK
+not ok 4 - RED-4 TUCK requires 10000ms continuous all-camera cold before DUCK
+  ---
+  duration_ms: 0.7704
+  type: 'test'
+  location: 'C:\\Users\\mpolz\\Documents\\UNI.Minecraft\\viewer\\tests\\camera_duck_engine.test.cjs:90:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'DUCK' !== 'TUCK'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'TUCK'
+  actual: 'DUCK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\mpolz\Documents\UNI.Minecraft\viewer\tests\camera_duck_engine.test.cjs:102:10)
+    Test.runInAsyncScope (node:async_hooks:213:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: RED-5 voice_server ownership suppresses every music_director fader write
+not ok 5 - RED-5 voice_server ownership suppresses every music_director fader write
+  ---
+  duration_ms: 2.5835
+  type: 'test'
+  location: 'C:\\Users\\mpolz\\Documents\\UNI.Minecraft\\viewer\\tests\\music_director_voice_precedence.test.cjs:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    A: voice_server owns → action must be 'cede'
+    
+    'write' !== 'cede'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'cede'
+  actual: 'write'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\mpolz\Documents\UNI.Minecraft\viewer\tests\music_director_voice_precedence.test.cjs:35:10)
+    Test.runInAsyncScope (node:async_hooks:213:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 126.6966

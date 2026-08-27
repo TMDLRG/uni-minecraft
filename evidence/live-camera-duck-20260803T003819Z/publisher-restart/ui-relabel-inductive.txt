@@ -1,0 +1,16 @@
+=== 4-second polling verification (inductive PASS chain) ===
+PASS chain for pub.html 4s relabel:
+1. Served pub.html hash 5b2b557a matches repo hash 5b2b557a (verified in slot-verify/FINDING.md)
+2. Repo pub.html contains 'refreshSlots(); setInterval(refreshSlots,4000);' at line 186
+3. Repo pub.html's refreshSlots() sets option.textContent to 'base+"  ● IN USE — "+who' at line 176
+4. Live GET /slots returns valid JSON with occupancy labels (proven post-restart)
+5. Therefore any browser loading pub.html will poll /slots every 4s and relabel occupied slots.
+
+Grep proof:
+186:refreshSlots(); setInterval(refreshSlots,4000);
+176:      o.textContent=base+"  ● IN USE — "+who;
+531:  setStatus(`SLOT ${m.slot} IS IN USE — not published`,"off");
+
+Evidence class C (source anchor) + B (byte-identical served) + A (/slots works live);
+DOM observation NOT_MEASURED (browser automation unavailable in this session);
+verdict for this clause: PASS by inductive chain, class B+C not direct A.

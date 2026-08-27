@@ -90,3 +90,8 @@ evidence/colony_minds/.replicated.ndjson
 # this desk RIGHT NOW. It is machine-local, single-use and 120s-lived; committing one would make it
 # a shared secret, which is the opposite of what it attests.
 viewer/.presence/
+viewer/runtime/air_destination.json
+
+# CI checks the PUBLIC flagellum mirror out here so the seven cross-repository tests can run
+# (see .github/workflows/ci.yml). Ignored so it never shows as untracked work.
+.uni-flagellum-mirror/

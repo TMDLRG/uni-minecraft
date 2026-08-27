@@ -25,6 +25,12 @@ const PORT = 8443;
 const MTX = { host: "127.0.0.1", port: 8889 };     // MediaMTX WHIP (loopback, self-signed)
 const CC = { host: "127.0.0.1", port: 8098 };      // command center (loopback) for slot states
 const SLOTS = Array.from({ length: 10 }, (_, i) => "cam" + (i + 1));
+// A claim older than this is dead, and its slot may be reused. 30s is not a new number: it is the
+// SAME threshold the command center already uses to decide a slot is live
+// (command_center.cjs, /api/preflight: `v.ageMs < 30000`). Picking a different one here would make
+// the gateway and the console disagree about which cameras exist, which is the exact class of
+// confusion this whole change exists to end.
+const STALE_MS = 30000;
 const CERT = {
   key: fs.readFileSync(path.join(__dirname, "auto.key")),
   cert: fs.readFileSync(path.join(__dirname, "auto.crt")),
@@ -55,6 +61,26 @@ const server = https.createServer(CERT, (req, res) => {
   // WHIP: /camN/whip  (POST offer, OPTIONS ice) and /camN/whip/<session> (PATCH trickle, DELETE)
   const m = /^\/(cam(?:[1-9]|10))\/whip(?:\/.*)?$/.exec(url);
   if (m && SLOTS.includes(m[1])) return proxyWhip(req, res, m[1]);
+  // WHO HOLDS WHICH SLOT — the thing the picker could never ask.
+  // pub.html previously offered all ten slots as if all ten were free, so a guest could walk onto a
+  // slot another camera was already publishing on. This is served from the gateway itself (not the
+  // loopback-only :8095 registrations feed) precisely because the CAMERA DEVICE is the one that
+  // needs the answer, and it is on the LAN, not on loopback.
+  //
+  // It deliberately publishes only what a person needs to choose a free slot: the label, the device
+  // name and how long it has been up. No clientId, no addresses, no session tokens.
+  if (url === "/slots") {
+    const now = Date.now();
+    const out = SLOTS.map((s) => {
+      const c = clients.get(s);
+      const live = c && (now - c.lastBeat) < STALE_MS;
+      return live
+        ? { slot: s, free: false, label: c.label || c.kind || "source", deviceLabel: c.deviceLabel || "", hostname: c.hostname || "", since: c.publishedAt || null, state: c.state || "idle" }
+        : { slot: s, free: true };
+    });
+    res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+    return res.end(JSON.stringify({ at: new Date().toISOString(), staleMs: STALE_MS, slots: out }));
+  }
   // static: the picker page
   if (url === "/" || url === "/pub.html") {
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
@@ -81,6 +107,33 @@ wss.on("connection", (ws) => {
   ws.on("message", (raw) => {
     let m; try { m = JSON.parse(raw.toString()); } catch (_) { return; }
     if (m.type === "register" && SLOTS.includes(m.slot)) {
+      // ── SLOT COLLISION IS A REAL EVENT, NOT A SILENT OVERWRITE ─────────────────────────────────
+      // This used to be a bare clients.set(): a second device registering to an OCCUPIED slot
+      // replaced the first outright. The displaced camera kept streaming into a socket nobody read,
+      // neither device was told anything, and the operator's slot list showed one entry where two
+      // cameras believed they were live. That is the confusion and the conflict risk.
+      //
+      // Now: a LIVE holder (heartbeat within STALE_MS) is defended -- the newcomer is refused and
+      // told WHO holds it, so a guest can pick another slot instead of silently stealing one
+      // mid-show. A STALE holder (device closed its lid, walked out of wifi) is evicted, because a
+      // dead claim must never lock a slot the operator needs.
+      const held = clients.get(m.slot);
+      const heldAlive = held && (Date.now() - held.lastBeat) < STALE_MS && held.ws !== ws;
+      if (heldAlive && held.clientId && m.clientId && held.clientId !== m.clientId) {
+        ws.send(JSON.stringify({
+          type: "slot_busy", slot: m.slot,
+          heldBy: { label: held.label || held.kind || "a source", deviceLabel: held.deviceLabel || "", hostname: held.hostname || "", since: held.publishedAt || null },
+          free: SLOTS.filter((s) => { const c = clients.get(s); return !c || (Date.now() - c.lastBeat) >= STALE_MS; }),
+          why: "that slot is already publishing. Pick a free one, or ask the operator to release it.",
+        }));
+        return;                                  // refuse: the holder keeps the slot and keeps streaming
+      }
+      if (held && held.ws && held.ws !== ws) {
+        // Same clientId reconnecting, or a stale holder being evicted: close the old socket cleanly
+        // so it cannot keep half-publishing into a slot it no longer owns.
+        try { held.ws.send(JSON.stringify({ type: "slot_taken_over", slot: m.slot, why: heldAlive ? "you reconnected from this device" : "your claim went stale and the slot was reused" })); } catch (_) {}
+        try { held.ws.close(); } catch (_) {}
+      }
       slot = m.slot;
       clients.set(slot, {
         ws,

@@ -1,3 +1,4 @@
+const __obsauth = require("./obs_auth.cjs");
 // obs_client.cjs -- shared obs-websocket v5 client for the UNI studio.
 //
 // One class replaces the near-identical inline clients that used to live in
@@ -86,6 +87,7 @@ class OBSClient {
         // Hello -> Identify (same op even on reconnect; subs bitmask is re-sent implicitly)
         const d = { rpcVersion: 1 };
         if (this.subscriptions !== undefined) d.eventSubscriptions = this.subscriptions;
+        const __a = __obsauth.authString(m.d); if (__a) d.authentication = __a;
         try { w.send(JSON.stringify({ op: 1, d })); } catch (_) {}
       } else if (m.op === 2) {
         // Identified

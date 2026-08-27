@@ -54,14 +54,14 @@ defmodule SP.ControlPlane.FogIsWalkableTest do
 
   alias SP.ControlPlane.Scene
 
-  @modes Path.expand(
-           "../../../../UNI-Flagellum/UNI-FLAGELLUM/docs/control-plane/FAILURE-MODES.md",
-           __DIR__
-         )
-  @arch Path.expand(
-          "../../../../UNI-Flagellum/UNI-FLAGELLUM/docs/control-plane/ARCHITECTURE.md",
-          __DIR__
-        )
+  # WHERE THE FLAGELLUM REPOSITORY IS. Env var first, sibling checkout second. Resolved at COMPILE
+  # time because the paths below are module attributes. The env var exists so CI can point at a
+  # checkout of the PUBLIC MIRROR (TMDLRG/uni-flagellum-motor-stack), which became possible on
+  # 2026-08-24 when that mirror stopped being a private repository.
+  @flagellum System.get_env("UNI_FLAGELLUM_PATH") ||
+               Path.expand("../../../../UNI-Flagellum/UNI-FLAGELLUM", __DIR__)
+  @modes Path.join(@flagellum, "docs/control-plane/FAILURE-MODES.md")
+  @arch Path.join(@flagellum, "docs/control-plane/ARCHITECTURE.md")
 
   defp attrs do
     %{

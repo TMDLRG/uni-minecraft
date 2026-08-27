@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: RED-6 successive DUCK evaluations at a stable operator level produce a stable target
+ok 1 - RED-6 successive DUCK evaluations at a stable operator level produce a stable target
+  ---
+  duration_ms: 2.458
+  type: 'test'
+  ...
+# Subtest: RED-1 hot UI-unmuted RemoteCam1 enters TUCK
+ok 2 - RED-1 hot UI-unmuted RemoteCam1 enters TUCK
+  ---
+  duration_ms: 0.2334
+  type: 'test'
+  ...
+# Subtest: RED-2 UI-muted hot RemoteCam1 cannot cause DUCK or TUCK
+ok 3 - RED-2 UI-muted hot RemoteCam1 cannot cause DUCK or TUCK
+  ---
+  duration_ms: 0.2635
+  type: 'test'
+  ...
+# Subtest: RED-3 remuting every camera restores the operator level
+ok 4 - RED-3 remuting every camera restores the operator level
+  ---
+  duration_ms: 1.152
+  type: 'test'
+  ...
+# Subtest: RED-4 TUCK requires 10000ms continuous all-camera cold before DUCK
+ok 5 - RED-4 TUCK requires 10000ms continuous all-camera cold before DUCK
+  ---
+  duration_ms: 0.8286
+  type: 'test'
+  ...
+# Subtest: RED-0 current MicHost-only system ignores hot UI-unmuted RemoteCam1
+ok 6 - RED-0 current MicHost-only system ignores hot UI-unmuted RemoteCam1
+  ---
+  duration_ms: 1.8341
+  type: 'test'
+  ...
+# Subtest: RED-5 voice_server ownership suppresses every music_director fader write
+ok 7 - RED-5 voice_server ownership suppresses every music_director fader write
+  ---
+  duration_ms: 3.4338
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 153.6937

@@ -42,7 +42,7 @@ authenticating; the host admits them to a green room, then to air.
 ## P0 — proven foundation (already working; build on it, do not relitigate)
 - **The Director model:** ONE external show-runner cues a **set-once vision-mixer**; the encoder passes
   **ONE feed** to YouTube. Never pile sources into the encoder. (`viewer/director_show.cjs` cues OBS via
-  obs-websocket; `viewer/obs_stage.cjs` builds the clean scenes; `viewer/launch_channels.ps1` brings up the
+  obs-websocket; `viewer/obs_stage.cjs` builds the clean scenes; `viewer/studio_channels.ps1` brings up the
   source windows.) `director_show.cjs` carries the seam comment *"replace the timer with cues from
   SP.Producer beats"* — that seam is where the UNI Producer takes over.
 - **Channels proven on air:** COLONY (Minecraft colony cam `:3020`), GLASS_OS (the **real** UNI.OS glass
