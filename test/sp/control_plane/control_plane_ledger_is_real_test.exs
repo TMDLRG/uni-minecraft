@@ -130,6 +130,14 @@ defmodule SP.ControlPlane.ControlPlaneLedgerIsRealTest do
            "a ledger that skips a phase is not this programme's history: #{inspect(phases)}"
   end
 
+  # NEEDS THE REPOSITORY'S OWN HISTORY. The ledger names real commits and this test proves they
+  # exist, which is the whole reason the ledger is evidence rather than decoration. A PUBLIC MIRROR
+  # has its own two-commit history by the operator's 2026-08-24 ruling, so those commits are
+  # genuinely absent there and the assertion is unanswerable rather than false. Tagged so
+  # test_helper.exs can exclude it on a mirror AND SAY SO OUT LOUD -- an excluded test is not a
+  # passing test, and silently passing it would turn the ledger check into decoration on exactly the
+  # copy the public reads.
+  @tag :needs_full_history
   test "EVERY commit named in the ledger exists in git — invented history fails here" do
     shas =
       entries()
