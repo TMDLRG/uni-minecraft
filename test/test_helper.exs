@@ -95,4 +95,35 @@ exclusions =
     [:skip, :cross_repo]
   end
 
+# IS THIS A PUBLIC MIRROR? MIRROR.md is written by tools/mirror/promote.cjs and exists ONLY on a
+# mirror -- it is untracked and absent in the private repository, so this cannot misfire there.
+#
+# A mirror carries its own history (two commits) by the operator's 2026-08-24 ruling: the private
+# history stays private because it references client engagements. So tests that assert the ledger's
+# named commits EXIST cannot be answered on a mirror -- not because the ledger is wrong, but because
+# the history it names is deliberately not there. Excluding with disclosure is the honest reading;
+# passing them silently would make the ledger check decoration on the copy the public actually reads.
+mirror? = File.exists?(Path.expand("../MIRROR.md", __DIR__))
+
+exclusions =
+  if mirror? do
+    IO.puts([
+      IO.ANSI.yellow(),
+      "
+  HISTORY-DEPENDENT TESTS EXCLUDED — NOT PASSED.
+",
+      "  MIRROR.md is present, so this is a public mirror with its own short history. Tests that",
+      "  assert the control-plane ledger's named commits exist cannot run here, because that history",
+      "  belongs to the private repository and is deliberately not published. They are tagged",
+      "  :needs_full_history and EXCLUDED. An excluded test is not a passing test — run the suite in",
+      "  the private repository to see them execute.
+",
+      IO.ANSI.reset()
+    ])
+
+    exclusions ++ [:needs_full_history]
+  else
+    exclusions
+  end
+
 ExUnit.start(exclude: exclusions, timeout: 300_000)
