@@ -202,7 +202,12 @@ const BLOCKS = {
     ];
     if (sup.length) {
       out.push("");
-      out.push("Retired: " + sup.map((s) => `**${s.token}** (${s.was}, shipped \`${s.shipped_at}\`)`).join("; ") + ".");
+      // Not every retired token SHIPPED. CHECKPOINT-E was WITHDRAWN by operator ruling — printing
+      // "shipped `undefined`" for it is exactly the class of falsehood these blocks exist to end,
+      // and that is what this line did on 2026-08-30 until the template learned the second ending.
+      out.push("Retired: " + sup.map((s) => s.how_it_ended
+        ? `**${s.token}** (${String(s.how_it_ended).split(/(?<=\.)\s/)[0]})`
+        : `**${s.token}** (${s.was}, shipped \`${s.shipped_at}\`)`).join("; ") + ".");
     }
     return out;
   },
