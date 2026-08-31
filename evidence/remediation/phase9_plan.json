@@ -3,13 +3,29 @@
  "phase": "PHASE-9 — RETURN TO RESONANCE",
  "authored_at": "2026-07-26",
  "next_act": {
-  "id": "CHECKPOINT-E",
-  "owner": "OPERATOR",
-  "one_line": "CHECKPOINT E -- the operator's. Two images side by side at http://127.0.0.1:8103/lab/l6. He says whether they differ with NO TEXT READ, and if so whether the reason is that the MATERIAL (truth_class) changed. That is the step's falsifier and it is M8, the operator's eye.",
-  "where": "stages[id=4].steps[id=4.6]",
-  "blocked_on": "M8 -- the operator's eye. No gate can stand in for it, and none is being asked to. Measured 2026-07-29: both images are real and they differ -- GET /api/lab/shot?swap=0 returns 3371 bytes and ?swap=1 returns 3375 bytes, both valid PNG, sha256 6eed6e94... and 0321be29..., embedded side by side at viewer/lab/l6.html:52-53. The surface is ready; the eye is not a gate.",
-  "authored_at": "2026-07-29",
-  "why_this_key_exists": "docs/control-plane/AGENT-CALIBRATION-PROMPT.md instructs every fresh agent to read this plan and do what its next_act says. Until 2026-07-29 NO SUCH KEY EXISTED, and five governing documents at six locations named a next act -- 'build L6' -- that had shipped at 6234f3d on 2026-07-28T19:11:29. A fresh agent obeying the calibration prompt BEFORE verifying anything would have rebuilt a finished build. This key is the single authoritative answer. The documents RENDER it from here and must not restate it: a restated fact is a fact with a half-life, and this one had a half-life of six hours.",
+  "id": "RESUME-THE-LIVE-FRONTS",
+  "owner": "AGENTS",
+  "one_line": "Two live fronts, both agent work, both measured live since 2026-08-19: (1) the whiteboard defect programme -- docs/whiteboard/DEFECTS-AND-REPAIRS.md, every repair proven on the real engine before it ships; (2) the public University assembly -- labs, course, falsification wall and contribution surfaces served from the documentation estate, every page pinned to the commit it was read from. The checkpoint this key used to name was ruled out by the operator; see was.",
+  "where": "docs/whiteboard/DEFECTS-AND-REPAIRS.md and the UNI.Public estate (the University routes)",
+  "authored_at": "2026-08-30",
+  "was": {
+   "id": "CHECKPOINT-E",
+   "owner": "OPERATOR",
+   "one_line": "CHECKPOINT E -- the operator's. Two images side by side at http://127.0.0.1:8103/lab/l6. He says whether they differ with NO TEXT READ, and if so whether the reason is that the MATERIAL (truth_class) changed. That is the step's falsifier and it is M8, the operator's eye.",
+   "where": "stages[id=4].steps[id=4.6]",
+   "blocked_on": "M8 -- the operator's eye. No gate can stand in for it, and none is being asked to. Measured 2026-07-29: both images are real and they differ -- GET /api/lab/shot?swap=0 returns 3371 bytes and ?swap=1 returns 3375 bytes, both valid PNG, sha256 6eed6e94... and 0321be29..., embedded side by side at viewer/lab/l6.html:52-53. The surface is ready; the eye is not a gate.",
+   "authored_at": "2026-07-29",
+   "why_this_key_exists": "docs/control-plane/AGENT-CALIBRATION-PROMPT.md instructs every fresh agent to read this plan and do what its next_act says. Until 2026-07-29 NO SUCH KEY EXISTED, and five governing documents at six locations named a next act -- 'build L6' -- that had shipped at 6234f3d on 2026-07-28T19:11:29. A fresh agent obeying the calibration prompt BEFORE verifying anything would have rebuilt a finished build. This key is the single authoritative answer. The documents RENDER it from here and must not restate it: a restated fact is a fact with a half-life, and this one had a half-life of six hours.",
+   "supersedes": [
+    {
+     "token": "L6",
+     "was": "Stage 4 step 4.6 -- build L6, THE GAUNTLET THEN THE CO-SIGN",
+     "shipped_at": "6234f3d",
+     "shipped_utc": "2026-07-28T19:11:29",
+     "note": "A RETIRED TOKEN. It must not appear inside any generated state block. viewer/verify_claims.cjs check C9.3 refuses it there, and the mutation M5 proves that refusal bites."
+    }
+   ]
+  },
   "supersedes": [
    {
     "token": "L6",
@@ -17,8 +33,13 @@
     "shipped_at": "6234f3d",
     "shipped_utc": "2026-07-28T19:11:29",
     "note": "A RETIRED TOKEN. It must not appear inside any generated state block. viewer/verify_claims.cjs check C9.3 refuses it there, and the mutation M5 proves that refusal bites."
+   },
+   {
+    "token": "CHECKPOINT-E",
+    "how_it_ended": "WITHDRAWN by operator ruling 2026-08-10: the two-image shot surface at the lab viewer was ruled a fatal hallucination -- never resurface it. Not completed, not failed: condemned. This plan carried it as next_act for 20 more days because the ruling was recorded in no repository file -- the exact one-source-of-truth failure this key exists to prevent, this time in the other direction: the file was the stale copy and the truth lived only in a conversation."
    }
-  ]
+  ],
+  "why_this_key_exists": "docs/control-plane/AGENT-CALIBRATION-PROMPT.md instructs every fresh agent to read this plan and do what its next_act says. Until 2026-07-29 NO SUCH KEY EXISTED, and five governing documents at six locations named a next act -- 'build L6' -- that had shipped at 6234f3d on 2026-07-28T19:11:29. A fresh agent obeying the calibration prompt BEFORE verifying anything would have rebuilt a finished build. This key is the single authoritative answer. The documents RENDER it from here and must not restate it: a restated fact is a fact with a half-life, and this one had a half-life of six hours."
  },
  "register": "UNI-FLAGELLUM/docs/control-plane/phases/PHASE-9-REMEDIATION.md",
  "law": "This file is the SINGLE SOURCE OF TRUTH for the plan. UNI TRACK renders it and Gaia projects it verbatim. None of the three may state a status the others do not. A drift signal compares this file's claims against the artifacts on disk — that comparison IS the resonance check, and it is designed so equal:true is reachable.",
@@ -554,7 +575,7 @@
     {
      "id": "4.6",
      "title": "THE LAB — builds 0 through 6",
-     "status": "IN_PROGRESS",
+     "status": "OPERATOR",
      "p3": "M1 (verify_shot --mutate MUST FAIL) + M8",
      "p4": "A4",
      "falsifier": "he cannot tell them apart, or can for a reason that is not truth_class",
@@ -676,7 +697,8 @@
      "recommended_next_act": "CHECKPOINT E -- the operators. Everything buildable is built and green; the last move is his eye on two images, and no gate can stand in for it.",
      "next_build": "NONE remaining to build. THE NEXT ACT IS THE OPERATORS: CHECKPOINT E at http://127.0.0.1:8103/lab/l6 -- two images side by side, distinguishable with NO TEXT READ, and if so for a reason that is the MATERIAL (truth_class). That is the falsifier and it is M8, the operators eye. The co-sign HOLDS until he gives it.",
      "awaiting_operator": "Checkpoint E (M8). The lab is built and walkable; the last move is his.",
-     "builds_complete": "L0 through L6 are DONE, each receipted and recorded in the Control Plane ledger. The lab has no build remaining."
+     "builds_complete": "L0 through L6 are DONE, each receipted and recorded in the Control Plane ledger. The lab has no build remaining.",
+     "operator_ruling_2026_08_10": "The two-image checkpoint surface this step was waiting on was ruled a fatal hallucination by the operator on 2026-08-10 -- his words: never resurface it. The seven builds under this step remain DONE as built artifacts; what closes or re-scopes the step is his call and no agent may re-open that surface. (Ruling received 2026-08-10; transcribed into this plan 2026-08-30. Until this transcription the ruling lived in no repository file, which left this plan pointing at a condemned surface for 20 days.)"
     }
    ],
    "remaining": "4.6 only, and within it BUILD L6 ONLY -- L0 through L5 are DONE. This read 'builds 0 through 6', which is true of the step's scope and reads as though none were built."

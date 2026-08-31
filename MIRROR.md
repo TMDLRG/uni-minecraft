@@ -6,7 +6,7 @@ reel, and it is no longer a frozen snapshot.
 | | |
 |---|---|
 | source branch | `gen2-runtime` |
-| source commit | `1bba66fb53d6` |
+| source commit | `b737739330e0` |
 | files published | 1781 |
 | client identifiers removed | 16 occurrence(s) across 6 file(s) |
 
