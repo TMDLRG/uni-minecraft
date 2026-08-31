@@ -713,9 +713,9 @@ Do not do this:
 >
 > Two live fronts, both agent work, both measured live since 2026-08-19: (1) the whiteboard defect programme -- docs/whiteboard/DEFECTS-AND-REPAIRS.md, every repair proven on the real engine before it ships; (2) the public University assembly -- labs, course, falsification wall and contribution surfaces served from the documentation estate, every page pinned to the commit it was read from. The checkpoint this key used to name was ruled out by the operator; see was.
 >
-> Declared at `docs/whiteboard/DEFECTS-AND-REPAIRS.md and the UNI.Public estate (the University routes)`. Blocked on: undefined
+> Declared at `docs/whiteboard/DEFECTS-AND-REPAIRS.md and the UNI.Public estate (the University routes)`. Blocked on: nothing -- both fronts accept agent work today; operator dependencies inside them (per-repair co-signs) are queued as they arise, and none gates the next step
 >
-> Retired: **L6** (Stage 4 step 4.6 -- build L6, THE GAUNTLET THEN THE CO-SIGN, shipped `6234f3d`); **CHECKPOINT-E** (undefined, shipped `undefined`).
+> Retired: **L6** (Stage 4 step 4.6 -- build L6, THE GAUNTLET THEN THE CO-SIGN, shipped `6234f3d`); **CHECKPOINT-E** (WITHDRAWN by operator ruling 2026-08-10: the two-image shot surface at the lab viewer was ruled a fatal hallucination -- never resurface it.).
 > <!-- END GENERATED uni.state.next_act -->
 >
 > <!-- BEGIN GENERATED uni.state.plan_tally prefix="> " — DO NOT EDIT. node viewer/generate_state_blocks.cjs -->
